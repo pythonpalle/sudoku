@@ -1,0 +1,63 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Tile
+{
+    private int highestNumber { get; set; }
+
+    private int number;
+    public int Number
+    {
+        get => number;
+
+        set{
+
+            if (value < 0 || value > highestNumber)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value),
+                    $"The valid range is between 1 and {highestNumber}.");
+            }
+            
+            number = value;
+        }
+    }
+
+    public HashSet<int> Candidates
+    {
+        get;
+        set;
+    }
+
+    public void RemoveCandidate(int number)
+    {
+        Candidates.Remove(number);
+    }
+    
+    public void AddCandidate(int number)
+    {
+        if (number > highestNumber)
+        {
+            throw new ArgumentOutOfRangeException(nameof(number),
+                "The valid range is between 1 and 9.");
+        }
+        
+        Candidates.Add(number);
+    }
+    
+    
+    public void DebugInfo()
+    {
+        Debug.Log($"Number: {Number}");
+    }
+    
+    public Tile(HashSet<int> candidates, int number = 0, int highestNumber = 9)
+    {
+        this.highestNumber = highestNumber;
+        Number = number;
+        Candidates = candidates;
+    }
+
+    public Tile() : this(new HashSet<int> {1, 2, 3, 4, 5, 6, 7, 8, 9}) {}
+}
