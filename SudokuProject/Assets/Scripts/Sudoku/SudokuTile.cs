@@ -1,10 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
+public struct TileIndex
+{
+    public int row;
+    public int col;
+}
 
 public class SudokuTile
 {
+    public TileIndex index;
+    
+    private System.Random random = new System.Random();
+
     private int highestNumber { get; set; }
 
     private int number;
@@ -20,6 +31,7 @@ public class SudokuTile
                     $"The valid range is between 1 and {highestNumber}.");
             }
             
+            RemoveCandidate(Number);
             number = value;
         }
     }
@@ -48,12 +60,23 @@ public class SudokuTile
         Candidates.Add(number);
     }
 
-    public SudokuTile(HashSet<int> candidates, int number = 0, int highestNumber = 9)
+    public SudokuTile(int row, int col, int number = 0, int highestNumber = 9)
     {
+        index.row = row;
+        index.col = col;
+
+        Candidates = new HashSet<int>();
+        for (int i = 1; i <= highestNumber; i++)
+        {
+            Candidates.Add(i);
+        }
+        
         this.highestNumber = highestNumber;
         Number = number;
-        Candidates = candidates;
     }
-
-    public SudokuTile() : this(new HashSet<int> {1, 2, 3, 4, 5, 6, 7, 8, 9}) {}
+    
+    public void AssignRandomNumberFromCandidates()
+    {
+        Number = Candidates.ElementAt(random.Next(Candidates.Count));
+    }
 }

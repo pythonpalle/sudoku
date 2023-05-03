@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SudokuGenerator
+public class SudokuGenerator9x9
 {
-    private SudokuGrid grid;
+    private SudokuGrid9x9 grid;
     private System.Random random = new System.Random();
 
-    public SudokuGenerator(SudokuGrid grid)
+    public SudokuGenerator9x9(SudokuGrid9x9 grid)
     {
         this.grid = grid;
     }
@@ -15,6 +15,8 @@ public class SudokuGenerator
     public void Generate()
     {
         SudokuTile lowestEntropyTile = FindLowestEntropyTile();
+        lowestEntropyTile.AssignRandomNumberFromCandidates();
+        Propagate(lowestEntropyTile);
     }
 
     private SudokuTile FindLowestEntropyTile()
@@ -36,7 +38,6 @@ public class SudokuGenerator
     private int FindLowestEntropy()
     {
         int lowestValue = int.MaxValue;
-        SudokuTile lowestTile = null;
 
         foreach (var tile in grid.Tiles)
         {
@@ -45,5 +46,10 @@ public class SudokuGenerator
         }
 
         return lowestValue;
+    }
+    
+    private void Propagate(SudokuTile tile)
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -21,19 +21,27 @@ public class SudokuGrid
         SetupTiles();
     }
 
-    protected virtual void SetupTiles()
+    private void SetupTiles()
     {
         for (int col = 0; col < size; col++)
         {
             for (int row = 0; row < size; row++)
             {
-                Tiles[row, col] = new SudokuTile( new HashSet<int>(), 0, size);
-                for (int i = 1; i < size; i++)
-                {
-                    Tiles[row, col].AddCandidate(i);
-                }
+                SetupTile(row, col);
             }
         }
+    }
+
+    private void SetupTile(int row, int col)
+    {
+        Tiles[row, col] = new SudokuTile( row, col, 0, size);
+        for (int i = 1; i < size; i++)
+        {
+            Tiles[row, col].AddCandidate(i);
+        }
+
+        Tiles[row, col].index.row = row;
+        Tiles[row, col].index.col = col;
     }
 
     public void PrintGrid()
