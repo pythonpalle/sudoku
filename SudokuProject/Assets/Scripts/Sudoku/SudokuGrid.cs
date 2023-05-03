@@ -47,21 +47,23 @@ public class SudokuGrid
 
     public void PrintGrid()
     {
-        Debug.Log("Printing grid...");
+        string gridString = String.Empty;
         
         for (int col = 0; col < size; col++)
         {
             string rowString = String.Empty;
             
-            if (col % 3 == 0) Debug.Log("-     -     -     -     -     -     -     -     -     -     -     -     -     -");
+            if (col % 3 == 0) gridString +=("-     -     -     -     -     -     -     -     -     -     -     -     -     -" + Environment.NewLine);
 
             for (int row = 0; row < size; row++)
             {
                 if (row % 3 == 0) rowString += " | ";
                 rowString += Tiles[row, col].Number + "       ";
             }
-            
-            Debug.Log(rowString);
+
+            gridString += rowString + Environment.NewLine;
         }
+        
+        Debug.Log(gridString);
     }
 }

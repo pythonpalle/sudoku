@@ -88,9 +88,24 @@ public class SudokuTile
         Candidates.Add(number);
     }
 
-    public void AssignLowestPossibleValue()
+    public void AssignLowestPossibleValue(int minValue)
     {
-        Number = Candidates.Min();
+        if (minValue <= 0)
+            Number = Candidates.Min();
+        else
+        {
+            int minPossibleCandidate = Int32.MaxValue;
+
+            foreach (int value in Candidates)
+            {
+                if (value > minValue && value < minPossibleCandidate)
+                {
+                    minPossibleCandidate = value;
+                }
+            }
+
+            Number = minPossibleCandidate;
+        }
     }
 
     public void DebugTileInfo()
