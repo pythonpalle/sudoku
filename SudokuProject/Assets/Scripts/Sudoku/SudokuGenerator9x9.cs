@@ -14,6 +14,11 @@ public class SudokuGenerator9x9
 
     public void Generate()
     {
+        CollapseWaveFunction();
+    }
+
+    private void CollapseWaveFunction()
+    {
         SudokuTile lowestEntropyTile = FindLowestEntropyTile();
         lowestEntropyTile.AssignRandomNumberFromCandidates();
         Propagate(lowestEntropyTile);
@@ -50,6 +55,29 @@ public class SudokuGenerator9x9
     
     private void Propagate(SudokuTile tile)
     {
-        throw new System.NotImplementedException();
+        int tileRow = tile.index.row;
+        int tileCol = tile.index.col;
+        int tileNumber = tile.Number;
+        
+        // propagate row, col
+        for (int i = 0; i < 9; i++)
+        {
+            grid.Tiles[i, tileCol].RemoveCandidate(tileNumber);  // propagate column
+            grid.Tiles[tileRow, i].RemoveCandidate(tileNumber);  // propagate row
+        }
+        
+        // propagate box
+        int topLeftBoxRow = tileRow - tileRow / 3;
+        int topLeftBoxCol = tileCol - tileCol / 3;
+
+        for (int deltaRow = 0; deltaRow < 3; deltaRow++)
+        {
+            for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+            {
+                grid.Tiles[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol]
+                    .RemoveCandidate(tileNumber);
+            } 
+        }
+
     }
 }

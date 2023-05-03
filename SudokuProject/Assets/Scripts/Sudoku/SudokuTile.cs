@@ -66,8 +66,8 @@ public class SudokuTile
 
     private void SetBox9x9()
     {
-        int boxRow = index.row % 3;
-        int boxCol = index.col % 3;
+        int boxRow = index.row / 3;
+        int boxCol = index.col / 3;
 
         Box = boxRow * 3 + boxCol;
     }
