@@ -11,13 +11,9 @@ public class GeneratorEditor : UnityEditor.Editor
         if (GUILayout.Button("Generate"))
         {
             ((GeneratorBehaviour) target).Generate();
-        }
-        
-        if (GUILayout.Button("Print Grid"))
-        {
             ((GeneratorBehaviour) target).PrintGrid();
         }
-        
+
         DrawDefaultInspector();
     }
 }

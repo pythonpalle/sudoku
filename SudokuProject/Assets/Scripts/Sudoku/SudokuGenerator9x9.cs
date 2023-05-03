@@ -31,7 +31,7 @@ public class SudokuGenerator9x9
         List<SudokuTile> lowestEntropyTiles = new List<SudokuTile>();
         foreach (var tile in grid.Tiles)
         {
-            if (tile.Entropy == lowestEntropy)
+            if (!tile.Used && tile.Entropy == lowestEntropy)
                 lowestEntropyTiles.Add(tile);
         }
 
@@ -46,7 +46,7 @@ public class SudokuGenerator9x9
 
         foreach (var tile in grid.Tiles)
         {
-            if (tile.Entropy < lowestValue)
+            if (!tile.Used && tile.Entropy < lowestValue)
                 lowestValue = tile.Entropy;
         }
 
@@ -67,8 +67,8 @@ public class SudokuGenerator9x9
         }
         
         // propagate box
-        int topLeftBoxRow = tileRow - tileRow / 3;
-        int topLeftBoxCol = tileCol - tileCol / 3;
+        int topLeftBoxRow = tileRow - tileRow % 3;
+        int topLeftBoxCol = tileCol - tileCol % 3;
 
         for (int deltaRow = 0; deltaRow < 3; deltaRow++)
         {

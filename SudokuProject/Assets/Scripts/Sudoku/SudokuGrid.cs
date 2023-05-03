@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SudokuGrid
@@ -46,14 +47,21 @@ public class SudokuGrid
 
     public void PrintGrid()
     {
+        Debug.Log("Printing grid...");
+        
         for (int col = 0; col < size; col++)
         {
-            Console.WriteLine();
+            string rowString = String.Empty;
+            
+            if (col % 3 == 0) Debug.Log("------------------------");
 
             for (int row = 0; row < size; row++)
             {
-                Console.Write(Tiles[row,col].Number + " ");
+                if (row % 3 == 0) rowString += " | ";
+                rowString += Tiles[row, col].Number + "       ";
             }
+            
+            Debug.Log(rowString);
         }
     }
 }
