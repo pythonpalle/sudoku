@@ -39,7 +39,7 @@ public class SudokuTile
     public HashSet<int> Candidates
     {
         get;
-        set;
+        private set;
     }
 
     public int Entropy => Candidates.Count;
