@@ -88,9 +88,9 @@ public class SudokuTile
         Candidates.Add(number);
     }
 
-    public void AssignRandomNumberFromCandidates()
+    public void AssignLowestPossibleValue()
     {
-        Number = Candidates.ElementAt(random.Next(Candidates.Count));
+        Number = Candidates.Min();
     }
 
     public void DebugTileInfo()

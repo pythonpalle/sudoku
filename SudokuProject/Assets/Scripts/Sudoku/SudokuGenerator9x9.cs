@@ -1,27 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SudokuGenerator9x9
 {
     private SudokuGrid9x9 grid;
     private System.Random random = new System.Random();
+    private Stack<Move> moves;
 
     public SudokuGenerator9x9(SudokuGrid9x9 grid)
     {
         this.grid = grid;
+        moves = new Stack<Move>();
     }
 
     public void Generate()
     {
-        CollapseWaveFunction();
+        HandleNextGenerationStep();
     }
 
-    private void CollapseWaveFunction()
+    private void HandleNextGenerationStep()
     {
         SudokuTile lowestEntropyTile = FindLowestEntropyTile();
-        lowestEntropyTile.AssignRandomNumberFromCandidates();
+
+        if (lowestEntropyTile.Entropy <= 0)
+        {
+            Debug.Log($"Zero entropy tile at ({lowestEntropyTile.index.row},{lowestEntropyTile.index.col}");
+            HandleBackTracking();
+        }
+        else
+        {
+            CollapseWaveFunction(lowestEntropyTile);
+        }
+    }
+
+    private void HandleBackTracking()
+    {
+        do
+        {
+            Move lastMove = moves.Pop();
+            
+        } 
+        while (FindLowestEntropy() < 2);
+    }
+
+    private void CollapseWaveFunction(SudokuTile lowestEntropyTile)
+    {
+        lowestEntropyTile.AssignLowestPossibleValue();
         Propagate(lowestEntropyTile);
+        moves.Append(new Move(lowestEntropyTile, lowestEntropyTile.Number));
     }
 
     private SudokuTile FindLowestEntropyTile()
@@ -78,6 +106,7 @@ public class SudokuGenerator9x9
                     .RemoveCandidate(tileNumber);
             } 
         }
+        
 
     }
 }
