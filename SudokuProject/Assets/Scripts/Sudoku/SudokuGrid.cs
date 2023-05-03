@@ -7,7 +7,7 @@ public class SudokuGrid
 {
     protected int size;
     
-    public Tile[,] Tiles
+    public SudokuTile[,] Tiles
     {
         get;
         set;
@@ -17,7 +17,7 @@ public class SudokuGrid
     {
         this.size = size;
         
-        Tiles = new Tile[size,size];
+        Tiles = new SudokuTile[size,size];
         SetupTiles();
     }
 
@@ -27,11 +27,24 @@ public class SudokuGrid
         {
             for (int row = 0; row < size; row++)
             {
-                Tiles[row, col] = new Tile( new HashSet<int>(), 0, size);
+                Tiles[row, col] = new SudokuTile( new HashSet<int>(), 0, size);
                 for (int i = 1; i < size; i++)
                 {
                     Tiles[row, col].AddCandidate(i);
                 }
+            }
+        }
+    }
+
+    public void PrintGrid()
+    {
+        for (int col = 0; col < size; col++)
+        {
+            Console.WriteLine();
+
+            for (int row = 0; row < size; row++)
+            {
+                Console.Write(Tiles[row,col].Number + " ");
             }
         }
     }

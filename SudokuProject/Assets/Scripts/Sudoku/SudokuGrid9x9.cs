@@ -10,7 +10,7 @@ public class SudokuGrid9x9 : SudokuGrid
         {
             for (int row = 0; row < size; row++)
             {
-                Tiles[row, col] = new Tile();
+                Tiles[row, col] = new SudokuTile();
             }
         }
     }

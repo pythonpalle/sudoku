@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tile
+public class SudokuTile
 {
     private int highestNumber { get; set; }
 
@@ -30,6 +30,8 @@ public class Tile
         set;
     }
 
+    public int Entropy => Candidates.Count;
+
     public void RemoveCandidate(int number)
     {
         Candidates.Remove(number);
@@ -46,12 +48,12 @@ public class Tile
         Candidates.Add(number);
     }
 
-    public Tile(HashSet<int> candidates, int number = 0, int highestNumber = 9)
+    public SudokuTile(HashSet<int> candidates, int number = 0, int highestNumber = 9)
     {
         this.highestNumber = highestNumber;
         Number = number;
         Candidates = candidates;
     }
 
-    public Tile() : this(new HashSet<int> {1, 2, 3, 4, 5, 6, 7, 8, 9}) {}
+    public SudokuTile() : this(new HashSet<int> {1, 2, 3, 4, 5, 6, 7, 8, 9}) {}
 }
