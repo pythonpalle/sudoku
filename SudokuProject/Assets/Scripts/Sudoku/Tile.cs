@@ -40,18 +40,12 @@ public class Tile
         if (number > highestNumber)
         {
             throw new ArgumentOutOfRangeException(nameof(number),
-                "The valid range is between 1 and 9.");
+                $"The valid range is between 1 and {highestNumber}.");
         }
         
         Candidates.Add(number);
     }
-    
-    
-    public void DebugInfo()
-    {
-        Debug.Log($"Number: {Number}");
-    }
-    
+
     public Tile(HashSet<int> candidates, int number = 0, int highestNumber = 9)
     {
         this.highestNumber = highestNumber;
