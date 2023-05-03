@@ -13,7 +13,8 @@ public struct TileIndex
 public class SudokuTile
 {
     public TileIndex index;
-    
+    public int Box { get; private set; }
+
     private System.Random random = new System.Random();
 
     private int highestNumber { get; set; }
@@ -42,7 +43,34 @@ public class SudokuTile
         private set;
     }
 
+    public bool Used => number > 0;
+
     public int Entropy => Candidates.Count;
+    
+    public SudokuTile(int row, int col, int number = 0, int highestNumber = 9)
+    {
+        index.row = row;
+        index.col = col;
+
+        Candidates = new HashSet<int>();
+        for (int i = 1; i <= highestNumber; i++)
+        {
+            Candidates.Add(i);
+        }
+        
+        this.highestNumber = highestNumber;
+        Number = number;
+
+        SetBox9x9();
+    }
+
+    private void SetBox9x9()
+    {
+        int boxRow = index.row % 3;
+        int boxCol = index.col % 3;
+
+        Box = boxRow * 3 + boxCol;
+    }
 
     public void RemoveCandidate(int number)
     {
@@ -60,23 +88,16 @@ public class SudokuTile
         Candidates.Add(number);
     }
 
-    public SudokuTile(int row, int col, int number = 0, int highestNumber = 9)
-    {
-        index.row = row;
-        index.col = col;
-
-        Candidates = new HashSet<int>();
-        for (int i = 1; i <= highestNumber; i++)
-        {
-            Candidates.Add(i);
-        }
-        
-        this.highestNumber = highestNumber;
-        Number = number;
-    }
-    
     public void AssignRandomNumberFromCandidates()
     {
         Number = Candidates.ElementAt(random.Next(Candidates.Count));
+    }
+
+    public void DebugTileInfo()
+    {
+        Debug.Log($"Index: {index.row}, {index.col}");
+        Debug.Log($"Number: {Number}");
+        Debug.Log($"Box: {Box}");
+        Debug.Log($"Entropy: {Entropy}");
     }
 }
