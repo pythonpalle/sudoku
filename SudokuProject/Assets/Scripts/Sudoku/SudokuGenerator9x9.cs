@@ -9,6 +9,8 @@ public class SudokuGenerator9x9
     private System.Random random = new System.Random();
     private Stack<Move> moves;
 
+    public bool GenerationCompleted => moves.Count >= 81;
+
     public SudokuGenerator9x9(SudokuGrid9x9 grid)
     {
         this.grid = grid;
@@ -31,6 +33,7 @@ public class SudokuGenerator9x9
         }
         else
         {
+            lowestEntropyTile.AssignLowestPossibleValue(0);
             CollapseWaveFunction(lowestEntropyTile, 0);
         }
     }
@@ -38,6 +41,7 @@ public class SudokuGenerator9x9
     private void HandleBackTracking()
     {
         int lastEntropy;
+        Move moveToChange;
         
         do
         {
@@ -45,31 +49,42 @@ public class SudokuGenerator9x9
             
             Debug.Log($"Backtracking, removing {lastMove.Number} " +
                       $"from ({lastMove.Tile.index.row}), ({lastMove.Tile.index.col})");
-            
             lastMove.Tile.Number = 0;
             lastMove.Tile.AddCandidate(lastMove.Number);
-            Propagate(lastMove.Tile.Number, lastMove.EffectedTiles, false);
+            Propagate(lastMove.Number, lastMove.EffectedTiles, false);
 
-            lastEntropy = moves.Peek().Tile.Entropy;
+            //lastEntropy = moves.Peek().Tile.Entropy;
+            lastEntropy = lastMove.Tile.Entropy;
+            moveToChange = lastMove;
+            grid.PrintGrid();
         } 
         while (lastEntropy < 2);
+
+        // Final undo
+        // Move moveToChange = moves.Pop();
+        //
+        // Debug.Log($"Last backtrack, removing {moveToChange.Number} " +
+        //           $"from ({moveToChange.Tile.index.row}), ({moveToChange.Tile.index.col})");
+        // moveToChange.Tile.Number = 0;
+        // moveToChange.Tile.AddCandidate(moveToChange.Number);
+        // Propagate(moveToChange.Tile.Number, moveToChange.EffectedTiles, false);
+        // grid.PrintGrid();
+
+        if (moveToChange.Tile.AssignLowestPossibleValue(moveToChange.Number))
+        {
+            CollapseWaveFunction(moveToChange.Tile, moveToChange.Number);
+            grid.PrintGrid();
+        }
+        else
+        {
+            HandleBackTracking();
+        }
         
-        //TODO:
-        // backa tills hittat en tile med entropi 2 eller högre.
-        // kolla om den kan vara en siffra som är högre en siffran den var tidigare.
-        // Om den kan vara det : OK!
-        // om inte, fortsätt while-loopen till nästa move
-        
-        Move moveToChange = moves.Pop();
-        moveToChange.Tile.Number = 0;
-        moveToChange.Tile.AddCandidate(moveToChange.Number);
-        Propagate(moveToChange.Tile.Number, moveToChange.EffectedTiles, false);
-        CollapseWaveFunction(moveToChange.Tile, moveToChange.Number);
     }
 
     private void CollapseWaveFunction(SudokuTile placeTile, int minValue)
     {
-        placeTile.AssignLowestPossibleValue(minValue);
+        // placeTile.AssignLowestPossibleValue(minValue);
         List<SudokuTile> effectedTiles = FindEffectedTiles(placeTile);
         Propagate(placeTile.Number, effectedTiles);
         moves.Push(new Move(placeTile, placeTile.Number, effectedTiles));
@@ -77,6 +92,8 @@ public class SudokuGenerator9x9
 
     private List<SudokuTile> FindEffectedTiles(SudokuTile tile)
     {
+        //TODO: ta bara hänsyn till Tiles som fortfarande har den kandidaten
+        
         int tileRow = tile.index.row;
         int tileCol = tile.index.col;
 

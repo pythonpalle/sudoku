@@ -88,10 +88,13 @@ public class SudokuTile
         Candidates.Add(number);
     }
 
-    public void AssignLowestPossibleValue(int minValue)
+    public bool AssignLowestPossibleValue(int minValue)
     {
         if (minValue <= 0)
+        {
             Number = Candidates.Min();
+            return true;
+        }
         else
         {
             int minPossibleCandidate = Int32.MaxValue;
@@ -104,7 +107,14 @@ public class SudokuTile
                 }
             }
 
+            if (minPossibleCandidate > highestNumber)
+            {
+                Debug.LogWarning("Cannot assign value to Tile");
+                return false;
+            }
+
             Number = minPossibleCandidate;
+            return true;
         }
     }
 

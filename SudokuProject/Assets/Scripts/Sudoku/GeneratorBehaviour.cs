@@ -13,12 +13,30 @@ public class GeneratorBehaviour : MonoBehaviour
         generator = new SudokuGenerator9x9(grid);
     }
 
-    public void Generate()
+    public void GenerateFullGrid()
+    {
+        int iterations = 0;
+        while (!generator.GenerationCompleted)
+        {
+            Generate();
+            PrintGrid();
+
+            iterations++;
+
+            if (iterations > 100)
+            {
+                Debug.LogError("Maximum iterations reached, couldn't generate grid.");
+                break;
+            }
+        }
+    }
+
+    private void Generate()
     {
         generator.Generate();
     }
 
-    public void PrintGrid()
+    private void PrintGrid()
     {
         grid.PrintGrid();
     }

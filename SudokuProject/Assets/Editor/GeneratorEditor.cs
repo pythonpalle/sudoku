@@ -10,8 +10,7 @@ public class GeneratorEditor : UnityEditor.Editor
     {
         if (GUILayout.Button("Generate"))
         {
-            ((GeneratorBehaviour) target).Generate();
-            ((GeneratorBehaviour) target).PrintGrid();
+            ((GeneratorBehaviour) target).GenerateFullGrid();
         }
 
         DrawDefaultInspector();
