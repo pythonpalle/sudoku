@@ -7,14 +7,35 @@ public class SudokuGenerator9x9
 {
     private SudokuGrid9x9 grid;
     private System.Random random = new System.Random();
-    private Stack<Move> moves;
+    private Stack<SudokuGrid9x9> gridStates;
 
-    public bool GenerationCompleted => moves.Count >= 81;
+    public bool GenerationCompleted => gridStates.Count >= 81;
 
     public SudokuGenerator9x9(SudokuGrid9x9 grid)
     {
         this.grid = grid;
-        moves = new Stack<Move>();
+        gridStates = new Stack<SudokuGrid9x9>();
+        AddGridState();
+    }
+
+    private void AddGridState()
+    {
+        //TODO:Make deep copy of state
+        
+        SudokuGrid9x9 state = new SudokuGrid9x9();
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                SudokuTile stateTile = state.Tiles[row, col];
+                SudokuTile gridTile = state.Tiles[row, col];
+
+                //stateTile.Candidates = new HashSet<int>(gridTile.Candidates);
+                stateTile.Number = gridTile.Number;
+
+            }
+        }
+        gridStates.Push(state);
     }
 
     public void Generate()
@@ -45,7 +66,7 @@ public class SudokuGenerator9x9
         
         do
         {
-            Move lastMove = moves.Pop();
+            Move lastMove = gridStates.Pop();
             
             Debug.Log($"Backtracking, removing {lastMove.Number} " +
                       $"from ({lastMove.Tile.index.row}), ({lastMove.Tile.index.col})");
@@ -87,7 +108,7 @@ public class SudokuGenerator9x9
         // placeTile.AssignLowestPossibleValue(minValue);
         List<SudokuTile> effectedTiles = FindEffectedTiles(placeTile);
         Propagate(placeTile.Number, effectedTiles);
-        moves.Push(new Move(placeTile, placeTile.Number, effectedTiles));
+        gridStates.Push(new Move(placeTile, placeTile.Number, effectedTiles));
     }
 
     private List<SudokuTile> FindEffectedTiles(SudokuTile tile)

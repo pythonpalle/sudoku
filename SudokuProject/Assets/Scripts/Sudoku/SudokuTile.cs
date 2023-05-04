@@ -14,9 +14,7 @@ public class SudokuTile
 {
     public TileIndex index;
     public int Box { get; private set; }
-
-    private System.Random random = new System.Random();
-
+    
     private int highestNumber { get; set; }
 
     private int number;
