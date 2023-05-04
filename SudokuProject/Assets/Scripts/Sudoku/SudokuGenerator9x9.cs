@@ -7,14 +7,14 @@ public class SudokuGenerator9x9
 {
     private SudokuGrid9x9 grid;
     private System.Random random = new System.Random();
-    private Stack<SudokuGrid9x9> gridStates;
+    private Stack<Move> gridStates;
 
     public bool GenerationCompleted => gridStates.Count >= 81;
 
     public SudokuGenerator9x9(SudokuGrid9x9 grid)
     {
         this.grid = grid;
-        gridStates = new Stack<SudokuGrid9x9>();
+        gridStates = new Stack<Move>();
         AddGridState();
     }
 
@@ -35,7 +35,7 @@ public class SudokuGenerator9x9
 
             }
         }
-        gridStates.Push(state);
+        //gridStates.Push(state);
     }
 
     public void Generate()
