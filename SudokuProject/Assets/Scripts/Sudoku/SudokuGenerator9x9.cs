@@ -24,6 +24,10 @@ public class SudokuGenerator9x9
     public void Generate(bool makeSymmetricCollapse = false)
     {
         bool completeGridCreated = TryCreateCompleteGrid(makeSymmetricCollapse);
+        foreach (var tile in grid.Tiles)
+        {
+            tile.DebugTileInfo();
+        }
         
         
     }
