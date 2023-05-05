@@ -38,12 +38,12 @@ public class SudokuGenerator9x9
         //gridStates.Push(state);
     }
 
-    public void Generate()
+    public void Generate(bool makeSymmetric = false)
     {
-        HandleNextGenerationStep();
+        HandleNextGenerationStep(makeSymmetric);
     }
 
-    private void HandleNextGenerationStep()
+    private void HandleNextGenerationStep(bool makeSymmetric)
     {
         SudokuTile lowestEntropyTile = FindLowestEntropyTile();
 
@@ -56,12 +56,12 @@ public class SudokuGenerator9x9
         {
             if (lowestEntropyTile.AssignLowestPossibleValue(0))
             {
-                CollapseWaveFunction(lowestEntropyTile);
+                CollapseWaveFunction(lowestEntropyTile, makeSymmetric);
             }
         }
     }
 
-    private void HandleBackTracking(bool secondPair = false)
+    private void HandleBackTracking(bool makeSymmetric = false, bool secondPair = false)
     {
         int lastEntropy;
         Move moveToChange;
@@ -85,9 +85,10 @@ public class SudokuGenerator9x9
             backtracks++;
 
             backTrackedSymmetricNeighbours =
+                makeSymmetric &&(
                 backtracks % 2 == 0 ||
                 (lastMove.Tile.index.row == 4 &&
-                 lastMove.Tile.index.col == 4);
+                 lastMove.Tile.index.col == 4));
         } 
         while (lastEntropy < 2 && backTrackedSymmetricNeighbours);
 
@@ -99,7 +100,7 @@ public class SudokuGenerator9x9
         }
         else
         {
-            HandleBackTracking(true);
+            HandleBackTracking(makeSymmetric, true);
         }
         
     }

@@ -8,6 +8,7 @@ public class GeneratorBehaviour : MonoBehaviour
     private SudokuGenerator9x9 generator;
 
     private const int GENERATION_ITERATION_LIMIT = 250;
+    [SerializeField] private bool makeSymmetric;
     
     void Start()
     {
@@ -37,7 +38,7 @@ public class GeneratorBehaviour : MonoBehaviour
 
     private void Generate()
     {
-        generator.Generate();
+        generator.Generate(makeSymmetric);
     }
 
     private void PrintGrid()
