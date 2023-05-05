@@ -55,7 +55,7 @@ public class SudokuGenerator9x9
         else
         {
             lowestEntropyTile.AssignLowestPossibleValue(0);
-            CollapseWaveFunction(lowestEntropyTile, 0);
+            CollapseWaveFunction(lowestEntropyTile);
         }
     }
 
@@ -74,26 +74,16 @@ public class SudokuGenerator9x9
             lastMove.Tile.AddCandidate(lastMove.Number);
             Propagate(lastMove.Number, lastMove.EffectedTiles, false);
 
-            //lastEntropy = moves.Peek().Tile.Entropy;
             lastEntropy = lastMove.Tile.Entropy;
             moveToChange = lastMove;
             grid.PrintGrid();
         } 
         while (lastEntropy < 2);
 
-        // Final undo
-        // Move moveToChange = moves.Pop();
-        //
-        // Debug.Log($"Last backtrack, removing {moveToChange.Number} " +
-        //           $"from ({moveToChange.Tile.index.row}), ({moveToChange.Tile.index.col})");
-        // moveToChange.Tile.Number = 0;
-        // moveToChange.Tile.AddCandidate(moveToChange.Number);
-        // Propagate(moveToChange.Tile.Number, moveToChange.EffectedTiles, false);
-        // grid.PrintGrid();
-
         if (moveToChange.Tile.AssignLowestPossibleValue(moveToChange.Number))
         {
-            CollapseWaveFunction(moveToChange.Tile, moveToChange.Number);
+            Debug.Log($"...and replace it with a {moveToChange.Tile.Number}.");
+            CollapseWaveFunction(moveToChange.Tile);
             grid.PrintGrid();
         }
         else
@@ -103,7 +93,7 @@ public class SudokuGenerator9x9
         
     }
 
-    private void CollapseWaveFunction(SudokuTile placeTile, int minValue)
+    private void CollapseWaveFunction(SudokuTile placeTile)
     {
         // placeTile.AssignLowestPossibleValue(minValue);
         List<SudokuTile> effectedTiles = FindEffectedTiles(placeTile);
