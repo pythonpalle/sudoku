@@ -54,15 +54,20 @@ public class SudokuGenerator9x9
         }
         else
         {
-            lowestEntropyTile.AssignLowestPossibleValue(0);
-            CollapseWaveFunction(lowestEntropyTile);
+            if (lowestEntropyTile.AssignLowestPossibleValue(0))
+            {
+                CollapseWaveFunction(lowestEntropyTile);
+            }
         }
     }
 
-    private void HandleBackTracking()
+    private void HandleBackTracking(bool secondPair = false)
     {
         int lastEntropy;
         Move moveToChange;
+        int backtracks = 0;
+        if (secondPair) backtracks++;
+        bool backTrackedSymmetricNeighbours = false;
         
         do
         {
@@ -77,30 +82,63 @@ public class SudokuGenerator9x9
             lastEntropy = lastMove.Tile.Entropy;
             moveToChange = lastMove;
             grid.PrintGrid();
+            backtracks++;
+
+            backTrackedSymmetricNeighbours =
+                backtracks % 2 == 0 ||
+                (lastMove.Tile.index.row == 4 &&
+                 lastMove.Tile.index.col == 4);
         } 
-        while (lastEntropy < 2);
+        while (lastEntropy < 2 && backTrackedSymmetricNeighbours);
 
         if (moveToChange.Tile.AssignLowestPossibleValue(moveToChange.Number))
         {
             Debug.Log($"...and replace it with a {moveToChange.Tile.Number}.");
-            CollapseWaveFunction(moveToChange.Tile);
+            CollapseWaveFunction(moveToChange.Tile, false);
             grid.PrintGrid();
         }
         else
         {
-            HandleBackTracking();
+            HandleBackTracking(true);
         }
         
     }
 
-    private void CollapseWaveFunction(SudokuTile placeTile)
+    private void CollapseWaveFunction(SudokuTile placeTile, bool includeSecondPair = true)
     {
-        // placeTile.AssignLowestPossibleValue(minValue);
         List<SudokuTile> effectedTiles = FindEffectedTiles(placeTile);
         effectedTiles = RemoveTilesWithMissingCandidate(effectedTiles, placeTile);
 
         Propagate(placeTile.Number, effectedTiles);
         moves.Push(new Move(placeTile, placeTile.Number, effectedTiles));
+
+        if (!includeSecondPair) return;
+
+        int symmetricRow = 8 - placeTile.index.row;
+        int symmetricCol = 8 - placeTile.index.col;
+        
+        // middle tile has no symmetric neighbour
+        if (symmetricRow == 4 && symmetricCol == 4)
+        {
+            Debug.Log("Middle Tile placed!");
+            return;
+        }
+        
+        SudokuTile symmetricNeighbourTile = grid.Tiles[symmetricRow, symmetricCol];
+        if (symmetricNeighbourTile.AssignLowestPossibleValue(0))
+        {
+            List<SudokuTile> symmetricNeighbourEffectedTiles = FindEffectedTiles(symmetricNeighbourTile);
+            symmetricNeighbourEffectedTiles = RemoveTilesWithMissingCandidate(symmetricNeighbourEffectedTiles, symmetricNeighbourTile);
+
+            Propagate(symmetricNeighbourTile.Number, symmetricNeighbourEffectedTiles);
+            moves.Push(new Move(symmetricNeighbourTile, symmetricNeighbourTile.Number, symmetricNeighbourEffectedTiles));
+        }
+        else
+        {
+            HandleBackTracking(false);
+        }
+
+        
     }
 
     private List<SudokuTile> RemoveTilesWithMissingCandidate(List<SudokuTile> effectedTiles, SudokuTile placeTile)

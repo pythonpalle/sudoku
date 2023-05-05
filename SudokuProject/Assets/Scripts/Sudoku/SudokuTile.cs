@@ -88,6 +88,12 @@ public class SudokuTile
 
     public bool AssignLowestPossibleValue(int minValue)
     {
+        if (Candidates.Count <= 0)
+        {
+            Debug.LogWarning("Cannot assign value to Tile, has zero entropy");
+            return false;
+        }
+        
         if (minValue <= 0)
         {
             Number = Candidates.Min();
@@ -107,7 +113,7 @@ public class SudokuTile
 
             if (minPossibleCandidate > highestNumber)
             {
-                Debug.LogWarning("Cannot assign value to Tile");
+                Debug.LogWarning("Cannot assign value to Tile, tried all options.");
                 return false;
             }
 

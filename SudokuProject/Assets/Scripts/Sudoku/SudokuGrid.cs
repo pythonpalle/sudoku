@@ -53,6 +53,7 @@ public class SudokuGrid
         {
             string rowString = String.Empty;
             
+            // box separator
             if (col % 3 == 0) gridString +=("-     -     -     -     -     -     -     -     -     -     -     -     -     -" + Environment.NewLine);
 
             for (int row = 0; row < size; row++)
