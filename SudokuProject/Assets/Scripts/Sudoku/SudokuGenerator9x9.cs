@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class SudokuGenerator9x9
 {
+    private const int GENERATION_ITERATION_LIMIT = 250;
+
     private SudokuGrid9x9 grid;
     private System.Random random = new System.Random();
     private Stack<Move> moves;
@@ -15,32 +17,35 @@ public class SudokuGenerator9x9
     {
         this.grid = grid;
         moves = new Stack<Move>();
-        //AddGridState();
     }
 
-    private void AddGridState()
+    public SudokuGenerator9x9() : this(new SudokuGrid9x9()) { }
+
+    public void Generate(bool makeSymmetricCollapse = false)
     {
-        //TODO:Make deep copy of state
+        bool completeGridCreated = TryCreateCompleteGrid(makeSymmetricCollapse);
         
-        SudokuGrid9x9 state = new SudokuGrid9x9();
-        for (int row = 0; row < 9; row++)
+        
+    }
+
+    private bool TryCreateCompleteGrid(bool makeSymmetric = false)
+    {
+        int iterations = 0;
+        while (!GenerationCompleted)
         {
-            for (int col = 0; col < 9; col++)
+            HandleNextGenerationStep(makeSymmetric);
+            grid.PrintGrid();
+
+            iterations++;
+
+            if (iterations >= GENERATION_ITERATION_LIMIT)
             {
-                SudokuTile stateTile = state.Tiles[row, col];
-                SudokuTile gridTile = state.Tiles[row, col];
-
-                //stateTile.Candidates = new HashSet<int>(gridTile.Candidates);
-                stateTile.Number = gridTile.Number;
-
+                Debug.LogError("Maximum iterations reached, couldn't generate grid.");
+                return false;
             }
         }
-        //gridStates.Push(state);
-    }
 
-    public void Generate(bool makeSymmetric = false)
-    {
-        HandleNextGenerationStep(makeSymmetric);
+        return true;
     }
 
     private void HandleNextGenerationStep(bool makeSymmetric)
@@ -138,8 +143,6 @@ public class SudokuGenerator9x9
         {
             HandleBackTracking(false);
         }
-
-        
     }
 
     private List<SudokuTile> RemoveTilesWithMissingCandidate(List<SudokuTile> effectedTiles, SudokuTile placeTile)
