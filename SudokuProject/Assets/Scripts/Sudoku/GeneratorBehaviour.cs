@@ -6,6 +6,8 @@ public class GeneratorBehaviour : MonoBehaviour
 {
     private SudokuGrid9x9 grid;
     private SudokuGenerator9x9 generator;
+
+    private const int GENERATION_ITERATION_LIMIT = 250;
     
     void Start()
     {
@@ -25,7 +27,7 @@ public class GeneratorBehaviour : MonoBehaviour
 
             iterations++;
 
-            if (iterations > 200)
+            if (iterations >= GENERATION_ITERATION_LIMIT)
             {
                 Debug.LogError("Maximum iterations reached, couldn't generate grid.");
                 break;
