@@ -15,6 +15,8 @@ public class GeneratorBehaviour : MonoBehaviour
 
     public void GenerateFullGrid()
     {
+        Start();
+        
         int iterations = 0;
         while (!generator.GenerationCompleted)
         {
@@ -23,7 +25,7 @@ public class GeneratorBehaviour : MonoBehaviour
 
             iterations++;
 
-            if (iterations > 100)
+            if (iterations > 200)
             {
                 Debug.LogError("Maximum iterations reached, couldn't generate grid.");
                 break;

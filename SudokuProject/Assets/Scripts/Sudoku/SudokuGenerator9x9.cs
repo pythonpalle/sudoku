@@ -7,15 +7,15 @@ public class SudokuGenerator9x9
 {
     private SudokuGrid9x9 grid;
     private System.Random random = new System.Random();
-    private Stack<Move> gridStates;
+    private Stack<Move> moves;
 
-    public bool GenerationCompleted => gridStates.Count >= 81;
+    public bool GenerationCompleted => moves.Count >= 81;
 
     public SudokuGenerator9x9(SudokuGrid9x9 grid)
     {
         this.grid = grid;
-        gridStates = new Stack<Move>();
-        AddGridState();
+        moves = new Stack<Move>();
+        //AddGridState();
     }
 
     private void AddGridState()
@@ -49,7 +49,7 @@ public class SudokuGenerator9x9
 
         if (lowestEntropyTile.Entropy <= 0)
         {
-            Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTile.index.row},{lowestEntropyTile.index.col}");
+            Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTile.index.row},{lowestEntropyTile.index.col})");
             HandleBackTracking();
         }
         else
@@ -66,7 +66,7 @@ public class SudokuGenerator9x9
         
         do
         {
-            Move lastMove = gridStates.Pop();
+            Move lastMove = moves.Pop();
             
             Debug.Log($"Backtracking, removing {lastMove.Number} " +
                       $"from ({lastMove.Tile.index.row}), ({lastMove.Tile.index.col})");
@@ -107,8 +107,24 @@ public class SudokuGenerator9x9
     {
         // placeTile.AssignLowestPossibleValue(minValue);
         List<SudokuTile> effectedTiles = FindEffectedTiles(placeTile);
+        effectedTiles = RemoveTilesWithMissingCandidate(effectedTiles, placeTile);
+
         Propagate(placeTile.Number, effectedTiles);
-        gridStates.Push(new Move(placeTile, placeTile.Number, effectedTiles));
+        moves.Push(new Move(placeTile, placeTile.Number, effectedTiles));
+    }
+
+    private List<SudokuTile> RemoveTilesWithMissingCandidate(List<SudokuTile> effectedTiles, SudokuTile placeTile)
+    {
+        List<SudokuTile> filteredTiles = new List<SudokuTile>();
+        int number = placeTile.Number;
+
+        foreach (var tile in effectedTiles)
+        {
+            if (tile.Candidates.Contains(number))
+                filteredTiles.Add(tile);
+        }
+
+        return filteredTiles;
     }
 
     private List<SudokuTile> FindEffectedTiles(SudokuTile tile)
