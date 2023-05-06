@@ -41,6 +41,12 @@ public class SudokuTile
         private set;
     }
 
+    public Dictionary<int, int> Strikes
+    {
+        get;
+        private set;
+    }
+
     public bool Used => number > 0;
 
     public int Entropy => Candidates.Count;
@@ -50,10 +56,12 @@ public class SudokuTile
         index.row = row;
         index.col = col;
 
-        Candidates = new HashSet<int>();
+        Candidates = new HashSet<int>(highestNumber);
+        Strikes = new Dictionary<int, int>(highestNumber);
         for (int i = 1; i <= highestNumber; i++)
         {
             Candidates.Add(i);
+            Strikes.Add(i, 3);
         }
         
         this.highestNumber = highestNumber;
@@ -121,6 +129,21 @@ public class SudokuTile
             return true;
         }
     }
+    
+    public void AddStrike(int number)
+    {
+        Strikes[number]--;
+        if (Strikes[number] <= 0)
+        {
+            //Debug.Log($"Three strikes, Add candidate {number} to ({index.row},{index.col})");
+            AddCandidate(number);
+        }
+    }
+    
+    public void ResetStrikes(int tileNumber)
+    {
+        Strikes[tileNumber] = 3;
+    }
 
     public void DebugTileInfo()
     {
@@ -129,4 +152,7 @@ public class SudokuTile
         Debug.Log($"Box: {Box}");
         Debug.Log($"Entropy: {Entropy}");
     }
+
+
+    
 }

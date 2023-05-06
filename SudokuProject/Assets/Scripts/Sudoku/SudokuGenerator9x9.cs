@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,9 +46,11 @@ public class SudokuGenerator9x9
         while (!AllTilesVisited(visitedTiles))
         {
             //  1. Find lowest entropy tile
-            //var lowestEntropyTile = FindHighestEntropyTile(visitedTiles);
+            //var highestEntropyTile = FindHighestEntropyTile(visitedTiles);
+            //Debug.Log("Highest entropy: " + highestEntropyTile.Entropy);
+
             var lowestEntropyTile = FindLowestEntropyTile(visitedTiles);
-            Debug.Log("Lowest entropy: " + lowestEntropyTile.Entropy);
+             Debug.Log("Lowest entropy: " + lowestEntropyTile.Entropy);
             
             //  2. Remove it from grid, propagate
             RemoveFromGrid(visitedTiles, lowestEntropyTile);
@@ -100,8 +103,9 @@ public class SudokuGenerator9x9
         int tileNumber = tile.Number;
         tile.Number = 0;
         tile.AddCandidate(tileNumber);
-       // var effectedTiles = GetEffectedTilesFromRemovalOf(tile);
-       var effectedTiles = new List<SudokuTile>();
+        var effectedTiles = FindEffectedTiles(tile);
+        AddStrikes(tileNumber, effectedTiles);
+        tile.ResetStrikes(tileNumber);
 
         int row = tile.index.row;
         int col = tile.index.col;
@@ -110,62 +114,14 @@ public class SudokuGenerator9x9
         puzzleGridRemovalMoves.Push(new Move(tile, tileNumber, effectedTiles));
     }
 
-    private List<SudokuTile> GetEffectedTilesFromRemovalOf(SudokuTile tile)
+    private void AddStrikes(int number, List<SudokuTile> effectedTiles)
     {
-        List<SudokuTile> effectedTiles = new List<SudokuTile>();
-
-        int tileRow = tile.index.row;
-        int tileCol = tile.index.col;
-
-        int boxRow = tileRow % 3;
-        int boxCol = tileRow % 3;
-        
-        int topLeftBoxRow = tileRow - boxRow;
-        int topLeftBoxCol = tileCol - boxCol;
-
-        GetOtherRowsInBox(boxRow, out int row1, out int row2);
-        GetOtherRowsInBox(boxCol, out int col1, out int col2);
-
-        HashSet<int> rows = new HashSet<int> {1,2,3,4,5,6,7,8,9};
-        HashSet<int> cols = new HashSet<int> {1,2,3,4,5,6,7,8,9};
-        
-        HashSet<int> rowsInBox = new HashSet<int> {topLeftBoxRow, topLeftBoxRow+1, topLeftBoxRow+2};
-        HashSet<int> colsInBox = new HashSet<int> {topLeftBoxCol, topLeftBoxCol+1, topLeftBoxCol+2};
-
-        rows.IntersectWith(rowsInBox);
-        cols.IntersectWith(colsInBox);
-
-        int number = tile.Number;
-        bool numberInRow1  = false;
-        bool numberInRow2  = false;
-        bool numberInCol1  = false;
-        bool numberInCol2 = false;
-        
-        foreach (int row in rows)
+        foreach (var tile in effectedTiles)
         {
-            if (grid.Tiles[row, col1].Number == number)
-                numberInCol1 = true;
-            
-            if (grid.Tiles[row, col2].Number == number)
-                numberInCol2 = true;
+            tile.AddStrike(number);
         }
-        
-        foreach (int col in cols)
-        {
-            if (grid.Tiles[row1, col].Number == number)
-                numberInRow1 = true;
-            
-            if (grid.Tiles[row2, col].Number == number)
-                numberInRow2 = true;
-        }
-
-        if (numberInCol1)
-        {
-            
-        }
-
-        return null;
     }
+
 
     private void GetOtherRowsInBox(int boxRow, out int row1, out int row2)
     {
@@ -338,8 +294,11 @@ public class SudokuGenerator9x9
         // Tiles in same row or column
         for (int i = 0; i < 9; i++)
         {
-            effectedTiles.Add(grid.Tiles[i, tileCol]);
-            effectedTiles.Add(grid.Tiles[tileRow, i]);
+            var rowTile = grid.Tiles[i, tileCol];
+            var colTile = grid.Tiles[tileRow, i];
+            
+            if (rowTile != tile) effectedTiles.Add(rowTile);
+            if (colTile != tile) effectedTiles.Add(colTile);
         }
         
         // Tiles in same box
@@ -350,7 +309,10 @@ public class SudokuGenerator9x9
         {
             for (int deltaCol = 0; deltaCol < 3; deltaCol++)
             {
-                effectedTiles.Add(grid.Tiles[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol]);
+                SudokuTile boxTile = grid.Tiles[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol];
+                
+                //if (!effectedTiles.Contains(boxTile))
+                    effectedTiles.Add(grid.Tiles[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol]);
             } 
         }
 
