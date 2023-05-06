@@ -6,36 +6,43 @@ using UnityEngine;
 public class SudokuGenerator9x9
 {
     private const int GENERATION_ITERATION_LIMIT = 250;
+    private System.Random random = new System.Random();
 
     private SudokuGrid9x9 grid;
-    private System.Random random = new System.Random();
-    private Stack<Move> moves;
+    
+    private Stack<Move> solvedGridMoves;
 
-    public bool GenerationCompleted => moves.Count >= 81;
+    private bool solvedGridCompleted => solvedGridMoves.Count >= 81;
 
     public SudokuGenerator9x9(SudokuGrid9x9 grid)
     {
         this.grid = grid;
-        moves = new Stack<Move>();
+        solvedGridMoves = new Stack<Move>();
     }
 
     public SudokuGenerator9x9() : this(new SudokuGrid9x9()) { }
 
     public void Generate(bool makeSymmetricCollapse = false)
     {
-        bool completeGridCreated = TryCreateCompleteGrid(makeSymmetricCollapse);
+        bool solvedGridCreated = TryCreateSolvedGrid(makeSymmetricCollapse);
         foreach (var tile in grid.Tiles)
         {
             tile.DebugTileInfo();
+        }
+
+        bool puzzleCreated = false; 
+        if (solvedGridCreated)
+        {
+            //puzzleCreated = TryCreatePuzzle();
         }
         
         
     }
 
-    private bool TryCreateCompleteGrid(bool makeSymmetric = false)
+    private bool TryCreateSolvedGrid(bool makeSymmetric = false)
     {
         int iterations = 0;
-        while (!GenerationCompleted)
+        while (!solvedGridCompleted)
         {
             HandleNextGenerationStep(makeSymmetric);
             grid.PrintGrid();
@@ -80,7 +87,7 @@ public class SudokuGenerator9x9
         
         do
         {
-            Move lastMove = moves.Pop();
+            Move lastMove = solvedGridMoves.Pop();
             
             Debug.Log($"Backtracking, removing {lastMove.Number} " +
                       $"from ({lastMove.Tile.index.row}), ({lastMove.Tile.index.col})");
@@ -120,7 +127,7 @@ public class SudokuGenerator9x9
         effectedTiles = RemoveTilesWithMissingCandidate(effectedTiles, placeTile);
 
         Propagate(placeTile.Number, effectedTiles);
-        moves.Push(new Move(placeTile, placeTile.Number, effectedTiles));
+        solvedGridMoves.Push(new Move(placeTile, placeTile.Number, effectedTiles));
 
         if (!includeSecondPair) return;
 
@@ -141,7 +148,7 @@ public class SudokuGenerator9x9
             symmetricNeighbourEffectedTiles = RemoveTilesWithMissingCandidate(symmetricNeighbourEffectedTiles, symmetricNeighbourTile);
 
             Propagate(symmetricNeighbourTile.Number, symmetricNeighbourEffectedTiles);
-            moves.Push(new Move(symmetricNeighbourTile, symmetricNeighbourTile.Number, symmetricNeighbourEffectedTiles));
+            solvedGridMoves.Push(new Move(symmetricNeighbourTile, symmetricNeighbourTile.Number, symmetricNeighbourEffectedTiles));
         }
         else
         {
