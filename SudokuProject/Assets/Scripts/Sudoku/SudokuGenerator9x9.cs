@@ -100,7 +100,8 @@ public class SudokuGenerator9x9
         int tileNumber = tile.Number;
         tile.Number = 0;
         tile.AddCandidate(tileNumber);
-        var effectedTiles = GetEffectedTilesFromRemovalOf(tile);
+       // var effectedTiles = GetEffectedTilesFromRemovalOf(tile);
+       var effectedTiles = new List<SudokuTile>();
 
         int row = tile.index.row;
         int col = tile.index.col;
