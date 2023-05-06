@@ -50,39 +50,10 @@ public class SudokuGenerator9x9
             Debug.Log("Lowest entropy: " + lowestEntropyTile.Entropy);
             
             //  2. Remove it from grid, propagate
-            int tileNumber = lowestEntropyTile.Number;
-            lowestEntropyTile.Number = 0;
-            lowestEntropyTile.RemoveCandidate(tileNumber);
-            var effectedTiles = FindEffectedTiles(lowestEntropyTile);
-            effectedTiles = RemoveTilesWithMissingCandidate(effectedTiles, lowestEntropyTile);
-            Propagate(tileNumber, effectedTiles, false);
-
-            int row = lowestEntropyTile.index.row;
-            int col = lowestEntropyTile.index.col;
-            visitedTiles[row, col] = true;
+            RemoveFromGrid(visitedTiles, lowestEntropyTile);
             
-            //  3. Add that move
-            puzzleGridRemovalMoves.Push(new Move(lowestEntropyTile, tileNumber, effectedTiles));
-
-            //  4. Find its symmetric neighbour , repeat 2-3
-            bool middleTile = row == 4 && col == 4;
-            if (!middleTile)
-            {
-                int symmetricRow = 8 - row;
-                int symmetricCol = 8 - col;
-                var symmetricTile = grid.Tiles[symmetricRow, symmetricCol];
-
-                int symmetricTileNumber = symmetricTile.Number;
-                symmetricTile.Number = 0;
-                symmetricTile.RemoveCandidate(symmetricTileNumber);
-                var effectedTilesSymmetric = FindEffectedTiles(symmetricTile);
-                effectedTilesSymmetric = RemoveTilesWithMissingCandidate(effectedTilesSymmetric, symmetricTile);
-            
-                puzzleGridRemovalMoves.Push(new Move(symmetricTile, symmetricTileNumber, effectedTilesSymmetric));
-                visitedTiles[symmetricRow, symmetricCol] = true;
-                Propagate(symmetricTileNumber, effectedTilesSymmetric, false);
-            }
-            
+            // 3. Find symmetric neighbour, remove
+            RemoveSymmetric(visitedTiles, lowestEntropyTile);
 
             grid.PrintGrid();
             counter++;
@@ -105,6 +76,117 @@ public class SudokuGenerator9x9
         //  8. if not humanly solvable, make those cells permanent
 
         return false;
+    }
+
+    private void RemoveSymmetric(bool[,] visitedTiles, SudokuTile lowestEntropyTile)
+    {
+        int row = lowestEntropyTile.index.row;
+        int col = lowestEntropyTile.index.col;
+
+        //  3. Find its symmetric neighbour , repeat 2
+        bool middleTile = row == 4 && col == 4;
+        if (!middleTile)
+        {
+            int symmetricRow = 8 - row;
+            int symmetricCol = 8 - col;
+            var symmetricTile = grid.Tiles[symmetricRow, symmetricCol];
+                
+            RemoveFromGrid(visitedTiles, symmetricTile);
+        }
+    }
+
+    private void RemoveFromGrid(bool[,] visitedTiles, SudokuTile tile)
+    {
+        int tileNumber = tile.Number;
+        tile.Number = 0;
+        tile.AddCandidate(tileNumber);
+        var effectedTiles = GetEffectedTilesFromRemovalOf(tile);
+
+        int row = tile.index.row;
+        int col = tile.index.col;
+        visitedTiles[row, col] = true;
+            
+        puzzleGridRemovalMoves.Push(new Move(tile, tileNumber, effectedTiles));
+    }
+
+    private List<SudokuTile> GetEffectedTilesFromRemovalOf(SudokuTile tile)
+    {
+        List<SudokuTile> effectedTiles = new List<SudokuTile>();
+
+        int tileRow = tile.index.row;
+        int tileCol = tile.index.col;
+
+        int boxRow = tileRow % 3;
+        int boxCol = tileRow % 3;
+        
+        int topLeftBoxRow = tileRow - boxRow;
+        int topLeftBoxCol = tileCol - boxCol;
+
+        GetOtherRowsInBox(boxRow, out int row1, out int row2);
+        GetOtherRowsInBox(boxCol, out int col1, out int col2);
+
+        HashSet<int> rows = new HashSet<int> {1,2,3,4,5,6,7,8,9};
+        HashSet<int> cols = new HashSet<int> {1,2,3,4,5,6,7,8,9};
+        
+        HashSet<int> rowsInBox = new HashSet<int> {topLeftBoxRow, topLeftBoxRow+1, topLeftBoxRow+2};
+        HashSet<int> colsInBox = new HashSet<int> {topLeftBoxCol, topLeftBoxCol+1, topLeftBoxCol+2};
+
+        rows.IntersectWith(rowsInBox);
+        cols.IntersectWith(colsInBox);
+
+        int number = tile.Number;
+        bool numberInRow1  = false;
+        bool numberInRow2  = false;
+        bool numberInCol1  = false;
+        bool numberInCol2 = false;
+        
+        foreach (int row in rows)
+        {
+            if (grid.Tiles[row, col1].Number == number)
+                numberInCol1 = true;
+            
+            if (grid.Tiles[row, col2].Number == number)
+                numberInCol2 = true;
+        }
+        
+        foreach (int col in cols)
+        {
+            if (grid.Tiles[row1, col].Number == number)
+                numberInRow1 = true;
+            
+            if (grid.Tiles[row2, col].Number == number)
+                numberInRow2 = true;
+        }
+
+        if (numberInCol1)
+        {
+            
+        }
+
+        return null;
+    }
+
+    private void GetOtherRowsInBox(int boxRow, out int row1, out int row2)
+    {
+        row1 = row2 = 0;
+        
+        switch (boxRow)
+        {
+            case 0:
+                row1 = 1;
+                row2 = 2;
+                break;
+            
+            case 1:
+                //row1 = 0;
+                row2 = 2;
+                break;
+            
+            case 2:
+                //row1 = 0;
+                row2 = 1;
+                break;
+        }
     }
 
     private bool AllTilesVisited(bool[,] visitedTiles)
