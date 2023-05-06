@@ -11,32 +11,105 @@ public class SudokuGenerator9x9
     private SudokuGrid9x9 grid;
     
     private Stack<Move> solvedGridMoves;
+    private Stack<Move> puzzleGridRemovalMoves;
 
     private bool solvedGridCompleted => solvedGridMoves.Count >= 81;
 
-    public SudokuGenerator9x9(SudokuGrid9x9 grid)
+    public SudokuGenerator9x9()
     {
-        this.grid = grid;
+        grid = new SudokuGrid9x9();
+        
         solvedGridMoves = new Stack<Move>();
+        puzzleGridRemovalMoves = new Stack<Move>();
     }
-
-    public SudokuGenerator9x9() : this(new SudokuGrid9x9()) { }
 
     public void Generate(bool makeSymmetricCollapse = false)
     {
         bool solvedGridCreated = TryCreateSolvedGrid(makeSymmetricCollapse);
-        foreach (var tile in grid.Tiles)
-        {
-            tile.DebugTileInfo();
-        }
 
         bool puzzleCreated = false; 
         if (solvedGridCreated)
         {
-            //puzzleCreated = TryCreatePuzzle();
+            Debug.Log("<<< SOLVED GRID COMPLETE, NOW REMOVING CLUES... >>>");
+            puzzleCreated = TryCreatePuzzleFromSolvedGrid();
+        }
+    }
+
+    private bool TryCreatePuzzleFromSolvedGrid()
+    {
+        bool[,] visitedTiles = new bool[9, 9];
+
+        int counter = 0;
+
+        // while puzzle is not finished:
+        while (!AllTilesVisited(visitedTiles))
+        {
+            //  1. Find lowest entropy tile
+            //var lowestEntropyTile = FindHighestEntropyTile(visitedTiles);
+            var lowestEntropyTile = FindLowestEntropyTile(visitedTiles);
+            Debug.Log("Lowest entropy: " + lowestEntropyTile.Entropy);
+            
+            //  2. Remove it from grid, propagate
+            int tileNumber = lowestEntropyTile.Number;
+            lowestEntropyTile.Number = 0;
+            lowestEntropyTile.RemoveCandidate(tileNumber);
+            var effectedTiles = FindEffectedTiles(lowestEntropyTile);
+            effectedTiles = RemoveTilesWithMissingCandidate(effectedTiles, lowestEntropyTile);
+            Propagate(tileNumber, effectedTiles, false);
+
+            int row = lowestEntropyTile.index.row;
+            int col = lowestEntropyTile.index.col;
+            visitedTiles[row, col] = true;
+            
+            //  3. Add that move
+            puzzleGridRemovalMoves.Push(new Move(lowestEntropyTile, tileNumber, effectedTiles));
+
+            //  4. Find its symmetric neighbour , repeat 2-3
+            bool middleTile = row == 4 && col == 4;
+            if (!middleTile)
+            {
+                int symmetricRow = 8 - row;
+                int symmetricCol = 8 - col;
+                var symmetricTile = grid.Tiles[symmetricRow, symmetricCol];
+
+                int symmetricTileNumber = symmetricTile.Number;
+                symmetricTile.Number = 0;
+                symmetricTile.RemoveCandidate(symmetricTileNumber);
+                var effectedTilesSymmetric = FindEffectedTiles(symmetricTile);
+                effectedTilesSymmetric = RemoveTilesWithMissingCandidate(effectedTilesSymmetric, symmetricTile);
+            
+                puzzleGridRemovalMoves.Push(new Move(symmetricTile, symmetricTileNumber, effectedTilesSymmetric));
+                visitedTiles[symmetricRow, symmetricCol] = true;
+                Propagate(symmetricTileNumber, effectedTilesSymmetric, false);
+            }
+            
+
+            grid.PrintGrid();
+            counter++;
+
+            if (counter > 81)
+            {
+                Debug.LogWarning("Counter Limit Exceeded");
+                break;
+            }
         }
         
-        
+        // while puzzle is not finished:
+        //  1. Find Highest Entropy Cell
+        //  2. Remove it from grid, propagate
+        //  3. Add that move
+        //  4. Find its symmetric neighbour, repeat 2-3
+        //  5. Check for number of solutions
+        //  6. If not 1 solution, Make those cells permanent
+        //  7. If 1 solution, check if humanly solvable
+        //  8. if not humanly solvable, make those cells permanent
+
+        return false;
+    }
+
+    private bool AllTilesVisited(bool[,] visitedTiles)
+    {
+        return visitedTiles.Cast<bool>().All(visited => visited);
     }
 
     private bool TryCreateSolvedGrid(bool makeSymmetric = false)
@@ -102,8 +175,8 @@ public class SudokuGenerator9x9
 
             backTrackedSymmetricNeighbours =
                 makeSymmetric &&(
-                backtracks % 2 == 0 ||
-                (lastMove.Tile.index.row == 4 &&
+                backtracks % 2 == 0 ||              // symmetric backtracks two cells at the time 
+                (lastMove.Tile.index.row == 4 &&    // unless its the middle cell
                  lastMove.Tile.index.col == 4));
         } 
         while (lastEntropy < 2 && backTrackedSymmetricNeighbours);
@@ -222,6 +295,54 @@ public class SudokuGenerator9x9
         SudokuTile lowestEntropyTile = lowestEntropyTiles[randomIndex];
         return lowestEntropyTile;
     }
+    
+    private SudokuTile FindLowestEntropyTile(bool[,] visited)
+    {
+        int lowestEntropy = FindLowestEntropy(visited);
+
+        List<SudokuTile> lowestEntropyTiles = new List<SudokuTile>();
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                if (visited[row, col]) continue;
+
+                var tile = grid.Tiles[row, col];
+                if (tile.Entropy == lowestEntropy)
+                {
+                    lowestEntropyTiles.Add(tile);
+                }
+            }
+        }
+
+        int randomIndex = random.Next(lowestEntropyTiles.Count);
+        SudokuTile lowestEntropyTile = lowestEntropyTiles[randomIndex];
+        return lowestEntropyTile;
+    }
+    
+    private SudokuTile FindHighestEntropyTile(bool[,] visited)
+    {
+        int lowestEntropy = FindHighestEntropy(visited);
+
+        List<SudokuTile> lowestEntropyTiles = new List<SudokuTile>();
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                if (visited[row, col]) continue;
+
+                var tile = grid.Tiles[row, col];
+                if (tile.Entropy == lowestEntropy)
+                {
+                    lowestEntropyTiles.Add(tile);
+                }
+            }
+        }
+
+        int randomIndex = random.Next(lowestEntropyTiles.Count);
+        SudokuTile lowestEntropyTile = lowestEntropyTiles[randomIndex];
+        return lowestEntropyTile;
+    }
 
     private int FindLowestEntropy()
     {
@@ -231,6 +352,52 @@ public class SudokuGenerator9x9
         {
             if (!tile.Used && tile.Entropy < lowestValue)
                 lowestValue = tile.Entropy;
+        }
+
+        return lowestValue;
+    }
+    
+    private int FindHighestEntropy(bool[,] visited)
+    {
+        int highestValue = -1;
+
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                if (visited[row, col]) continue;
+
+                var tile = grid.Tiles[row, col];
+                if (tile.Entropy > highestValue)
+                {
+                    highestValue = tile.Entropy;
+                    if (highestValue ==9)
+                        return 9;
+                }
+            }
+        }
+
+        return highestValue;
+    }
+    
+    private int FindLowestEntropy(bool[,] visited)
+    {
+        int lowestValue = int.MaxValue;
+
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                if (visited[row, col]) continue;
+
+                var tile = grid.Tiles[row, col];
+                if (tile.Entropy < lowestValue)
+                {
+                    lowestValue = tile.Entropy;
+                    if (lowestValue ==0)
+                        return 0;
+                }
+            }
         }
 
         return lowestValue;
