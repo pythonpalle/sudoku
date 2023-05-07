@@ -46,11 +46,8 @@ public class SudokuGenerator9x9
         while (!AllTilesVisited(visitedTiles))
         {
             //  1. Find lowest entropy tile
-            //var highestEntropyTile = FindHighestEntropyTile(visitedTiles);
-            //Debug.Log("Highest entropy: " + highestEntropyTile.Entropy);
-
             var lowestEntropyTile = FindLowestEntropyTile(visitedTiles);
-             Debug.Log("Lowest entropy: " + lowestEntropyTile.Entropy);
+            // Debug.Log("Lowest entropy: " + lowestEntropyTile.Entropy);
             
             //  2. Remove it from grid, propagate
             RemoveFromGrid(visitedTiles, lowestEntropyTile);
@@ -218,7 +215,7 @@ public class SudokuGenerator9x9
                 (lastMove.Tile.index.row == 4 &&    // unless its the middle cell
                  lastMove.Tile.index.col == 4));
         } 
-        while (lastEntropy < 2 && backTrackedSymmetricNeighbours);
+        while (lastEntropy <= 1 && backTrackedSymmetricNeighbours);
 
         if (moveToChange.Tile.AssignLowestPossibleValue(moveToChange.Number))
         {
