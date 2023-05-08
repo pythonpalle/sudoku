@@ -10,6 +10,7 @@ public class SudokuGenerator9x9
     private System.Random random = new System.Random();
 
     private SudokuGrid9x9 grid;
+    private WFCGridSolver _wfcGridSolver;
     
     private Stack<Move> solvedGridMoves;
     private Stack<Move> puzzleGridRemovalMoves;
@@ -19,6 +20,7 @@ public class SudokuGenerator9x9
     public SudokuGenerator9x9()
     {
         grid = new SudokuGrid9x9(true);
+        _wfcGridSolver = new WFCGridSolver();
         
         solvedGridMoves = new Stack<Move>();
         puzzleGridRemovalMoves = new Stack<Move>();
@@ -26,7 +28,7 @@ public class SudokuGenerator9x9
 
     public void Generate()
     {
-        bool solvedGridCreated = TryCreateSolvedGrid();
+        bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(grid);
 
         bool puzzleCreated = false; 
         if (solvedGridCreated)
@@ -36,90 +38,90 @@ public class SudokuGenerator9x9
         }
     }
 
-    private bool TryCreateSolvedGrid()
-    {
-        int iterations = 0;
-        while (!solvedGridCompleted)
-        {
-            HandleNextGenerationStep();
-            grid.PrintGrid();
-
-            iterations++;
-
-            if (iterations >= GENERATION_ITERATION_LIMIT)
-            {
-                Debug.LogError("Maximum iterations reached, couldn't generate grid.");
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private void HandleNextGenerationStep()
-    {
-        TileIndex lowestEntropyTileIndex = FindLowestEntropyTile();
-        
-        if (grid[lowestEntropyTileIndex].Entropy <= 0)
-        {
-            Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTileIndex.row},{lowestEntropyTileIndex.col})");
-            HandleBackTracking();
-        }
-        else
-        {
-            if (grid.AssignLowestPossibleValue(lowestEntropyTileIndex, 0))
-            {
-                CollapseWaveFunction(lowestEntropyTileIndex);
-            }
-        }
-    }
-
-    private void HandleBackTracking()
-    {
-        int lastEntropy;
-        Move moveToChange;
-        
-        do
-        {
-            Move lastMove = solvedGridMoves.Pop();
-            
-            Debug.Log($"Backtracking, removing {lastMove.Number} " +
-                      $"from ({lastMove.Index.row}), ({lastMove.Index.col})");
-            
-            grid.SetNumberToIndex(lastMove.Index, 0);
-            grid.AddCandidateToIndex(lastMove.Index, lastMove.Number);
-            
-            Propagate(lastMove.Number, lastMove.EffectedTileIndecies, false);
-
-            lastEntropy = grid[lastMove.Index].Entropy;
-            moveToChange = lastMove;
-            grid.PrintGrid();
-        } 
-        while (lastEntropy <= 1);
-
-        if (grid.AssignLowestPossibleValue(moveToChange.Index, moveToChange.Number))
-        {
-            Debug.Log($"...and replace it with a {grid[moveToChange.Index].Number}.");
-            CollapseWaveFunction(moveToChange.Index);
-            grid.PrintGrid();
-        }
-        else
-        {
-            HandleBackTracking();
-        }
-        
-    }
-
-    private void CollapseWaveFunction(TileIndex placeTileIndex)
-    {
-        List<TileIndex> effectedTileIndicies = FindEffectedTileIndicies(placeTileIndex);
-        effectedTileIndicies = RemoveTilesWithMissingCandidate(effectedTileIndicies, placeTileIndex);
-
-        int tileNumber = grid[placeTileIndex].Number;
-
-        Propagate(tileNumber, effectedTileIndicies, true);
-        solvedGridMoves.Push(new Move(placeTileIndex, tileNumber, effectedTileIndicies));
-    }
+    // private bool TryCreateSolvedGrid()
+    // {
+    //     int iterations = 0;
+    //     while (!solvedGridCompleted)
+    //     {
+    //         HandleNextGenerationStep();
+    //         grid.PrintGrid();
+    //
+    //         iterations++;
+    //
+    //         if (iterations >= GENERATION_ITERATION_LIMIT)
+    //         {
+    //             Debug.LogError("Maximum iterations reached, couldn't generate grid.");
+    //             return false;
+    //         }
+    //     }
+    //
+    //     return true;
+    // }
+    //
+    // private void HandleNextGenerationStep()
+    // {
+    //     TileIndex lowestEntropyTileIndex = FindLowestEntropyTile();
+    //     
+    //     if (grid[lowestEntropyTileIndex].Entropy <= 0)
+    //     {
+    //         Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTileIndex.row},{lowestEntropyTileIndex.col})");
+    //         HandleBackTracking();
+    //     }
+    //     else
+    //     {
+    //         if (grid.AssignLowestPossibleValue(lowestEntropyTileIndex, 0))
+    //         {
+    //             CollapseWaveFunction(lowestEntropyTileIndex);
+    //         }
+    //     }
+    // }
+    //
+    // private void HandleBackTracking()
+    // {
+    //     int lastEntropy;
+    //     Move moveToChange;
+    //     
+    //     do
+    //     {
+    //         Move lastMove = solvedGridMoves.Pop();
+    //         
+    //         Debug.Log($"Backtracking, removing {lastMove.Number} " +
+    //                   $"from ({lastMove.Index.row}), ({lastMove.Index.col})");
+    //         
+    //         grid.SetNumberToIndex(lastMove.Index, 0);
+    //         grid.AddCandidateToIndex(lastMove.Index, lastMove.Number);
+    //         
+    //         Propagate(lastMove.Number, lastMove.EffectedTileIndecies, false);
+    //
+    //         lastEntropy = grid[lastMove.Index].Entropy;
+    //         moveToChange = lastMove;
+    //         grid.PrintGrid();
+    //     } 
+    //     while (lastEntropy <= 1);
+    //
+    //     if (grid.AssignLowestPossibleValue(moveToChange.Index, moveToChange.Number))
+    //     {
+    //         Debug.Log($"...and replace it with a {grid[moveToChange.Index].Number}.");
+    //         CollapseWaveFunction(moveToChange.Index);
+    //         grid.PrintGrid();
+    //     }
+    //     else
+    //     {
+    //         HandleBackTracking();
+    //     }
+    //     
+    // }
+    //
+    // private void CollapseWaveFunction(TileIndex placeTileIndex)
+    // {
+    //     List<TileIndex> effectedTileIndicies = FindEffectedTileIndicies(placeTileIndex);
+    //     effectedTileIndicies = RemoveTilesWithMissingCandidate(effectedTileIndicies, placeTileIndex);
+    //
+    //     int tileNumber = grid[placeTileIndex].Number;
+    //
+    //     Propagate(tileNumber, effectedTileIndicies, true);
+    //     solvedGridMoves.Push(new Move(placeTileIndex, tileNumber, effectedTileIndicies));
+    // }
     
     private List<TileIndex> FindEffectedTileIndicies(TileIndex tileIndex)
     {

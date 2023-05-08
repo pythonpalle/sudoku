@@ -19,6 +19,34 @@ public struct SudokuGrid9x9
         SetupTiles(copyFrom);
     }
     
+    public static bool operator==(SudokuGrid9x9 grid1, SudokuGrid9x9 grid2)
+    {
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                if (grid1[row, col].Number != grid2[row, col].Number)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+    
+    public static bool operator!=(SudokuGrid9x9 grid1, SudokuGrid9x9 grid2)
+    {
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                if (grid1[row, col].Number == grid2[row, col].Number)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+    
     public SudokuTile[,] Tiles
     {
         get;
