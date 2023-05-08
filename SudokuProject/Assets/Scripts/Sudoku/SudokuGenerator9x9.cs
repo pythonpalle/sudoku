@@ -24,8 +24,35 @@ public class SudokuGenerator9x9
         puzzleGridRemovalMoves = new Stack<Move>();
     }
 
+    public void Test()
+    {
+        Vector2 OG = new Vector2(5, 3);
+        Vector2 newVec = OG;
+        Debug.Log("OG: " + OG);
+        Debug.Log("NEW: " + newVec);
+
+        OG.x = 1;
+        Debug.Log("OG: " + OG);
+        Debug.Log("NEW: " + newVec);
+
+        SudokuGrid9x9 grid1 = new SudokuGrid9x9(true);
+        grid1.Tiles[5, 5].Number = 5;
+
+        SudokuGrid9x9 grid2 = new SudokuGrid9x9(grid1);
+
+        Debug.Log("grid 1: " + grid1.Tiles[5, 5].Number);
+        Debug.Log("grid 2: " + grid2.Tiles[5, 5].Number);
+        
+        grid1.Tiles[5, 5].Number = 6;
+
+        Debug.Log("grid 1: " + grid1.Tiles[5, 5].Number);
+        Debug.Log("grid 2: " + grid2.Tiles[5, 5].Number);
+    }
+
     public void Generate()
     {
+        Test();
+        
         bool solvedGridCreated = TryCreateSolvedGrid();
 
         bool puzzleCreated = false; 

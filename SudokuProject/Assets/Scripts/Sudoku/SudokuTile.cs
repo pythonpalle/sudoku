@@ -64,7 +64,7 @@ public struct SudokuTile
     public Dictionary<int, int> Strikes
     {
         get;
-        private set;
+        set;
     }
 
     public bool Used => number > 0;
@@ -89,9 +89,27 @@ public struct SudokuTile
         Number = number;
     }
 
-    public static SudokuTile Default()
+    public SudokuTile(SudokuTile copyFrom)
     {
-        return new SudokuTile(0, 0);
+        index.row = copyFrom.index.row;
+        index.col = copyFrom.index.col;
+        
+        highestNumber = copyFrom.highestNumber;
+        
+        Candidates = new HashSet<int>(highestNumber);
+        foreach (var candidate in copyFrom.Candidates)
+        {
+            Candidates.Add(candidate);
+        }
+
+        Strikes = new Dictionary<int, int>(highestNumber);
+        foreach (var pair in copyFrom.Strikes)
+        {
+            Strikes.Add(pair.Key, pair.Value);
+        }
+        
+        this.number = copyFrom.number;
+        Number = copyFrom.number;
     }
     
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 public struct SudokuGrid9x9
@@ -32,6 +33,12 @@ public struct SudokuGrid9x9
         SetupTiles();
     }
 
+    public SudokuGrid9x9(SudokuGrid9x9 copyFrom)
+    {
+        Tiles = new SudokuTile[size,size];
+        SetupTiles(copyFrom);
+    }
+
     private void SetupTiles()
     {
         for (int col = 0; col < size; col++)
@@ -42,17 +49,26 @@ public struct SudokuGrid9x9
             }
         }
     }
+    
+    private void SetupTiles(SudokuGrid9x9 copyFrom)
+    {
+        for (int col = 0; col < size; col++)
+        {
+            for (int row = 0; row < size; row++)
+            {
+                SetupTile(row, col, copyFrom[row,col]);
+            }
+        }
+    }
 
-    private void SetupTile(int row, int col)
+    private void SetupTile(int row, int col, int number = 0)
     {
         Tiles[row, col] = new SudokuTile( row, col, 0, size);
-        for (int i = 1; i < size; i++)
-        {
-            Tiles[row, col].AddCandidate(i);
-        }
-
-        Tiles[row, col].index.row = row;
-        Tiles[row, col].index.col = col;
+    }
+    
+    private void SetupTile(int row, int col, SudokuTile copyFrom)
+    {
+        Tiles[row, col] = new SudokuTile(copyFrom);
     }
 
     public void SetNumberToIndex(TileIndex index, int number)
