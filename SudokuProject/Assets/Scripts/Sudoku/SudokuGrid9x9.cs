@@ -4,12 +4,26 @@ using UnityEngine;
 
 public struct SudokuGrid9x9
 {
-    static int size = 9;
+    const int size = 9;
     
     public SudokuTile[,] Tiles
     {
         get;
-        set;
+        private set;
+    }
+
+    public SudokuTile this[int row, int col]
+    {
+        get { return Tiles[row, col]; }
+        
+        //set { Tiles[row, col] = value; }
+    }
+
+    public SudokuTile this[TileIndex index]
+    {
+        get { return Tiles[index.row, index.col]; }
+        
+        //set { Tiles[index.row, index.col] = value; }
     }
 
     public SudokuGrid9x9(bool createTiles)
@@ -41,6 +55,21 @@ public struct SudokuGrid9x9
         Tiles[row, col].index.col = col;
     }
 
+    public void SetNumberToIndex(TileIndex index, int number)
+    {
+        Tiles[index.row, index.col].Number = number;
+    }
+
+    public bool AssignLowestPossibleValue(TileIndex index, int minNumber)
+    {
+        return Tiles[index.row, index.col].AssignLowestPossibleValue(minNumber);
+    }
+    
+    public void AddCandidateToIndex(TileIndex index, int number)
+    {
+        Tiles[index.row, index.col].AddCandidate(number);
+    }
+
     public void PrintGrid()
     {
         string gridString = String.Empty;
@@ -62,5 +91,21 @@ public struct SudokuGrid9x9
         }
         
         Debug.Log(gridString);
+    }
+
+
+    public void AddStrikeToIndex(TileIndex index, int number)
+    {
+        Tiles[index.row, index.col].AddStrike(number);
+    }
+
+    public void ResetStrikesToIndex(TileIndex tileIndex, int tileNumber)
+    {
+        Tiles[tileIndex.row, tileIndex.col].ResetStrikes(tileNumber);
+    }
+
+    public void RemoveCandidateFromIndex(TileIndex index, int number)
+    {
+        Tiles[index.row, index.col].RemoveCandidate(number);
     }
 }
