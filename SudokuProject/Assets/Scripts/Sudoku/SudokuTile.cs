@@ -8,12 +8,26 @@ public struct TileIndex
 {
     public int row;
     public int col;
+
+    public static bool operator==(TileIndex tileIndex1, TileIndex tileIndex2)
+    {
+        return tileIndex1.row == tileIndex2.row && tileIndex1.col == tileIndex2.col;
+    }
+    
+    public static bool operator!=(TileIndex tileIndex1, TileIndex tileIndex2)
+    {
+        return !(tileIndex1.row == tileIndex2.row && tileIndex1.col == tileIndex2.col);
+    }
+    
+    public static bool Equals(TileIndex tileIndex1, TileIndex tileIndex2)
+    {
+        return (tileIndex1.row == tileIndex2.row && tileIndex1.col == tileIndex2.col);
+    }
 }
 
 public class SudokuTile
 {
     public TileIndex index;
-    public int Box { get; private set; }
     
     private int highestNumber { get; set; }
 
@@ -65,18 +79,10 @@ public class SudokuTile
         }
         
         this.highestNumber = highestNumber;
+        this.number = number;
         Number = number;
-
-        SetBox9x9();
     }
-
-    private void SetBox9x9()
-    {
-        int boxRow = index.row / 3;
-        int boxCol = index.col / 3;
-
-        Box = boxRow * 3 + boxCol;
-    }
+    
 
     public void RemoveCandidate(int number)
     {
@@ -149,10 +155,7 @@ public class SudokuTile
     {
         Debug.Log($"Index: {index.row}, {index.col}");
         Debug.Log($"Number: {Number}");
-        Debug.Log($"Box: {Box}");
         Debug.Log($"Entropy: {Entropy}");
     }
-
-
     
 }

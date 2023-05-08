@@ -222,8 +222,6 @@ public class SudokuGenerator9x9
 
     private List<SudokuTile> FindEffectedTiles(SudokuTile tile)
     {
-        //TODO: ta bara hänsyn till Tiles som fortfarande har den kandidaten
-        
         int tileRow = tile.index.row;
         int tileCol = tile.index.col;
 
@@ -235,8 +233,14 @@ public class SudokuGenerator9x9
             var rowTile = grid.Tiles[i, tileCol];
             var colTile = grid.Tiles[tileRow, i];
             
-            if (rowTile != tile) effectedTiles.Add(rowTile);
-            if (colTile != tile) effectedTiles.Add(colTile);
+            if (rowTile.index != tile.index) 
+                effectedTiles.Add(rowTile);
+            
+            if (colTile.index != tile.index) 
+                effectedTiles.Add(colTile);
+            //
+            // if (rowTile != tile) effectedTiles.Add(rowTile);
+            // if (colTile != tile) effectedTiles.Add(colTile);
         }
         
         // Tiles in same box
