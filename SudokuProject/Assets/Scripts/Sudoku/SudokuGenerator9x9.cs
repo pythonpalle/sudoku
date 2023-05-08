@@ -24,9 +24,9 @@ public class SudokuGenerator9x9
         puzzleGridRemovalMoves = new Stack<Move>();
     }
 
-    public void Generate(bool makeSymmetricCollapse = false)
+    public void Generate()
     {
-        bool solvedGridCreated = TryCreateSolvedGrid(makeSymmetricCollapse);
+        bool solvedGridCreated = TryCreateSolvedGrid();
 
         bool puzzleCreated = false; 
         if (solvedGridCreated)
@@ -118,42 +118,19 @@ public class SudokuGenerator9x9
             tile.AddStrike(number);
         }
     }
-
-
-    private void GetOtherRowsInBox(int boxRow, out int row1, out int row2)
-    {
-        row1 = row2 = 0;
-        
-        switch (boxRow)
-        {
-            case 0:
-                row1 = 1;
-                row2 = 2;
-                break;
-            
-            case 1:
-                //row1 = 0;
-                row2 = 2;
-                break;
-            
-            case 2:
-                //row1 = 0;
-                row2 = 1;
-                break;
-        }
-    }
+    
 
     private bool AllTilesVisited(bool[,] visitedTiles)
     {
         return visitedTiles.Cast<bool>().All(visited => visited);
     }
 
-    private bool TryCreateSolvedGrid(bool makeSymmetric = false)
+    private bool TryCreateSolvedGrid()
     {
         int iterations = 0;
         while (!solvedGridCompleted)
         {
-            HandleNextGenerationStep(makeSymmetric);
+            HandleNextGenerationStep();
             grid.PrintGrid();
 
             iterations++;
@@ -168,7 +145,7 @@ public class SudokuGenerator9x9
         return true;
     }
 
-    private void HandleNextGenerationStep(bool makeSymmetric)
+    private void HandleNextGenerationStep()
     {
         SudokuTile lowestEntropyTile = FindLowestEntropyTile();
 
@@ -181,18 +158,15 @@ public class SudokuGenerator9x9
         {
             if (lowestEntropyTile.AssignLowestPossibleValue(0))
             {
-                CollapseWaveFunction(lowestEntropyTile, makeSymmetric);
+                CollapseWaveFunction(lowestEntropyTile);
             }
         }
     }
 
-    private void HandleBackTracking(bool makeSymmetric = false, bool secondPair = false)
+    private void HandleBackTracking()
     {
         int lastEntropy;
         Move moveToChange;
-        int backtracks = 0;
-        if (secondPair) backtracks++;
-        bool backTrackedSymmetricNeighbours = false;
         
         do
         {
@@ -207,62 +181,29 @@ public class SudokuGenerator9x9
             lastEntropy = lastMove.Tile.Entropy;
             moveToChange = lastMove;
             grid.PrintGrid();
-            backtracks++;
-
-            backTrackedSymmetricNeighbours =
-                makeSymmetric &&(
-                backtracks % 2 == 0 ||              // symmetric backtracks two cells at the time 
-                (lastMove.Tile.index.row == 4 &&    // unless its the middle cell
-                 lastMove.Tile.index.col == 4));
         } 
-        while (lastEntropy <= 1 && backTrackedSymmetricNeighbours);
+        while (lastEntropy <= 1);
 
         if (moveToChange.Tile.AssignLowestPossibleValue(moveToChange.Number))
         {
             Debug.Log($"...and replace it with a {moveToChange.Tile.Number}.");
-            CollapseWaveFunction(moveToChange.Tile, false);
+            CollapseWaveFunction(moveToChange.Tile);
             grid.PrintGrid();
         }
         else
         {
-            HandleBackTracking(makeSymmetric, true);
+            HandleBackTracking();
         }
         
     }
 
-    private void CollapseWaveFunction(SudokuTile placeTile, bool includeSecondPair = true)
+    private void CollapseWaveFunction(SudokuTile placeTile)
     {
         List<SudokuTile> effectedTiles = FindEffectedTiles(placeTile);
         effectedTiles = RemoveTilesWithMissingCandidate(effectedTiles, placeTile);
 
         Propagate(placeTile.Number, effectedTiles);
         solvedGridMoves.Push(new Move(placeTile, placeTile.Number, effectedTiles));
-
-        if (!includeSecondPair) return;
-
-        int symmetricRow = 8 - placeTile.index.row;
-        int symmetricCol = 8 - placeTile.index.col;
-        
-        // middle tile has no symmetric neighbour
-        if (symmetricRow == 4 && symmetricCol == 4)
-        {
-            Debug.Log("Middle Tile placed!");
-            return;
-        }
-        
-        SudokuTile symmetricNeighbourTile = grid.Tiles[symmetricRow, symmetricCol];
-        if (symmetricNeighbourTile.AssignLowestPossibleValue(0))
-        {
-            List<SudokuTile> symmetricNeighbourEffectedTiles = FindEffectedTiles(symmetricNeighbourTile);
-            symmetricNeighbourEffectedTiles = RemoveTilesWithMissingCandidate(symmetricNeighbourEffectedTiles, symmetricNeighbourTile);
-
-            Propagate(symmetricNeighbourTile.Number, symmetricNeighbourEffectedTiles);
-            solvedGridMoves.Push(new Move(symmetricNeighbourTile, symmetricNeighbourTile.Number, symmetricNeighbourEffectedTiles));
-        }
-        else
-        {
-            HandleBackTracking(false);
-        }
     }
 
     private List<SudokuTile> RemoveTilesWithMissingCandidate(List<SudokuTile> effectedTiles, SudokuTile placeTile)
