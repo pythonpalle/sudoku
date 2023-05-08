@@ -18,7 +18,7 @@ public class SudokuGenerator9x9
 
     public SudokuGenerator9x9()
     {
-        grid = new SudokuGrid9x9();
+        grid = new SudokuGrid9x9(true);
         
         solvedGridMoves = new Stack<Move>();
         puzzleGridRemovalMoves = new Stack<Move>();
