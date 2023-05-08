@@ -36,6 +36,173 @@ public class SudokuGenerator9x9
         }
     }
 
+    private bool TryCreateSolvedGrid()
+    {
+        int iterations = 0;
+        while (!solvedGridCompleted)
+        {
+            HandleNextGenerationStep();
+            grid.PrintGrid();
+
+            iterations++;
+
+            if (iterations >= GENERATION_ITERATION_LIMIT)
+            {
+                Debug.LogError("Maximum iterations reached, couldn't generate grid.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void HandleNextGenerationStep()
+    {
+        TileIndex lowestEntropyTileIndex = FindLowestEntropyTile();
+
+        if (grid.Tiles[lowestEntropyTileIndex.row, lowestEntropyTileIndex.col].Entropy <= 0)
+        {
+            Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTileIndex.row},{lowestEntropyTileIndex.col})");
+            HandleBackTracking();
+        }
+        else
+        {
+            if (grid.Tiles[lowestEntropyTileIndex.row, lowestEntropyTileIndex.col].AssignLowestPossibleValue(0))
+            {
+                CollapseWaveFunction(lowestEntropyTileIndex);
+            }
+        }
+    }
+
+    private void HandleBackTracking()
+    {
+        int lastEntropy;
+        Move moveToChange;
+        
+        do
+        {
+            Move lastMove = solvedGridMoves.Pop();
+            
+            Debug.Log($"Backtracking, removing {lastMove.Number} " +
+                      $"from ({lastMove.Index.row}), ({lastMove.Index.col})");
+            
+            grid.Tiles[lastMove.Index.row, lastMove.Index.col].Number = 0;
+            grid.Tiles[lastMove.Index.row, lastMove.Index.col].AddCandidate(lastMove.Number);
+            Propagate(lastMove.Number, lastMove.EffectedTileIndecies, false);
+
+            lastEntropy = grid.Tiles[lastMove.Index.row, lastMove.Index.col].Entropy;
+            moveToChange = lastMove;
+            grid.PrintGrid();
+        } 
+        while (lastEntropy <= 1);
+
+        if (grid.Tiles[moveToChange.Index.row, moveToChange.Index.col].AssignLowestPossibleValue(moveToChange.Number))
+        {
+            Debug.Log($"...and replace it with a {grid.Tiles[moveToChange.Index.row, moveToChange.Index.col].Number}.");
+            CollapseWaveFunction(moveToChange.Index);
+            grid.PrintGrid();
+        }
+        else
+        {
+            HandleBackTracking();
+        }
+        
+    }
+
+    private void CollapseWaveFunction(TileIndex placeTileIndex)
+    {
+        List<TileIndex> effectedTileIndicies = FindEffectedTileIndicies(placeTileIndex);
+        effectedTileIndicies = RemoveTilesWithMissingCandidate(effectedTileIndicies, placeTileIndex);
+
+        int tileNumber = grid.Tiles[placeTileIndex.row, placeTileIndex.col].Number;
+
+        Propagate(tileNumber, effectedTileIndicies, true);
+        solvedGridMoves.Push(new Move(placeTileIndex, tileNumber, effectedTileIndicies));
+    }
+    
+    private List<TileIndex> FindEffectedTileIndicies(TileIndex tileIndex)
+    {
+        int tileRow = tileIndex.row;
+        int tileCol = tileIndex.col;
+
+        List<TileIndex> effectedTiles = new List<TileIndex>();
+        
+        // Tiles in same row or column
+        for (int i = 0; i < 9; i++)
+        {
+            var rowTile = grid.Tiles[i, tileCol];
+            var colTile = grid.Tiles[tileRow, i];
+            
+            if (rowTile.index != tileIndex) 
+                effectedTiles.Add(rowTile.index);
+            
+            if (colTile.index != tileIndex) 
+                effectedTiles.Add(colTile.index);
+        }
+        
+        // Tiles in same box
+        int topLeftBoxRow = tileRow - tileRow % 3;
+        int topLeftBoxCol = tileCol - tileCol % 3;
+
+        for (int deltaRow = 0; deltaRow < 3; deltaRow++)
+        {
+            for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+            {
+                SudokuTile boxTile = grid.Tiles[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol];
+                
+                if (boxTile.index != tileIndex)
+                    effectedTiles.Add(boxTile.index);
+            } 
+        }
+
+        return effectedTiles;
+    }
+    
+    private List<TileIndex> RemoveTilesWithMissingCandidate(List<TileIndex> effectedTiles, TileIndex placeTileIndex)
+    {
+        List<TileIndex> filteredTiles = new List<TileIndex>();
+        int number = grid.Tiles[placeTileIndex.row, placeTileIndex.col].Number;
+
+        foreach (TileIndex index in effectedTiles)
+        {
+            // if (tile.Candidates.Contains(number))
+            //     filteredTiles.Add(tile);
+
+            if (grid.Tiles[index.row, index.col].Candidates.Contains(number))
+            {
+                filteredTiles.Add(index);
+            }
+        }
+
+        return filteredTiles;
+    }
+
+    
+
+    private TileIndex FindLowestEntropyTile()
+    {
+        int lowestEntropy = FindLowestEntropy();
+
+        List<SudokuTile> lowestEntropyTiles = new List<SudokuTile>();
+        foreach (var tile in grid.Tiles)
+        {
+            if (!tile.Used && tile.Entropy == lowestEntropy)
+                lowestEntropyTiles.Add(tile);
+        }
+
+        if (lowestEntropyTiles.Count <= 0)
+        {
+            Debug.LogWarning("All tiles are placed.");
+            return new TileIndex(0, 0);
+
+            //return SudokuTile.Default(); // gick inte att returnera null
+        }
+
+        int randomIndex = random.Next(lowestEntropyTiles.Count);
+        SudokuTile lowestEntropyTile = lowestEntropyTiles[randomIndex];
+        return lowestEntropyTile.index;
+    }
+    
     private bool TryCreatePuzzleFromSolvedGrid()
     {
         bool[,] visitedTiles = new bool[9, 9];
@@ -46,14 +213,15 @@ public class SudokuGenerator9x9
         while (!AllTilesVisited(visitedTiles))
         {
             //  1. Find lowest entropy tile
-            var lowestEntropyTile = FindLowestEntropyTile(visitedTiles);
-            // Debug.Log("Lowest entropy: " + lowestEntropyTile.Entropy);
+            TileIndex lowestEntropyTileIndex = FindLowestEntropyTileIndexFromVisited(visitedTiles);
+            Debug.Log("Lowest entropy: " 
+                      + grid.Tiles[lowestEntropyTileIndex.row, lowestEntropyTileIndex.col].Entropy);
             
             //  2. Remove it from grid, propagate
-            RemoveFromGrid(visitedTiles, lowestEntropyTile);
+            RemoveFromGrid(visitedTiles, lowestEntropyTileIndex);
             
             // 3. Find symmetric neighbour, remove
-            RemoveSymmetric(visitedTiles, lowestEntropyTile);
+            RemoveSymmetric(visitedTiles, lowestEntropyTileIndex);
 
             grid.PrintGrid();
             counter++;
@@ -78,10 +246,10 @@ public class SudokuGenerator9x9
         return false;
     }
 
-    private void RemoveSymmetric(bool[,] visitedTiles, SudokuTile lowestEntropyTile)
+    private void RemoveSymmetric(bool[,] visitedTiles, TileIndex lowestEntropyTileIndex)
     {
-        int row = lowestEntropyTile.index.row;
-        int col = lowestEntropyTile.index.col;
+        int row = lowestEntropyTileIndex.row;
+        int col = lowestEntropyTileIndex.col;
 
         //  3. Find its symmetric neighbour , repeat 2
         bool middleTile = row == 4 && col == 4;
@@ -89,33 +257,31 @@ public class SudokuGenerator9x9
         {
             int symmetricRow = 8 - row;
             int symmetricCol = 8 - col;
-            var symmetricTile = grid.Tiles[symmetricRow, symmetricCol];
+            var symmetricTileIndex = grid.Tiles[symmetricRow, symmetricCol].index;
                 
-            RemoveFromGrid(visitedTiles, symmetricTile);
+            RemoveFromGrid(visitedTiles, symmetricTileIndex);
         }
     }
 
-    private void RemoveFromGrid(bool[,] visitedTiles, SudokuTile tile)
+    private void RemoveFromGrid(bool[,] visitedTiles, TileIndex tileIndex)
     {
-        int tileNumber = tile.Number;
-        tile.Number = 0;
-        tile.AddCandidate(tileNumber);
-        var effectedTiles = FindEffectedTiles(tile);
+        int tileNumber = grid.Tiles[tileIndex.row, tileIndex.col].Number;
+        grid.Tiles[tileIndex.row, tileIndex.col].Number = 0;
+        grid.Tiles[tileIndex.row, tileIndex.col].AddCandidate(tileNumber);
+        
+        var effectedTiles = FindEffectedTileIndicies(tileIndex);
         AddStrikes(tileNumber, effectedTiles);
-        tile.ResetStrikes(tileNumber);
-
-        int row = tile.index.row;
-        int col = tile.index.col;
-        visitedTiles[row, col] = true;
-            
-        puzzleGridRemovalMoves.Push(new Move(tile, tileNumber, effectedTiles));
+        grid.Tiles[tileIndex.row, tileIndex.col].ResetStrikes(tileNumber);
+        
+        visitedTiles[tileIndex.row, tileIndex.col] = true;
+        puzzleGridRemovalMoves.Push(new Move(tileIndex, tileNumber, effectedTiles));
     }
 
-    private void AddStrikes(int number, List<SudokuTile> effectedTiles)
+    private void AddStrikes(int number, List<TileIndex> effectedTiles)
     {
-        foreach (var tile in effectedTiles)
+        foreach (TileIndex index in effectedTiles)
         {
-            tile.AddStrike(number);
+            grid.Tiles[index.row, index.col].AddStrike(number);
         }
     }
     
@@ -124,168 +290,10 @@ public class SudokuGenerator9x9
     {
         return visitedTiles.Cast<bool>().All(visited => visited);
     }
-
-    private bool TryCreateSolvedGrid()
-    {
-        int iterations = 0;
-        while (!solvedGridCompleted)
-        {
-            HandleNextGenerationStep();
-            grid.PrintGrid();
-
-            iterations++;
-
-            if (iterations >= GENERATION_ITERATION_LIMIT)
-            {
-                Debug.LogError("Maximum iterations reached, couldn't generate grid.");
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private void HandleNextGenerationStep()
-    {
-        SudokuTile lowestEntropyTile = FindLowestEntropyTile();
-
-        if (lowestEntropyTile.Entropy <= 0)
-        {
-            Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTile.index.row},{lowestEntropyTile.index.col})");
-            HandleBackTracking();
-        }
-        else
-        {
-            if (lowestEntropyTile.AssignLowestPossibleValue(0))
-            {
-                CollapseWaveFunction(lowestEntropyTile);
-            }
-        }
-    }
-
-    private void HandleBackTracking()
-    {
-        int lastEntropy;
-        Move moveToChange;
-        
-        do
-        {
-            Move lastMove = solvedGridMoves.Pop();
-            
-            Debug.Log($"Backtracking, removing {lastMove.Number} " +
-                      $"from ({lastMove.Tile.index.row}), ({lastMove.Tile.index.col})");
-            lastMove.Tile.Number = 0;
-            lastMove.Tile.AddCandidate(lastMove.Number);
-            Propagate(lastMove.Number, lastMove.EffectedTiles, false);
-
-            lastEntropy = lastMove.Tile.Entropy;
-            moveToChange = lastMove;
-            grid.PrintGrid();
-        } 
-        while (lastEntropy <= 1);
-
-        if (moveToChange.Tile.AssignLowestPossibleValue(moveToChange.Number))
-        {
-            Debug.Log($"...and replace it with a {moveToChange.Tile.Number}.");
-            CollapseWaveFunction(moveToChange.Tile);
-            grid.PrintGrid();
-        }
-        else
-        {
-            HandleBackTracking();
-        }
-        
-    }
-
-    private void CollapseWaveFunction(SudokuTile placeTile)
-    {
-        List<SudokuTile> effectedTiles = FindEffectedTiles(placeTile);
-        effectedTiles = RemoveTilesWithMissingCandidate(effectedTiles, placeTile);
-
-        Propagate(placeTile.Number, effectedTiles);
-        solvedGridMoves.Push(new Move(placeTile, placeTile.Number, effectedTiles));
-    }
-
-    private List<SudokuTile> RemoveTilesWithMissingCandidate(List<SudokuTile> effectedTiles, SudokuTile placeTile)
-    {
-        List<SudokuTile> filteredTiles = new List<SudokuTile>();
-        int number = placeTile.Number;
-
-        foreach (var tile in effectedTiles)
-        {
-            if (tile.Candidates.Contains(number))
-                filteredTiles.Add(tile);
-        }
-
-        return filteredTiles;
-    }
-
-    private List<SudokuTile> FindEffectedTiles(SudokuTile tile)
-    {
-        int tileRow = tile.index.row;
-        int tileCol = tile.index.col;
-
-        List<SudokuTile> effectedTiles = new List<SudokuTile>();
-        
-        // Tiles in same row or column
-        for (int i = 0; i < 9; i++)
-        {
-            var rowTile = grid.Tiles[i, tileCol];
-            var colTile = grid.Tiles[tileRow, i];
-            
-            if (rowTile.index != tile.index) 
-                effectedTiles.Add(rowTile);
-            
-            if (colTile.index != tile.index) 
-                effectedTiles.Add(colTile);
-            //
-            // if (rowTile != tile) effectedTiles.Add(rowTile);
-            // if (colTile != tile) effectedTiles.Add(colTile);
-        }
-        
-        // Tiles in same box
-        int topLeftBoxRow = tileRow - tileRow % 3;
-        int topLeftBoxCol = tileCol - tileCol % 3;
-
-        for (int deltaRow = 0; deltaRow < 3; deltaRow++)
-        {
-            for (int deltaCol = 0; deltaCol < 3; deltaCol++)
-            {
-                SudokuTile boxTile = grid.Tiles[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol];
-                
-                //if (!effectedTiles.Contains(boxTile))
-                    effectedTiles.Add(grid.Tiles[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol]);
-            } 
-        }
-
-        return effectedTiles;
-    }
-
-    private SudokuTile FindLowestEntropyTile()
-    {
-        int lowestEntropy = FindLowestEntropy();
-
-        List<SudokuTile> lowestEntropyTiles = new List<SudokuTile>();
-        foreach (var tile in grid.Tiles)
-        {
-            if (!tile.Used && tile.Entropy == lowestEntropy)
-                lowestEntropyTiles.Add(tile);
-        }
-
-        if (lowestEntropyTiles.Count <= 0)
-        {
-            Debug.LogWarning("All tiles are placed.");
-            return null;
-        }
-
-        int randomIndex = random.Next(lowestEntropyTiles.Count);
-        SudokuTile lowestEntropyTile = lowestEntropyTiles[randomIndex];
-        return lowestEntropyTile;
-    }
     
-    private SudokuTile FindLowestEntropyTile(bool[,] visited)
+    private TileIndex FindLowestEntropyTileIndexFromVisited(bool[,] visited)
     {
-        int lowestEntropy = FindLowestEntropy(visited);
+        int lowestEntropy = FindLowestEntropyFromVisited(visited);
 
         List<SudokuTile> lowestEntropyTiles = new List<SudokuTile>();
         for (int row = 0; row < 9; row++)
@@ -304,12 +312,12 @@ public class SudokuGenerator9x9
 
         int randomIndex = random.Next(lowestEntropyTiles.Count);
         SudokuTile lowestEntropyTile = lowestEntropyTiles[randomIndex];
-        return lowestEntropyTile;
+        return lowestEntropyTile.index;
     }
     
-    private SudokuTile FindHighestEntropyTile(bool[,] visited)
+    private SudokuTile FindHighestEntropyTileFromVisited(bool[,] visited)
     {
-        int lowestEntropy = FindHighestEntropy(visited);
+        int lowestEntropy = FindHighestEntropyFromVisited(visited);
 
         List<SudokuTile> lowestEntropyTiles = new List<SudokuTile>();
         for (int row = 0; row < 9; row++)
@@ -344,7 +352,7 @@ public class SudokuGenerator9x9
         return lowestValue;
     }
     
-    private int FindHighestEntropy(bool[,] visited)
+    private int FindHighestEntropyFromVisited(bool[,] visited)
     {
         int highestValue = -1;
 
@@ -367,7 +375,7 @@ public class SudokuGenerator9x9
         return highestValue;
     }
     
-    private int FindLowestEntropy(bool[,] visited)
+    private int FindLowestEntropyFromVisited(bool[,] visited)
     {
         int lowestValue = int.MaxValue;
 
@@ -390,14 +398,20 @@ public class SudokuGenerator9x9
         return lowestValue;
     }
 
-    private void Propagate(int number, List<SudokuTile> tilesToPropagate, bool remove = true)
+    private void Propagate(int number, List<TileIndex> tilesToPropagate, bool remove = true)
     {
-        foreach (var tile in tilesToPropagate)
+        foreach (TileIndex index in tilesToPropagate)
         {
+            // if (remove) 
+            //     tile.RemoveCandidate(number);
+            // else
+            //     tile.AddCandidate(number);
+            
             if (remove) 
-                tile.RemoveCandidate(number);
+               grid.Tiles[index.row, index.col].RemoveCandidate(number);
             else
-                tile.AddCandidate(number);
+                grid.Tiles[index.row, index.col].AddCandidate(number);
+
         }
     }
 }

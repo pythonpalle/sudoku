@@ -2,14 +2,14 @@
 
 public struct Move
 {
-    public SudokuTile Tile;
+    public TileIndex Index;
     public int Number;
-    public List<SudokuTile> EffectedTiles;
+    public List<TileIndex> EffectedTileIndecies;
 
-    public Move(SudokuTile tile, int number, List<SudokuTile> effectedTiles)
+    public Move(TileIndex index, int number, List<TileIndex> effectedTileIndecies)
     {
-        Tile = tile;
+        Index = index;
         Number = number;
-        EffectedTiles = effectedTiles;
+        EffectedTileIndecies = effectedTileIndecies;
     }
 }

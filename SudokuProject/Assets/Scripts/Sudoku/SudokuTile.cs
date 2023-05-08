@@ -23,9 +23,15 @@ public struct TileIndex
     {
         return (tileIndex1.row == tileIndex2.row && tileIndex1.col == tileIndex2.col);
     }
+
+    public TileIndex(int row, int col)
+    {
+        this.row = row;
+        this.col = col;
+    }
 }
 
-public class SudokuTile
+public struct SudokuTile
 {
     public TileIndex index;
     
@@ -81,6 +87,11 @@ public class SudokuTile
         this.highestNumber = highestNumber;
         this.number = number;
         Number = number;
+    }
+
+    public static SudokuTile Default()
+    {
+        return new SudokuTile(0, 0);
     }
     
 
