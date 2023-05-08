@@ -7,26 +7,6 @@ public struct SudokuGrid9x9
 {
     const int size = 9;
     
-    public SudokuTile[,] Tiles
-    {
-        get;
-        private set;
-    }
-
-    public SudokuTile this[int row, int col]
-    {
-        get { return Tiles[row, col]; }
-        
-        //set { Tiles[row, col] = value; }
-    }
-
-    public SudokuTile this[TileIndex index]
-    {
-        get { return Tiles[index.row, index.col]; }
-        
-        //set { Tiles[index.row, index.col] = value; }
-    }
-
     public SudokuGrid9x9(bool createTiles)
     {
         Tiles = new SudokuTile[size,size];
@@ -37,6 +17,22 @@ public struct SudokuGrid9x9
     {
         Tiles = new SudokuTile[size,size];
         SetupTiles(copyFrom);
+    }
+    
+    public SudokuTile[,] Tiles
+    {
+        get;
+        private set;
+    }
+
+    public SudokuTile this[int row, int col]
+    {
+        get { return Tiles[row, col]; }
+    }
+
+    public SudokuTile this[TileIndex index]
+    {
+        get { return Tiles[index.row, index.col]; }
     }
 
     private void SetupTiles()
@@ -61,7 +57,7 @@ public struct SudokuGrid9x9
         }
     }
 
-    private void SetupTile(int row, int col, int number = 0)
+    private void SetupTile(int row, int col)
     {
         Tiles[row, col] = new SudokuTile( row, col, 0, size);
     }
@@ -74,6 +70,11 @@ public struct SudokuGrid9x9
     public void SetNumberToIndex(TileIndex index, int number)
     {
         Tiles[index.row, index.col].Number = number;
+    }
+    
+    public void SetNumberToIndex(int row, int col, int number)
+    {
+        Tiles[row, col].Number = number;
     }
 
     public bool AssignLowestPossibleValue(TileIndex index, int minNumber)
@@ -114,6 +115,11 @@ public struct SudokuGrid9x9
     {
         Tiles[index.row, index.col].AddStrike(number);
     }
+    
+    public void RemoveStrikeFromIndex(TileIndex index, int number)
+    {
+        Tiles[index.row, index.col].RemoveStrike(number);
+    }
 
     public void ResetStrikesToIndex(TileIndex tileIndex, int tileNumber)
     {
@@ -124,4 +130,6 @@ public struct SudokuGrid9x9
     {
         Tiles[index.row, index.col].RemoveCandidate(number);
     }
+
+    
 }

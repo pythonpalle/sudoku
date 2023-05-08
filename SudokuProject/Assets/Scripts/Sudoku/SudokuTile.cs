@@ -33,44 +33,6 @@ public struct TileIndex
 
 public struct SudokuTile
 {
-    public TileIndex index;
-    
-    private int highestNumber { get; set; }
-
-    private int number;
-    public int Number
-    {
-        get => number;
-
-        set{
-
-            if (value < 0 || value > highestNumber)
-            {
-                throw new ArgumentOutOfRangeException(nameof(value),
-                    $"The valid range is between 1 and {highestNumber}.");
-            }
-            
-            RemoveCandidate(Number);
-            number = value;
-        }
-    }
-
-    public HashSet<int> Candidates
-    {
-        get;
-        private set;
-    }
-
-    public Dictionary<int, int> Strikes
-    {
-        get;
-        set;
-    }
-
-    public bool Used => number > 0;
-
-    public int Entropy => Candidates.Count;
-    
     public SudokuTile(int row, int col, int number = 0, int highestNumber = 9)
     {
         index.row = row;
@@ -94,25 +56,61 @@ public struct SudokuTile
         index.row = copyFrom.index.row;
         index.col = copyFrom.index.col;
         
-        highestNumber = copyFrom.highestNumber;
-        
-        Candidates = new HashSet<int>(highestNumber);
+        Candidates = new HashSet<int>(9);
         foreach (var candidate in copyFrom.Candidates)
         {
             Candidates.Add(candidate);
         }
 
-        Strikes = new Dictionary<int, int>(highestNumber);
+        Strikes = new Dictionary<int, int>(9);
         foreach (var pair in copyFrom.Strikes)
         {
             Strikes.Add(pair.Key, pair.Value);
         }
         
+        highestNumber = copyFrom.highestNumber;
         this.number = copyFrom.number;
         Number = copyFrom.number;
     }
     
+    public TileIndex index;
+    
+    private int highestNumber { get; set; }
 
+    private int number;
+    public int Number
+    {
+        get => number;
+
+        set{
+
+            if (value < 0 || value > highestNumber)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value),
+                    $"The valid range is between 1 and {highestNumber}.");
+            }
+            
+            RemoveCandidate(value);
+            number = value;
+        }
+    }
+
+    public HashSet<int> Candidates
+    {
+        get;
+        private set;
+    }
+
+    public Dictionary<int, int> Strikes
+    {
+        get;
+        set;
+    }
+
+    public bool Used => number > 0;
+
+    public int Entropy => Candidates.Count;
+    
     public void RemoveCandidate(int number)
     {
         Candidates.Remove(number);
@@ -175,6 +173,15 @@ public struct SudokuTile
         }
     }
     
+    public void RemoveStrike(int number)
+    {
+        Strikes[number]++;
+        if (Strikes[number] > 0)
+        {
+            RemoveCandidate(number);
+        }
+    }
+    
     public void ResetStrikes(int tileNumber)
     {
         Strikes[tileNumber] = 3;
@@ -186,5 +193,4 @@ public struct SudokuTile
         Debug.Log($"Number: {Number}");
         Debug.Log($"Entropy: {Entropy}");
     }
-    
 }

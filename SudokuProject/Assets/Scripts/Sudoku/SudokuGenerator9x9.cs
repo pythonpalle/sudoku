@@ -26,33 +26,30 @@ public class SudokuGenerator9x9
 
     public void Test()
     {
-        Vector2 OG = new Vector2(5, 3);
-        Vector2 newVec = OG;
-        Debug.Log("OG: " + OG);
-        Debug.Log("NEW: " + newVec);
-
-        OG.x = 1;
-        Debug.Log("OG: " + OG);
-        Debug.Log("NEW: " + newVec);
-
         SudokuGrid9x9 grid1 = new SudokuGrid9x9(true);
         grid1.Tiles[5, 5].Number = 5;
+        //grid1.SetNumberToIndex(5,5,5);
+
 
         SudokuGrid9x9 grid2 = new SudokuGrid9x9(grid1);
 
-        Debug.Log("grid 1: " + grid1.Tiles[5, 5].Number);
-        Debug.Log("grid 2: " + grid2.Tiles[5, 5].Number);
+        Debug.Log("grid 1: ");
+        grid1.Tiles[5, 5].DebugTileInfo();
+        
+        Debug.Log("grid 2: ");
+        grid2.Tiles[5, 5].DebugTileInfo();
         
         grid1.Tiles[5, 5].Number = 6;
 
-        Debug.Log("grid 1: " + grid1.Tiles[5, 5].Number);
-        Debug.Log("grid 2: " + grid2.Tiles[5, 5].Number);
+        Debug.Log("grid 1: ");
+        grid1.Tiles[5, 5].DebugTileInfo();
+        
+        Debug.Log("grid 2: ");
+        grid2.Tiles[5, 5].DebugTileInfo();
     }
 
     public void Generate()
     {
-        Test();
-        
         bool solvedGridCreated = TryCreateSolvedGrid();
 
         bool puzzleCreated = false; 
@@ -86,7 +83,7 @@ public class SudokuGenerator9x9
     private void HandleNextGenerationStep()
     {
         TileIndex lowestEntropyTileIndex = FindLowestEntropyTile();
-
+        
         if (grid[lowestEntropyTileIndex].Entropy <= 0)
         {
             Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTileIndex.row},{lowestEntropyTileIndex.col})");
@@ -233,6 +230,12 @@ public class SudokuGenerator9x9
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))
         {
+            if (counter > 81)
+            {
+                Debug.LogError("Counter Limit Exceeded");
+                break;
+            }
+            
             //  1. Find lowest entropy tile
             TileIndex lowestEntropyTileIndex = FindLowestEntropyTileIndexFromVisited(visitedTiles);
             //Debug.Log("Lowest entropy: " + grid[lowestEntropyTileIndex].Entropy);
@@ -242,15 +245,17 @@ public class SudokuGenerator9x9
             
             // 3. Find symmetric neighbour, remove
             RemoveSymmetric(visitedTiles, lowestEntropyTileIndex);
+            
+            // 4. Find all solutions with brute force
+            int solutionCount = FindAllSolutions(grid);
+
+            if (solutionCount != 1 || !HumanlySolvable(grid))
+            {
+                MakeLatestMovesPermanentClues();
+            }
 
             grid.PrintGrid();
             counter++;
-
-            if (counter > 81)
-            {
-                Debug.LogWarning("Counter Limit Exceeded");
-                break;
-            }
         }
         
         // while puzzle is not finished:
@@ -264,6 +269,48 @@ public class SudokuGenerator9x9
         //  8. if not humanly solvable, make those cells permanent
 
         return false;
+    }
+
+    private bool HumanlySolvable(SudokuGrid9x9 sudokuGrid9X9)
+    {
+        return true;
+    }
+
+    private void MakeLatestMovesPermanentClues()
+    {
+        TileIndex middleIndex = new TileIndex(4, 4);
+        bool lastMoveMiddleTile = puzzleGridRemovalMoves.Peek().Index == middleIndex;
+        
+        MakeLatestMovePermanentClue();
+        
+        // middle tile has no symmetric neighbour 
+        if (!lastMoveMiddleTile)
+            MakeLatestMovePermanentClue();
+    }
+
+    private void MakeLatestMovePermanentClue()
+    {
+        Move latestMove = puzzleGridRemovalMoves.Pop();
+        TileIndex latestIndex = latestMove.Index;
+        int latestNumber = latestMove.Number;
+        
+        grid.SetNumberToIndex(latestIndex, latestNumber);
+        
+        // // not sure yet ?
+        //grid.AddCandidateToIndex(tileIndex, tileNumber);
+        
+        var effectedIndecies = latestMove.EffectedTileIndecies;
+        RemoveStrikes(latestNumber, effectedIndecies);
+
+        // // antingen ingenting eller lägga till 3 strikes
+        // grid.ResetStrikesToIndex(latestIndex, latestNumber);
+    }
+
+    
+
+    private int FindAllSolutions(SudokuGrid9x9 grid9X9)
+    {
+        return 1;
     }
 
     private void RemoveSymmetric(bool[,] visitedTiles, TileIndex lowestEntropyTileIndex)
@@ -303,6 +350,14 @@ public class SudokuGenerator9x9
         foreach (TileIndex index in effectedTiles)
         {
             grid.AddStrikeToIndex(index, number);
+        }
+    }
+    
+    private void RemoveStrikes(int number, List<TileIndex> effectedTiles)
+    {
+        foreach (TileIndex index in effectedTiles)
+        {
+            grid.RemoveStrikeFromIndex(index, number);
         }
     }
     
@@ -423,21 +478,10 @@ public class SudokuGenerator9x9
     {
         foreach (TileIndex index in tilesToPropagate)
         {
-            // if (remove) 
-            //     tile.RemoveCandidate(number);
-            // else
-            //     tile.AddCandidate(number);
-            
-            // if (remove) 
-            //    grid.Tiles[index.row, index.col].RemoveCandidate(number);
-            // else
-            //     grid.Tiles[index.row, index.col].AddCandidate(number);
-
             if (remove)
                 grid.RemoveCandidateFromIndex(index, number);
             else
                 grid.AddCandidateToIndex(index, number);
-
         }
     }
 }
