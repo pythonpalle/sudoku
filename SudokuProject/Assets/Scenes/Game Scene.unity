@@ -1491,6 +1491,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Box
       objectReference: {fileID: 0}
+    - target: {fileID: 8386286028687009137, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
+      propertyPath: m_text
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
 --- !u!114 &5508750209443585459 stripped

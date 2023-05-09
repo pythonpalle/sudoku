@@ -122,12 +122,7 @@ public class SudokuGenerator9x9
     private bool TryCreatePuzzleFromSolvedGrid()
     {
         bool[,] visitedTiles = new bool[9, 9];
-
-        int counter = 0;
-        int iterationCountLimit = 42;
-
-        bool wasBroken = false;
-
+        
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))
         {
@@ -135,12 +130,11 @@ public class SudokuGenerator9x9
             
             //  1. Find lowest entropy tile
             TileIndex lowestEntropyTileIndex = FindLowestEntropyTileIndexFromVisited(visitedTiles);
-            //Debug.Log("Lowest entropy: " + grid[lowestEntropyTileIndex].Entropy);
             
             //  2. Remove it from grid, propagate
             RemoveFromGrid(visitedTiles, lowestEntropyTileIndex);
             
-            // 3. Find symmetric neighbour, remove
+            // 3. Find symmetric neighbour, remove and propagate
             RemoveSymmetric(visitedTiles, lowestEntropyTileIndex);
             
             Debug.Log("Current grid state:");
@@ -149,39 +143,16 @@ public class SudokuGenerator9x9
             // 4. Find all solutions with brute force
             int solutionCount = FindAllSolutions(grid);
 
+            // 5. Revert to last grid if multiple solutions OR if not humanly solvable
             if (solutionCount != 1 || !HumanlySolvable(grid))
             {
                 grid = new SudokuGrid9x9(lastGrid);
-                //MakeLatestMovesPermanentClues();
                 Debug.Log("Current grid state (after re-adding the clues):");
                 grid.PrintGrid();
             }
-
-            counter++;
-            
-            if (counter >= iterationCountLimit) 
-            {
-                Debug.LogError("Counter Limit Exceeded");
-                wasBroken = true;
-                break;
-            }
         }
 
-        if (!wasBroken)
-        {
-            Debug.Log("The puzzle is finished, Hurray!");
-        }
-        
-        // while puzzle is not finished:
-        //  1. Find Highest Entropy Cell
-        //  2. Remove it from grid, propagate
-        //  3. Add that move
-        //  4. Find its symmetric neighbour, repeat 2-3
-        //  5. Check for number of solutions
-        //  6. If not 1 solution, Make those cells permanent
-        //  7. If 1 solution, check if humanly solvable
-        //  8. if not humanly solvable, make those cells permanent
-
+        Debug.Log("The puzzle is finished, Hurray!");
         EventManager.GenerateGrid(grid);
 
         return true;

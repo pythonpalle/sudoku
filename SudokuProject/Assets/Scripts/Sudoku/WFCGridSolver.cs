@@ -13,7 +13,7 @@ public class WFCGridSolver
     }
     
     
-    private const int GENERATION_ITERATION_LIMIT = 4096;
+    private const int GENERATION_ITERATION_LIMIT = 16_384;
 
     private Stack<Move> moves;
     public SudokuGrid9x9 grid { get; private set; }
@@ -88,7 +88,7 @@ public class WFCGridSolver
 
             if (iterations >= GENERATION_ITERATION_LIMIT)
             {
-                Debug.LogError("Maximum iterations reached, couldn't generate grid.");
+                Debug.LogWarning("Maximum iterations reached, couldn't generate grid.");
                 return false;
             }
         }
