@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using UnityEngine;
 
 public struct TileIndex
@@ -23,6 +24,26 @@ public struct TileIndex
     {
         return (tileIndex1.row == tileIndex2.row && tileIndex1.col == tileIndex2.col);
     }
+    
+    public override bool Equals(object other)
+    {
+        if(other == null)
+            return false;
+
+        if (other is TileIndex second)
+        {
+            return second == this;
+        }
+
+        return false;
+    }
+
+
+    public override int GetHashCode()
+    {
+        throw new NotImplementedException();
+    }
+
 
     public TileIndex(int row, int col)
     {
@@ -131,7 +152,7 @@ public struct SudokuTile
     {
         if (Candidates.Count <= 0)
         {
-            Debug.LogWarning("Cannot assign value to Tile, has zero entropy");
+            //Debug.LogWarning("Cannot assign value to Tile, has zero entropy");
             return false;
         }
         
@@ -154,7 +175,7 @@ public struct SudokuTile
 
             if (minPossibleCandidate > highestNumber)
             {
-                Debug.LogWarning("Cannot assign value to Tile, tried all options.");
+//                Debug.LogWarning("Cannot assign value to Tile, tried all options.");
                 return false;
             }
 

@@ -13,35 +13,46 @@ public class WFCGridSolver
     }
     
     
-    private const int GENERATION_ITERATION_LIMIT = 250;
+    private const int GENERATION_ITERATION_LIMIT = 1024;
 
     private Stack<Move> moves;
     private SudokuGrid9x9 grid;
     private System.Random random = new System.Random();
 
-    private bool solvedGridCompleted => moves.Count >= 81;
+    private bool gridFilled => grid.AllTilesAreUsed();
 
-    public int GetSolutionCount(SudokuGrid9x9 grid)
+    public int GetSolutionCount(SudokuGrid9x9 originalGrid)
     {
         List<SudokuGrid9x9> solvedGrids = new List<SudokuGrid9x9>();
+        
+        Debug.Log("Finding all solutions...");
 
-        foreach (var tile in grid.Tiles)
+        foreach (var tile in originalGrid.Tiles)
         {
             if (tile.Used) continue;
 
             foreach (var candidate in tile.Candidates)
             {
-                SudokuGrid9x9 newGrid = new SudokuGrid9x9(grid);
-                if (newGrid.AssignLowestPossibleValue(tile.index, candidate-1))
+                moves.Clear();
+                this.grid = new SudokuGrid9x9(originalGrid);
+                //SudokuGrid9x9 newGrid = new SudokuGrid9x9(grid);
+                if (grid.AssignLowestPossibleValue(tile.index, candidate-1))
                 {
+                   // grid.PrintGrid();
                     CollapseWaveFunction(tile.index);
-                    bool solved = TrySolveGrid(newGrid);
+                    bool solved = TrySolveGrid(grid);
                     if (solved)
                     {
-                        TryAddNewSoultion(solvedGrids, newGrid);
+                        TryAddNewSoultion(solvedGrids, grid);
                     }
                 }
             }
+        }
+        
+        Debug.Log("Solutions found: " + solvedGrids.Count);
+        if (solvedGrids.Count > 1)
+        {
+            Debug.LogWarning($"{solvedGrids.Count} Solutions found"); 
         }
 
         return solvedGrids.Count;
@@ -49,13 +60,10 @@ public class WFCGridSolver
 
     private void TryAddNewSoultion(List<SudokuGrid9x9> solvedGrids, SudokuGrid9x9 newGrid)
     {
-        bool unique = true;
-        
         foreach (var grid in solvedGrids)
         {
             if (grid == newGrid)
             {
-                unique = false;
                 return;
             }
         }
@@ -69,10 +77,9 @@ public class WFCGridSolver
         this.grid = grid;
         
         int iterations = 0;
-        while (!solvedGridCompleted)
+        while (!gridFilled)
         {
             HandleNextSolveStep();
-            grid.PrintGrid();
 
             iterations++;
 
@@ -82,6 +89,8 @@ public class WFCGridSolver
                 return false;
             }
         }
+        
+        //grid.PrintGrid();
 
         return true;
     }
@@ -92,7 +101,7 @@ public class WFCGridSolver
         
         if (grid[lowestEntropyTileIndex].Entropy <= 0)
         {
-            Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTileIndex.row},{lowestEntropyTileIndex.col})");
+//            Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTileIndex.row},{lowestEntropyTileIndex.col})");
             HandleBackTracking();
         }
         else
@@ -113,14 +122,14 @@ public class WFCGridSolver
         {
             if (moves.Count <= 0)
             {
-                Debug.Log("Out of moves, no solution found.");
+//                Debug.Log("Out of moves, no solution found.");
                 return false;
             }
             
             Move lastMove = moves.Pop();
             
-            Debug.Log($"Backtracking, removing {lastMove.Number} " +
-                      $"from ({lastMove.Index.row}), ({lastMove.Index.col})");
+           // Debug.Log($"Backtracking, removing {lastMove.Number} " +
+            //          $"from ({lastMove.Index.row}), ({lastMove.Index.col})");
             
             grid.SetNumberToIndex(lastMove.Index, 0);
             grid.AddCandidateToIndex(lastMove.Index, lastMove.Number);
@@ -129,15 +138,15 @@ public class WFCGridSolver
 
             lastEntropy = grid[lastMove.Index].Entropy;
             moveToChange = lastMove;
-            grid.PrintGrid();
+//            grid.PrintGrid();
         } 
         while (lastEntropy <= 1);
 
         if (grid.AssignLowestPossibleValue(moveToChange.Index, moveToChange.Number))
         {
-            Debug.Log($"...and replace it with a {grid[moveToChange.Index].Number}.");
-            CollapseWaveFunction(moveToChange.Index);
-            grid.PrintGrid();
+//            Debug.Log($"...and replace it with a {grid[moveToChange.Index].Number}.");
+            CollapseWaveFunction(moveToChange.Index); 
+            //grid.PrintGrid();
             return true;
         }
         else

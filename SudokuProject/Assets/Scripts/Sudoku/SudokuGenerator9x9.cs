@@ -29,6 +29,7 @@ public class SudokuGenerator9x9
     public void Generate()
     {
         bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(grid);
+        grid.PrintGrid();
 
         bool puzzleCreated = false; 
         if (solvedGridCreated)
@@ -208,11 +209,7 @@ public class SudokuGenerator9x9
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))
         {
-            if (counter > 81)
-            {
-                Debug.LogError("Counter Limit Exceeded");
-                break;
-            }
+            
             
             //  1. Find lowest entropy tile
             TileIndex lowestEntropyTileIndex = FindLowestEntropyTileIndexFromVisited(visitedTiles);
@@ -224,16 +221,26 @@ public class SudokuGenerator9x9
             // 3. Find symmetric neighbour, remove
             RemoveSymmetric(visitedTiles, lowestEntropyTileIndex);
             
+            Debug.Log("Current grid state:");
+            grid.PrintGrid();
+
             // 4. Find all solutions with brute force
             int solutionCount = FindAllSolutions(grid);
 
             if (solutionCount != 1 || !HumanlySolvable(grid))
             {
                 MakeLatestMovesPermanentClues();
+                Debug.Log("Current grid state:");
+                grid.PrintGrid();
             }
 
-            grid.PrintGrid();
             counter++;
+            
+            if (counter >= 32) 
+            {
+                Debug.LogError("Counter Limit Exceeded");
+                break;
+            }
         }
         
         // while puzzle is not finished:
@@ -288,7 +295,7 @@ public class SudokuGenerator9x9
 
     private int FindAllSolutions(SudokuGrid9x9 grid9X9)
     {
-        return 1;
+        return _wfcGridSolver.GetSolutionCount(grid9X9);
     }
 
     private void RemoveSymmetric(bool[,] visitedTiles, TileIndex lowestEntropyTileIndex)

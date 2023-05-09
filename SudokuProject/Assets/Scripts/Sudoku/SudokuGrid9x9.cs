@@ -47,12 +47,31 @@ public struct SudokuGrid9x9
         return true;
     }
     
+    public override bool Equals(object other)
+    {
+        if(other == null)
+            return false;
+
+        if (other is SudokuGrid9x9 second)
+        {
+            return second == this;
+        }
+
+        return false;
+    }
+
+
+    public override int GetHashCode()
+    {
+        throw new NotImplementedException();
+    }
+    
     public SudokuTile[,] Tiles
     {
         get;
         private set;
     }
-
+    
     public SudokuTile this[int row, int col]
     {
         get { return Tiles[row, col]; }
@@ -117,24 +136,40 @@ public struct SudokuGrid9x9
 
     public void PrintGrid()
     {
+        PrintAsMatrix();
+        PrintAsString();
+    }
+
+    private void PrintAsMatrix()
+    {
         string gridString = String.Empty;
         
-        for (int col = 0; col < size; col++)
+        for (int row = 0; row < size; row++)
         {
             string rowString = String.Empty;
             
             // box separator
-            if (col % 3 == 0) gridString +=("-     -     -     -     -     -     -     -     -     -     -     -     -     -" + Environment.NewLine);
+            if (row % 3 == 0) gridString +=("-     -     -     -     -     -     -     -     -     -     -     -     -     -" + Environment.NewLine);
 
-            for (int row = 0; row < size; row++)
+            for (int col = 0; col < size; col++)
             {
-                if (row % 3 == 0) rowString += " | ";
+                if (col % 3 == 0) rowString += " | ";
                 rowString += Tiles[row, col].Number + "       ";
             }
 
             gridString += rowString + Environment.NewLine;
         }
         
+        Debug.Log(gridString);
+    }
+    
+    private void PrintAsString()
+    {
+        string gridString = String.Empty;
+        foreach (var tile in Tiles)
+        {
+            gridString += tile.Used ? tile.Number : " ";
+        }
         Debug.Log(gridString);
     }
 
@@ -159,5 +194,26 @@ public struct SudokuGrid9x9
         Tiles[index.row, index.col].RemoveCandidate(number);
     }
 
-    
+
+    public bool AllTilesAreUsed()
+    {
+        for (int col = 0; col < size; col++)
+        {
+            for (int row = 0; row < size; row++)
+            {
+                if (!Tiles[row, col].Used)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void DebugTiles()
+    {
+        foreach (var tile in Tiles)
+        {
+            tile.DebugTileInfo();
+        }
+    }
 }
