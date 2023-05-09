@@ -182,7 +182,9 @@ public class SudokuGenerator9x9
         //  7. If 1 solution, check if humanly solvable
         //  8. if not humanly solvable, make those cells permanent
 
-        return false;
+        EventManager.GenerateGrid(grid);
+
+        return true;
     }
 
     private bool HumanlySolvable(SudokuGrid9x9 sudokuGrid9X9)
