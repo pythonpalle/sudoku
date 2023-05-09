@@ -129,16 +129,14 @@ public class SudokuGenerator9x9
             SudokuGrid9x9 lastGrid = new SudokuGrid9x9(grid);
             
             //  1. Find lowest entropy tile
-            TileIndex lowestEntropyTileIndex = FindLowestEntropyTileIndexFromVisited(visitedTiles);
+            TileIndex lowestEntropyTileIndex = FindLowestEntropyTileIndexFromUnVisited(visitedTiles);
+            //TileIndex lowestEntropyTileIndex = GetRandomTileIndex(visitedTiles);
             
             //  2. Remove it from grid, propagate
             RemoveFromGrid(visitedTiles, lowestEntropyTileIndex);
             
             // 3. Find symmetric neighbour, remove and propagate
             RemoveSymmetric(visitedTiles, lowestEntropyTileIndex);
-            
-            Debug.Log("Current grid state:");
-            grid.PrintGrid();
 
             // 4. Find all solutions with brute force
             int solutionCount = FindAllSolutions(grid);
@@ -160,38 +158,48 @@ public class SudokuGenerator9x9
 
     private bool HumanlySolvable(SudokuGrid9x9 sudokuGrid9X9)
     {
+        // TODO:
+        
+        // List all strategies
+        
+        // if can place number
+        // place it
+        // print strategy used
+        
+        // keep solving until found solution
+        
         return true;
     }
 
-    private void MakeLatestMovesPermanentClues()
-    {
-        TileIndex middleIndex = new TileIndex(4, 4);
-        bool lastMoveMiddleTile = puzzleGridRemovalMoves.Peek().Index == middleIndex;
-        
-        MakeLatestMovePermanentClue();
-        
-        // middle tile has no symmetric neighbour 
-        if (!lastMoveMiddleTile)
-            MakeLatestMovePermanentClue();
-    }
-
-    private void MakeLatestMovePermanentClue()
-    {
-        Move latestMove = puzzleGridRemovalMoves.Pop();
-        TileIndex latestIndex = latestMove.Index;
-        int latestNumber = latestMove.Number;
-        
-        grid.SetNumberToIndex(latestIndex, latestNumber);
-        
-        // // not sure yet ?
-        //grid.AddCandidateToIndex(tileIndex, tileNumber);
-        
-        var effectedIndecies = latestMove.EffectedTileIndecies;
-        RemoveStrikes(latestNumber, effectedIndecies);
-
-        // // antingen ingenting eller lägga till 3 strikes
-        // grid.ResetStrikesToIndex(latestIndex, latestNumber);
-    }
+    // private void MakeLatestMovesPermanentClues()
+    // {
+    //     TileIndex middleIndex = new TileIndex(4, 4);
+    //     bool lastMoveMiddleTile = puzzleGridRemovalMoves.Peek().Index == middleIndex;
+    //     
+    //     MakeLatestMovePermanentClue();
+    //     
+    //     // middle tile has no symmetric neighbour 
+    //     if (!lastMoveMiddleTile)
+    //         MakeLatestMovePermanentClue();
+    // }
+    //
+    // private void MakeLatestMovePermanentClue()
+    // {
+    //     Move latestMove = puzzleGridRemovalMoves.Pop();
+    //     TileIndex latestIndex = latestMove.Index;
+    //     int latestNumber = latestMove.Number;
+    //     
+    //     grid.SetNumberToIndex(latestIndex, latestNumber);
+    //     
+    //     // // not sure yet ?
+    //     //grid.AddCandidateToIndex(tileIndex, tileNumber);
+    //     
+    //     var effectedIndecies = latestMove.EffectedTileIndecies;
+    //     RemoveStrikes(latestNumber, effectedIndecies);
+    //
+    //     // // antingen ingenting eller lägga till 3 strikes
+    //     // grid.ResetStrikesToIndex(latestIndex, latestNumber);
+    // }
 
     
 
@@ -212,7 +220,6 @@ public class SudokuGenerator9x9
             int symmetricRow = 8 - row;
             int symmetricCol = 8 - col;
             TileIndex symmetricTileIndex = grid[symmetricRow, symmetricCol].index;
-                
             RemoveFromGrid(visitedTiles, symmetricTileIndex);
         }
     }
@@ -254,9 +261,28 @@ public class SudokuGenerator9x9
         return visitedTiles.Cast<bool>().All(visited => visited);
     }
     
-    private TileIndex FindLowestEntropyTileIndexFromVisited(bool[,] visited)
+    private TileIndex GetRandomTileIndex(bool[,] visitedTiles)
     {
-        int lowestEntropy = FindLowestEntropyFromVisited(visited);
+        List<SudokuTile> tiles = new List<SudokuTile>();
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                if (visitedTiles[row, col]) continue;
+                
+                tiles.Add(grid[row, col]);
+                
+            }
+        }
+
+        int randomIndex = random.Next(tiles.Count);
+        SudokuTile randomTile = tiles[randomIndex];
+        return randomTile.index;
+    }
+    
+    private TileIndex FindLowestEntropyTileIndexFromUnVisited(bool[,] visited)
+    {
+        int lowestEntropy = FindLowestEntropyFromUnVisited(visited);
 
         List<SudokuTile> lowestEntropyTiles = new List<SudokuTile>();
         for (int row = 0; row < 9; row++)
@@ -338,7 +364,7 @@ public class SudokuGenerator9x9
         return highestValue;
     }
     
-    private int FindLowestEntropyFromVisited(bool[,] visited)
+    private int FindLowestEntropyFromUnVisited(bool[,] visited)
     {
         int lowestValue = int.MaxValue;
 
