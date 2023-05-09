@@ -29,7 +29,7 @@ public class SudokuGenerator9x9
     public void Generate()
     {
         _wfcGridSolver.SetGrid(grid);
-        bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(true);
+        bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(false);
 
         grid = new SudokuGrid9x9(_wfcGridSolver.grid);
         grid.PrintGrid();
@@ -42,90 +42,6 @@ public class SudokuGenerator9x9
         }
     }
 
-    // private bool TryCreateSolvedGrid()
-    // {
-    //     int iterations = 0;
-    //     while (!solvedGridCompleted)
-    //     {
-    //         HandleNextGenerationStep();
-    //         grid.PrintGrid();
-    //
-    //         iterations++;
-    //
-    //         if (iterations >= GENERATION_ITERATION_LIMIT)
-    //         {
-    //             Debug.LogError("Maximum iterations reached, couldn't generate grid.");
-    //             return false;
-    //         }
-    //     }
-    //
-    //     return true;
-    // }
-    //
-    // private void HandleNextGenerationStep()
-    // {
-    //     TileIndex lowestEntropyTileIndex = FindLowestEntropyTile();
-    //     
-    //     if (grid[lowestEntropyTileIndex].Entropy <= 0)
-    //     {
-    //         Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTileIndex.row},{lowestEntropyTileIndex.col})");
-    //         HandleBackTracking();
-    //     }
-    //     else
-    //     {
-    //         if (grid.AssignLowestPossibleValue(lowestEntropyTileIndex, 0))
-    //         {
-    //             CollapseWaveFunction(lowestEntropyTileIndex);
-    //         }
-    //     }
-    // }
-    //
-    // private void HandleBackTracking()
-    // {
-    //     int lastEntropy;
-    //     Move moveToChange;
-    //     
-    //     do
-    //     {
-    //         Move lastMove = solvedGridMoves.Pop();
-    //         
-    //         Debug.Log($"Backtracking, removing {lastMove.Number} " +
-    //                   $"from ({lastMove.Index.row}), ({lastMove.Index.col})");
-    //         
-    //         grid.SetNumberToIndex(lastMove.Index, 0);
-    //         grid.AddCandidateToIndex(lastMove.Index, lastMove.Number);
-    //         
-    //         Propagate(lastMove.Number, lastMove.EffectedTileIndecies, false);
-    //
-    //         lastEntropy = grid[lastMove.Index].Entropy;
-    //         moveToChange = lastMove;
-    //         grid.PrintGrid();
-    //     } 
-    //     while (lastEntropy <= 1);
-    //
-    //     if (grid.AssignLowestPossibleValue(moveToChange.Index, moveToChange.Number))
-    //     {
-    //         Debug.Log($"...and replace it with a {grid[moveToChange.Index].Number}.");
-    //         CollapseWaveFunction(moveToChange.Index);
-    //         grid.PrintGrid();
-    //     }
-    //     else
-    //     {
-    //         HandleBackTracking();
-    //     }
-    //     
-    // }
-    //
-    // private void CollapseWaveFunction(TileIndex placeTileIndex)
-    // {
-    //     List<TileIndex> effectedTileIndicies = FindEffectedTileIndicies(placeTileIndex);
-    //     effectedTileIndicies = RemoveTilesWithMissingCandidate(effectedTileIndicies, placeTileIndex);
-    //
-    //     int tileNumber = grid[placeTileIndex].Number;
-    //
-    //     Propagate(tileNumber, effectedTileIndicies, true);
-    //     solvedGridMoves.Push(new Move(placeTileIndex, tileNumber, effectedTileIndicies));
-    // }
     
     private List<TileIndex> FindEffectedTileIndicies(TileIndex tileIndex)
     {
@@ -208,6 +124,9 @@ public class SudokuGenerator9x9
         bool[,] visitedTiles = new bool[9, 9];
 
         int counter = 0;
+        int iterationCountLimit = 42;
+
+        bool wasBroken = false;
 
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))
@@ -234,17 +153,23 @@ public class SudokuGenerator9x9
             {
                 grid = new SudokuGrid9x9(lastGrid);
                 //MakeLatestMovesPermanentClues();
-                Debug.Log("Current grid state:");
+                Debug.Log("Current grid state (after re-adding the clues):");
                 grid.PrintGrid();
             }
 
             counter++;
             
-            if (counter >= 32) 
+            if (counter >= iterationCountLimit) 
             {
                 Debug.LogError("Counter Limit Exceeded");
+                wasBroken = true;
                 break;
             }
+        }
+
+        if (!wasBroken)
+        {
+            Debug.Log("The puzzle is finished, Hurray!");
         }
         
         // while puzzle is not finished:

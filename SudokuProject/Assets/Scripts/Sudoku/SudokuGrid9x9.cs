@@ -136,12 +136,6 @@ public struct SudokuGrid9x9
 
     public void PrintGrid()
     {
-        PrintAsMatrix();
-        PrintAsString();
-    }
-
-    private void PrintAsMatrix()
-    {
         string gridString = String.Empty;
         
         for (int row = 0; row < size; row++)
@@ -159,20 +153,17 @@ public struct SudokuGrid9x9
 
             gridString += rowString + Environment.NewLine;
         }
+
+        gridString += Environment.NewLine;
+        gridString += Environment.NewLine;
         
-        Debug.Log(gridString);
-    }
-    
-    private void PrintAsString()
-    {
-        string gridString = String.Empty;
         foreach (var tile in Tiles)
         {
             gridString += tile.Used ? tile.Number : " ";
         }
+        
         Debug.Log(gridString);
     }
-
 
     public void AddStrikeToIndex(TileIndex index, int number)
     {

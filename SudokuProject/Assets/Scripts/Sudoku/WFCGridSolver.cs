@@ -13,13 +13,16 @@ public class WFCGridSolver
     }
     
     
-    private const int GENERATION_ITERATION_LIMIT = 1024;
+    private const int GENERATION_ITERATION_LIMIT = 4096;
 
     private Stack<Move> moves;
     public SudokuGrid9x9 grid { get; private set; }
     private System.Random random = new System.Random();
+    List<SudokuGrid9x9> solvedGrids = new List<SudokuGrid9x9>();
 
     private bool gridFilled => grid.AllTilesAreUsed();
+
+    private bool cancelSolve = false;
 
     public void SetGrid(SudokuGrid9x9 other)
     {
@@ -29,80 +32,105 @@ public class WFCGridSolver
 
     public int GetSolutionCount(SudokuGrid9x9 originalGrid)
     {
-        List<SudokuGrid9x9> solvedGrids = new List<SudokuGrid9x9>();
-        
-        Debug.Log("Finding all solutions...");
-
-        foreach (var tile in originalGrid.Tiles)
-        {
-            if (tile.Used) continue;
-
-            foreach (var candidate in tile.Candidates)
-            {
-                moves.Clear();
-                this.grid = new SudokuGrid9x9(originalGrid);
-                //SudokuGrid9x9 newGrid = new SudokuGrid9x9(grid);
-                if (grid.AssignLowestPossibleValue(tile.index, candidate-1))
-                {
-                   // grid.PrintGrid();
-                    CollapseWaveFunction(tile.index);
-                    bool solved = TrySolveGrid(false);
-                    if (solved)
-                    {
-                        TryAddNewSoultion(solvedGrids, grid);
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("Couldn't assign value");
-                }
-            }
-        }
+        grid = new SudokuGrid9x9(originalGrid);
+        FindAllSolutions();
         
         Debug.Log("Solutions found: " + solvedGrids.Count);
-        if (solvedGrids.Count > 1)
-        {
-            Debug.LogWarning($"{solvedGrids.Count} Solutions found");
-            if (solvedGrids.Count > 5)
-            {
-                DebugAllSolutions(solvedGrids);
-            }
-        }
-
         return solvedGrids.Count;
     }
 
-    private void DebugAllSolutions(List<SudokuGrid9x9> sudokuGrid9X9s)
+    private void FindAllSolutions()
     {
-        Debug.Log("Here are every solution:");
-        foreach (var solvedGrid in sudokuGrid9X9s)
-        {
-            solvedGrid.PrintGrid();
-        }
+        solvedGrids = new List<SudokuGrid9x9>();
+        moves = new Stack<Move>();        
+        
+        TrySolveGrid(true);
+        
+        if (solvedGrids.Count > 1)
+            DebugAllSolutions();
+        
+        
+        // Debug.Log("Finding all solutions...");
+        //
+        // foreach (var tile in originalGrid.Tiles)
+        // {
+        //     if (tile.Used) continue;
+        //
+        //     foreach (var candidate in tile.Candidates)
+        //     {
+        //         moves.Clear();
+        //         grid = new SudokuGrid9x9(originalGrid);
+        //         
+        //         if (grid.AssignLowestPossibleValue(tile.index, candidate-1))
+        //         {
+        //             // grid.PrintGrid();
+        //             CollapseWaveFunction(tile.index);
+        //             bool solved = TrySolveGrid(false);
+        //             if (solved)
+        //             {
+        //                 TryAddNewSoultion(solvedGrids, grid);
+        //             }
+        //         }
+        //     }
+        // }
+        //
+        // Debug.Log("Solutions found: " + solvedGrids.Count);
+        // if (solvedGrids.Count > 1)
+        // {
+        //     Debug.LogWarning($"{solvedGrids.Count} Solutions found");
+        //     if (solvedGrids.Count > 5)
+        //     {
+        //         DebugAllSolutions(solvedGrids);
+        //     }
+        // }
     }
 
-    private void TryAddNewSoultion(List<SudokuGrid9x9> solvedGrids, SudokuGrid9x9 newGrid)
+    private void DebugAllSolutions()
+    {
+        Debug.LogWarning("MULTIPLE SOLUTIONS FOUND. Solved grids count: " + solvedGrids.Count);
+        // Debug.Log("Here is every solution:");
+        // foreach (var solvedGrid in solvedGrids)
+        // {
+        //     solvedGrid.PrintGrid();
+        // }
+    }
+
+    private bool TryAddNewSoultion(SudokuGrid9x9 newGrid)
     {
         foreach (var solvedGrid in solvedGrids)
         {
             if (solvedGrid == newGrid)
             {
-                return;
+                Debug.Log("Solution already found, won't be added.");
+                return false;
             }
         }
         
         solvedGrids.Add(newGrid);
+        return true;
     }
 
-    public bool TrySolveGrid(bool randomly = true)
+    public bool TrySolveGrid(bool findAll = false)
     {
-        // intentional reference
-        // this.grid = grid;
+        cancelSolve = false;
         
         int iterations = 0;
         while (!gridFilled)
         {
-            HandleNextSolveStep(randomly);
+            HandleNextSolveStep(out bool outOfMoves, findAll);
+            if (outOfMoves)
+            {
+                //Debug.Log("No moves left, couldn't generate grid.");
+                return false;
+            }
+            
+            if (cancelSolve)
+            {
+                //Debug.Log("No moves left, couldn't generate grid.");
+                return false;
+            }
+            
+            //if (findAll) grid.PrintGrid();
 
             iterations++;
 
@@ -118,41 +146,45 @@ public class WFCGridSolver
         return true;
     }
 
-    private void HandleNextSolveStep(bool randomly = true)
+    private void HandleNextSolveStep(out bool outOfMoves, bool findAll = false)
     {
-        TileIndex lowestEntropyTileIndex = FindLowestEntropyTile(randomly);
-        
+        TileIndex lowestEntropyTileIndex = FindLowestEntropyTile(findAll);
+        outOfMoves = false;
+
         if (grid[lowestEntropyTileIndex].Entropy <= 0)
         {
-//            Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTileIndex.row},{lowestEntropyTileIndex.col})");
-            HandleBackTracking();
+            // Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTileIndex.row},{lowestEntropyTileIndex.col})");
+            HandleBackTracking(out outOfMoves, findAll);
         }
         else
         {
             if (grid.AssignLowestPossibleValue(lowestEntropyTileIndex, 0))
             {
-                CollapseWaveFunction(lowestEntropyTileIndex);
+                CollapseWaveFunction(out outOfMoves, lowestEntropyTileIndex, findAll);
             }
         }
     }
     
-    private bool HandleBackTracking()
+    private void HandleBackTracking(out bool outOfMoves, bool findAllSolutions)
     {
         int lastEntropy;
         Move moveToChange;
-        
+
         do
         {
+            
             if (moves.Count <= 0)
             {
-//                Debug.Log("Out of moves, no solution found.");
-                return false;
+                //Debug.Log("Out of moves when backtracking.");
+                outOfMoves = true;
+                cancelSolve = true;
+                return;
             }
             
             Move lastMove = moves.Pop();
             
-           // Debug.Log($"Backtracking, removing {lastMove.Number} " +
-            //          $"from ({lastMove.Index.row}), ({lastMove.Index.col})");
+            // Debug.Log($"Backtracking, removing {lastMove.Number} " +
+            // $"from ({lastMove.Index.row}), ({lastMove.Index.col})");
             
             grid.SetNumberToIndex(lastMove.Index, 0);
             grid.AddCandidateToIndex(lastMove.Index, lastMove.Number);
@@ -160,25 +192,26 @@ public class WFCGridSolver
             Propagate(lastMove.Number, lastMove.EffectedTileIndecies, false);
 
             lastEntropy = grid[lastMove.Index].Entropy;
+
             moveToChange = lastMove;
-//            grid.PrintGrid();
+            // grid.PrintGrid();
         } 
         while (lastEntropy <= 1);
 
         if (grid.AssignLowestPossibleValue(moveToChange.Index, moveToChange.Number))
         {
-//            Debug.Log($"...and replace it with a {grid[moveToChange.Index].Number}.");
-            CollapseWaveFunction(moveToChange.Index); 
+            // Debug.Log($"...and replace it with a {grid[moveToChange.Index].Number}.");
+            CollapseWaveFunction(out outOfMoves, moveToChange.Index, findAllSolutions); 
             //grid.PrintGrid();
-            return true;
+            return;
         }
         else
         {
-            return HandleBackTracking();
+            HandleBackTracking(out outOfMoves, findAllSolutions);
         }
     }
 
-    private void CollapseWaveFunction(TileIndex placeTileIndex)
+    private void CollapseWaveFunction(out bool outOfMoves, TileIndex placeTileIndex, bool findAllSolutions = false)
     {
         List<TileIndex> effectedTileIndicies = FindEffectedTileIndicies(placeTileIndex);
         effectedTileIndicies = RemoveTilesWithMissingCandidate(effectedTileIndicies, placeTileIndex);
@@ -187,6 +220,18 @@ public class WFCGridSolver
 
         Propagate(tileNumber, effectedTileIndicies, true);
         moves.Push(new Move(placeTileIndex, tileNumber, effectedTileIndicies));
+
+        if (findAllSolutions && gridFilled)
+        {
+            //Debug.Log("Solution found, add to list. Backtrack to find more.");
+            
+            SudokuGrid9x9 solvedGrid = new SudokuGrid9x9(grid);
+            TryAddNewSoultion(solvedGrid);
+            //solvedGrid.PrintGrid();
+            HandleBackTracking(out outOfMoves, findAllSolutions);
+        }
+
+        outOfMoves = false;
     }
     
     private List<TileIndex> FindEffectedTileIndicies(TileIndex tileIndex)
@@ -243,7 +288,7 @@ public class WFCGridSolver
         return filteredTiles;
     }
 
-    private TileIndex FindLowestEntropyTile(bool randomly = true)
+    private TileIndex FindLowestEntropyTile(bool findAll = false)
     {
         int lowestEntropy = FindLowestEntropy();
 
@@ -252,7 +297,7 @@ public class WFCGridSolver
         {
             if (!tile.Used && tile.Entropy == lowestEntropy)
             {
-                if (!randomly) return tile.index;
+                if (findAll) return tile.index;
                 
                 lowestEntropyTiles.Add(tile.index);
             }
@@ -264,8 +309,7 @@ public class WFCGridSolver
             return new TileIndex(0, 0);
         }
 
-        TileIndex lowestEntropyTileIndex =
-            randomly ? lowestEntropyTiles[random.Next(lowestEntropyTiles.Count)] : lowestEntropyTiles[0];
+        TileIndex lowestEntropyTileIndex =lowestEntropyTiles[random.Next(lowestEntropyTiles.Count)];
         
         return lowestEntropyTileIndex;
     }
