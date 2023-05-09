@@ -4,19 +4,29 @@ using UnityEngine;
 
 public class GridBoxBehaviour : MonoBehaviour
 {
-    [SerializeField] private int number;
+    public int number;
 
     [SerializeField] private List<TileBehaviour> tiles;
 
-    // Start is called before the first frame update
-    void Start()
+    public void Setup(int number)
     {
-        
-    }
+        this.number = number;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        int startRow = number / 3 * 3;
+        int startCol = number % 3 * 3;
+
+        int i = 0;
+        for (int deltaRow = 0; deltaRow < 3; deltaRow++)
+        {
+            for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+            {
+                int row = startRow + deltaRow;
+                int col = startCol + deltaCol;
+
+                tiles[i].SetIndex(row, col);
+                
+                i++;
+            }
+        }
     }
 }
