@@ -16,10 +16,16 @@ public class WFCGridSolver
     private const int GENERATION_ITERATION_LIMIT = 1024;
 
     private Stack<Move> moves;
-    private SudokuGrid9x9 grid;
+    public SudokuGrid9x9 grid { get; private set; }
     private System.Random random = new System.Random();
 
     private bool gridFilled => grid.AllTilesAreUsed();
+
+    public void SetGrid(SudokuGrid9x9 other)
+    {
+        grid = new SudokuGrid9x9(other);
+        //grid = other;
+    }
 
     public int GetSolutionCount(SudokuGrid9x9 originalGrid)
     {
@@ -40,11 +46,15 @@ public class WFCGridSolver
                 {
                    // grid.PrintGrid();
                     CollapseWaveFunction(tile.index);
-                    bool solved = TrySolveGrid(grid);
+                    bool solved = TrySolveGrid(false);
                     if (solved)
                     {
                         TryAddNewSoultion(solvedGrids, grid);
                     }
+                }
+                else
+                {
+                    Debug.LogWarning("Couldn't assign value");
                 }
             }
         }
@@ -52,17 +62,30 @@ public class WFCGridSolver
         Debug.Log("Solutions found: " + solvedGrids.Count);
         if (solvedGrids.Count > 1)
         {
-            Debug.LogWarning($"{solvedGrids.Count} Solutions found"); 
+            Debug.LogWarning($"{solvedGrids.Count} Solutions found");
+            if (solvedGrids.Count > 5)
+            {
+                DebugAllSolutions(solvedGrids);
+            }
         }
 
         return solvedGrids.Count;
     }
 
+    private void DebugAllSolutions(List<SudokuGrid9x9> sudokuGrid9X9s)
+    {
+        Debug.Log("Here are every solution:");
+        foreach (var solvedGrid in sudokuGrid9X9s)
+        {
+            solvedGrid.PrintGrid();
+        }
+    }
+
     private void TryAddNewSoultion(List<SudokuGrid9x9> solvedGrids, SudokuGrid9x9 newGrid)
     {
-        foreach (var grid in solvedGrids)
+        foreach (var solvedGrid in solvedGrids)
         {
-            if (grid == newGrid)
+            if (solvedGrid == newGrid)
             {
                 return;
             }
@@ -71,15 +94,15 @@ public class WFCGridSolver
         solvedGrids.Add(newGrid);
     }
 
-    public bool TrySolveGrid(SudokuGrid9x9 grid)
+    public bool TrySolveGrid(bool randomly = true)
     {
         // intentional reference
-        this.grid = grid;
+        // this.grid = grid;
         
         int iterations = 0;
         while (!gridFilled)
         {
-            HandleNextSolveStep();
+            HandleNextSolveStep(randomly);
 
             iterations++;
 
@@ -94,10 +117,10 @@ public class WFCGridSolver
 
         return true;
     }
-    
-    private void HandleNextSolveStep()
+
+    private void HandleNextSolveStep(bool randomly = true)
     {
-        TileIndex lowestEntropyTileIndex = FindLowestEntropyTile();
+        TileIndex lowestEntropyTileIndex = FindLowestEntropyTile(randomly);
         
         if (grid[lowestEntropyTileIndex].Entropy <= 0)
         {
@@ -220,7 +243,7 @@ public class WFCGridSolver
         return filteredTiles;
     }
 
-    private TileIndex FindLowestEntropyTile()
+    private TileIndex FindLowestEntropyTile(bool randomly = true)
     {
         int lowestEntropy = FindLowestEntropy();
 
@@ -228,7 +251,11 @@ public class WFCGridSolver
         foreach (var tile in grid.Tiles)
         {
             if (!tile.Used && tile.Entropy == lowestEntropy)
+            {
+                if (!randomly) return tile.index;
+                
                 lowestEntropyTiles.Add(tile.index);
+            }
         }
 
         if (lowestEntropyTiles.Count <= 0)
@@ -237,8 +264,9 @@ public class WFCGridSolver
             return new TileIndex(0, 0);
         }
 
-        int randomIndex = random.Next(lowestEntropyTiles.Count);
-        TileIndex lowestEntropyTileIndex = lowestEntropyTiles[randomIndex];
+        TileIndex lowestEntropyTileIndex =
+            randomly ? lowestEntropyTiles[random.Next(lowestEntropyTiles.Count)] : lowestEntropyTiles[0];
+        
         return lowestEntropyTileIndex;
     }
 

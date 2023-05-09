@@ -28,7 +28,10 @@ public class SudokuGenerator9x9
 
     public void Generate()
     {
-        bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(grid);
+        _wfcGridSolver.SetGrid(grid);
+        bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(true);
+
+        grid = new SudokuGrid9x9(_wfcGridSolver.grid);
         grid.PrintGrid();
 
         bool puzzleCreated = false; 
@@ -209,7 +212,7 @@ public class SudokuGenerator9x9
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))
         {
-            
+            SudokuGrid9x9 lastGrid = new SudokuGrid9x9(grid);
             
             //  1. Find lowest entropy tile
             TileIndex lowestEntropyTileIndex = FindLowestEntropyTileIndexFromVisited(visitedTiles);
@@ -229,7 +232,8 @@ public class SudokuGenerator9x9
 
             if (solutionCount != 1 || !HumanlySolvable(grid))
             {
-                MakeLatestMovesPermanentClues();
+                grid = new SudokuGrid9x9(lastGrid);
+                //MakeLatestMovesPermanentClues();
                 Debug.Log("Current grid state:");
                 grid.PrintGrid();
             }
