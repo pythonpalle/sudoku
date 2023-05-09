@@ -216,7 +216,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5508750207990723707, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_Name
-      value: Box (4)
+      value: Box (3)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
@@ -234,6 +234,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 207688488}
+  - component: {fileID: 207688489}
   m_Layer: 5
   m_Name: Grid
   m_TagString: Untagged
@@ -270,6 +271,18 @@ RectTransform:
   m_AnchoredPosition: {x: -836, y: 394}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &207688489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207688487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9f163c0756c12c4792a57bfd768409f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &488179395
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,7 +527,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5508750207990723707, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_Name
-      value: Box (2)
+      value: Box (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
@@ -717,7 +730,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5508750207990723707, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_Name
-      value: Box (5)
+      value: Box (4)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
@@ -824,7 +837,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5508750207990723707, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_Name
-      value: Box (8)
+      value: Box (7)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
@@ -970,7 +983,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5508750207990723707, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_Name
-      value: Box (3)
+      value: Box (2)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
@@ -1072,7 +1085,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5508750207990723707, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_Name
-      value: Box (9)
+      value: Box (8)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
@@ -1174,7 +1187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5508750207990723707, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_Name
-      value: Box (7)
+      value: Box (6)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
@@ -1276,7 +1289,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5508750207990723707, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_Name
-      value: Box (6)
+      value: Box (5)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
@@ -1378,7 +1391,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5508750207990723707, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_Name
-      value: Box (1)
+      value: Box
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
