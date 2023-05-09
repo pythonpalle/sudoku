@@ -27,7 +27,6 @@ public class WFCGridSolver
     public void SetGrid(SudokuGrid9x9 other)
     {
         grid = new SudokuGrid9x9(other);
-        //grid = other;
     }
 
     public int GetSolutionCount(SudokuGrid9x9 originalGrid)
@@ -48,54 +47,14 @@ public class WFCGridSolver
         
         if (solvedGrids.Count > 1)
             DebugAllSolutions();
-        
-        
-        // Debug.Log("Finding all solutions...");
-        //
-        // foreach (var tile in originalGrid.Tiles)
-        // {
-        //     if (tile.Used) continue;
-        //
-        //     foreach (var candidate in tile.Candidates)
-        //     {
-        //         moves.Clear();
-        //         grid = new SudokuGrid9x9(originalGrid);
-        //         
-        //         if (grid.AssignLowestPossibleValue(tile.index, candidate-1))
-        //         {
-        //             // grid.PrintGrid();
-        //             CollapseWaveFunction(tile.index);
-        //             bool solved = TrySolveGrid(false);
-        //             if (solved)
-        //             {
-        //                 TryAddNewSoultion(solvedGrids, grid);
-        //             }
-        //         }
-        //     }
-        // }
-        //
-        // Debug.Log("Solutions found: " + solvedGrids.Count);
-        // if (solvedGrids.Count > 1)
-        // {
-        //     Debug.LogWarning($"{solvedGrids.Count} Solutions found");
-        //     if (solvedGrids.Count > 5)
-        //     {
-        //         DebugAllSolutions(solvedGrids);
-        //     }
-        // }
     }
 
     private void DebugAllSolutions()
     {
         Debug.LogWarning("MULTIPLE SOLUTIONS FOUND. Solved grids count: " + solvedGrids.Count);
-        // Debug.Log("Here is every solution:");
-        // foreach (var solvedGrid in solvedGrids)
-        // {
-        //     solvedGrid.PrintGrid();
-        // }
     }
 
-    private bool TryAddNewSoultion(SudokuGrid9x9 newGrid)
+    private bool TryAddNewSolution(SudokuGrid9x9 newGrid)
     {
         foreach (var solvedGrid in solvedGrids)
         {
@@ -117,20 +76,13 @@ public class WFCGridSolver
         int iterations = 0;
         while (!gridFilled)
         {
-            HandleNextSolveStep(out bool outOfMoves, findAll);
-            if (outOfMoves)
-            {
-                //Debug.Log("No moves left, couldn't generate grid.");
-                return false;
-            }
-            
+            HandleNextSolveStep(findAll);
+
             if (cancelSolve)
             {
-                //Debug.Log("No moves left, couldn't generate grid.");
                 return false;
             }
             
-            //if (findAll) grid.PrintGrid();
 
             iterations++;
 
@@ -141,77 +93,64 @@ public class WFCGridSolver
             }
         }
         
-        //grid.PrintGrid();
-
         return true;
     }
 
-    private void HandleNextSolveStep(out bool outOfMoves, bool findAll = false)
+    private void HandleNextSolveStep(bool findAll = false)
     {
         TileIndex lowestEntropyTileIndex = FindLowestEntropyTile(findAll);
-        outOfMoves = false;
 
         if (grid[lowestEntropyTileIndex].Entropy <= 0)
         {
-            // Debug.LogWarning($"Zero entropy tile at ({lowestEntropyTileIndex.row},{lowestEntropyTileIndex.col})");
-            HandleBackTracking(out outOfMoves, findAll);
+            HandleBackTracking(findAll);
         }
         else
         {
             if (grid.AssignLowestPossibleValue(lowestEntropyTileIndex, 0))
             {
-                CollapseWaveFunction(out outOfMoves, lowestEntropyTileIndex, findAll);
+                CollapseWaveFunction(lowestEntropyTileIndex, findAll);
             }
         }
     }
     
-    private void HandleBackTracking(out bool outOfMoves, bool findAllSolutions)
+    private void HandleBackTracking(bool findAllSolutions)
     {
         int lastEntropy;
         Move moveToChange;
 
         do
         {
-            
             if (moves.Count <= 0)
             {
-                //Debug.Log("Out of moves when backtracking.");
-                outOfMoves = true;
                 cancelSolve = true;
                 return;
             }
             
             Move lastMove = moves.Pop();
             
-            // Debug.Log($"Backtracking, removing {lastMove.Number} " +
-            // $"from ({lastMove.Index.row}), ({lastMove.Index.col})");
-            
             grid.SetNumberToIndex(lastMove.Index, 0);
             grid.AddCandidateToIndex(lastMove.Index, lastMove.Number);
-            
             Propagate(lastMove.Number, lastMove.EffectedTileIndecies, false);
 
             lastEntropy = grid[lastMove.Index].Entropy;
-
             moveToChange = lastMove;
-            // grid.PrintGrid();
         } 
         while (lastEntropy <= 1);
 
         if (grid.AssignLowestPossibleValue(moveToChange.Index, moveToChange.Number))
         {
             // Debug.Log($"...and replace it with a {grid[moveToChange.Index].Number}.");
-            CollapseWaveFunction(out outOfMoves, moveToChange.Index, findAllSolutions); 
+            CollapseWaveFunction(moveToChange.Index, findAllSolutions); 
             //grid.PrintGrid();
             return;
         }
         else
         {
-            HandleBackTracking(out outOfMoves, findAllSolutions);
+            HandleBackTracking(findAllSolutions);
         }
     }
 
-    private void CollapseWaveFunction(out bool outOfMoves, TileIndex placeTileIndex, bool findAllSolutions = false)
+    private void CollapseWaveFunction(TileIndex placeTileIndex, bool findAllSolutions = false)
     {
         List<TileIndex> effectedTileIndicies = FindEffectedTileIndicies(placeTileIndex);
         effectedTileIndicies = RemoveTilesWithMissingCandidate(effectedTileIndicies, placeTileIndex);
@@ -223,15 +162,10 @@ public class WFCGridSolver
 
         if (findAllSolutions && gridFilled)
         {
-            //Debug.Log("Solution found, add to list. Backtrack to find more.");
-            
             SudokuGrid9x9 solvedGrid = new SudokuGrid9x9(grid);
-            TryAddNewSoultion(solvedGrid);
-            //solvedGrid.PrintGrid();
-            HandleBackTracking(out outOfMoves, findAllSolutions);
+            TryAddNewSolution(solvedGrid);
+            HandleBackTracking(findAllSolutions);
         }
-
-        outOfMoves = false;
     }
     
     private List<TileIndex> FindEffectedTileIndicies(TileIndex tileIndex)
@@ -337,6 +271,4 @@ public class WFCGridSolver
                 grid.AddCandidateToIndex(index, number);
         }
     }
-    
-
 }
