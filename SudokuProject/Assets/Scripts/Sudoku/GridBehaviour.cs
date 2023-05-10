@@ -12,6 +12,26 @@ public class GridBehaviour : MonoBehaviour
 
     [SerializeField] private List<GridBoxBehaviour> boxes;
     
+    public static GridBehaviour Instance { get; private set; }
+
+    private void Awake()
+    {
+        MakeSingleton();
+    }
+    
+    private void MakeSingleton()
+    {
+        if (Instance && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+    }
+
     private void OnEnable()
     {
         EventManager.OnGridGenerated += OnGridGenerated;
@@ -166,7 +186,6 @@ public class GridBehaviour : MonoBehaviour
                 tile.SetContradiction();
             }
         }
-
     }
 
     private List<TileBehaviour> GetEffectedTiles(TileBehaviour tile)
@@ -237,5 +256,10 @@ public class GridBehaviour : MonoBehaviour
         
         gridHistory.Add(newGrid);
         grid = new SudokuGrid9x9(newGrid);
+    }
+
+    public TileBehaviour GetTileAtIndex(int row, int col)
+    {
+        return tileBehaviours[row, col];
     }
 }

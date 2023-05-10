@@ -84,7 +84,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         return true;
     }
 
-    private void HandleSelect()
+    public void HandleSelect()
     {
         isSelected = true;
         border.color = Color.blue;
