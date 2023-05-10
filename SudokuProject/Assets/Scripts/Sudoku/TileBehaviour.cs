@@ -95,4 +95,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         border.color = Color.black;
         whitePart.transform.localScale = whitePartStartScale;
     }
+
+    public void SetContradiction()
+    {
+        whitePart.color = Color.red;
+    }
 }
