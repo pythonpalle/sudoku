@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 243942793646312049}
   - component: {fileID: 6830367561553300533}
   - component: {fileID: 2958227994105652861}
-  - component: {fileID: 5856962534512637714}
   - component: {fileID: 2700637258476776703}
   m_Layer: 5
   m_Name: Number Button
@@ -124,34 +123,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5856962534512637714}
-        m_TargetAssemblyTypeName: NumberButton, Assembly-CSharp
-        m_MethodName: TryEnterDigit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &5856962534512637714
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1023878058788724101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57338c2ba088b4d44b921b7144a1f924, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  number: 1
-  OnNumberButtonPressed:
-    m_PersistentCalls:
-      m_Calls:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GridEnterManager, Assembly-CSharp
         m_MethodName: TryEnterNumber
@@ -164,9 +135,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnNumberButtonHover:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &2700637258476776703
 MonoBehaviour:
   m_ObjectHideFlags: 0

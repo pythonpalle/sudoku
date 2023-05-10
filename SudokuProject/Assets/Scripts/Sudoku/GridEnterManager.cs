@@ -88,13 +88,8 @@ public class GridEnterManager : MonoBehaviour
     
     private void HandleNumberRemove()
     {
-        if (!SelectionManager.Instance.HasSelectedTiles)
-            return;
-        
         if (removeButtonIsPressed)
-        {
-            EventManager.RemoveEntry(SelectionManager.Instance.SelectedTiles, enterType);
-        }
+            TryRemoveNumbers();
     }
 
     public void TryEnterNumber(int number)
@@ -105,5 +100,13 @@ public class GridEnterManager : MonoBehaviour
         }
         
         EventManager.EnterNumber(SelectionManager.Instance.SelectedTiles, enterType, number);
+    }
+
+    public void TryRemoveNumbers()
+    {
+        if (!SelectionManager.Instance.HasSelectedTiles)
+            return;
+        
+        EventManager.RemoveEntry(SelectionManager.Instance.SelectedTiles, enterType);
     }
 }
