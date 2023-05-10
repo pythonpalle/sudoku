@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class SelectionManager : MonoBehaviour
 {
-    public List<TileBehaviour> SelectedTiles { get; private set; } = new List<TileBehaviour>();
+    public List<TileBehaviour> SelectedTiles;// { get; private set; } = new List<TileBehaviour>();
     
     public static SelectionManager Instance { get; private set; }
+    public bool HasSelectedTiles => SelectedTiles.Count > 0;
 
     public bool IsSelecting;// { get; private set; }
 
@@ -15,6 +16,19 @@ public class SelectionManager : MonoBehaviour
     private void Awake()
     {
         MakeSingleton();
+    }
+    
+    private void MakeSingleton()
+    {
+        if (Instance && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
     }
 
     private void OnEnable()
@@ -45,21 +59,6 @@ public class SelectionManager : MonoBehaviour
         }
     }
 
-    private void MakeSingleton()
-    {
-        if (Instance && Instance != this)
-        {
-            Destroy(this);
-            Debug.Log("Instance exists, destory");
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(this);
-            Debug.Log("Instance doesn't exist, make singleton");
-        }
-    }
-
     private void Update()
     {
         HandleSetSelect();
@@ -69,11 +68,22 @@ public class SelectionManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            DeselectAllTiles();
             IsSelecting = true;
         } 
         else if (Input.GetMouseButtonUp(0))
         {
             IsSelecting = false;
+        }
+    }
+
+    private void DeselectAllTiles()
+    {
+        for (int i = SelectedTiles.Count - 1; i >= 0; i--)
+        {
+            TileBehaviour tile = SelectedTiles[i];
+            tile.Deselect();
+            SelectedTiles.RemoveAt(i);
         }
     }
 }

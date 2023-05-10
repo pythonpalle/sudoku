@@ -13,10 +13,18 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     [SerializeField] private TextMeshProUGUI numberText;
     [SerializeField] private Image border;
     [SerializeField] private Image whitePart;
+    
+    private Vector3 whitePartSelectScale = Vector3.one * 0.9f;
+    private Vector3 whitePartStartScale;
 
     private string tileString => $"({row},{col})";
 
     public bool isSelected = false;
+
+    private void Start()
+    {
+        whitePartStartScale = whitePart.transform.localScale;
+    }
 
     public void SetIndex(int row, int col)
     {
@@ -58,7 +66,14 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     {
         isSelected = true;
         border.color = Color.blue;
-        whitePart.transform.localScale = Vector3.one * 0.9f;
+        whitePart.transform.localScale = whitePartSelectScale;
         EventManager.SelectTile(this);
+    }
+
+    public void Deselect()
+    {
+        isSelected = false;
+        border.color = Color.black;
+        whitePart.transform.localScale = whitePartStartScale;
     }
 }
