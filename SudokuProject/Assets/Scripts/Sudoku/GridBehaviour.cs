@@ -194,8 +194,6 @@ public class GridBehaviour : MonoBehaviour
 
         int tileRow = tile.row;
         int tileCol = tile.col;
-
-        bool tileContradicted = false;
         
         // Tiles in same col
         for (int row = 0; row < 9; row++)

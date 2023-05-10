@@ -81,7 +81,7 @@ public class GridEnterManager : MonoBehaviour
         {
             if (Input.GetKeyDown(NumberKeys[number]) || Input.GetKeyDown(NumberKeypadKeys[number]))
             {
-                EventManager.EnterNumber(SelectionManager.Instance.SelectedTiles, enterType, number);
+                TryEnterNumber(number);
             }
         }
     }
@@ -90,11 +90,20 @@ public class GridEnterManager : MonoBehaviour
     {
         if (!SelectionManager.Instance.HasSelectedTiles)
             return;
-
         
         if (removeButtonIsPressed)
         {
             EventManager.RemoveEntry(SelectionManager.Instance.SelectedTiles, enterType);
         }
+    }
+
+    public void TryEnterNumber(int number)
+    {
+        if (!SelectionManager.Instance.HasSelectedTiles)
+        {
+            return;
+        }
+        
+        EventManager.EnterNumber(SelectionManager.Instance.SelectedTiles, enterType, number);
     }
 }

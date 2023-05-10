@@ -20,6 +20,8 @@ public class SelectionManager : MonoBehaviour
     private bool moveKeyIsPressed => rightKeyIsPressed || leftKeyIsPressed || upKeyIsPressed || downKeyIsPressed;
     private bool multiSelectKeyIsPressed => Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
+    private bool onNumberPad;
+
     private void Awake()
     {
         MakeSingleton();
@@ -76,7 +78,7 @@ public class SelectionManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (!multiSelectKeyIsPressed)
+            if (!multiSelectKeyIsPressed && !onNumberPad) 
                 DeselectAllTiles();
             
             IsSelecting = true;
@@ -137,5 +139,15 @@ public class SelectionManager : MonoBehaviour
             TileBehaviour selectTile = GridBehaviour.Instance.GetTileAtIndex(row, col);
             selectTile.HandleSelect();
         }
+    }
+    
+    public void OnNumberKeyHover()
+    {
+        onNumberPad = true;
+    }
+    
+    public void OnNumberKeyExit()
+    {
+        onNumberPad = false;
     }
 }
