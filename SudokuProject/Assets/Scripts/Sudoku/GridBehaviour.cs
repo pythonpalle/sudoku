@@ -6,6 +6,8 @@ using UnityEngine;
 public class GridBehaviour : MonoBehaviour
 {
     private SudokuGrid9x9 grid;
+    private List<SudokuGrid9x9> gridHistory;
+
     private TileBehaviour[,] tiles = new TileBehaviour[9,9];
 
     [SerializeField] private List<GridBoxBehaviour> boxes;
@@ -14,12 +16,14 @@ public class GridBehaviour : MonoBehaviour
     {
         EventManager.OnGridGenerated += OnGridGenerated;
         EventManager.OnTileIndexSet += OnTileIndexSet;
+        EventManager.OnNumberEnter += OnNumberEnter;
     }
     
     private void OnDisable()
     {
         EventManager.OnGridGenerated -= OnGridGenerated;
         EventManager.OnTileIndexSet -= OnTileIndexSet;
+        EventManager.OnNumberEnter -= OnNumberEnter; 
     }
 
     private void Start()
@@ -33,6 +37,11 @@ public class GridBehaviour : MonoBehaviour
     private void OnGridGenerated(SudokuGrid9x9 generatedGrid)
     {
         grid = generatedGrid;
+        gridHistory = new List<SudokuGrid9x9>
+        {
+            new SudokuGrid9x9(grid)
+        };
+        
         SetupTileNumbers();
     }
 
@@ -42,7 +51,7 @@ public class GridBehaviour : MonoBehaviour
         {
             for (int col = 0; col < 9; col++)
             {
-                tiles[row, col].SetNumber(grid[row, col].Number);
+                tiles[row, col].SetStartNumber(grid[row, col].Number);
             }
         }
     }
@@ -50,5 +59,23 @@ public class GridBehaviour : MonoBehaviour
     private void OnTileIndexSet(int row,  int col, TileBehaviour tileBehaviour)
     {
         tiles[row, col] = tileBehaviour;
+    }
+    
+    private void OnNumberEnter(List<TileBehaviour> tiles, EnterType enterType, int number)
+    {
+        switch (enterType)
+        {
+            case EnterType.NormalNumber:
+                HandleNormalNumberEntry(tiles, number);
+                break;
+        }
+    }
+
+    private void HandleNormalNumberEntry(List<TileBehaviour> tiles, int number)
+    {
+        foreach (var tileBehaviour in tiles)
+        {
+            tileBehaviour.TryUpdateNumber(number);
+        }
     }
 }

@@ -27,6 +27,19 @@ public class GridEnterManager : MonoBehaviour
         KeyCode.Alpha8,
         KeyCode.Alpha9,
     };
+    
+    private KeyCode[] NumberKeypadKeys = {
+        KeyCode.Keypad0,
+        KeyCode.Keypad1,
+        KeyCode.Keypad2,
+        KeyCode.Keypad3,
+        KeyCode.Keypad4,
+        KeyCode.Keypad5,
+        KeyCode.Keypad6,
+        KeyCode.Keypad7,
+        KeyCode.Keypad8,
+        KeyCode.Keypad9
+    };
 
     private EnterType enterType = EnterType.NormalNumber;
 
@@ -60,7 +73,8 @@ public class GridEnterManager : MonoBehaviour
         
         for (int number = 1; number <= 9; number++)
         {
-            if (Input.GetKeyDown(NumberKeys[number]))
+            if (Input.GetKeyDown(NumberKeys[number]) 
+                || Input.GetKeyDown(NumberKeypadKeys[number]))
             {
                 EventManager.EnterNumber(SelectionManager.Instance.SelectedTiles, enterType, number);
             }

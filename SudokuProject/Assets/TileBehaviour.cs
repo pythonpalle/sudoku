@@ -20,6 +20,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     private string tileString => $"({row},{col})";
 
     public bool isSelected = false;
+    public bool Permanent = false;
 
     private void Start()
     {
@@ -34,11 +35,29 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         EventManager.SetTileIndex(row, col, this);
     }
 
-    public void SetNumber(int number)
+    public void SetStartNumber(int number)
+    {
+        SetNumber(number);
+        
+        if (number > 0)
+        {
+            Permanent = true;
+        }
+    }
+
+    private void SetNumber(int number)
     {
         this.number = number;
-
         numberText.text = number > 0 ? number.ToString() : string.Empty;
+    }
+
+    public bool TryUpdateNumber(int number)
+    {
+        if (Permanent) return false;
+        
+        SetNumber(number);
+        numberText.color = Color.blue;
+        return true;
     }
     
     public void OnPointerEnter(PointerEventData eventData)
