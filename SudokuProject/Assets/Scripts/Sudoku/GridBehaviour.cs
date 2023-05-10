@@ -144,10 +144,12 @@ public class GridBehaviour : MonoBehaviour
         grid.SetNumberToIndex(row, col, number);
     }
     
-    private void HandleAddContradictionsInList(SudokuGrid9x9 newGrid, List<TileBehaviour> tileBehaviours, int number)
+    private void HandleAddContradictionsInList(SudokuGrid9x9 newGrid, List<TileBehaviour> selectedTiles, int number)
     {
-        foreach (var tile in tileBehaviours)
+        foreach (var tile in selectedTiles)
         {
+            if (tile.Permanent) continue;
+            
             List<TileBehaviour> effectedTiles = GetEffectedTiles(tile);
             bool someTileContradicted = false;
 
