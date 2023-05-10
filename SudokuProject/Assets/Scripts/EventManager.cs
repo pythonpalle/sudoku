@@ -14,6 +14,7 @@ public static class EventManager
     public static UnityAction<TileBehaviour> OnTileDeselect;
     
     public static UnityAction<List<TileBehaviour>, EnterType, int> OnNumberEnter;
+    public static UnityAction<List<TileBehaviour>, EnterType> OnRemoveEntry;
 
     public static void GenerateGrid(SudokuGrid9x9 grid)
     {
@@ -38,5 +39,10 @@ public static class EventManager
     public static void EnterNumber(List<TileBehaviour> tiles, EnterType enterType, int number)
     {
         OnNumberEnter?.Invoke(tiles, enterType, number);
+    }
+
+    public static void RemoveEntry(List<TileBehaviour> tiles, EnterType enterType)
+    {
+        OnRemoveEntry?.Invoke(tiles, enterType);
     }
 }

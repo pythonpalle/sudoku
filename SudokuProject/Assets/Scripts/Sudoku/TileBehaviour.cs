@@ -21,6 +21,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
     public bool isSelected = false;
     public bool Permanent = false;
+    public bool Contradicted = false;
 
     private void Start()
     {
@@ -49,6 +50,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     {
         this.number = number;
         numberText.text = number > 0 ? number.ToString() : string.Empty;
+        if (number == 0)
+            RemoveContradiction();
     }
 
     public bool TryUpdateNumber(int number)
@@ -98,6 +101,13 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
     public void SetContradiction()
     {
+        Contradicted = true;
         whitePart.color = Color.red;
+    }
+
+    public void RemoveContradiction()
+    {
+        Contradicted = false;
+        whitePart.color = Color.white;
     }
 }

@@ -43,6 +43,11 @@ public class GridEnterManager : MonoBehaviour
 
     private EnterType enterType = EnterType.NormalNumber;
 
+    private bool removeButtonIsPressed => Input.GetKeyDown(KeyCode.Delete)
+                                          || Input.GetKeyDown(KeyCode.Backspace)
+                                          || Input.GetKeyDown(KeyCode.Alpha0)
+                                          || Input.GetKeyDown(KeyCode.Keypad0);
+
     private void Awake()
     {
         MakeSingleton();
@@ -64,6 +69,19 @@ public class GridEnterManager : MonoBehaviour
     private void Update()
     {
         HandleNumberEnter();
+        HandleNumberRemove();
+    }
+
+    private void HandleNumberRemove()
+    {
+        if (!SelectionManager.Instance.HasSelectedTiles)
+            return;
+
+        
+        if (removeButtonIsPressed)
+        {
+            EventManager.RemoveEntry(SelectionManager.Instance.SelectedTiles, enterType);
+        }
     }
 
     private void HandleNumberEnter()
@@ -73,8 +91,7 @@ public class GridEnterManager : MonoBehaviour
         
         for (int number = 1; number <= 9; number++)
         {
-            if (Input.GetKeyDown(NumberKeys[number]) 
-                || Input.GetKeyDown(NumberKeypadKeys[number]))
+            if (Input.GetKeyDown(NumberKeys[number]) || Input.GetKeyDown(NumberKeypadKeys[number]))
             {
                 EventManager.EnterNumber(SelectionManager.Instance.SelectedTiles, enterType, number);
             }
