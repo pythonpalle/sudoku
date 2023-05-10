@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
+public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
     public int row;
     public int col;
@@ -66,6 +66,11 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     public void OnPointerEnter(PointerEventData eventData)
     {
         HandleTrySelect();
+        EventManager.UIElementHover();
+    }
+    
+    public void OnPointerExit(PointerEventData eventData)
+    {
     }
     
     public void OnPointerClick(PointerEventData eventData)
@@ -110,4 +115,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         Contradicted = false;
         whitePart.color = Color.white;
     }
+
+    
 }

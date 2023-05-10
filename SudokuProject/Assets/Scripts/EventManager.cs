@@ -16,6 +16,9 @@ public static class EventManager
     public static UnityAction<List<TileBehaviour>, EnterType, int> OnNumberEnter;
     public static UnityAction<List<TileBehaviour>, EnterType> OnRemoveEntry;
 
+    public static UnityAction OnUIElementHover;
+    public static UnityAction OnUIElementExit;
+
     public static void GenerateGrid(SudokuGrid9x9 grid)
     {
         OnGridGenerated?.Invoke(grid);
@@ -44,5 +47,15 @@ public static class EventManager
     public static void RemoveEntry(List<TileBehaviour> tiles, EnterType enterType)
     {
         OnRemoveEntry?.Invoke(tiles, enterType);
+    }
+
+    public static void UIElementHover()
+    {
+        OnUIElementHover?.Invoke();
+    }
+
+    public static void UIElementExit()
+    {
+        OnUIElementExit?.Invoke();
     }
 }
