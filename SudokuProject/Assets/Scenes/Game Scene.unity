@@ -813,6 +813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f163c0756c12c4792a57bfd768409f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
   boxes:
   - {fileID: 5508750209443585459}
   - {fileID: 577388623}
@@ -2118,6 +2119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d72ed12a80d8d2c41ab1c4a18491cf09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
   SelectedTiles: []
   IsSelecting: 0
 --- !u!4 &1057688420

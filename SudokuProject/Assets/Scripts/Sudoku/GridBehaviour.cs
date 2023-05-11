@@ -10,27 +10,8 @@ public class GridBehaviour : MonoBehaviour
 
     private TileBehaviour[,] tileBehaviours = new TileBehaviour[9,9];
 
+    [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private List<GridBoxBehaviour> boxes;
-    
-    public static GridBehaviour Instance { get; private set; }
-
-    private void Awake()
-    {
-        MakeSingleton();
-    }
-    
-    private void MakeSingleton()
-    {
-        if (Instance && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(this);
-        }
-    }
 
     private void OnEnable()
     {
@@ -39,6 +20,8 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnNumberEnter += OnNumberEnter;
         EventManager.OnRemoveEntry += OnRemoveEntry;
         EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
+
+        selectionObject.OnRequestTile += OnRequestTile;
     }
     
     private void OnDisable()
@@ -47,7 +30,9 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         EventManager.OnNumberEnter -= OnNumberEnter; 
         EventManager.OnRemoveEntry -= OnRemoveEntry;
-        EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
+        EventManager.OnSelectAllTilesWithNumber -= OnSelectAllTilesWithNumber;
+        
+        selectionObject.OnRequestTile -= OnRequestTile;
     }
 
     private void Start()
@@ -103,6 +88,11 @@ public class GridBehaviour : MonoBehaviour
                 HandleRemoveNormalNumbers(tiles);
                 break;
         }
+    }
+    
+    private void OnRequestTile(int row, int col)
+    {
+        selectionObject.SendTileReference(tileBehaviours[row,col]);
     }
     
     private void HandleEnterNormalNumbers(List<TileBehaviour> selectedTiles, int number)
@@ -275,11 +265,6 @@ public class GridBehaviour : MonoBehaviour
         grid = new SudokuGrid9x9(newGrid);
     }
 
-    public TileBehaviour GetTileAtIndex(int row, int col)
-    {
-        return tileBehaviours[row, col];
-    }
-    
     private void OnSelectAllTilesWithNumber(int number)
     {
         foreach (var tile in tileBehaviours)

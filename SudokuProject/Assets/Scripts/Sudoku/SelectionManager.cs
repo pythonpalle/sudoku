@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class SelectionManager : MonoBehaviour
 {
+    [SerializeField] private SelectionObject selectionObject;
+    
     public List<TileBehaviour> SelectedTiles;// { get; private set; } = new List<TileBehaviour>();
     
     public static SelectionManager Instance { get; private set; }
@@ -21,6 +23,8 @@ public class SelectionManager : MonoBehaviour
     private bool multiSelectKeyIsPressed => Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
     private bool onNumberPad;
+
+    private TileBehaviour tileReference;
 
     private void Awake()
     {
@@ -44,12 +48,16 @@ public class SelectionManager : MonoBehaviour
     {
         EventManager.OnTileSelect += OnTileSelect;
         EventManager.OnTileDeselect += OnTileDeselect;
+
+        selectionObject.OnSendTileReference += OnSendTileReference;
     }
     
     private void OnDisable()
     {
         EventManager.OnTileSelect -= OnTileSelect;
         EventManager.OnTileDeselect -= OnTileDeselect;
+        
+        selectionObject.OnSendTileReference -= OnSendTileReference;
     }
 
     private void OnTileSelect(TileBehaviour tile)
@@ -66,6 +74,11 @@ public class SelectionManager : MonoBehaviour
         {
             SelectedTiles.Remove(tile);
         }
+    }
+    
+    private void OnSendTileReference(TileBehaviour tile)
+    {
+        tileReference = tile;
     }
 
     private void Update()
@@ -135,9 +148,11 @@ public class SelectionManager : MonoBehaviour
         {
             if (!multiSelectKeyIsPressed)
                 DeselectAllTiles();
+
+            selectionObject.SendTileRequest(row, col);
             
-            TileBehaviour selectTile = GridBehaviour.Instance.GetTileAtIndex(row, col);
-            selectTile.HandleSelect();
+            if (tileReference)
+                tileReference.HandleSelect();
         }
     }
     
