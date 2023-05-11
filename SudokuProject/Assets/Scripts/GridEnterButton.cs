@@ -12,6 +12,8 @@ public class GridEnterButton : MonoBehaviour
     [SerializeField] private Color selectColor = Color.blue;
     private Color deSelectColor = Color.white;
 
+    [SerializeField] private SelectionObject selectionObject;
+
     private void Start()
     {
         if (enterType == EnterType.DigitMark)
@@ -36,7 +38,7 @@ public class GridEnterButton : MonoBehaviour
         button.onClick.RemoveListener(SendOnButtonClickEvent);
         EventManager.OnSelectButtonClicked -= OnSelectButtonClicked;
     }
-
+    
     private void OnSelectButtonClicked(EnterType type)
     {
         if (type == enterType)
@@ -49,6 +51,26 @@ public class GridEnterButton : MonoBehaviour
         }
     }
     
+    private void OnCornerKeyPressed()
+    {
+        OnSelectButtonClicked(EnterType.CornerMark);
+    }
+
+    private void OnCornerKeyReleased()
+    {
+        OnSelectButtonClicked(EnterType.DigitMark);
+    }
+
+    private void OnCenterKeyPressed()
+    {
+        OnSelectButtonClicked(EnterType.CenterMark);
+    }
+
+    private void OnCenterKeyReleased()
+    {
+        OnSelectButtonClicked(EnterType.DigitMark);
+    }
+
     private void Select()
     {
         button.image.color = selectColor;

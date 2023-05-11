@@ -168,9 +168,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c72cbc1b6cd175b4d84765b8fae59d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 0}
+  button: {fileID: 5243590692779224249}
   enterType: 0
   selectColor: {r: 0, g: 0, b: 1, a: 1}
+  selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
 --- !u!1 &5243590693820939447
 GameObject:
   m_ObjectHideFlags: 0

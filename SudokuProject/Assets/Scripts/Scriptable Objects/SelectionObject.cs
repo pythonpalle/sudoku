@@ -25,7 +25,7 @@ public class SelectionObject : ScriptableObject
     {
         OnSendTileReference?.Invoke(tileReference);
     }
-
+    
     public void SetSelect(bool value)
     {
         IsSelecting = value;
@@ -35,4 +35,6 @@ public class SelectionObject : ScriptableObject
     {
         SelectedTiles = new List<TileBehaviour>();
     }
+
+    
 }

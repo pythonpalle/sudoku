@@ -14,6 +14,12 @@ public class SelectionManager : MonoBehaviour
 
     private bool moveKeyIsPressed => rightKeyIsPressed || leftKeyIsPressed || upKeyIsPressed || downKeyIsPressed;
     private bool multiSelectKeyIsPressed => Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+    private bool centerSelectKeyIsPressed => Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl);
+    private bool centerSelectKeyIsReleased => Input.GetKeyUp(KeyCode.LeftControl) || Input.GetKeyUp(KeyCode.RightControl);
+
+    private bool cornerSelectKeyIsPressed => Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift);
+    private bool cornerSelectKeyIsReleased => Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift);
+    
 
     private bool onNumberPad;
 
@@ -60,8 +66,39 @@ public class SelectionManager : MonoBehaviour
 
     private void Update()
     {
+        HandleEnterButtonsDetection();
         HandleSetSelect();
         HandleMoveTileSelectWithKeys();
+    }
+
+    private void HandleEnterButtonsDetection()
+    {
+        HandleCornerButtonDetection();
+        HandleCenterButtonDetection();
+    }
+
+    private void HandleCornerButtonDetection()
+    {
+        if (cornerSelectKeyIsPressed)
+        {
+            EventManager.SelectButtonClicked(EnterType.CornerMark);
+        } 
+        else if (cornerSelectKeyIsReleased)
+        {
+            EventManager.SelectButtonClicked(EnterType.DigitMark);
+        }
+    }
+    
+    private void HandleCenterButtonDetection()
+    {
+        if (centerSelectKeyIsPressed)
+        {
+            EventManager.SelectButtonClicked(EnterType.CenterMark);
+        } 
+        else if (centerSelectKeyIsReleased)
+        {
+            EventManager.SelectButtonClicked(EnterType.DigitMark);
+        }
     }
 
     private void HandleSetSelect()
@@ -72,12 +109,10 @@ public class SelectionManager : MonoBehaviour
                 DeselectAllTiles();
             
             selectionObject.SetSelect(true);
-            //IsSelecting = true;
         } 
         else if (Input.GetMouseButtonUp(0))
         {
             selectionObject.SetSelect(false);
-            //IsSelecting = false;
         }
     }
 

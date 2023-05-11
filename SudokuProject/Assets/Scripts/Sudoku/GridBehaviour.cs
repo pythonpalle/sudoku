@@ -13,6 +13,8 @@ public class GridBehaviour : MonoBehaviour
     [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private List<GridBoxBehaviour> boxes;
 
+    private EnterType lastKnownEnterType = EnterType.DigitMark;
+
     private void Start()
     {
         SetupBoxes();
@@ -66,6 +68,8 @@ public class GridBehaviour : MonoBehaviour
     
     private void OnNumberEnter(List<TileBehaviour> tiles, EnterType enterType, int number)
     {
+        lastKnownEnterType = enterType;
+        
         HandleEnterNumberToSelectedTiles(tiles, number, enterType);
         
         switch (enterType)
@@ -79,6 +83,8 @@ public class GridBehaviour : MonoBehaviour
     
     private void OnRemoveEntry(List<TileBehaviour> tiles, EnterType enterType)
     {
+        lastKnownEnterType = enterType;
+
         switch (enterType)
         {
             case EnterType.DigitMark:
@@ -87,8 +93,27 @@ public class GridBehaviour : MonoBehaviour
         }
     }
     
-    private void OnSelectAllTilesWithNumber(int number)
+    private void OnSelectAllTilesWithNumber(TileBehaviour doubleClickTile)
     {
+        if (doubleClickTile.HasDigit)
+        {
+            SelectAllTilesWithDigit(doubleClickTile);
+        }
+        else
+        {
+            if (doubleClickTile.CornerMarks.Count > 0)
+                SelectAllTilesWithCorner(doubleClickTile);
+            
+            if (doubleClickTile.centerMarks.Count > 0)
+                SelectAllTilesWithCenter(doubleClickTile);
+        }
+    }
+
+    private void SelectAllTilesWithDigit(TileBehaviour doubleClickTile)
+    {
+        int number = doubleClickTile.number;
+        if (number == 0) return;
+        
         foreach (var tile in tileBehaviours)
         {
             if (tile.number == number)
@@ -96,6 +121,36 @@ public class GridBehaviour : MonoBehaviour
         }
     }
     
+    private void SelectAllTilesWithCorner(TileBehaviour doubleClickTile)
+    {
+        bool hasCornerDigit = doubleClickTile.CornerMarks.Count > 0;
+        if (!hasCornerDigit) return;
+
+        foreach (var corner in doubleClickTile.CornerMarks)
+        {
+            foreach (var tile in tileBehaviours)
+            {
+                if (tile.CornerMarks.Contains(corner))
+                    tile.HandleSelect();
+            }
+        }
+    }
+    
+    private void SelectAllTilesWithCenter(TileBehaviour doubleClickTile)
+    {
+        bool hasCenterDigit = doubleClickTile.centerMarks.Count > 0;
+        if (!hasCenterDigit) return;
+
+        foreach (var center in doubleClickTile.centerMarks)
+        {
+            foreach (var tile in tileBehaviours)
+            {
+                if (tile.centerMarks.Contains(center))
+                    tile.HandleSelect();
+            }
+        }
+    }
+
     private void OnRequestTile(int row, int col)
     {
         selectionObject.SendTileReference(tileBehaviours[row,col]);
@@ -126,22 +181,15 @@ public class GridBehaviour : MonoBehaviour
         }
     }
 
-    // private int SetNumberBasedOnAllSameDigit(List<TileBehaviour> selectedTiles, int number, EnterType digitMark)
-    // {
-    //     int newNumber = number;
-    //     
-    //     bool allTilesAlreadyHaveNumber = CheckIfAllTilesHaveNumber(selectedTiles, number, EnterType.DigitMark);
-    //     if (allTilesAlreadyHaveNumber)
-    //         newNumber = 0;
-    //
-    //     return newNumber;
-    // }
-
     private bool CheckIfAllTilesHaveNumber(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
     {
         foreach (var tile in selectedTiles)
         {
+            // skip given clues
             if (tile.Permanent) continue;
+            
+            // if not digit entry, skip tiles that already has digit
+            if (enterType != EnterType.DigitMark && tile.HasDigit) continue;
 
             if (!tile.HasSameNumber(number, enterType))
                 return false;

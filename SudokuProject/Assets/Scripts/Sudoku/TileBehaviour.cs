@@ -28,14 +28,14 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     // public fields
     public int row { get; private set; }
     public int col { get; private set; }
-    public int number { get; private set; }
+    public int number { get; private set; } 
 
-    private bool HasDigit => number > 0;
+    public bool HasDigit => number > 0;
 
     public bool Permanent { get; private set; } = false;
     public bool Contradicted { get; private set; } = false;
 
-    private List<int> centerMarks { get; set; } = new List<int>();
+    public List<int> centerMarks { get; set; } = new List<int>();
     //private List<int> CornerMarks { get; set; } = new List<int>();
     public List<int> CornerMarks;
 
@@ -207,9 +207,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     public void OnPointerClick(PointerEventData eventData)
     {
         bool doubleClick = Time.time < timeOfLastClick + maxTimeForDoubleClick;
-        if (doubleClick && number > 0)
+        if (doubleClick)
         {
-            EventManager.SelectAllTilesWithNumber(number);
+            EventManager.SelectAllTilesWithNumber(this);
         }
         else
         {
@@ -266,7 +266,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
             
             case EnterType.CenterMark:
                 return !HasDigit && centerMarks.Contains(number);
-               
             
             case EnterType.CornerMark:
                 return !HasDigit && CornerMarks.Contains(number);
