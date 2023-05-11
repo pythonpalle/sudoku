@@ -83,8 +83,6 @@ public class GridBehaviour : MonoBehaviour
     
     private void OnRemoveEntry(List<TileBehaviour> tiles, EnterType enterType)
     {
-        lastKnownEnterType = enterType;
-
         switch (enterType)
         {
             case EnterType.DigitMark:

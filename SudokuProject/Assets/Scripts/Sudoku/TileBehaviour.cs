@@ -36,7 +36,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     public bool Contradicted { get; private set; } = false;
 
     public List<int> centerMarks { get; set; } = new List<int>();
-    //private List<int> CornerMarks { get; set; } = new List<int>();
     public List<int> CornerMarks;
 
     // private fields
@@ -48,6 +47,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     private Vector3 whitePartSelectScale = Vector3.one * 0.9f;
     private Vector3 whitePartStartScale;
     
+    int centerMarkFontSize = 30;
+
     private void Start()
     {
         whitePartStartScale = whitePart.transform.localScale;
@@ -88,16 +89,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         }
     }
 
-    private bool TryUpdateDigit(int number, bool remove)
-    {
-        if (Permanent) return false;
-
-        if (remove) number = 0;
-        SetDigit(number);
-        numberText.color = Color.blue;
-        return true;
-    }
-    
     public bool TryUpdateNumber(int number, EnterType enterType, bool remove)
     {
         if (Permanent) return false;
@@ -115,6 +106,16 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         }
 
         return false;
+    }
+    
+    private bool TryUpdateDigit(int number, bool remove)
+    {
+        if (Permanent) return false;
+
+        if (remove) number = 0;
+        SetDigit(number);
+        numberText.color = Color.blue;
+        return true;
     }
     
 
@@ -137,6 +138,27 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         SortCornerMarks();
         return true;
     }
+    
+    private bool TryUpdateCenter(int addedNumber, bool remove)
+    {
+        if (Permanent || HasDigit) return false;
+        
+        if (remove && centerMarks.Contains(addedNumber))
+        {
+            centerMarks.Remove(addedNumber);
+        }
+        else
+        {
+            if (centerMarks.Contains(addedNumber))
+                return false;
+            
+            centerMarks.Add(addedNumber);
+        }
+
+        SortCenterMarks();
+        return true;
+    }
+    
 
     private void SortCornerMarks()
     {
@@ -192,10 +214,30 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
         return indexes;
     }
-
-    private bool TryUpdateCenter(int i, bool remove)
+    
+    private void SortCenterMarks()
     {
-        return true;
+        centerMarks.Sort();
+
+        int centerMarkCount = centerMarks.Count;
+        float centerStringSize = centerMarkFontSize;
+        int maximumMarksForDefaultSize = 5;
+
+        if (centerMarkCount > maximumMarksForDefaultSize)
+        {
+            int difference = centerMarkCount - maximumMarksForDefaultSize;
+
+            centerStringSize *= Mathf.Pow(0.87f, difference);
+        }
+
+        string centerMarkString = string.Empty;
+        foreach (var mark in centerMarks)
+        {
+            centerMarkString += mark.ToString();
+        }
+
+        centerText.text = centerMarkString;
+        centerText.fontSize = centerStringSize;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
