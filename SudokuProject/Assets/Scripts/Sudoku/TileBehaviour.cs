@@ -14,6 +14,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     [SerializeField] private Image border;
     [SerializeField] private Image whitePart;
     
+    [SerializeField] private SelectionObject selectionObject;
+    
     private Vector3 whitePartSelectScale = Vector3.one * 0.9f;
     private Vector3 whitePartStartScale;
 
@@ -89,7 +91,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
     private bool HandleTrySelect()
     {
-        if (!SelectionManager.Instance.IsSelecting || isSelected)
+        if (!selectionObject.IsSelecting || isSelected)
         {
             return false;
         }
@@ -124,6 +126,4 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         Contradicted = false;
         whitePart.color = Color.white;
     }
-
-    
 }

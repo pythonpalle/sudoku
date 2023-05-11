@@ -13,7 +13,7 @@ public enum EnterType
 
 public class GridEnterManager : MonoBehaviour
 {
-    //public static GridEnterManager Instance { get; private set; }
+    [SerializeField] private SelectionObject selectionObject;
     
     private KeyCode[] NumberKeys = {
         KeyCode.Alpha0,
@@ -48,24 +48,6 @@ public class GridEnterManager : MonoBehaviour
                                           || Input.GetKeyDown(KeyCode.Alpha0)
                                           || Input.GetKeyDown(KeyCode.Keypad0);
 
-    // private void Awake()
-    // {
-    //     MakeSingleton();
-    // }
-    //
-    // private void MakeSingleton()
-    // {
-    //     if (Instance && Instance != this)
-    //     {
-    //         Destroy(this);
-    //     }
-    //     else
-    //     {
-    //         Instance = this;
-    //         DontDestroyOnLoad(this);
-    //     }
-    // }
-
     private void Update()
     {
         HandleNumberEnter();
@@ -74,7 +56,7 @@ public class GridEnterManager : MonoBehaviour
 
     private void HandleNumberEnter()
     {
-        if (!SelectionManager.Instance.HasSelectedTiles)
+        if (!selectionObject.HasSelectedTiles)
             return;
         
         for (int number = 1; number <= 9; number++)
@@ -94,19 +76,19 @@ public class GridEnterManager : MonoBehaviour
 
     public void TryEnterNumber(int number)
     {
-        if (!SelectionManager.Instance.HasSelectedTiles)
+        if (!selectionObject.HasSelectedTiles)
         {
             return;
         }
         
-        EventManager.EnterNumber(SelectionManager.Instance.SelectedTiles, enterType, number);
+        EventManager.EnterNumber(selectionObject.SelectedTiles, enterType, number);
     }
 
     public void TryRemoveNumbers()
     {
-        if (!SelectionManager.Instance.HasSelectedTiles)
+        if (!selectionObject.HasSelectedTiles)
             return;
         
-        EventManager.RemoveEntry(SelectionManager.Instance.SelectedTiles, enterType);
+        EventManager.RemoveEntry(selectionObject.SelectedTiles, enterType);
     }
 }

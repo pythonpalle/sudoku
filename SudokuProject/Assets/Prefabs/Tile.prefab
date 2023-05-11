@@ -308,4 +308,7 @@ MonoBehaviour:
   numberText: {fileID: 8928455112392704370}
   border: {fileID: 2400492079632488010}
   whitePart: {fileID: 1857669749747954779}
+  selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
   isSelected: 0
+  Permanent: 0
+  Contradicted: 0

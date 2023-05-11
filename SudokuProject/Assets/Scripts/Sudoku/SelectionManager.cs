@@ -6,13 +6,6 @@ using UnityEngine;
 public class SelectionManager : MonoBehaviour
 {
     [SerializeField] private SelectionObject selectionObject;
-    
-    public List<TileBehaviour> SelectedTiles;// { get; private set; } = new List<TileBehaviour>();
-    
-    public static SelectionManager Instance { get; private set; }
-    public bool HasSelectedTiles => SelectedTiles.Count > 0;
-
-    public bool IsSelecting;// { get; private set; }
 
     private bool rightKeyIsPressed => Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D);
     private bool leftKeyIsPressed => Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A);
@@ -25,24 +18,6 @@ public class SelectionManager : MonoBehaviour
     private bool onNumberPad;
 
     private TileBehaviour tileReference;
-
-    private void Awake()
-    {
-        MakeSingleton();
-    }
-    
-    private void MakeSingleton()
-    {
-        if (Instance && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(this);
-        }
-    }
 
     private void OnEnable()
     {
@@ -62,17 +37,17 @@ public class SelectionManager : MonoBehaviour
 
     private void OnTileSelect(TileBehaviour tile)
     {
-        if (!SelectedTiles.Contains(tile))
+        if (!selectionObject.SelectedTiles.Contains(tile))
         {
-            SelectedTiles.Add(tile);
+            selectionObject.SelectedTiles.Add(tile);
         }
     }
 
     private void OnTileDeselect(TileBehaviour tile)
     {
-        if (SelectedTiles.Contains(tile))
+        if (selectionObject.SelectedTiles.Contains(tile))
         {
-            SelectedTiles.Remove(tile);
+            selectionObject.SelectedTiles.Remove(tile);
         }
     }
     
@@ -94,29 +69,32 @@ public class SelectionManager : MonoBehaviour
             if (!multiSelectKeyIsPressed && !onNumberPad) 
                 DeselectAllTiles();
             
-            IsSelecting = true;
+            selectionObject.SetSelect(true);
+            //IsSelecting = true;
         } 
         else if (Input.GetMouseButtonUp(0))
         {
-            IsSelecting = false;
+            selectionObject.SetSelect(false);
+            //IsSelecting = false;
         }
     }
 
     private void DeselectAllTiles()
     {
-        for (int i = SelectedTiles.Count - 1; i >= 0; i--)
+        for (int i = selectionObject.SelectedTiles.Count - 1; i >= 0; i--)
         {
-            TileBehaviour tile = SelectedTiles[i];
+            TileBehaviour tile = selectionObject.SelectedTiles[i];
             tile.Deselect();
-            SelectedTiles.RemoveAt(i);
+            selectionObject.SelectedTiles.RemoveAt(i);
         }
     }
     
     private void HandleMoveTileSelectWithKeys()
     {
-        if (!HasSelectedTiles) return;
+        //if (!HasSelectedTiles) return;
+        if (!selectionObject.HasSelectedTiles) return;
 
-        var lastTile = SelectedTiles[^1];        
+        var lastTile = selectionObject.SelectedTiles[^1];        
         
         int row = lastTile.row;
         int col = lastTile.col;
