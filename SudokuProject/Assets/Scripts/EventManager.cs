@@ -19,6 +19,7 @@ public static class EventManager
 
     public static UnityAction OnUIElementHover;
     public static UnityAction OnUIElementExit;
+    public static UnityAction<EnterType> OnSelectButtonClicked;
 
     public static void GenerateGrid(SudokuGrid9x9 grid)
     {
@@ -63,5 +64,10 @@ public static class EventManager
     public static void SelectAllTilesWithNumber(int number)
     {
         OnSelectAllTilesWithNumber?.Invoke(number);
+    }
+
+    public static void SelectButtonClicked(EnterType type)
+    {
+        OnSelectButtonClicked?.Invoke(type);
     }
 }

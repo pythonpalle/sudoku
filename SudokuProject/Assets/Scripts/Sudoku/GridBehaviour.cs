@@ -89,7 +89,7 @@ public class GridBehaviour : MonoBehaviour
     {
         switch (enterType)
         {
-            case EnterType.NormalNumber:
+            case EnterType.DigitMark:
                 HandleEnterNormalNumbers(tiles, number);
                 break;
         }
@@ -99,7 +99,7 @@ public class GridBehaviour : MonoBehaviour
     {
         switch (enterType)
         {
-            case EnterType.NormalNumber:
+            case EnterType.DigitMark:
                 HandleRemoveNormalNumbers(tiles);
                 break;
         }

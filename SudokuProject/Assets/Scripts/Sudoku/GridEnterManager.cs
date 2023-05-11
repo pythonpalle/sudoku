@@ -5,9 +5,9 @@ using UnityEngine;
 
 public enum EnterType
 {
-    NormalNumber,
-    CellPencilMark,
-    BoxPencilMark,
+    DigitMark,
+    CornerMark,
+    CenterMark,
     ColorMark
 }
 
@@ -41,7 +41,7 @@ public class GridEnterManager : MonoBehaviour
         KeyCode.Keypad9
     };
 
-    private EnterType enterType = EnterType.NormalNumber;
+    private EnterType enterType = EnterType.DigitMark;
 
     private bool removeButtonIsPressed => Input.GetKeyDown(KeyCode.Delete)
                                           || Input.GetKeyDown(KeyCode.Backspace)

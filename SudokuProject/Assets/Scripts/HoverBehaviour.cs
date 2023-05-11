@@ -6,17 +6,39 @@ using UnityEngine.EventSystems;
 
 public class HoverBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [SerializeField] private bool usePointerEnter = true;
+    [SerializeField] private bool usePointerExit = true;
+    
     public UnityEvent OnMouseHover;
     public UnityEvent OnMouseExit;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        EventManager.UIElementHover();
-        OnMouseHover?.Invoke();
+        HandlePointerEnter();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        HandlePointerExit();
+    }
+
+    private void HandlePointerEnter()
+    {
+        if (!usePointerEnter)
+        {
+            HandlePointerExit();
+            return;
+        }
+        
+        EventManager.UIElementHover();
+        OnMouseHover?.Invoke();
+    }
+    
+    private void HandlePointerExit()
+    {
+        
+        if (!usePointerExit) return;
+
         EventManager.UIElementExit();
         OnMouseExit?.Invoke();
     }
