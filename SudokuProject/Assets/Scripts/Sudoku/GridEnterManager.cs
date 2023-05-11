@@ -48,6 +48,21 @@ public class GridEnterManager : MonoBehaviour
                                           || Input.GetKeyDown(KeyCode.Alpha0)
                                           || Input.GetKeyDown(KeyCode.Keypad0);
 
+    private void OnEnable()
+    {
+        EventManager.OnSelectButtonClicked += OnSelectButtonClicked;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.OnSelectButtonClicked -= OnSelectButtonClicked;
+    }
+
+    private void OnSelectButtonClicked(EnterType type)
+    {
+        enterType = type;
+    }
+
     private void Update()
     {
         HandleNumberEnter();

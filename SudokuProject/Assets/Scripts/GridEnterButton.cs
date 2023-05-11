@@ -17,7 +17,7 @@ public class GridEnterButton : MonoBehaviour
         
     }
 
-    public void SendOnButtonClickEvent()
+    private void SendOnButtonClickEvent()
     {
         EventManager.SelectButtonClicked(enterType);
     }
