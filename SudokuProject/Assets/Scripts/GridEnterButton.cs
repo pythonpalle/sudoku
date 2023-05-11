@@ -14,7 +14,10 @@ public class GridEnterButton : MonoBehaviour
 
     private void Start()
     {
-        
+        if (enterType == EnterType.DigitMark)
+        {
+            Select();
+        }
     }
 
     private void SendOnButtonClickEvent()
@@ -26,11 +29,6 @@ public class GridEnterButton : MonoBehaviour
     {
         button.onClick.AddListener(SendOnButtonClickEvent);
         EventManager.OnSelectButtonClicked += OnSelectButtonClicked;
-        
-        if (enterType == EnterType.DigitMark)
-        {
-            SendOnButtonClickEvent();
-        }
     }
     
     private void OnDisable()

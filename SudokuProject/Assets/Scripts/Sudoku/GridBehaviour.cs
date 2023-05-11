@@ -97,8 +97,6 @@ public class GridBehaviour : MonoBehaviour
     
     private void HandleEnterNormalNumbers(List<TileBehaviour> selectedTiles, int number)
     {
-        SudokuGrid9x9 newGrid = new SudokuGrid9x9(grid);
-
         bool allTilesAlreadyHaveNumber = CheckAllTileHaveNumber(selectedTiles, number);
         if (allTilesAlreadyHaveNumber)
             number = 0;
@@ -107,14 +105,11 @@ public class GridBehaviour : MonoBehaviour
         {
             if (tileBehaviour.Permanent) continue;
 
-            EnterNormalNumber(newGrid, tileBehaviour, number);
+            EnterNormalNumber(tileBehaviour, number);
         }
         
-        HandleRemoveContradictions(newGrid);
-
-        gridHistory.Add(newGrid);
-        HandleAddContradictionsInList(newGrid, selectedTiles, number);
-        grid = new SudokuGrid9x9(newGrid);
+        HandleRemoveContradictions();
+        HandleAddContradictionsInList(selectedTiles, number);
     }
 
     private bool CheckAllTileHaveNumber(List<TileBehaviour> selectedTiles, int number)
@@ -130,7 +125,7 @@ public class GridBehaviour : MonoBehaviour
         return true;
     }
 
-    private void HandleRemoveContradictions(SudokuGrid9x9 newGrid)
+    private void HandleRemoveContradictions( )
     {
         List<TileBehaviour> tilesWithContradiction = new List<TileBehaviour>();
         foreach (var tile in tileBehaviours)
@@ -141,14 +136,14 @@ public class GridBehaviour : MonoBehaviour
 
         foreach (var tile in tilesWithContradiction)
         {
-            if (!CheckForContradiction(tile, newGrid))
+            if (!CheckForContradiction(tile))
             {
                 tile.RemoveContradiction();
             }
         }
     }
 
-    private bool CheckForContradiction(TileBehaviour tile, SudokuGrid9x9 newGrid)
+    private bool CheckForContradiction(TileBehaviour tile)
     {
         var effectedTiles = GetEffectedTiles(tile);
         int tileNumber = tile.number;
@@ -162,7 +157,7 @@ public class GridBehaviour : MonoBehaviour
         return false;
     }
 
-    private void EnterNormalNumber(SudokuGrid9x9 grid, TileBehaviour tileBehaviour, int number)
+    private void EnterNormalNumber(TileBehaviour tileBehaviour, int number)
     {
         if (!tileBehaviour.TryUpdateNumber(number))
             return;
@@ -173,7 +168,7 @@ public class GridBehaviour : MonoBehaviour
         grid.SetNumberToIndex(row, col, number);
     }
     
-    private void HandleAddContradictionsInList(SudokuGrid9x9 newGrid, List<TileBehaviour> selectedTiles, int number)
+    private void HandleAddContradictionsInList(List<TileBehaviour> selectedTiles, int number)
     {
         foreach (var tile in selectedTiles)
         {
@@ -253,16 +248,12 @@ public class GridBehaviour : MonoBehaviour
     
     private void HandleRemoveNormalNumbers(List<TileBehaviour> selectedTiles)
     {
-        SudokuGrid9x9 newGrid = new SudokuGrid9x9(grid);
         foreach (var tile in selectedTiles)
         {
-            EnterNormalNumber(newGrid, tile, 0);
+            EnterNormalNumber(tile, 0);
         }
         
-        HandleRemoveContradictions(newGrid);
-        
-        gridHistory.Add(newGrid);
-        grid = new SudokuGrid9x9(newGrid);
+        HandleRemoveContradictions();
     }
 
     private void OnSelectAllTilesWithNumber(int number)
