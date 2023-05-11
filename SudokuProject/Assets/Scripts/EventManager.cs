@@ -12,6 +12,7 @@ public static class EventManager
     
     public static UnityAction<TileBehaviour> OnTileSelect;
     public static UnityAction<TileBehaviour> OnTileDeselect;
+    public static UnityAction<int> OnSelectAllTilesWithNumber;
     
     public static UnityAction<List<TileBehaviour>, EnterType, int> OnNumberEnter;
     public static UnityAction<List<TileBehaviour>, EnterType> OnRemoveEntry;
@@ -57,5 +58,10 @@ public static class EventManager
     public static void UIElementExit()
     {
         OnUIElementExit?.Invoke();
+    }
+
+    public static void SelectAllTilesWithNumber(int number)
+    {
+        OnSelectAllTilesWithNumber?.Invoke(number);
     }
 }

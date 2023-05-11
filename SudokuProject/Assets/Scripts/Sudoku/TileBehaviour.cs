@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
+public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
 {
     public int row;
     public int col;
@@ -22,6 +22,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     public bool isSelected = false;
     public bool Permanent = false;
     public bool Contradicted = false;
+
+    private float timeOfLastClick;
+    private const float maxTimeForDoubleClick = 0.2f;
 
     private void Start()
     {
@@ -68,14 +71,20 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         HandleTrySelect();
         EventManager.UIElementHover();
     }
-    
-    public void OnPointerExit(PointerEventData eventData)
-    {
-    }
-    
+
     public void OnPointerClick(PointerEventData eventData)
     {
-        HandleTrySelect();
+        bool doubleClick = Time.time < timeOfLastClick + maxTimeForDoubleClick;
+        if (doubleClick && number > 0)
+        {
+            EventManager.SelectAllTilesWithNumber(number);
+        }
+        else
+        {
+            HandleTrySelect();
+        }
+
+        timeOfLastClick = Time.time;
     }
 
     private bool HandleTrySelect()

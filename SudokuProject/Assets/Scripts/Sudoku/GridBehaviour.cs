@@ -38,6 +38,7 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnTileIndexSet += OnTileIndexSet;
         EventManager.OnNumberEnter += OnNumberEnter;
         EventManager.OnRemoveEntry += OnRemoveEntry;
+        EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
     }
     
     private void OnDisable()
@@ -46,6 +47,7 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         EventManager.OnNumberEnter -= OnNumberEnter; 
         EventManager.OnRemoveEntry -= OnRemoveEntry;
+        EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
     }
 
     private void Start()
@@ -259,5 +261,14 @@ public class GridBehaviour : MonoBehaviour
     public TileBehaviour GetTileAtIndex(int row, int col)
     {
         return tileBehaviours[row, col];
+    }
+    
+    private void OnSelectAllTilesWithNumber(int number)
+    {
+        foreach (var tile in tileBehaviours)
+        {
+            if (tile.number == number)
+                tile.HandleSelect();
+        }
     }
 }
