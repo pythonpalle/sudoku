@@ -1130,6 +1130,7 @@ MonoBehaviour:
   cornerTextsParent: {fileID: 5390585990635704890}
   centerText: {fileID: 7373437563298184094}
   selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
+  CornerMarks: 
 --- !u!1 &5390585990635704890
 GameObject:
   m_ObjectHideFlags: 0

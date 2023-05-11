@@ -110,16 +110,13 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
             case EnterType.CornerMark:
                 return TryUpdateCorner(number, remove);
             
-            // case EnterType.CenterMark:
-            //     return !HasDigit && centerMarks.Contains(number);
-            //    
-            //
-            // case EnterType.CornerMark:
-            //     return !HasDigit && CornerMarks.Contains(number);
+            case EnterType.CenterMark:
+                return TryUpdateCenter(number, remove);
         }
 
         return false;
     }
+    
 
     private bool TryUpdateCorner(int addedNumber, bool remove)
     {
@@ -128,8 +125,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         Debug.Log("Added number: " + addedNumber);
 
         //numberText.gameObject.SetActive(false);
-        cornerTextsParent.SetActive(true);
-        centerText.gameObject.SetActive(true);
+        // cornerTextsParent.SetActive(true);
+        // centerText.gameObject.SetActive(true);
 
         if (remove && CornerMarks.Contains(addedNumber))
         {
@@ -163,6 +160,11 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
                 cornerTextList[i].text = CornerMarks[i].ToString();
             }
         }
+    }
+    
+    private bool TryUpdateCenter(int i, bool remove)
+    {
+        return true;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
