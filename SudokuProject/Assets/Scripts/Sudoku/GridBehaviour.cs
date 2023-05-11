@@ -66,10 +66,13 @@ public class GridBehaviour : MonoBehaviour
     
     private void OnNumberEnter(List<TileBehaviour> tiles, EnterType enterType, int number)
     {
+        HandleEnterNumberToSelectedTiles(tiles, number, enterType);
+        
         switch (enterType)
         {
             case EnterType.DigitMark:
-                HandleEnterNormalNumbers(tiles, number);
+                HandleRemoveContradictions();
+                HandleAddContradictionsInList(tiles, number);
                 break;
         }
     }
@@ -109,34 +112,30 @@ public class GridBehaviour : MonoBehaviour
         }
     }
 
-    private void HandleEnterNormalNumbers(List<TileBehaviour> selectedTiles, int number)
+    private void HandleEnterNumberToSelectedTiles(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
     {
         // if all selected tiles have the same number, remove the number (change to zero)
-        number = SetNumberBasedOnAllSameDigit(selectedTiles, number, EnterType.DigitMark);
+        //number = SetNumberBasedOnAllSameDigit(selectedTiles, number, enterType);
+        bool allTilesHaveSameDigit = CheckIfAllTilesHaveNumber(selectedTiles, number, enterType);
 
         foreach (var tileBehaviour in selectedTiles)
         {
             if (tileBehaviour.Permanent) continue;
 
-            EnterTileNumber(tileBehaviour, number, EnterType.DigitMark);
-
-            //EnterNormalNumber(tileBehaviour, number);
+            EnterTileNumber(tileBehaviour, number, enterType, allTilesHaveSameDigit);
         }
-        
-        HandleRemoveContradictions();
-        HandleAddContradictionsInList(selectedTiles, number);
     }
 
-    private int SetNumberBasedOnAllSameDigit(List<TileBehaviour> selectedTiles, int number, EnterType digitMark)
-    {
-        int newNumber = number;
-        
-        bool allTilesAlreadyHaveNumber = CheckIfAllTilesHaveNumber(selectedTiles, number, EnterType.DigitMark);
-        if (allTilesAlreadyHaveNumber)
-            newNumber = 0;
-
-        return newNumber;
-    }
+    // private int SetNumberBasedOnAllSameDigit(List<TileBehaviour> selectedTiles, int number, EnterType digitMark)
+    // {
+    //     int newNumber = number;
+    //     
+    //     bool allTilesAlreadyHaveNumber = CheckIfAllTilesHaveNumber(selectedTiles, number, EnterType.DigitMark);
+    //     if (allTilesAlreadyHaveNumber)
+    //         newNumber = 0;
+    //
+    //     return newNumber;
+    // }
 
     private bool CheckIfAllTilesHaveNumber(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
     {
@@ -151,40 +150,33 @@ public class GridBehaviour : MonoBehaviour
         return true;
     }
     
-    private void EnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType)
+    private void EnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType, bool sameNumber)
     {
         if (tileBehaviour.Permanent)
             return;
 
-        tileBehaviour.TryUpdateNumber(number, enterType);
+        tileBehaviour.TryUpdateNumber(number, enterType, sameNumber);
 
         if (enterType == EnterType.DigitMark)
         {
-            int row = tileBehaviour.row;
-            int col = tileBehaviour.col;
-
-            grid.SetNumberToIndex(row, col, number);
+            AddNumberToGrid(tileBehaviour, number, sameNumber);
         }
-        
-        // witch (digitMark)
-        // {
-        //     case EnterType.DigitMark:
-        //         EnterNormalNumber(tileBehaviour, number);
-        //         break;
-        //         
-        //     case EnterType.CenterMark:
-        //
-        //         break;
-        //         
-        //     case EnterType.CornerMark:
-        //
-        //         break;
-        // }
     }
-    
+
+    private void AddNumberToGrid(TileBehaviour tileBehaviour, int number, bool remove)
+    {
+        int row = tileBehaviour.row;
+        int col = tileBehaviour.col;
+
+        if (remove)
+            number = 0;
+
+        grid.SetNumberToIndex(row, col, number);
+    }
+
     private void EnterNormalNumber(TileBehaviour tileBehaviour, int number)
     {
-        if (!tileBehaviour.TryUpdateNumber(number))
+        if (tileBehaviour.Permanent)
             return;
 
         int row = tileBehaviour.row;
@@ -309,6 +301,7 @@ public class GridBehaviour : MonoBehaviour
         foreach (var tile in selectedTiles)
         {
             EnterNormalNumber(tile, 0);
+            tile.TryUpdateNumber(0, EnterType.DigitMark, true);
         }
         
         HandleRemoveContradictions();

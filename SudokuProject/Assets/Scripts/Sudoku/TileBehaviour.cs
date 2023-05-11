@@ -69,23 +69,24 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
             RemoveContradiction();
     }
 
-    public bool TryUpdateNumber(int number)
+    private bool TryUpdateDigit(int number, bool remove)
     {
         if (Permanent) return false;
-        
+
+        if (remove) number = 0;
         SetNumber(number);
         numberText.color = Color.blue;
         return true;
     }
     
-    public bool TryUpdateNumber(int number, EnterType enterType)
+    public bool TryUpdateNumber(int number, EnterType enterType, bool remove)
     {
         if (Permanent) return false;
 
         switch (enterType)
         {
             case EnterType.DigitMark:
-                return TryUpdateNumber(number);
+                return TryUpdateDigit(number, remove);
             
             // case EnterType.CenterMark:
             //     return !HasDigit && centerMarks.Contains(number);
