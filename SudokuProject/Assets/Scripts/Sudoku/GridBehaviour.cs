@@ -25,7 +25,7 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnGridGenerated += OnGridGenerated;
         EventManager.OnTileIndexSet += OnTileIndexSet;
         EventManager.OnNumberEnter += OnNumberEnter;
-        EventManager.OnRemoveEntry += OnRemoveEntry;
+        EventManager.OnRemoveEntry += OnRemoveEntryEvent;
         EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
 
         selectionObject.OnRequestTile += OnRequestTile;
@@ -36,7 +36,7 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnGridGenerated -= OnGridGenerated;
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         EventManager.OnNumberEnter -= OnNumberEnter; 
-        EventManager.OnRemoveEntry -= OnRemoveEntry;
+        EventManager.OnRemoveEntry -= OnRemoveEntryEvent;
         EventManager.OnSelectAllTilesWithNumber -= OnSelectAllTilesWithNumber;
         
         selectionObject.OnRequestTile -= OnRequestTile;
@@ -81,16 +81,83 @@ public class GridBehaviour : MonoBehaviour
         }
     }
     
-    private void OnRemoveEntry(List<TileBehaviour> tiles, EnterType enterType)
+    private void OnRemoveEntryEvent(List<TileBehaviour> tiles, EnterType eventType)
     {
-        switch (enterType)
+        // all enter types in priority order
+        List<EnterType> enterTypes = new List<EnterType>
         {
-            case EnterType.DigitMark:
-                HandleRemoveNormalNumbers(tiles);
-                break;
+            EnterType.DigitMark,
+            EnterType.CenterMark,
+            EnterType.CornerMark
+        };
+
+        // moving the given enter type to bottom of list, giving it top prioriy
+        enterTypes.Remove(eventType);
+        enterTypes.Insert(0, eventType);
+
+        foreach (var type in enterTypes)
+        {
+            if (CheckIfTilesContainType(tiles, type))
+            {
+                // special case needed to update board
+                if (type == EnterType.DigitMark)
+                {
+                    HandleRemoveNormalNumbers(tiles);
+                }
+                else
+                {
+                    RemoveAllOfEntryType(tiles, type);
+                }
+                
+                return;
+            }
+        }
+
+        // switch (enterType)
+        // {
+        //     case EnterType.DigitMark:
+        //         HandleRemoveNormalNumbers(tiles);
+        //         break;
+        // }
+    }
+
+    private void RemoveAllOfEntryType(List<TileBehaviour> tiles, EnterType type)
+    {
+        foreach (var tile in tiles)
+        {
+            tile.RemoveAllOfType(type);
         }
     }
-    
+
+    private bool CheckIfTilesContainType(List<TileBehaviour> selectedTiles, EnterType enterType)
+    {
+        foreach (var tile in selectedTiles)
+        {
+            // skip given clues
+            if (tile.Permanent) continue;
+
+            switch (enterType)
+            {
+                case EnterType.DigitMark:
+                    if (tile.HasDigit)
+                        return true;
+                    break;
+                
+                case EnterType.CenterMark:
+                    if (!tile.HasDigit && tile.centerMarks.Count > 0)
+                        return true;
+                    break;
+                
+                case EnterType.CornerMark:
+                    if (!tile.HasDigit && tile.CornerMarks.Count > 0)
+                        return true;
+                    break;
+            }
+        }
+        
+        return false;
+    }
+
     private void OnSelectAllTilesWithNumber(TileBehaviour doubleClickTile)
     {
         if (doubleClickTile.HasDigit)

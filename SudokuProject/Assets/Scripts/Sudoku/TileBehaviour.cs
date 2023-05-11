@@ -315,4 +315,37 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
         return false;
     }
+
+    public void RemoveAllOfType(EnterType enterType)
+    {
+        switch (enterType)
+        {
+            case EnterType.DigitMark:
+                TryUpdateNumber(0, EnterType.DigitMark, true);
+                break;
+            
+            case EnterType.CenterMark:
+                RemoveAllCenterMarks();
+                break;
+            
+            case EnterType.CornerMark:
+                RemoveAllCornerMarks();
+                break;
+        }
+    }
+
+    private void RemoveAllCenterMarks()
+    {
+        centerMarks.Clear();
+        centerText.text = String.Empty;
+    }
+
+    private void RemoveAllCornerMarks()
+    {
+        CornerMarks.Clear();
+        foreach (var text in cornerTextList)
+        {
+            text.text = string.Empty;
+        }
+    }
 }
