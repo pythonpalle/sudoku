@@ -25,6 +25,8 @@ public class SelectionManager : MonoBehaviour
         EventManager.OnTileDeselect += OnTileDeselect;
 
         selectionObject.OnSendTileReference += OnSendTileReference;
+        
+        selectionObject.ClearSelectedTiles(); 
     }
     
     private void OnDisable()

@@ -30,4 +30,9 @@ public class SelectionObject : ScriptableObject
     {
         IsSelecting = value;
     }
+
+    public void ClearSelectedTiles()
+    {
+        SelectedTiles = new List<TileBehaviour>();
+    }
 }
