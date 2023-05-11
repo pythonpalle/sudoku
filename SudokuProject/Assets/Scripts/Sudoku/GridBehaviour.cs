@@ -111,20 +111,31 @@ public class GridBehaviour : MonoBehaviour
 
     private void HandleEnterNormalNumbers(List<TileBehaviour> selectedTiles, int number)
     {
-        // if all selected tiles have the same number, remove the number
-        bool allTilesAlreadyHaveNumber = CheckIfAllTilesHaveNumber(selectedTiles, number, EnterType.DigitMark);
-        if (allTilesAlreadyHaveNumber)
-            number = 0;
-        
+        // if all selected tiles have the same number, remove the number (change to zero)
+        number = SetNumberBasedOnAllSameDigit(selectedTiles, number, EnterType.DigitMark);
+
         foreach (var tileBehaviour in selectedTiles)
         {
             if (tileBehaviour.Permanent) continue;
 
-            EnterNormalNumber(tileBehaviour, number);
+            EnterTileNumber(tileBehaviour, number, EnterType.DigitMark);
+
+            //EnterNormalNumber(tileBehaviour, number);
         }
         
         HandleRemoveContradictions();
         HandleAddContradictionsInList(selectedTiles, number);
+    }
+
+    private int SetNumberBasedOnAllSameDigit(List<TileBehaviour> selectedTiles, int number, EnterType digitMark)
+    {
+        int newNumber = number;
+        
+        bool allTilesAlreadyHaveNumber = CheckIfAllTilesHaveNumber(selectedTiles, number, EnterType.DigitMark);
+        if (allTilesAlreadyHaveNumber)
+            newNumber = 0;
+
+        return newNumber;
     }
 
     private bool CheckIfAllTilesHaveNumber(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
@@ -133,28 +144,53 @@ public class GridBehaviour : MonoBehaviour
         {
             if (tile.Permanent) continue;
 
-            switch (enterType)
-            {
-                case EnterType.DigitMark:
-                    if (tile.number != number)
-                        return false;
-                    break;
-                
-                case EnterType.CenterMark:
-                    if (!tile.centerMarks.Contains(number))
-                        return false;
-                    break;
-                
-                case EnterType.CornerMark:
-                    if (!tile.CornerMarks.Contains(number))
-                        return false;
-                    break;
-            }
-
-            
+            if (!tile.HasSameNumber(number, enterType))
+                return false;
         }
 
         return true;
+    }
+    
+    private void EnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType)
+    {
+        if (tileBehaviour.Permanent)
+            return;
+
+        tileBehaviour.TryUpdateNumber(number, enterType);
+
+        if (enterType == EnterType.DigitMark)
+        {
+            int row = tileBehaviour.row;
+            int col = tileBehaviour.col;
+
+            grid.SetNumberToIndex(row, col, number);
+        }
+        
+        // witch (digitMark)
+        // {
+        //     case EnterType.DigitMark:
+        //         EnterNormalNumber(tileBehaviour, number);
+        //         break;
+        //         
+        //     case EnterType.CenterMark:
+        //
+        //         break;
+        //         
+        //     case EnterType.CornerMark:
+        //
+        //         break;
+        // }
+    }
+    
+    private void EnterNormalNumber(TileBehaviour tileBehaviour, int number)
+    {
+        if (!tileBehaviour.TryUpdateNumber(number))
+            return;
+
+        int row = tileBehaviour.row;
+        int col = tileBehaviour.col;
+
+        grid.SetNumberToIndex(row, col, number);
     }
 
     private void HandleRemoveContradictions( )
@@ -188,17 +224,7 @@ public class GridBehaviour : MonoBehaviour
 
         return false;
     }
-
-    private void EnterNormalNumber(TileBehaviour tileBehaviour, int number)
-    {
-        if (!tileBehaviour.TryUpdateNumber(number))
-            return;
-
-        int row = tileBehaviour.row;
-        int col = tileBehaviour.col;
-
-        grid.SetNumberToIndex(row, col, number);
-    }
+    
     
     private void HandleAddContradictionsInList(List<TileBehaviour> selectedTiles, int number)
     {

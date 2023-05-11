@@ -7,31 +7,37 @@ using UnityEngine.UI;
 
 public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
 {
-    public int row;
-    public int col;
-    public int number;
-
+    // serialize fields
+    [Header("Tile components")]
     [SerializeField] private TextMeshProUGUI numberText;
     [SerializeField] private Image border;
     [SerializeField] private Image whitePart;
     
+    [Header("Scriptable objects")]
     [SerializeField] private SelectionObject selectionObject;
     
-    private Vector3 whitePartSelectScale = Vector3.one * 0.9f;
-    private Vector3 whitePartStartScale;
+    // public fields
+    public int row { get; private set; }
+    public int col { get; private set; }
+    public int number { get; private set; }
 
-    private string tileString => $"({row},{col})";
+    private bool HasDigit => number > 0;
 
-    public bool isSelected = false;
-    public bool Permanent = false;
-    public bool Contradicted = false;
+    public bool Permanent { get; private set; } = false;
+    public bool Contradicted { get; private set; } = false;
+
+    private List<int> centerMarks { get; set; } = new List<int>();
+    private List<int> CornerMarks { get; set; } = new List<int>();
+
+    // private fields
+    private bool isSelected { get; set; } = false;
 
     private float timeOfLastClick;
     private const float maxTimeForDoubleClick = 0.2f;
-
-    public List<int> centerMarks { get; private set; } = new List<int>();
-    public List<int> CornerMarks { get; private set; } = new List<int>();
-
+    
+    private Vector3 whitePartSelectScale = Vector3.one * 0.9f;
+    private Vector3 whitePartStartScale;
+    
     private void Start()
     {
         whitePartStartScale = whitePart.transform.localScale;
@@ -70,6 +76,26 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         SetNumber(number);
         numberText.color = Color.blue;
         return true;
+    }
+    
+    public bool TryUpdateNumber(int number, EnterType enterType)
+    {
+        if (Permanent) return false;
+
+        switch (enterType)
+        {
+            case EnterType.DigitMark:
+                return TryUpdateNumber(number);
+            
+            // case EnterType.CenterMark:
+            //     return !HasDigit && centerMarks.Contains(number);
+            //    
+            //
+            // case EnterType.CornerMark:
+            //     return !HasDigit && CornerMarks.Contains(number);
+        }
+
+        return false;
     }
     
     public void OnPointerEnter(PointerEventData eventData)
@@ -129,5 +155,23 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     {
         Contradicted = false;
         whitePart.color = Color.white;
+    }
+
+    public bool HasSameNumber(int number, EnterType enterType)
+    {
+        switch (enterType)
+        {
+            case EnterType.DigitMark:
+                return this.number == number;
+            
+            case EnterType.CenterMark:
+                return !HasDigit && centerMarks.Contains(number);
+               
+            
+            case EnterType.CornerMark:
+                return !HasDigit && CornerMarks.Contains(number);
+        }
+
+        return false;
     }
 }
