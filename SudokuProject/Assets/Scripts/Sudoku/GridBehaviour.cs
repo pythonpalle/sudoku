@@ -13,6 +13,11 @@ public class GridBehaviour : MonoBehaviour
     [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private List<GridBoxBehaviour> boxes;
 
+    private void Start()
+    {
+        SetupBoxes();
+    }
+
     private void OnEnable()
     {
         EventManager.OnGridGenerated += OnGridGenerated;
@@ -34,15 +39,15 @@ public class GridBehaviour : MonoBehaviour
         
         selectionObject.OnRequestTile -= OnRequestTile;
     }
-
-    private void Start()
+    
+    private void SetupBoxes()
     {
         for (int i = 0; i < boxes.Count; i++)
         {
             boxes[i].Setup(i);
-        }
+        }    
     }
-
+    
     private void OnGridGenerated(SudokuGrid9x9 generatedGrid)
     {
         grid = generatedGrid;
@@ -53,18 +58,7 @@ public class GridBehaviour : MonoBehaviour
         
         SetupTileNumbers();
     }
-
-    private void SetupTileNumbers()
-    {
-        for (int row = 0; row < 9; row++)
-        {
-            for (int col = 0; col < 9; col++)
-            {
-                tileBehaviours[row, col].SetStartNumber(grid[row, col].Number);
-            }
-        }
-    }
-
+    
     private void OnTileIndexSet(int row,  int col, TileBehaviour tileBehaviour)
     {
         tileBehaviours[row, col] = tileBehaviour;
@@ -90,14 +84,35 @@ public class GridBehaviour : MonoBehaviour
         }
     }
     
+    private void OnSelectAllTilesWithNumber(int number)
+    {
+        foreach (var tile in tileBehaviours)
+        {
+            if (tile.number == number)
+                tile.HandleSelect();
+        }
+    }
+    
     private void OnRequestTile(int row, int col)
     {
         selectionObject.SendTileReference(tileBehaviours[row,col]);
     }
-    
+
+    private void SetupTileNumbers()
+    {
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                tileBehaviours[row, col].SetStartNumber(grid[row, col].Number);
+            }
+        }
+    }
+
     private void HandleEnterNormalNumbers(List<TileBehaviour> selectedTiles, int number)
     {
-        bool allTilesAlreadyHaveNumber = CheckAllTileHaveNumber(selectedTiles, number);
+        // if all selected tiles have the same number, remove the number
+        bool allTilesAlreadyHaveNumber = CheckIfAllTilesHaveNumber(selectedTiles, number, EnterType.DigitMark);
         if (allTilesAlreadyHaveNumber)
             number = 0;
         
@@ -112,14 +127,31 @@ public class GridBehaviour : MonoBehaviour
         HandleAddContradictionsInList(selectedTiles, number);
     }
 
-    private bool CheckAllTileHaveNumber(List<TileBehaviour> selectedTiles, int number)
+    private bool CheckIfAllTilesHaveNumber(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
     {
         foreach (var tile in selectedTiles)
         {
             if (tile.Permanent) continue;
 
-            if (tile.number != number)
-                return false;
+            switch (enterType)
+            {
+                case EnterType.DigitMark:
+                    if (tile.number != number)
+                        return false;
+                    break;
+                
+                case EnterType.CenterMark:
+                    if (!tile.centerMarks.Contains(number))
+                        return false;
+                    break;
+                
+                case EnterType.CornerMark:
+                    if (!tile.CornerMarks.Contains(number))
+                        return false;
+                    break;
+            }
+
+            
         }
 
         return true;
@@ -256,12 +288,5 @@ public class GridBehaviour : MonoBehaviour
         HandleRemoveContradictions();
     }
 
-    private void OnSelectAllTilesWithNumber(int number)
-    {
-        foreach (var tile in tileBehaviours)
-        {
-            if (tile.number == number)
-                tile.HandleSelect();
-        }
-    }
+    
 }

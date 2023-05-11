@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -27,6 +28,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
     private float timeOfLastClick;
     private const float maxTimeForDoubleClick = 0.2f;
+
+    public List<int> centerMarks { get; private set; } = new List<int>();
+    public List<int> CornerMarks { get; private set; } = new List<int>();
 
     private void Start()
     {
