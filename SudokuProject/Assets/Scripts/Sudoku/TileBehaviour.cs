@@ -8,10 +8,19 @@ using UnityEngine.UI;
 public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
 {
     // serialize fields
-    [Header("Tile components")]
-    [SerializeField] private TextMeshProUGUI numberText;
+    [Header("Background")]
     [SerializeField] private Image border;
     [SerializeField] private Image whitePart;
+    
+    [Header("Digit")]
+    [SerializeField] private TextMeshProUGUI numberText;
+
+    [Header("Corner")]
+    [SerializeField] private List<TextMeshProUGUI> cornerTextList;
+    [SerializeField] private GameObject cornerTextsParent;
+    
+    [Header("Center")]
+    [SerializeField] private TextMeshProUGUI centerText;
     
     [Header("Scriptable objects")]
     [SerializeField] private SelectionObject selectionObject;
@@ -27,7 +36,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     public bool Contradicted { get; private set; } = false;
 
     private List<int> centerMarks { get; set; } = new List<int>();
-    private List<int> CornerMarks { get; set; } = new List<int>();
+    //private List<int> CornerMarks { get; set; } = new List<int>();
+    public List<int> CornerMarks;
 
     // private fields
     private bool isSelected { get; set; } = false;
@@ -53,7 +63,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
     public void SetStartNumber(int number)
     {
-        SetNumber(number);
+        SetDigit(number);
         
         if (number > 0)
         {
@@ -61,12 +71,21 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         }
     }
 
-    private void SetNumber(int number)
+    private void SetDigit(int number)
     {
         this.number = number;
         numberText.text = number > 0 ? number.ToString() : string.Empty;
         if (number == 0)
+        {
             RemoveContradiction();
+            cornerTextsParent.SetActive(true);
+            centerText.gameObject.SetActive(true);
+        }
+        else
+        {
+            cornerTextsParent.SetActive(false);
+            centerText.gameObject.SetActive(false);
+        }
     }
 
     private bool TryUpdateDigit(int number, bool remove)
@@ -74,7 +93,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         if (Permanent) return false;
 
         if (remove) number = 0;
-        SetNumber(number);
+        SetDigit(number);
         numberText.color = Color.blue;
         return true;
     }
@@ -88,6 +107,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
             case EnterType.DigitMark:
                 return TryUpdateDigit(number, remove);
             
+            case EnterType.CornerMark:
+                return TryUpdateCorner(number, remove);
+            
             // case EnterType.CenterMark:
             //     return !HasDigit && centerMarks.Contains(number);
             //    
@@ -98,7 +120,51 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
         return false;
     }
-    
+
+    private bool TryUpdateCorner(int addedNumber, bool remove)
+    {
+        if (Permanent || HasDigit) return false;
+        
+        Debug.Log("Added number: " + addedNumber);
+
+        //numberText.gameObject.SetActive(false);
+        cornerTextsParent.SetActive(true);
+        centerText.gameObject.SetActive(true);
+
+        if (remove && CornerMarks.Contains(addedNumber))
+        {
+            CornerMarks.Remove(addedNumber);
+        }
+        else
+        {
+            if (CornerMarks.Contains(addedNumber))
+                return false;
+            
+            CornerMarks.Add(addedNumber);
+        }
+
+        SortCornerMarks();
+        return true;
+    }
+
+    private void SortCornerMarks()
+    {
+        CornerMarks.Sort();
+        int numbersInCorner = CornerMarks.Count;
+        for (int i = 0; i < cornerTextList.Count; i++)
+        {
+            bool outOfIndex = i >= numbersInCorner;
+            if (outOfIndex)
+            {
+                cornerTextList[i].text = string.Empty;
+            }
+            else
+            {
+                cornerTextList[i].text = CornerMarks[i].ToString();
+            }
+        }
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         HandleTrySelect();
