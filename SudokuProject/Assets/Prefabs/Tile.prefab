@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2266136406774954324}
   - component: {fileID: 8455623211903293755}
   m_Layer: 5
-  m_Name: Corner (4)
+  m_Name: Corner (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9109232174410106933}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -417,7 +417,7 @@ GameObject:
   - component: {fileID: 1301317819657618817}
   - component: {fileID: 4156825571152881928}
   m_Layer: 5
-  m_Name: Corner (8)
+  m_Name: Corner (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -436,7 +436,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9109232174410106933}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1120,12 +1120,12 @@ MonoBehaviour:
   cornerTextList:
   - {fileID: 8508241947442145929}
   - {fileID: 544721643746034623}
-  - {fileID: 5111614010921223068}
   - {fileID: 8455623211903293755}
+  - {fileID: 5111614010921223068}
   - {fileID: 5159629228258264439}
   - {fileID: 4010449978607793480}
-  - {fileID: 6801769759864266697}
   - {fileID: 4156825571152881928}
+  - {fileID: 6801769759864266697}
   - {fileID: 6152756704834391101}
   cornerTextsParent: {fileID: 5390585990635704890}
   centerText: {fileID: 7373437563298184094}
@@ -1146,7 +1146,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &9109232174410106933
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1161,12 +1161,12 @@ RectTransform:
   m_Children:
   - {fileID: 8687831227299930315}
   - {fileID: 2200979168955404549}
-  - {fileID: 4260451184962484001}
   - {fileID: 506670577359490471}
+  - {fileID: 4260451184962484001}
   - {fileID: 1078774184394959420}
   - {fileID: 7173389293800650650}
-  - {fileID: 657210042176115473}
   - {fileID: 7632351503565152020}
+  - {fileID: 657210042176115473}
   - {fileID: 1286886255336126735}
   m_Father: {fileID: 2400492079632488013}
   m_RootOrder: 2
@@ -1323,7 +1323,7 @@ GameObject:
   - component: {fileID: 8367598238148867594}
   - component: {fileID: 6801769759864266697}
   m_Layer: 5
-  m_Name: Corner (7)
+  m_Name: Corner (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1342,7 +1342,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9109232174410106933}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1593,7 +1593,7 @@ GameObject:
   - component: {fileID: 2176314116281756062}
   - component: {fileID: 5111614010921223068}
   m_Layer: 5
-  m_Name: Corner (3)
+  m_Name: Corner (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1612,7 +1612,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9109232174410106933}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

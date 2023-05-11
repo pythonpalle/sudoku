@@ -122,12 +122,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     {
         if (Permanent || HasDigit) return false;
         
-        Debug.Log("Added number: " + addedNumber);
-
-        //numberText.gameObject.SetActive(false);
-        // cornerTextsParent.SetActive(true);
-        // centerText.gameObject.SetActive(true);
-
         if (remove && CornerMarks.Contains(addedNumber))
         {
             CornerMarks.Remove(addedNumber);
@@ -146,22 +140,59 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
     private void SortCornerMarks()
     {
-        CornerMarks.Sort();
         int numbersInCorner = CornerMarks.Count;
+        List<int> indexOrder = GetCornerIndexOrder(numbersInCorner);
+
+        CornerMarks.Sort();
+        
+        // reset string
         for (int i = 0; i < cornerTextList.Count; i++)
         {
-            bool outOfIndex = i >= numbersInCorner;
-            if (outOfIndex)
-            {
-                cornerTextList[i].text = string.Empty;
-            }
-            else
-            {
-                cornerTextList[i].text = CornerMarks[i].ToString();
-            }
+            cornerTextList[i].text = string.Empty;
+        }
+
+        // set number in appropriate order
+        for (int i = 0; i < numbersInCorner; i++)
+        {
+            cornerTextList[indexOrder[i]].text = CornerMarks[i].ToString();
         }
     }
-    
+
+    private List<int> GetCornerIndexOrder(int numbersInCorner)
+    {
+        List<int> indexes = new List<int>();
+
+        switch (numbersInCorner)
+        {
+            case < 5:
+                for (int i = 0; i < numbersInCorner; i++)
+                    indexes.Add(i);
+                break;
+            
+            case 5:
+                indexes = new List<int> { 0, 4, 1, 2, 3 };
+                break;
+            
+            case 6:
+                indexes = new List<int> { 0, 4, 5, 1, 2, 3 };
+                break;
+            
+            case 7:
+                indexes = new List<int> { 0, 4, 5, 1, 2, 6, 3 };
+                break;
+            
+            case 8:
+                indexes = new List<int> { 0, 4, 5, 1, 2, 6, 7, 3 };
+                break;
+            
+            case 9:
+                indexes = new List<int> { 0, 4, 8, 5, 1, 2, 6, 7, 3 };
+                break;
+        }
+
+        return indexes;
+    }
+
     private bool TryUpdateCenter(int i, bool remove)
     {
         return true;
