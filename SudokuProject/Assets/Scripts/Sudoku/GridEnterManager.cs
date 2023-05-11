@@ -13,7 +13,7 @@ public enum EnterType
 
 public class GridEnterManager : MonoBehaviour
 {
-    public static GridEnterManager Instance { get; private set; }
+    //public static GridEnterManager Instance { get; private set; }
     
     private KeyCode[] NumberKeys = {
         KeyCode.Alpha0,
@@ -48,23 +48,23 @@ public class GridEnterManager : MonoBehaviour
                                           || Input.GetKeyDown(KeyCode.Alpha0)
                                           || Input.GetKeyDown(KeyCode.Keypad0);
 
-    private void Awake()
-    {
-        MakeSingleton();
-    }
-    
-    private void MakeSingleton()
-    {
-        if (Instance && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(this);
-        }
-    }
+    // private void Awake()
+    // {
+    //     MakeSingleton();
+    // }
+    //
+    // private void MakeSingleton()
+    // {
+    //     if (Instance && Instance != this)
+    //     {
+    //         Destroy(this);
+    //     }
+    //     else
+    //     {
+    //         Instance = this;
+    //         DontDestroyOnLoad(this);
+    //     }
+    // }
 
     private void Update()
     {
