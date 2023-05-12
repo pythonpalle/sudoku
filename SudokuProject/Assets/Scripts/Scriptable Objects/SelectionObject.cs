@@ -14,6 +14,7 @@ public enum SelectionMode
 public class SelectionObject : ScriptableObject
 {
     // keys
+    // move keys
     [Header("Right Key")]
     [SerializeField] private KeyCode rightKey1 = KeyCode.RightArrow;
     [SerializeField] private KeyCode rightKey2 = KeyCode.D;
@@ -30,33 +31,41 @@ public class SelectionObject : ScriptableObject
     [SerializeField] private KeyCode downKey1 = KeyCode.DownArrow;
     [SerializeField] private KeyCode downKey2 = KeyCode.S;
     
+    // selection keys
+    [Header("Multi Select Key")]
+    [SerializeField] private KeyCode multiKey1 = KeyCode.LeftControl;
+    [SerializeField] private KeyCode multiKey2 = KeyCode.RightControl;
     
-    public bool rightKeyIsPressed => Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D);
-    public bool leftKeyIsPressed => Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A);
-    public bool upKeyIsPressed => Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W);
-    public bool downKeyIsPressed => Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S);
-
-    public bool moveKeyIsPressed => rightKeyIsPressed || leftKeyIsPressed || upKeyIsPressed || downKeyIsPressed;
-    public bool multiSelectKeyIsPressed => Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
-    public bool centerSelectKeyIsPressed => Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl);
-    public bool centerSelectKeyIsReleased => Input.GetKeyUp(KeyCode.LeftControl) || Input.GetKeyUp(KeyCode.RightControl);
-
-    public bool cornerSelectKeyIsPressed => Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift);
-    public bool cornerSelectKeyIsReleased => Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift);
+    [Header("Center Key")]
+    [SerializeField] private KeyCode centerKey1 = KeyCode.LeftControl;
+    [SerializeField] private KeyCode centerKey2 = KeyCode.RightControl;
+  
+    [Header("Corner Key")]
+    [SerializeField] private KeyCode cornerKey1 = KeyCode.LeftShift;
+    [SerializeField] private KeyCode cornerKey2 = KeyCode.RightShift;
     
-    // key detection
+    // key press checks
+    // move keys
+    public bool rightKeyIsPressed => Input.GetKeyDown(rightKey1) || Input.GetKeyDown(rightKey2);
+    public bool leftKeyIsPressed => Input.GetKeyDown(leftKey1) || Input.GetKeyDown(leftKey2);
+    public bool upKeyIsPressed => Input.GetKeyDown(upKey1) || Input.GetKeyDown(upKey2);
+    public bool downKeyIsPressed => Input.GetKeyDown(downKey1) || Input.GetKeyDown(downKey2);
 
-    [SerializeField] private SelectionMode selectionMode = SelectionMode.None;
-    //
-    //
-    // public bool IsSelecting { get; private set; }  = false;
-    // public bool IsDeselecting { get; private set; }  = false;
+    // selection keys
+    public bool multiSelectKeyIsPressed => Input.GetKey(multiKey1) || Input.GetKey(multiKey2);
+    public bool centerSelectKeyIsPressed => Input.GetKeyDown(centerKey1) || Input.GetKeyDown(centerKey2);
+    public bool centerSelectKeyIsReleased => Input.GetKeyUp(centerKey1) || Input.GetKeyUp(centerKey2);
+
+    public bool cornerSelectKeyIsPressed => Input.GetKeyDown(cornerKey1) || Input.GetKeyDown(cornerKey2);
+    public bool cornerSelectKeyIsReleased => Input.GetKeyUp(cornerKey1) || Input.GetKeyUp(cornerKey2);
+    
+    // fields
+    private SelectionMode selectionMode = SelectionMode.None;
 
     public bool IsSelecting => (selectionMode == SelectionMode.Selecting);
     public bool IsDeselecting => (selectionMode == SelectionMode.Deselecting);
 
-    //public List<TileBehaviour> SelectedTiles { get; private set; } = new List<TileBehaviour>();
-    public List<TileBehaviour> SelectedTiles = new List<TileBehaviour>();
+    public List<TileBehaviour> SelectedTiles { get; private set; } = new List<TileBehaviour>();
     public bool HasSelectedTiles => SelectedTiles.Count > 0;
     public bool SelectionKeyDown => Input.GetMouseButton(0);
 
@@ -92,8 +101,24 @@ public class SelectionObject : ScriptableObject
     }
 
 
-    // public void SetDeselect(bool value)
-    // {
-    //     IsDeselecting = value;
-    // }
+    public void TryAdd(TileBehaviour tile)
+    {
+        if (!SelectedTiles.Contains(tile))
+        {
+            SelectedTiles.Add(tile);
+        }
+    }
+
+    public void TryRemove(TileBehaviour tile)
+    {
+        if (SelectedTiles.Contains(tile))
+        {
+            SelectedTiles.Remove(tile);
+        }
+    }
+
+    public TileBehaviour LastSelected()
+    {
+        return SelectedTiles[^1];
+    }
 }

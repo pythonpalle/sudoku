@@ -6,12 +6,8 @@ using UnityEngine;
 public class SelectionManager : MonoBehaviour
 {
     [SerializeField] private SelectionObject selectionObject;
-
-
-    private bool onNumberPad;
-
-    private TileBehaviour tileReference;
     
+    private TileBehaviour lastTileReference;
 
     private void OnEnable()
     {
@@ -36,23 +32,17 @@ public class SelectionManager : MonoBehaviour
 
     private void OnTileSelect(TileBehaviour tile)
     {
-        if (!selectionObject.SelectedTiles.Contains(tile))
-        {
-            selectionObject.SelectedTiles.Add(tile);
-        }
+        selectionObject.TryAdd(tile);
     }
 
     private void OnTileDeselect(TileBehaviour tile)
     {
-        if (selectionObject.SelectedTiles.Contains(tile))
-        {
-            selectionObject.SelectedTiles.Remove(tile);
-        }
+        selectionObject.TryRemove(tile);
     }
     
     private void OnSendTileReference(TileBehaviour tile)
     {
-        tileReference = tile;
+        lastTileReference = tile; 
     }
     
     private void OnSetSelection(SelectionMode mode)
@@ -99,13 +89,6 @@ public class SelectionManager : MonoBehaviour
     private void DeselectAllTiles()
     {
         selectionObject.DeselectAllTiles();
-        
-        // for (int i = selectionObject.SelectedTiles.Count - 1; i >= 0; i--)
-        // {
-        //     TileBehaviour tile = selectionObject.SelectedTiles[i];
-        //     tile.Deselect();
-        //     selectionObject.SelectedTiles.RemoveAt(i);
-        // }
     }
     
     private void HandleMoveTileSelectWithKeys()
@@ -113,7 +96,7 @@ public class SelectionManager : MonoBehaviour
         //if (!HasSelectedTiles) return;
         if (!selectionObject.HasSelectedTiles) return;
 
-        var lastTile = selectionObject.SelectedTiles[^1];        
+        TileBehaviour lastTile = selectionObject.LastSelected();      
         
         int row = lastTile.row;
         int col = lastTile.col;
@@ -148,18 +131,8 @@ public class SelectionManager : MonoBehaviour
 
             selectionObject.SendTileRequest(row, col);
             
-            if (tileReference)
-                tileReference.HandleSelectPublic();
+            if (lastTileReference)
+                lastTileReference.HandleSelectPublic();
         }
-    }
-    
-    public void OnNumberKeyHover()
-    {
-        onNumberPad = true;
-    }
-    
-    public void OnNumberKeyExit()
-    {
-        onNumberPad = false;
     }
 }
