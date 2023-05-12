@@ -112,13 +112,6 @@ public class GridBehaviour : MonoBehaviour
                 return;
             }
         }
-
-        // switch (enterType)
-        // {
-        //     case EnterType.DigitMark:
-        //         HandleRemoveNormalNumbers(tiles);
-        //         break;
-        // }
     }
 
     private void RemoveAllOfEntryType(List<TileBehaviour> tiles, EnterType type)
