@@ -8,6 +8,8 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private SelectionObject selectionObject;
     
     private TileBehaviour lastTileReference;
+
+    [SerializeField] private bool pointerOverGrid = false;
     
     private float timeOfLastClick;
     private float maxTimeForDoubleClick = 0.2f;
@@ -24,6 +26,9 @@ public class SelectionManager : MonoBehaviour
         EventManager.OnSetSelectionMode += OnSetSelection;
 
         selectionObject.OnSendTileReference += OnSendTileReference;
+        
+        EventManager.OnUIElementHover += OnUIElementHover;
+        EventManager.OnUIElementExit += OnUIElementExit;
         
         selectionObject.ClearSelectedTiles(); 
         selectionObject.SetSelectionMode(SelectionMode.None);
@@ -42,6 +47,19 @@ public class SelectionManager : MonoBehaviour
         EventManager.OnSetSelectionMode -= OnSetSelection;
 
         selectionObject.OnSendTileReference -= OnSendTileReference;
+        
+        EventManager.OnUIElementHover -= OnUIElementHover;
+        EventManager.OnUIElementExit -= OnUIElementExit;
+    }
+
+    private void OnUIElementHover()
+    {
+        SetPointerOverGrid(true);
+    }
+
+    private void OnUIElementExit()
+    {
+        SetPointerOverGrid(false);
     }
 
     private void OnTileSelect(TileBehaviour tile)
@@ -62,6 +80,11 @@ public class SelectionManager : MonoBehaviour
     private void OnSetSelection(SelectionMode mode)
     {
         selectionObject.SetSelectionMode(mode);
+    }
+    
+    public void SetPointerOverGrid(bool value)
+    {
+        pointerOverGrid = value;
     }
     
     private void OnTilePointerDown(TileBehaviour tile)
@@ -132,8 +155,18 @@ public class SelectionManager : MonoBehaviour
 
     private void Update()
     {
+        HandleRemoveSelection();
         HandleEnterButtonsDetection();
         HandleMoveTileSelectWithKeys();
+    }
+
+    private void HandleRemoveSelection()
+    {
+        if (selectionObject.SelectionKeyDown && !pointerOverGrid)
+        {
+            DeselectAllTiles();
+            selectionObject.SetSelectionMode(SelectionMode.Selecting);
+        }
     }
 
     private void HandleEnterButtonsDetection()
@@ -173,7 +206,6 @@ public class SelectionManager : MonoBehaviour
     
     private void HandleMoveTileSelectWithKeys()
     {
-        //if (!HasSelectedTiles) return;
         if (!selectionObject.HasSelectedTiles) return;
 
         TileBehaviour lastTile = selectionObject.LastSelected();      

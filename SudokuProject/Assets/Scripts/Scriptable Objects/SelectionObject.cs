@@ -60,7 +60,7 @@ public class SelectionObject : ScriptableObject
     public bool cornerSelectKeyIsReleased => Input.GetKeyUp(cornerKey1) || Input.GetKeyUp(cornerKey2);
     
     // fields
-    private SelectionMode selectionMode = SelectionMode.None;
+    [SerializeField] private SelectionMode selectionMode = SelectionMode.None;
 
     public bool IsSelecting => (selectionMode == SelectionMode.Selecting);
     public bool IsDeselecting => (selectionMode == SelectionMode.Deselecting);

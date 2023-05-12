@@ -2133,6 +2133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
+  pointerOverGrid: 0
 --- !u!4 &1057688420
 Transform:
   m_ObjectHideFlags: 0
@@ -2237,7 +2238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c77ea57f788244444abe6d8547134b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  usePointerEnter: 0
+  usePointerEnter: 1
   usePointerExit: 1
   OnMouseHover:
     m_PersistentCalls:

@@ -12,3 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c01f6e67bc9637449b72e3ff50089cc1, type: 3}
   m_Name: Selection Object
   m_EditorClassIdentifier: 
+  rightKey1: 275
+  rightKey2: 100
+  leftKey1: 276
+  leftKey2: 97
+  upKey1: 273
+  upKey2: 119
+  downKey1: 274
+  downKey2: 115
+  multiKey1: 306
+  multiKey2: 305
+  centerKey1: 306
+  centerKey2: 305
+  cornerKey1: 304
+  cornerKey2: 303
