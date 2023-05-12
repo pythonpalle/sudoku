@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
+public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
 {
     // serialize fields
     [Header("Background")]
@@ -52,6 +52,21 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     private void Start()
     {
         whitePartStartScale = whitePart.transform.localScale;
+    }
+
+    private void OnEnable()
+    {
+        selectionObject.OnDeselectAllTiles += OnDeselectAllTiles;
+    }
+
+    private void OnDisable()
+    {
+        selectionObject.OnDeselectAllTiles -= OnDeselectAllTiles;
+    }
+
+    private void OnDeselectAllTiles()
+    {
+        Deselect();
     }
 
     public void SetIndex(int row, int col)
@@ -242,11 +257,31 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        HandleTrySelect();
+        HandleDragSelection();
         EventManager.UIElementHover();
     }
 
     public void OnPointerClick(PointerEventData eventData)
+    {
+        //Debug.Log("On Pointer Click");
+        //OnClick();
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Debug.Log("On Pointer Down");
+        OnClick();
+    }
+    
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (isSelected)
+        {
+            selectionObject.SetSelectionMode(SelectionMode.None);
+        }
+    }
+    
+    private void OnClick()
     {
         bool doubleClick = Time.time < timeOfLastClick + maxTimeForDoubleClick;
         if (doubleClick)
@@ -255,24 +290,48 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         }
         else
         {
-            HandleTrySelect();
+            if (selectionObject.multiSelectKeyIsPressed && isSelected)
+            {
+                Debug.Log("Set Deselect!");
+                selectionObject.SetSelectionMode(SelectionMode.Deselecting);
+                Deselect();
+            }
+            else
+            {
+                if (!selectionObject.multiSelectKeyIsPressed)
+                    selectionObject.DeselectAllTiles();
+                
+                selectionObject.SetSelectionMode(SelectionMode.Selecting);
+                HandleSelect();
+            }
         }
 
         timeOfLastClick = Time.time;
     }
 
-    private bool HandleTrySelect()
+    private bool HandleDragSelection()
     {
-        if (!selectionObject.IsSelecting || isSelected)
+        if (selectionObject.IsSelecting)
         {
-            return false;
+            HandleSelect();
+            return true;
+        } 
+        else if (selectionObject.IsDeselecting && selectionObject.SelectionKeyDown)
+        {
+            Deselect();
+            return true;
         }
 
+        return false;
+    }
+    
+    // temp function, change later
+    public void HandleSelectPublic()
+    {
         HandleSelect();
-        return true;
     }
 
-    public void HandleSelect()
+    private void HandleSelect()
     {
         isSelected = true;
         border.color = Color.blue;
@@ -280,11 +339,12 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         EventManager.SelectTile(this);
     }
 
-    public void Deselect()
+    private void Deselect()
     {
         isSelected = false;
         border.color = Color.black;
         whitePart.transform.localScale = whitePartStartScale;
+        EventManager.DeselectTile(this);
     }
 
     public void SetContradiction()

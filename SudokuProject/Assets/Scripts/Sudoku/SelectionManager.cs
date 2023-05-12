@@ -7,39 +7,30 @@ public class SelectionManager : MonoBehaviour
 {
     [SerializeField] private SelectionObject selectionObject;
 
-    private bool rightKeyIsPressed => Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D);
-    private bool leftKeyIsPressed => Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A);
-    private bool upKeyIsPressed => Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W);
-    private bool downKeyIsPressed => Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S);
-
-    private bool moveKeyIsPressed => rightKeyIsPressed || leftKeyIsPressed || upKeyIsPressed || downKeyIsPressed;
-    private bool multiSelectKeyIsPressed => Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
-    private bool centerSelectKeyIsPressed => Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl);
-    private bool centerSelectKeyIsReleased => Input.GetKeyUp(KeyCode.LeftControl) || Input.GetKeyUp(KeyCode.RightControl);
-
-    private bool cornerSelectKeyIsPressed => Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift);
-    private bool cornerSelectKeyIsReleased => Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift);
-    
 
     private bool onNumberPad;
 
     private TileBehaviour tileReference;
+    
 
     private void OnEnable()
     {
         EventManager.OnTileSelect += OnTileSelect;
         EventManager.OnTileDeselect += OnTileDeselect;
+        EventManager.OnSetSelectionMode += OnSetSelection;
 
         selectionObject.OnSendTileReference += OnSendTileReference;
         
         selectionObject.ClearSelectedTiles(); 
+        selectionObject.SetSelectionMode(SelectionMode.None);
     }
     
     private void OnDisable()
     {
         EventManager.OnTileSelect -= OnTileSelect;
         EventManager.OnTileDeselect -= OnTileDeselect;
-        
+        EventManager.OnSetSelectionMode -= OnSetSelection;
+
         selectionObject.OnSendTileReference -= OnSendTileReference;
     }
 
@@ -63,11 +54,15 @@ public class SelectionManager : MonoBehaviour
     {
         tileReference = tile;
     }
+    
+    private void OnSetSelection(SelectionMode mode)
+    {
+        selectionObject.SetSelectionMode(mode);
+    }
 
     private void Update()
     {
         HandleEnterButtonsDetection();
-        HandleSetSelect();
         HandleMoveTileSelectWithKeys();
     }
 
@@ -79,11 +74,11 @@ public class SelectionManager : MonoBehaviour
 
     private void HandleCornerButtonDetection()
     {
-        if (cornerSelectKeyIsPressed)
+        if (selectionObject.cornerSelectKeyIsPressed)
         {
             EventManager.SelectButtonClicked(EnterType.CornerMark);
         } 
-        else if (cornerSelectKeyIsReleased)
+        else if (selectionObject.cornerSelectKeyIsReleased)
         {
             EventManager.SelectButtonClicked(EnterType.DigitMark);
         }
@@ -91,39 +86,26 @@ public class SelectionManager : MonoBehaviour
     
     private void HandleCenterButtonDetection()
     {
-        if (centerSelectKeyIsPressed)
+        if (selectionObject.centerSelectKeyIsPressed)
         {
             EventManager.SelectButtonClicked(EnterType.CenterMark);
         } 
-        else if (centerSelectKeyIsReleased)
+        else if (selectionObject.centerSelectKeyIsReleased)
         {
             EventManager.SelectButtonClicked(EnterType.DigitMark);
         }
     }
 
-    private void HandleSetSelect()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (!multiSelectKeyIsPressed && !onNumberPad) 
-                DeselectAllTiles();
-            
-            selectionObject.SetSelect(true);
-        } 
-        else if (Input.GetMouseButtonUp(0))
-        {
-            selectionObject.SetSelect(false);
-        }
-    }
-
     private void DeselectAllTiles()
     {
-        for (int i = selectionObject.SelectedTiles.Count - 1; i >= 0; i--)
-        {
-            TileBehaviour tile = selectionObject.SelectedTiles[i];
-            tile.Deselect();
-            selectionObject.SelectedTiles.RemoveAt(i);
-        }
+        selectionObject.DeselectAllTiles();
+        
+        // for (int i = selectionObject.SelectedTiles.Count - 1; i >= 0; i--)
+        // {
+        //     TileBehaviour tile = selectionObject.SelectedTiles[i];
+        //     tile.Deselect();
+        //     selectionObject.SelectedTiles.RemoveAt(i);
+        // }
     }
     
     private void HandleMoveTileSelectWithKeys()
@@ -138,22 +120,22 @@ public class SelectionManager : MonoBehaviour
 
         bool moveKeyPressed = false;
 
-        if (upKeyIsPressed)
+        if (selectionObject.upKeyIsPressed)
         {
             row = (row + 8) % 9;
             moveKeyPressed = true;
         } 
-        else if (downKeyIsPressed)
+        else if (selectionObject.downKeyIsPressed)
         {
             row = (row + 10) % 9;
             moveKeyPressed = true;
         }
-        else if (leftKeyIsPressed)
+        else if (selectionObject.leftKeyIsPressed)
         {
             col = (col + 8) % 9;
             moveKeyPressed = true;
         }
-        else if (rightKeyIsPressed)
+        else if (selectionObject.rightKeyIsPressed)
         {
             col = (col + 10) % 9;
             moveKeyPressed = true;
@@ -161,13 +143,13 @@ public class SelectionManager : MonoBehaviour
         
         if (moveKeyPressed)
         {
-            if (!multiSelectKeyIsPressed)
+            if (!selectionObject.multiSelectKeyIsPressed)
                 DeselectAllTiles();
 
             selectionObject.SendTileRequest(row, col);
             
             if (tileReference)
-                tileReference.HandleSelect();
+                tileReference.HandleSelectPublic();
         }
     }
     

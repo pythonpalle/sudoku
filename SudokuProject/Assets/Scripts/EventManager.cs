@@ -12,7 +12,9 @@ public static class EventManager
     
     public static UnityAction<TileBehaviour> OnTileSelect;
     public static UnityAction<TileBehaviour> OnTileDeselect;
+    
     public static UnityAction<TileBehaviour> OnSelectAllTilesWithNumber;
+    public static UnityAction<SelectionMode> OnSetSelectionMode;
     
     public static UnityAction<List<TileBehaviour>, EnterType, int> OnNumberEnter;
     public static UnityAction<List<TileBehaviour>, EnterType> OnRemoveEntry;
@@ -70,4 +72,9 @@ public static class EventManager
     {
         OnSelectButtonClicked?.Invoke(type);
     }
+
+    // public static void SetSelectionMode(SelectionMode mode)
+    // {
+    //     OnSetSelectionMode?.Invoke(mode);
+    // }
 }
