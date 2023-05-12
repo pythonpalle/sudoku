@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler
 {
     // serialize fields
     [Header("Background")]
@@ -39,7 +39,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     public List<int> CornerMarks;
 
     // private fields
-    private bool isSelected { get; set; } = false;
+    public bool isSelected { get; private set; } = false;
 
     private float timeOfLastClick;
     private const float maxTimeForDoubleClick = 0.2f;
@@ -199,6 +199,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
     {
         List<int> indexes = new List<int>();
 
+        // indexes have different positions depending on how many numbers are in corners
         switch (numbersInCorner)
         {
             case < 5:
@@ -238,11 +239,13 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         float centerStringSize = centerMarkFontSize;
         int maximumMarksForDefaultSize = 5;
 
+        // decreasing font size to make all numbers fit in size
         if (centerMarkCount > maximumMarksForDefaultSize)
         {
             int difference = centerMarkCount - maximumMarksForDefaultSize;
+            float powBase = 0.87f;
 
-            centerStringSize *= Mathf.Pow(0.87f, difference);
+            centerStringSize *= Mathf.Pow(powBase, difference);
         }
 
         string centerMarkString = string.Empty;
@@ -255,83 +258,22 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         centerText.fontSize = centerStringSize;
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        HandleDragSelection();
-        EventManager.UIElementHover();
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        //Debug.Log("On Pointer Click");
-        //OnClick();
-    }
-
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("On Pointer Down");
-        OnClick();
+        EventManager.TilePointerDown(this);
     }
-    
+
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (isSelected)
-        {
-            selectionObject.SetSelectionMode(SelectionMode.None);
-        }
+        EventManager.TilePointerUp(this);
     }
-    
-    private void OnClick()
+
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        bool doubleClick = Time.time < timeOfLastClick + maxTimeForDoubleClick;
-        if (doubleClick)
-        {
-            EventManager.SelectAllTilesWithNumber(this);
-        }
-        else
-        {
-            if (selectionObject.multiSelectKeyIsPressed && isSelected)
-            {
-                Debug.Log("Set Deselect!");
-                selectionObject.SetSelectionMode(SelectionMode.Deselecting);
-                Deselect();
-            }
-            else
-            {
-                if (!selectionObject.multiSelectKeyIsPressed)
-                    selectionObject.DeselectAllTiles();
-                
-                selectionObject.SetSelectionMode(SelectionMode.Selecting);
-                HandleSelect();
-            }
-        }
-
-        timeOfLastClick = Time.time;
+        EventManager.TilePointerEnter(this);
     }
 
-    private bool HandleDragSelection()
-    {
-        if (selectionObject.IsSelecting)
-        {
-            HandleSelect();
-            return true;
-        } 
-        else if (selectionObject.IsDeselecting && selectionObject.SelectionKeyDown)
-        {
-            Deselect();
-            return true;
-        }
-
-        return false;
-    }
-    
-    // temp function, change later
-    public void HandleSelectPublic()
-    {
-        HandleSelect();
-    }
-
-    private void HandleSelect()
+    public void Select()
     {
         isSelected = true;
         border.color = Color.blue;
@@ -339,7 +281,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerClickH
         EventManager.SelectTile(this);
     }
 
-    private void Deselect()
+    public void Deselect()
     {
         isSelected = false;
         border.color = Color.black;

@@ -182,7 +182,7 @@ public class GridBehaviour : MonoBehaviour
         foreach (var tile in tileBehaviours)
         {
             if (tile.number == number)
-                tile.HandleSelectPublic();
+                tile.Select();
         }
     }
     
@@ -196,7 +196,7 @@ public class GridBehaviour : MonoBehaviour
             foreach (var tile in tileBehaviours)
             {
                 if (tile.CornerMarks.Contains(corner))
-                    tile.HandleSelectPublic();
+                    tile.Select();
             }
         }
     }
@@ -211,7 +211,7 @@ public class GridBehaviour : MonoBehaviour
             foreach (var tile in tileBehaviours)
             {
                 if (tile.centerMarks.Contains(center))
-                    tile.HandleSelectPublic();
+                    tile.Select();
             }
         }
     }

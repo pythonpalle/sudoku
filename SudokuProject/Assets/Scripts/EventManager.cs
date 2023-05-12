@@ -13,6 +13,10 @@ public static class EventManager
     public static UnityAction<TileBehaviour> OnTileSelect;
     public static UnityAction<TileBehaviour> OnTileDeselect;
     
+    public static UnityAction<TileBehaviour> OnTilePointerDown;
+    public static UnityAction<TileBehaviour> OnTilePointerUp;
+    public static UnityAction<TileBehaviour> OnTilePointerEnter;
+    
     public static UnityAction<TileBehaviour> OnSelectAllTilesWithNumber;
     public static UnityAction<SelectionMode> OnSetSelectionMode;
     
@@ -72,9 +76,19 @@ public static class EventManager
     {
         OnSelectButtonClicked?.Invoke(type);
     }
+    
+    public static void TilePointerDown(TileBehaviour tile)
+    {
+        OnTilePointerDown?.Invoke(tile);
+    }
 
-    // public static void SetSelectionMode(SelectionMode mode)
-    // {
-    //     OnSetSelectionMode?.Invoke(mode);
-    // }
+    public static void TilePointerUp(TileBehaviour tile)
+    {
+        OnTilePointerUp?.Invoke(tile);
+    }
+
+    public static void TilePointerEnter(TileBehaviour tile)
+    {
+        OnTilePointerEnter?.Invoke(tile);
+    }
 }
