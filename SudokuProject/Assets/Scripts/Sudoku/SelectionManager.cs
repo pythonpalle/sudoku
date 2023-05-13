@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class SelectionManager : MonoBehaviour
 {
+    
+    
     [SerializeField] private SelectionObject selectionObject;
     
     private TileBehaviour lastTileReference;
@@ -23,8 +25,6 @@ public class SelectionManager : MonoBehaviour
         EventManager.OnTilePointerUp += OnTilePointerUp;
         EventManager.OnTilePointerEnter += OnTilePointerEnter;
         
-        EventManager.OnSetSelectionMode += OnSetSelection;
-
         selectionObject.OnSendTileReference += OnSendTileReference;
         
         EventManager.OnUIElementHover += OnUIElementHover;
@@ -38,14 +38,11 @@ public class SelectionManager : MonoBehaviour
     {
         EventManager.OnTileSelect -= OnTileSelect;
         EventManager.OnTileDeselect -= OnTileDeselect;
-        EventManager.OnSetSelectionMode -= OnSetSelection;
         
         EventManager.OnTilePointerDown -= OnTilePointerDown;
         EventManager.OnTilePointerUp -= OnTilePointerUp;
         EventManager.OnTilePointerEnter -= OnTilePointerEnter;
-
-        EventManager.OnSetSelectionMode -= OnSetSelection;
-
+        
         selectionObject.OnSendTileReference -= OnSendTileReference;
         
         EventManager.OnUIElementHover -= OnUIElementHover;
@@ -76,12 +73,7 @@ public class SelectionManager : MonoBehaviour
     {
         lastTileReference = tile; 
     }
-    
-    private void OnSetSelection(SelectionMode mode)
-    {
-        selectionObject.SetSelectionMode(mode);
-    }
-    
+
     public void SetPointerOverGrid(bool value)
     {
         pointerOverGrid = value;
@@ -98,7 +90,6 @@ public class SelectionManager : MonoBehaviour
         {
             if (selectionObject.multiSelectKeyIsPressed && tile.isSelected)
             {
-                Debug.Log("Set Deselect!");
                 selectionObject.SetSelectionMode(SelectionMode.Deselecting);
                 tile.Deselect();
             }
@@ -155,9 +146,18 @@ public class SelectionManager : MonoBehaviour
 
     private void Update()
     {
+        HandleMoveTileSelectWithKeys();
+        HandleAllCellsSelectDetection();
         HandleRemoveSelection();
         HandleEnterButtonsDetection();
-        HandleMoveTileSelectWithKeys();
+    }
+
+    private void HandleAllCellsSelectDetection()
+    {
+        if (selectionObject.AllCellsKeyIsPressed)
+        {
+            EventManager.SelectAllTilesNumber();
+        }
     }
 
     private void HandleRemoveSelection()
@@ -176,14 +176,67 @@ public class SelectionManager : MonoBehaviour
             EventManager.SelectButtonClicked(EnterType.ColorMark);
             return;
         } 
+        else if (selectionObject.cornerSelectKeyIsPressed)
+        {
+            EventManager.SelectButtonClicked(EnterType.CornerMark);
+            return;
+        } 
+        else if (selectionObject.centerSelectKeyIsPressed)
+        {
+            EventManager.SelectButtonClicked(EnterType.CenterMark);
+            return;
+        } 
+        // else if (selectionObject.colorSelectKeyIsReleased || 
+        //     selectionObject.cornerSelectKeyIsReleased||
+        //     selectionObject.centerSelectKeyIsReleased )
+        // {
+        //     Debug.Log("Go to digit mark");
+        //     EventManager.SelectButtonClicked(EnterType.DigitMark);
+        //     return;
+        // } 
+        
+        else if (selectionObject.colorSelectKeyIsReleased )
+        {
+            Debug.Log("color select released");
+            EventManager.SelectButtonClicked(EnterType.DigitMark);
+            return;
+        } 
+        
+        else if (selectionObject.cornerSelectKeyIsReleased )
+        {
+            Debug.Log("corner select released");
+            EventManager.SelectButtonClicked(EnterType.DigitMark);
+            return;
+        } 
+        
+        else if (selectionObject.centerSelectKeyIsReleased )
+        {
+            Debug.Log("center select released");
+            EventManager.SelectButtonClicked(EnterType.DigitMark);
+            return;
+        } 
+        
+        // HandleCornerButtonDetection();
+        // HandleCenterButtonDetection();
+        //
+        // if (CheckColorButtonDetection())
+        //     return;
+    }
+
+    private bool CheckColorButtonDetection()
+    {
+        if (selectionObject.colorSelectKeyIsPressed)
+        {
+            EventManager.SelectButtonClicked(EnterType.ColorMark);
+            return true;
+        } 
         else if (selectionObject.colorSelectKeyIsReleased)
         {
             EventManager.SelectButtonClicked(EnterType.DigitMark);
-            return;
+            return true;
         }
 
-        HandleCornerButtonDetection();
-        HandleCenterButtonDetection();
+        return false;
     }
 
     private void HandleCornerButtonDetection()

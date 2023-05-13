@@ -18,7 +18,7 @@ public static class EventManager
     public static UnityAction<TileBehaviour> OnTilePointerEnter;
     
     public static UnityAction<TileBehaviour> OnSelectAllTilesWithNumber;
-    public static UnityAction<SelectionMode> OnSetSelectionMode;
+    public static UnityAction OnSelectAllTiles;
     
     public static UnityAction<List<TileBehaviour>, EnterType, int> OnNumberEnter;
     public static UnityAction<List<TileBehaviour>, EnterType, bool> OnRemoveEntry;
@@ -70,6 +70,11 @@ public static class EventManager
     public static void SelectAllTilesWithNumber(TileBehaviour tile)
     {
         OnSelectAllTilesWithNumber?.Invoke(tile);
+    }
+    
+    public static void SelectAllTilesNumber()
+    {
+        OnSelectAllTiles?.Invoke();
     }
 
     public static void SelectButtonClicked(EnterType type)

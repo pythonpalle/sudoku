@@ -44,22 +44,31 @@ public class SelectionObject : ScriptableObject
     [SerializeField] private KeyCode cornerKey1 = KeyCode.LeftShift;
     [SerializeField] private KeyCode cornerKey2 = KeyCode.RightShift;
     
-    // key press checks
-    // move keys
-    public bool rightKeyIsPressed => Input.GetKeyDown(rightKey1) || Input.GetKeyDown(rightKey2);
-    public bool leftKeyIsPressed => Input.GetKeyDown(leftKey1) || Input.GetKeyDown(leftKey2);
-    public bool upKeyIsPressed => Input.GetKeyDown(upKey1) || Input.GetKeyDown(upKey2);
-    public bool downKeyIsPressed => Input.GetKeyDown(downKey1) || Input.GetKeyDown(downKey2);
+    [Header("All Key")]
+    [SerializeField] private KeyCode allKey = KeyCode.A;
 
+    // key press checks
+    // move keys. Excludes keypad arrows.
+    // public bool rightKeyIsPressed => (Input.GetKeyDown(rightKey1) || Input.GetKeyDown(rightKey2));
+    // public bool leftKeyIsPressed => (Input.GetKeyDown(leftKey1) || Input.GetKeyDown(leftKey2));
+    // public bool upKeyIsPressed => (Input.GetKeyDown(upKey1) || Input.GetKeyDown(upKey2)) ;
+    // public bool downKeyIsPressed => (Input.GetKeyDown(downKey1) || Input.GetKeyDown(downKey2)) ;
+    
+    public bool rightKeyIsPressed => (Input.GetKeyDown(rightKey2));
+    public bool leftKeyIsPressed => Input.GetKeyDown(leftKey2);
+    public bool upKeyIsPressed => Input.GetKeyDown(upKey2) ;
+    public bool downKeyIsPressed => (Input.GetKeyDown(downKey2)) ;
+    
+    
     // multi keys
     public bool multiSelectKeyIsPressed => Input.GetKey(multiKey1) || Input.GetKey(multiKey2);
     
     // selection keys
-    public bool centerSelectKeyIsPressed => Input.GetKeyDown(centerKey1) || Input.GetKeyDown(centerKey2);
-    public bool centerSelectKeyIsReleased => Input.GetKeyUp(centerKey1) || Input.GetKeyUp(centerKey2);
+    public bool centerSelectKeyIsPressed => Input.GetKeyDown(centerKey1);// || Input.GetKeyDown(centerKey2);
+    public bool centerSelectKeyIsReleased => Input.GetKeyUp(centerKey1);// || Input.GetKeyUp(centerKey2);
 
-    public bool cornerSelectKeyIsPressed => Input.GetKeyDown(cornerKey1) || Input.GetKeyDown(cornerKey2);
-    public bool cornerSelectKeyIsReleased => Input.GetKeyUp(cornerKey1) || Input.GetKeyUp(cornerKey2);
+    public bool cornerSelectKeyIsPressed => Input.GetKeyDown(cornerKey1);// || Input.GetKeyDown(cornerKey2);
+    public bool cornerSelectKeyIsReleased => Input.GetKeyUp(cornerKey1);// || Input.GetKeyUp(cornerKey2);
 
     private bool centerKeyHeld => Input.GetKey(centerKey1) || Input.GetKey(centerKey2);
     private bool cornerKeyHeld => Input.GetKey(cornerKey1) || Input.GetKey(cornerKey2);
@@ -69,14 +78,19 @@ public class SelectionObject : ScriptableObject
     public bool colorSelectKeyIsReleased => (centerKeyHeld && cornerSelectKeyIsReleased)
                                             || (cornerKeyHeld && centerSelectKeyIsReleased);
 
+    public bool colorSelectKeyIsHeld => centerKeyHeld && cornerKeyHeld;
+
+    public bool AllCellsKeyIsPressed => centerKeyHeld && Input.GetKeyDown(allKey);
+
+
     
     // fields
     [SerializeField] private SelectionMode selectionMode = SelectionMode.None;
+    public List<TileBehaviour> SelectedTiles { get; private set; } = new List<TileBehaviour>();
 
     public bool IsSelecting => (selectionMode == SelectionMode.Selecting);
     public bool IsDeselecting => (selectionMode == SelectionMode.Deselecting);
 
-    public List<TileBehaviour> SelectedTiles { get; private set; } = new List<TileBehaviour>();
     public bool HasSelectedTiles => SelectedTiles.Count > 0;
     public bool SelectionKeyDown => Input.GetMouseButton(0);
 

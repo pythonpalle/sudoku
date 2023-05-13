@@ -25,6 +25,7 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnNumberEnter += OnNumberEnter;
         EventManager.OnRemoveEntry += OnRemoveEntryEvent;
         EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
+        EventManager.OnSelectAllTiles += OnSelectAllTiles;
 
         selectionObject.OnRequestTile += OnRequestTile;
     }
@@ -36,8 +37,25 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnNumberEnter -= OnNumberEnter; 
         EventManager.OnRemoveEntry -= OnRemoveEntryEvent;
         EventManager.OnSelectAllTilesWithNumber -= OnSelectAllTilesWithNumber;
-        
+        EventManager.OnSelectAllTiles -= OnSelectAllTiles;
+
         selectionObject.OnRequestTile -= OnRequestTile;
+    }
+
+    private void OnSelectAllTiles()
+    {
+        SelectAllTiles();
+    }
+
+    private void SelectAllTiles()
+    {
+        foreach (var tile in tileBehaviours)
+        {
+            if (!tile.isSelected)
+            {
+                tile.Select();
+            }
+        }    
     }
 
     private bool SkipTile(TileBehaviour tile, EnterType enterType)

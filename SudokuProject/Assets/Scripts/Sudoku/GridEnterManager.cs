@@ -41,7 +41,7 @@ public class GridEnterManager : MonoBehaviour
         KeyCode.Keypad9
     };
 
-    private EnterType enterType = EnterType.DigitMark;
+    [SerializeField] private EnterType enterType = EnterType.DigitMark;
 
     private bool removeButtonIsPressed => Input.GetKeyDown(KeyCode.Delete)
                                           || Input.GetKeyDown(KeyCode.Backspace)
