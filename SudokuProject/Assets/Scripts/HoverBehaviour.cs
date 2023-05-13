@@ -9,9 +9,6 @@ public class HoverBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     [SerializeField] private bool usePointerEnter = true;
     [SerializeField] private bool usePointerExit = true;
     
-    public UnityEvent OnMouseHover;
-    public UnityEvent OnMouseExit;
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         HandlePointerEnter();
@@ -31,15 +28,12 @@ public class HoverBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         }
         
         EventManager.UIElementHover();
-        OnMouseHover?.Invoke();
     }
     
     private void HandlePointerExit()
     {
-        
         if (!usePointerExit) return;
 
         EventManager.UIElementExit();
-        OnMouseExit?.Invoke();
     }
 }

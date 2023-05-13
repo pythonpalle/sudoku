@@ -50,26 +50,6 @@ public class GridEnterButton : MonoBehaviour
             Deselect();
         }
     }
-    
-    private void OnCornerKeyPressed()
-    {
-        OnSelectButtonClicked(EnterType.CornerMark);
-    }
-
-    private void OnCornerKeyReleased()
-    {
-        OnSelectButtonClicked(EnterType.DigitMark);
-    }
-
-    private void OnCenterKeyPressed()
-    {
-        OnSelectButtonClicked(EnterType.CenterMark);
-    }
-
-    private void OnCenterKeyReleased()
-    {
-        OnSelectButtonClicked(EnterType.DigitMark);
-    }
 
     private void Select()
     {
