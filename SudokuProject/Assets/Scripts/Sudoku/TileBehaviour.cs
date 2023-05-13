@@ -29,6 +29,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     [Header("Scriptable objects")]
     [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private ColorObject selectColor;
+    [SerializeField] private ColorObject pencilMarkColor;
 
     
     // public fields
@@ -63,12 +64,12 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     private void SetAllTextColors()
     {
-        numberText.color = selectColor.Color;
-        centerText.color = selectColor.Color;
+        numberText.color = pencilMarkColor.Color;
+        centerText.color = pencilMarkColor.Color;
 
         foreach (var cornerText in cornerTextList)
         {
-            cornerText.color = selectColor.Color;
+            cornerText.color = pencilMarkColor.Color;
         }
 
     }

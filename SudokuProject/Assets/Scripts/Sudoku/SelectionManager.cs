@@ -171,6 +171,17 @@ public class SelectionManager : MonoBehaviour
 
     private void HandleEnterButtonsDetection()
     {
+        if (selectionObject.colorSelectKeyIsPressed)
+        {
+            EventManager.SelectButtonClicked(EnterType.ColorMark);
+            return;
+        } 
+        else if (selectionObject.colorSelectKeyIsReleased)
+        {
+            EventManager.SelectButtonClicked(EnterType.DigitMark);
+            return;
+        }
+
         HandleCornerButtonDetection();
         HandleCenterButtonDetection();
     }

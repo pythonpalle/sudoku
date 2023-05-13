@@ -51,13 +51,24 @@ public class SelectionObject : ScriptableObject
     public bool upKeyIsPressed => Input.GetKeyDown(upKey1) || Input.GetKeyDown(upKey2);
     public bool downKeyIsPressed => Input.GetKeyDown(downKey1) || Input.GetKeyDown(downKey2);
 
-    // selection keys
+    // multi keys
     public bool multiSelectKeyIsPressed => Input.GetKey(multiKey1) || Input.GetKey(multiKey2);
+    
+    // selection keys
     public bool centerSelectKeyIsPressed => Input.GetKeyDown(centerKey1) || Input.GetKeyDown(centerKey2);
     public bool centerSelectKeyIsReleased => Input.GetKeyUp(centerKey1) || Input.GetKeyUp(centerKey2);
 
     public bool cornerSelectKeyIsPressed => Input.GetKeyDown(cornerKey1) || Input.GetKeyDown(cornerKey2);
     public bool cornerSelectKeyIsReleased => Input.GetKeyUp(cornerKey1) || Input.GetKeyUp(cornerKey2);
+
+    private bool centerKeyHeld => Input.GetKey(centerKey1) || Input.GetKey(centerKey2);
+    private bool cornerKeyHeld => Input.GetKey(cornerKey1) || Input.GetKey(cornerKey2);
+    
+    public bool colorSelectKeyIsPressed => (centerKeyHeld && cornerSelectKeyIsPressed)
+                                            || (cornerKeyHeld && centerSelectKeyIsPressed);
+    public bool colorSelectKeyIsReleased => (centerKeyHeld && cornerSelectKeyIsReleased)
+                                            || (cornerKeyHeld && centerSelectKeyIsReleased);
+
     
     // fields
     [SerializeField] private SelectionMode selectionMode = SelectionMode.None;

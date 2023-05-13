@@ -2414,6 +2414,7 @@ MonoBehaviour:
   spriteMask: {fileID: 8363066112863563410}
   selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
   selectColor: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
+  pencilMarkColor: {fileID: 11400000, guid: 5644fc9c05b3c2d48acebef0a4d623b6, type: 2}
   ColorMarks: 
 --- !u!1 &2454568410499543091
 GameObject:
