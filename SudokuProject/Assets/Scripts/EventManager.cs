@@ -21,7 +21,7 @@ public static class EventManager
     public static UnityAction<SelectionMode> OnSetSelectionMode;
     
     public static UnityAction<List<TileBehaviour>, EnterType, int> OnNumberEnter;
-    public static UnityAction<List<TileBehaviour>, EnterType> OnRemoveEntry;
+    public static UnityAction<List<TileBehaviour>, EnterType, bool> OnRemoveEntry;
 
     public static UnityAction OnUIElementHover;
     public static UnityAction OnUIElementExit;
@@ -52,9 +52,9 @@ public static class EventManager
         OnNumberEnter?.Invoke(tiles, enterType, number);
     }
 
-    public static void RemoveEntry(List<TileBehaviour> tiles, EnterType enterType)
+    public static void RemoveEntry(List<TileBehaviour> tiles, EnterType enterType, bool colorRemoval = false)
     {
-        OnRemoveEntry?.Invoke(tiles, enterType);
+        OnRemoveEntry?.Invoke(tiles, enterType, colorRemoval);
     }
 
     public static void UIElementHover()

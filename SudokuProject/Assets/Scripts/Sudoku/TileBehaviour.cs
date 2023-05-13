@@ -58,6 +58,19 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private void Start()
     {
         whitePartStartScale = whitePart.transform.localScale;
+        SetAllTextColors();
+    }
+
+    private void SetAllTextColors()
+    {
+        numberText.color = selectColor.Color;
+        centerText.color = selectColor.Color;
+
+        foreach (var cornerText in cornerTextList)
+        {
+            cornerText.color = selectColor.Color;
+        }
+
     }
 
     private void OnEnable()
@@ -105,6 +118,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         if (number > 0)
         {
             Permanent = true;
+            numberText.color = Color.black;
         }
     }
 
@@ -153,7 +167,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
         if (remove) number = 0;
         SetDigit(number);
-        numberText.color = Color.blue;
+        // numberText.color = Color.blue;
         return true;
     }
 
@@ -199,6 +213,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     
     private bool TryUpdateColor(int colorNumber, bool remove)
     {
+        if (colorNumber <= 0)
+            remove = true;
+        
         if (remove && ColorMarks.Contains(colorNumber))
         {
             ColorMarks.Remove(colorNumber);

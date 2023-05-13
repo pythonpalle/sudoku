@@ -12,9 +12,7 @@ public class GridBehaviour : MonoBehaviour
 
     [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private List<GridBoxBehaviour> boxes;
-
-    private EnterType lastKnownEnterType = EnterType.DigitMark;
-
+    
     private void Start()
     {
         SetupBoxes();
@@ -73,8 +71,6 @@ public class GridBehaviour : MonoBehaviour
     
     private void OnNumberEnter(List<TileBehaviour> tiles, EnterType enterType, int number)
     {
-        lastKnownEnterType = enterType;
-        
         HandleEnterNumberToSelectedTiles(tiles, number, enterType);
         
         switch (enterType)
@@ -86,8 +82,19 @@ public class GridBehaviour : MonoBehaviour
         }
     }
     
-    private void OnRemoveEntryEvent(List<TileBehaviour> tiles, EnterType eventType)
+    private void OnRemoveEntryEvent(List<TileBehaviour> tiles, EnterType enterType, bool colorRemoval)
     {
+        // special case for color removal, since it can't remove anything else
+        if (enterType == EnterType.ColorMark && colorRemoval)
+        {
+            if (CheckIfTilesContainType(tiles, EnterType.ColorMark))
+            {
+                RemoveAllOfEntryType(tiles, EnterType.ColorMark);
+            }
+        
+            return;
+        }
+        
         // all enter types in priority order
         List<EnterType> enterTypes = new List<EnterType>
         {
@@ -98,8 +105,8 @@ public class GridBehaviour : MonoBehaviour
         };
 
         // moving the given enter type to bottom of list, giving it top prioriy
-        enterTypes.Remove(eventType);
-        enterTypes.Insert(0, eventType);
+        enterTypes.Remove(enterType);
+        enterTypes.Insert(0, enterType);
 
         foreach (var type in enterTypes)
         {

@@ -99,11 +99,11 @@ public class GridEnterManager : MonoBehaviour
         EventManager.EnterNumber(selectionObject.SelectedTiles, enterType, number);
     }
 
-    public void TryRemoveNumbers()
+    public void TryRemoveNumbers(bool colorRemoval = false)
     {
         if (!selectionObject.HasSelectedTiles)
             return;
         
-        EventManager.RemoveEntry(selectionObject.SelectedTiles, enterType);
+        EventManager.RemoveEntry(selectionObject.SelectedTiles, enterType, colorRemoval);
     }
 }
