@@ -1,25 +1,32 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GridEnterButton : MonoBehaviour
 {
     [SerializeField] private Button button;
+    [SerializeField] private TextMeshProUGUI textMesh;
     [SerializeField] private EnterType enterType;
     
-    [SerializeField] private Color selectColor = Color.blue;
+    private Color selectColor = Color.blue;
     private Color deSelectColor = Color.white;
 
-    [SerializeField] private SelectionObject selectionObject;
+    [SerializeField] private ColorObject selectColorObject;
+    [SerializeField] private ColorObject deselectColorObject;
 
     private void Start()
     {
-        if (enterType == EnterType.DigitMark)
-        {
-            Select();
-        }
+        SetColors();
+        OnSelectButtonClicked(EnterType.DigitMark);
+    }
+
+    private void SetColors()
+    {
+        selectColor = selectColorObject.Color;
+        deSelectColor = deselectColorObject.Color;
     }
 
     private void SendOnButtonClickEvent()
@@ -54,10 +61,12 @@ public class GridEnterButton : MonoBehaviour
     private void Select()
     {
         button.image.color = selectColor;
+        textMesh.color = deSelectColor;
     }
     
     private void Deselect()
     {
         button.image.color = deSelectColor;
+        textMesh.color = selectColor;
     }
 }

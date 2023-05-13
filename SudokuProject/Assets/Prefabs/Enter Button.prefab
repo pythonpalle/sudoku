@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.9607844, b: 0.94117653, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -150,12 +150,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
-  OnMouseHover:
-    m_PersistentCalls:
-      m_Calls: []
-  OnMouseExit:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &5243590692779224246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,9 +163,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 5243590692779224249}
+  textMesh: {fileID: 5243590693820939445}
   enterType: 0
-  selectColor: {r: 0, g: 0, b: 1, a: 1}
-  selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
+  selectColorObject: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
+  deselectColorObject: {fileID: 11400000, guid: 6fee8faf98e77994aa108aa73842619f, type: 2}
 --- !u!1 &5243590693820939447
 GameObject:
   m_ObjectHideFlags: 0
