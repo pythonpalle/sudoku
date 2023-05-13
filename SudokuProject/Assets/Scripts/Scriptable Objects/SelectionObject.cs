@@ -11,7 +11,7 @@ public enum SelectionMode
 }
 
 [CreateAssetMenu(menuName = "Sudoku/SelectionObject")]
-public class SelectionObject : ScriptableObject
+public class SelectionObject : ScriptableObject 
 {
     // keys
     // move keys
@@ -49,15 +49,15 @@ public class SelectionObject : ScriptableObject
 
     // key press checks
     // move keys. Excludes keypad arrows.
-    // public bool rightKeyIsPressed => (Input.GetKeyDown(rightKey1) || Input.GetKeyDown(rightKey2));
-    // public bool leftKeyIsPressed => (Input.GetKeyDown(leftKey1) || Input.GetKeyDown(leftKey2));
-    // public bool upKeyIsPressed => (Input.GetKeyDown(upKey1) || Input.GetKeyDown(upKey2)) ;
-    // public bool downKeyIsPressed => (Input.GetKeyDown(downKey1) || Input.GetKeyDown(downKey2)) ;
+    public bool rightKeyIsPressed => (Input.GetKeyDown(rightKey1) || Input.GetKeyDown(rightKey2));
+    public bool leftKeyIsPressed => (Input.GetKeyDown(leftKey1) || Input.GetKeyDown(leftKey2));
+    public bool upKeyIsPressed => (Input.GetKeyDown(upKey1) || Input.GetKeyDown(upKey2)) ;
+    public bool downKeyIsPressed => (Input.GetKeyDown(downKey1) || Input.GetKeyDown(downKey2)) ;
     
-    public bool rightKeyIsPressed => (Input.GetKeyDown(rightKey2));
-    public bool leftKeyIsPressed => Input.GetKeyDown(leftKey2);
-    public bool upKeyIsPressed => Input.GetKeyDown(upKey2) ;
-    public bool downKeyIsPressed => (Input.GetKeyDown(downKey2)) ;
+    // public bool rightKeyIsPressed => (Input.GetKeyDown(rightKey2));
+    // public bool leftKeyIsPressed => Input.GetKeyDown(leftKey2);
+    // public bool upKeyIsPressed => Input.GetKeyDown(upKey2) ;
+    // public bool downKeyIsPressed => (Input.GetKeyDown(downKey2)) ;
     
     
     // multi keys
