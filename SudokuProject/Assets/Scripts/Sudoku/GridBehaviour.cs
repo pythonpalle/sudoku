@@ -192,7 +192,7 @@ public class GridBehaviour : MonoBehaviour
                 tile.Select();
         }
     }
-    
+
     private void SelectAllTilesWithCorner(TileBehaviour doubleClickTile)
     {
         bool hasCornerDigit = doubleClickTile.CornerMarks.Count > 0;
@@ -225,10 +225,10 @@ public class GridBehaviour : MonoBehaviour
     
     private void SelectAllTilesWithColor(TileBehaviour doubleClickTile)
     {
-        bool hasColorDigit = doubleClickTile.CenterMarks.Count > 0;
+        bool hasColorDigit = doubleClickTile.ColorMarks.Count > 0;
         if (!hasColorDigit) return;
 
-        foreach (int color in doubleClickTile.CenterMarks)
+        foreach (int color in doubleClickTile.ColorMarks)
         {
             foreach (var tile in tileBehaviours)
             {

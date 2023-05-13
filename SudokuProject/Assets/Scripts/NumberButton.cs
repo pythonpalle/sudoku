@@ -10,15 +10,21 @@ public class NumberButton : MonoBehaviour
 {
     [Header("Number")]
     [SerializeField] private int number;
+    
+    [Header("Image")]
+    [SerializeField] private Image backgroundImage;
+    [SerializeField] private Image colorImage;
 
-    [Header("Transforms")] 
+    [Header("State Transforms")] 
     [SerializeField] private RectTransform digitText;
     [SerializeField] private RectTransform centerText;
     [SerializeField] private RectTransform cornerText;
     [SerializeField] private RectTransform colorTransform;
 
-    [Header("Scriptable Object")] 
+    [Header("Color")] 
     [SerializeField] private TileColors tileColors;
+    [SerializeField] private ColorObject backgroundColor;
+    [SerializeField] private ColorObject textColor;
 
     private List<RectTransform> buttonStates;
 
@@ -34,6 +40,30 @@ public class NumberButton : MonoBehaviour
 
         SetStateNumber();
         EnterState(digitText);
+        SetColors();
+        SetBackgroundColor();
+    }
+
+    private void SetColors()
+    {
+        SetBackgroundColor();
+        SetTextColor();
+    }
+
+    private void SetBackgroundColor()
+    {
+        backgroundImage.color = backgroundColor.Color;
+    }
+    
+    private void SetTextColor()
+    {
+        foreach (var state in buttonStates)
+        {
+            if (state.TryGetComponent(out TextMeshProUGUI text))
+            {
+                text.color = textColor.Color;
+            }
+        }
     }
 
     private void SetStateNumber()
@@ -55,10 +85,7 @@ public class NumberButton : MonoBehaviour
 
     private void HandleSetColor()
     {
-        if (colorTransform.TryGetComponent(out Image image))
-        {
-            image.color = tileColors.Colors[number - 1];
-        }
+        colorImage.color = tileColors.Colors[number - 1];
     }
 
     private void OnEnable()

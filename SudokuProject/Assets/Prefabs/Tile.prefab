@@ -1276,7 +1276,7 @@ RectTransform:
   m_GameObject: {fileID: 1026018163057736285}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9700001, y: 0.9700001, z: 0.9700001}
+  m_LocalScale: {x: 0.97, y: 0.97, z: 0.97}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 2400492079632488013}
@@ -2412,6 +2412,7 @@ MonoBehaviour:
   - {fileID: 2766648560136499331}
   - {fileID: 5955512255822175764}
   - {fileID: 4705759604184108015}
+  selectColor: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
   selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
   ColorMarks: 
 --- !u!1 &2454568410499543091
@@ -2713,7 +2714,7 @@ RectTransform:
   m_GameObject: {fileID: 2936702728524636128}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.88, y: 0.88, z: 0.88}
+  m_LocalScale: {x: 0.9700001, y: 0.9700001, z: 0.9700001}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7992124578338639308}

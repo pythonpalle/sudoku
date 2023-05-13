@@ -24,6 +24,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     
     [Header("Color")]
     [SerializeField] private List<ColorMarkHolder> colorMarkHolders;
+    [SerializeField] private ColorObject selectColor;
     
     [Header("Scriptable objects")]
     [SerializeField] private SelectionObject selectionObject;
@@ -323,7 +324,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     public void Select()
     {
         isSelected = true;
-        border.color = Color.blue;
+        border.color = selectColor.Color;
         whitePart.transform.localScale = whitePartSelectScale;
         EventManager.SelectTile(this);
     }
