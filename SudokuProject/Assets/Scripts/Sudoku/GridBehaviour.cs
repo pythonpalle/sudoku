@@ -293,13 +293,9 @@ public class GridBehaviour : MonoBehaviour
     
     private void EnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType, bool sameNumber)
     {
-        Debug.Log("Enter tile number");
-        
         if (SkipTile(tileBehaviour, enterType))
             return;
         
-        Debug.Log("Call try update tile");
-
         tileBehaviour.TryUpdateNumber(number, enterType, sameNumber);
 
         if (enterType == EnterType.DigitMark)
