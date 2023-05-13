@@ -22,6 +22,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     [Header("Center")]
     [SerializeField] private TextMeshProUGUI centerText;
     
+    [Header("Color")]
+    [SerializeField] private List<ColorMarkHolder> colorMarkHolders;
+    
     [Header("Scriptable objects")]
     [SerializeField] private SelectionObject selectionObject;
     
@@ -35,14 +38,13 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     public bool Permanent { get; private set; } = false;
     public bool Contradicted { get; private set; } = false;
 
-    public List<int> centerMarks { get; set; } = new List<int>();
-    public List<int> CornerMarks;
+    public List<int> CenterMarks { get; private set; } = new List<int>();
+    public List<int> CornerMarks  { get; private set; } = new List<int>();
+    public List<int> ColorMarks; // { get; private set; }
+
 
     // private fields
     public bool isSelected { get; private set; } = false;
-
-    private float timeOfLastClick;
-    private const float maxTimeForDoubleClick = 0.2f;
     
     private Vector3 whitePartSelectScale = Vector3.one * 0.9f;
     private Vector3 whitePartStartScale;
@@ -106,7 +108,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     public bool TryUpdateNumber(int number, EnterType enterType, bool remove)
     {
-        if (Permanent) return false;
+        if (Permanent && enterType != EnterType.ColorMark) return false;
 
         switch (enterType)
         {
@@ -118,11 +120,14 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
             
             case EnterType.CenterMark:
                 return TryUpdateCenter(number, remove);
+            
+            case EnterType.ColorMark:
+                return TryUpdateColor(number, remove);
         }
 
         return false;
     }
-    
+
     private bool TryUpdateDigit(int number, bool remove)
     {
         if (Permanent) return false;
@@ -132,7 +137,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         numberText.color = Color.blue;
         return true;
     }
-    
 
     private bool TryUpdateCorner(int addedNumber, bool remove)
     {
@@ -158,22 +162,40 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     {
         if (Permanent || HasDigit) return false;
         
-        if (remove && centerMarks.Contains(addedNumber))
+        if (remove && CenterMarks.Contains(addedNumber))
         {
-            centerMarks.Remove(addedNumber);
+            CenterMarks.Remove(addedNumber);
         }
         else
         {
-            if (centerMarks.Contains(addedNumber))
+            if (CenterMarks.Contains(addedNumber))
                 return false;
             
-            centerMarks.Add(addedNumber);
+            CenterMarks.Add(addedNumber);
         }
 
         SortCenterMarks();
         return true;
     }
     
+    private bool TryUpdateColor(int colorNumber, bool remove)
+    {
+        if (remove && ColorMarks.Contains(colorNumber))
+        {
+            ColorMarks.Remove(colorNumber);
+        }
+        else
+        {
+            if (ColorMarks.Contains(colorNumber))
+                return false;
+            
+            ColorMarks.Add(colorNumber);
+        }
+
+        SortColorMarks();
+        return true;
+    }
+
 
     private void SortCornerMarks()
     {
@@ -233,9 +255,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     
     private void SortCenterMarks()
     {
-        centerMarks.Sort();
+        CenterMarks.Sort();
 
-        int centerMarkCount = centerMarks.Count;
+        int centerMarkCount = CenterMarks.Count;
         float centerStringSize = centerMarkFontSize;
         int maximumMarksForDefaultSize = 5;
 
@@ -249,13 +271,38 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
 
         string centerMarkString = string.Empty;
-        foreach (var mark in centerMarks)
+        foreach (var mark in CenterMarks)
         {
             centerMarkString += mark.ToString();
         }
 
         centerText.text = centerMarkString;
         centerText.fontSize = centerStringSize;
+    }
+    
+    private void SortColorMarks()
+    {
+        // find how many colors the tile has
+        int colorCount = ColorMarks.Count;
+        int colorHolderIndex = colorCount - 1;
+
+        SetColorHolderObjectsActive(colorHolderIndex);
+
+        if (colorCount <= 0)
+            return;
+        
+        ColorMarks.Sort();
+        ColorMarkHolder colorMarkHolder = colorMarkHolders[colorHolderIndex];
+        colorMarkHolder.SetColors(ColorMarks);
+    }
+
+    private void SetColorHolderObjectsActive(int colorHolderIndex)
+    {
+        for (int i = 0; i < colorMarkHolders.Count; i++)
+        {
+            bool setActive = i == colorHolderIndex;
+            colorMarkHolders[i].gameObject.SetActive(setActive);
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -309,10 +356,13 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
                 return this.number == number;
             
             case EnterType.CenterMark:
-                return !HasDigit && centerMarks.Contains(number);
+                return !HasDigit && CenterMarks.Contains(number);
             
             case EnterType.CornerMark:
                 return !HasDigit && CornerMarks.Contains(number);
+            
+            case EnterType.ColorMark:
+                return ColorMarks.Contains(number);
         }
 
         return false;
@@ -333,12 +383,16 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
             case EnterType.CornerMark:
                 RemoveAllCornerMarks();
                 break;
+            
+            case EnterType.ColorMark:
+                RemoveAllColorMarks();
+                break;
         }
     }
 
     private void RemoveAllCenterMarks()
     {
-        centerMarks.Clear();
+        CenterMarks.Clear();
         centerText.text = String.Empty;
     }
 
@@ -349,5 +403,13 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         {
             text.text = string.Empty;
         }
+    }
+    
+    private void RemoveAllColorMarks()
+    {
+        ColorMarks.Clear();
+        
+        // passing in -1 to inactivate all color holder
+        SetColorHolderObjectsActive(-1);
     }
 }

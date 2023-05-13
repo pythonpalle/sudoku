@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class NumberButton : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class NumberButton : MonoBehaviour
     [SerializeField] private RectTransform digitText;
     [SerializeField] private RectTransform centerText;
     [SerializeField] private RectTransform cornerText;
+    [SerializeField] private RectTransform colorTransform;
+
+    [Header("Scriptable Object")] 
+    [SerializeField] private TileColors tileColors;
 
     private List<RectTransform> buttonStates;
 
@@ -23,7 +28,8 @@ public class NumberButton : MonoBehaviour
         {
             digitText,
             centerText,
-            cornerText
+            cornerText,
+            colorTransform
         };
 
         SetStateNumber();
@@ -34,10 +40,24 @@ public class NumberButton : MonoBehaviour
     {
         foreach (var buttonState in buttonStates)
         {
+            if (buttonState == colorTransform)
+            {
+                HandleSetColor();
+                continue;
+            }
+
             if (buttonState.TryGetComponent(out TextMeshProUGUI text))
             {
                 text.text = number.ToString();
             }
+        }
+    }
+
+    private void HandleSetColor()
+    {
+        if (colorTransform.TryGetComponent(out Image image))
+        {
+            image.color = tileColors.Colors[number - 1];
         }
     }
 
@@ -68,6 +88,7 @@ public class NumberButton : MonoBehaviour
                 break;
             
             case EnterType.ColorMark: 
+                EnterState(colorTransform);
                 break;
         }
     }

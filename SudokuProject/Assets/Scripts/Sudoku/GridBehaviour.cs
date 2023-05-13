@@ -41,6 +41,11 @@ public class GridBehaviour : MonoBehaviour
         
         selectionObject.OnRequestTile -= OnRequestTile;
     }
+
+    private bool SkipTile(TileBehaviour tile, EnterType enterType)
+    {
+        return tile.Permanent && enterType != EnterType.ColorMark;
+    }
     
     private void SetupBoxes()
     {
@@ -88,7 +93,8 @@ public class GridBehaviour : MonoBehaviour
         {
             EnterType.DigitMark,
             EnterType.CenterMark,
-            EnterType.CornerMark
+            EnterType.CornerMark,
+            EnterType.ColorMark
         };
 
         // moving the given enter type to bottom of list, giving it top prioriy
@@ -127,7 +133,7 @@ public class GridBehaviour : MonoBehaviour
         foreach (var tile in selectedTiles)
         {
             // skip given clues
-            if (tile.Permanent) continue;
+            if (SkipTile(tile, enterType)) continue;
 
             switch (enterType)
             {
@@ -137,12 +143,17 @@ public class GridBehaviour : MonoBehaviour
                     break;
                 
                 case EnterType.CenterMark:
-                    if (!tile.HasDigit && tile.centerMarks.Count > 0)
+                    if (!tile.HasDigit && tile.CenterMarks.Count > 0)
                         return true;
                     break;
                 
                 case EnterType.CornerMark:
                     if (!tile.HasDigit && tile.CornerMarks.Count > 0)
+                        return true;
+                    break;
+                
+                case EnterType.ColorMark:
+                    if (tile.ColorMarks.Count > 0)
                         return true;
                     break;
             }
@@ -162,8 +173,11 @@ public class GridBehaviour : MonoBehaviour
             if (doubleClickTile.CornerMarks.Count > 0)
                 SelectAllTilesWithCorner(doubleClickTile);
             
-            if (doubleClickTile.centerMarks.Count > 0)
+            if (doubleClickTile.CenterMarks.Count > 0)
                 SelectAllTilesWithCenter(doubleClickTile);
+            
+            if (doubleClickTile.ColorMarks.Count > 0)
+                SelectAllTilesWithColor(doubleClickTile);
         }
     }
 
@@ -196,14 +210,29 @@ public class GridBehaviour : MonoBehaviour
     
     private void SelectAllTilesWithCenter(TileBehaviour doubleClickTile)
     {
-        bool hasCenterDigit = doubleClickTile.centerMarks.Count > 0;
+        bool hasCenterDigit = doubleClickTile.CenterMarks.Count > 0;
         if (!hasCenterDigit) return;
 
-        foreach (var center in doubleClickTile.centerMarks)
+        foreach (var center in doubleClickTile.CenterMarks)
         {
             foreach (var tile in tileBehaviours)
             {
-                if (tile.centerMarks.Contains(center))
+                if (tile.CenterMarks.Contains(center))
+                    tile.Select();
+            }
+        }
+    }
+    
+    private void SelectAllTilesWithColor(TileBehaviour doubleClickTile)
+    {
+        bool hasColorDigit = doubleClickTile.CenterMarks.Count > 0;
+        if (!hasColorDigit) return;
+
+        foreach (int color in doubleClickTile.CenterMarks)
+        {
+            foreach (var tile in tileBehaviours)
+            {
+                if (tile.ColorMarks.Contains(color))
                     tile.Select();
             }
         }
@@ -228,12 +257,11 @@ public class GridBehaviour : MonoBehaviour
     private void HandleEnterNumberToSelectedTiles(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
     {
         // if all selected tiles have the same number, remove the number (change to zero)
-        //number = SetNumberBasedOnAllSameDigit(selectedTiles, number, enterType);
         bool allTilesHaveSameDigit = CheckIfAllTilesHaveNumber(selectedTiles, number, enterType);
 
         foreach (var tileBehaviour in selectedTiles)
         {
-            if (tileBehaviour.Permanent) continue;
+            if (SkipTile(tileBehaviour, enterType)) continue;
 
             EnterTileNumber(tileBehaviour, number, enterType, allTilesHaveSameDigit);
         }
@@ -244,7 +272,7 @@ public class GridBehaviour : MonoBehaviour
         foreach (var tile in selectedTiles)
         {
             // skip given clues
-            if (tile.Permanent) continue;
+            if (SkipTile(tile, enterType)) continue;
             
             // if not digit entry, skip tiles that already has digit
             if (enterType != EnterType.DigitMark && tile.HasDigit) continue;
@@ -258,8 +286,12 @@ public class GridBehaviour : MonoBehaviour
     
     private void EnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType, bool sameNumber)
     {
-        if (tileBehaviour.Permanent)
+        Debug.Log("Enter tile number");
+        
+        if (SkipTile(tileBehaviour, enterType))
             return;
+        
+        Debug.Log("Call try update tile");
 
         tileBehaviour.TryUpdateNumber(number, enterType, sameNumber);
 
@@ -412,6 +444,4 @@ public class GridBehaviour : MonoBehaviour
         
         HandleRemoveContradictions();
     }
-
-    
 }

@@ -194,6 +194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImages: []
+  _tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
 --- !u!1 &307089195121551084
 GameObject:
   m_ObjectHideFlags: 0
@@ -1247,6 +1248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImages: []
+  _tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
 --- !u!1 &1026018163057736285
 GameObject:
   m_ObjectHideFlags: 0
@@ -2400,8 +2402,18 @@ MonoBehaviour:
   - {fileID: 6152756704834391101}
   cornerTextsParent: {fileID: 5390585990635704890}
   centerText: {fileID: 7373437563298184094}
+  colorMarkHolders:
+  - {fileID: 6323475798772870549}
+  - {fileID: 8855518333471814367}
+  - {fileID: 2660324378644435360}
+  - {fileID: 4226301401625318970}
+  - {fileID: 7205459592614823516}
+  - {fileID: 5306299526602416454}
+  - {fileID: 2766648560136499331}
+  - {fileID: 5955512255822175764}
+  - {fileID: 4705759604184108015}
   selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
-  CornerMarks: 
+  ColorMarks: 
 --- !u!1 &2454568410499543091
 GameObject:
   m_ObjectHideFlags: 0
@@ -3429,6 +3441,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImages: []
+  _tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
 --- !u!1 &4412584981406774837
 GameObject:
   m_ObjectHideFlags: 0
@@ -4076,6 +4089,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImages: []
+  _tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
 --- !u!1 &5659409936546764882
 GameObject:
   m_ObjectHideFlags: 0
@@ -4584,6 +4598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImages: []
+  _tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
 --- !u!1 &6341187114922739224
 GameObject:
   m_ObjectHideFlags: 0
@@ -5240,6 +5255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImages: []
+  _tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
 --- !u!1 &7093055749607637538
 GameObject:
   m_ObjectHideFlags: 0
@@ -5473,6 +5489,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImages: []
+  _tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
 --- !u!1 &7257645046358904338
 GameObject:
   m_ObjectHideFlags: 0
@@ -6199,6 +6216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImages: []
+  _tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
 --- !u!1 &8611300416413883549
 GameObject:
   m_ObjectHideFlags: 0
@@ -6253,6 +6271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImages: []
+  _tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
 --- !u!1 &8817930565479210746
 GameObject:
   m_ObjectHideFlags: 0
