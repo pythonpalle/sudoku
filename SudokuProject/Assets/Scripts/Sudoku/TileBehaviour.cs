@@ -11,7 +11,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     [Header("Background")]
     [SerializeField] private Image border;
     [SerializeField] private Image whitePart;
-    
+
     [Header("Digit")]
     [SerializeField] private TextMeshProUGUI numberText;
 
@@ -24,10 +24,12 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     
     [Header("Color")]
     [SerializeField] private List<ColorMarkHolder> colorMarkHolders;
-    [SerializeField] private ColorObject selectColor;
+    [SerializeField] private RectTransform spriteMask;
     
     [Header("Scriptable objects")]
     [SerializeField] private SelectionObject selectionObject;
+    [SerializeField] private ColorObject selectColor;
+
     
     // public fields
     public int row { get; private set; }
@@ -46,8 +48,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     // private fields
     public bool isSelected { get; private set; } = false;
-    
-    private Vector3 whitePartSelectScale = Vector3.one * 0.9f;
+
+    private static float whitePartSelectScale = 0.8f;
+    private Vector3 whitePartSelectScaleVector = Vector3.one * whitePartSelectScale;
     private Vector3 whitePartStartScale;
     
     int centerMarkFontSize = 30;
@@ -65,6 +68,21 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private void OnDisable()
     {
         selectionObject.OnDeselectAllTiles -= OnDeselectAllTiles;
+    }
+    
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        EventManager.TilePointerDown(this);
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        EventManager.TilePointerUp(this);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        EventManager.TilePointerEnter(this);
     }
 
     private void OnDeselectAllTiles()
@@ -304,28 +322,17 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
             bool setActive = i == colorHolderIndex;
             colorMarkHolders[i].gameObject.SetActive(setActive);
         }
-    }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        EventManager.TilePointerDown(this);
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        EventManager.TilePointerUp(this);
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        EventManager.TilePointerEnter(this);
+        bool activateWhitePart = ColorMarks.Count <= 0;
+        whitePart.gameObject.SetActive(activateWhitePart);
     }
 
     public void Select()
     {
         isSelected = true;
         border.color = selectColor.Color;
-        whitePart.transform.localScale = whitePartSelectScale;
+        whitePart.transform.localScale = whitePartSelectScaleVector;
+        spriteMask.transform.localScale = whitePartSelectScaleVector;
         EventManager.SelectTile(this);
     }
 
@@ -334,6 +341,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         isSelected = false;
         border.color = Color.black;
         whitePart.transform.localScale = whitePartStartScale;
+        spriteMask.transform.localScale = whitePartStartScale;
         EventManager.DeselectTile(this);
     }
 
