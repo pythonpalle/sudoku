@@ -90,7 +90,6 @@ public class SudokuGenerator9x9
         int iterationCount = 0;
 
         int maxMoves = GetMaxMovesFromDifficulty(difficulty);
-        maxMoves = 1;
         
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))

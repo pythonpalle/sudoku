@@ -10,14 +10,17 @@ public class WFCGridSolver
     public WFCGridSolver()
     {
         moves = new Stack<Move>();
+        //lastHumanlySolvableGrid = new SudokuGrid9x9(true);
     }
-    
-    
+
     private const int GENERATION_ITERATION_LIMIT = 16_384;
 
     private Stack<Move> moves;
     public SudokuGrid9x9 grid { get; protected set; }
+   // private SudokuGrid9x9 lastHumanlySolvableGrid;
     private System.Random random = new System.Random();
+    
+    
     List<SudokuGrid9x9> solvedGrids = new List<SudokuGrid9x9>();
 
     private bool gridFilled => grid.AllTilesAreUsed();
@@ -38,9 +41,9 @@ public class WFCGridSolver
         return solvedGrids.Count;
     }
     
-    public bool HumanlySolvable(SudokuGrid9x9 grid9x9, PuzzleDifficulty difficulty)
+    public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, PuzzleDifficulty difficulty)
     {
-        grid = new SudokuGrid9x9(grid9x9);
+        grid = new SudokuGrid9x9(gridToCheck);
         
         List<SolveMethod> solveMethods = new List<SolveMethod>
         {
@@ -48,25 +51,35 @@ public class WFCGridSolver
         };
 
         int iterations = 0;
+        
+        //Debug.Log("Checking for human solve. ");
+        //Debug.Log("Current state: ");
+        grid.PrintGrid();
 
         while (!gridFilled)
         {
-            bool someMethodYieldProgress = SomeProgressFromMethod(solveMethods, out SudokuGrid9x9 outGrid);
+            bool someMethodYieldProgress = SomeProgressFromMethod(solveMethods);
             if (!someMethodYieldProgress)
             {
-                Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
+                //Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
                 return false;
             }
             
-            Debug.Log("Next solve state: ");
+           // Debug.Log("Next solve state: ");
             grid.PrintGrid();
             iterations++;
 
-            if (iterations > 10)
+            if (iterations > 90) 
             {
-                Debug.LogError("Maximum iterations reached.");
+                //Debug.LogError("Maximum iterations reached.");
                 return false;
             }
+
+            // if (grid == lastHumanlySolvableGrid)
+            // {
+            //     //Debug.LogError("From previous calculations, this grid is solvable.");
+            //     return true;
+            // }
         }
 
         
@@ -81,19 +94,17 @@ public class WFCGridSolver
         // hard: naked triple, naked quad, pointing triples, hidden triple, hidden quad
         
         // x-treme: xwing, swordfish, jellyfish, xywing, xyzwing
-        
+        //lastHumanlySolvableGrid = gridToCheck;
         return true;
     }
 
-    private bool SomeProgressFromMethod(List<SolveMethod> solveMethods, out SudokuGrid9x9 sudokuGrid9X9)
+    private bool SomeProgressFromMethod(List<SolveMethod> solveMethods)
     {
-        sudokuGrid9X9 = new SudokuGrid9x9(grid);
-        
         foreach (var method in solveMethods)
         {
-            if (method.TryMakeProgress(grid, out SudokuGrid9x9 outGrid))
+            if (method.TryMakeProgress(grid))
             {
-                grid = new SudokuGrid9x9(outGrid);
+                grid = new SudokuGrid9x9(method.grid);
                 return true;
             }
         }
@@ -159,7 +170,22 @@ public class WFCGridSolver
         return true;
     }
 
-    protected void HandleNextSolveStep(bool findAll = false)
+    protected void HandleNextSolveStep(TileIndex nextIndex)
+    {
+        if (grid[nextIndex].Entropy <= 0)
+        {
+            HandleBackTracking(false);
+        }
+        else
+        {
+            if (grid.AssignLowestPossibleValue(nextIndex, 0))
+            {
+                CollapseWaveFunction(nextIndex, false);
+            }
+        }
+    }
+
+    private void HandleNextSolveStep(bool findAll = false)
     {
         TileIndex lowestEntropyTileIndex = FindLowestEntropyTile(findAll);
 

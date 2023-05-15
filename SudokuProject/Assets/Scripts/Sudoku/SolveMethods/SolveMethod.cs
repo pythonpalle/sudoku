@@ -4,9 +4,8 @@ using UnityEngine;
 
 public abstract class SolveMethod : WFCGridSolver
 {
-    public virtual bool TryMakeProgress(SudokuGrid9x9 inGrid, out SudokuGrid9x9 outGrid)
+    public virtual bool TryMakeProgress(SudokuGrid9x9 inGrid)
     {
-        outGrid = new SudokuGrid9x9();
         return false;
     }
 }
