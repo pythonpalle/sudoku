@@ -63,6 +63,42 @@ public class WFCGridSolver
     {
         candidatesMethods = new List<CandidateMethod>();
     }
+    
+    public bool HasMultipleSolutions(SudokuGrid9x9 originalGrid)
+    {
+        grid = new SudokuGrid9x9(originalGrid);
+        solvedGrids = new List<SudokuGrid9x9>();
+        moves = new Stack<Move>();
+        cancelSolve = false;
+        
+        int iterations = 0;
+        while (!gridFilled)
+        {
+            HandleNextSolveStep(true);
+
+            if (cancelSolve)
+            {
+                break;
+            }
+            
+            // iterations++;
+            //
+            // if (iterations >= GENERATION_ITERATION_LIMIT)
+            // {
+            //     Debug.LogWarning("Maximum iterations reached, couldn't generate grid.");
+            //     return false;
+            // }
+
+            if (solvedGrids.Count > 1)
+            {
+                Debug.Log("Several solutions found!");
+                return true;
+            }
+        }
+
+        return solvedGrids.Count > 1;
+        return false;
+    }
 
     public int GetSolutionCount(SudokuGrid9x9 originalGrid)
     {
@@ -165,8 +201,8 @@ public class WFCGridSolver
         
         TrySolveGrid(true);
         
-        if (solvedGrids.Count > 1)
-            DebugAllSolutions();
+        // if (solvedGrids.Count > 1)
+        //     DebugAllSolutions();
     }
 
     private void DebugAllSolutions()
@@ -406,6 +442,7 @@ public class WFCGridSolver
                 grid.AddCandidateToIndex(index, number);
         }
     }
+
 
     
 }

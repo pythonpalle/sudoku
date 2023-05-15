@@ -110,11 +110,23 @@ public class SudokuGenerator9x9
             // 3. Find symmetric neighbour, remove and propagate
             RemoveSymmetric(visitedTiles, lowestEntropyTileIndex);
 
-            // 4. Find all solutions with brute force
-            int solutionCount = FindAllSolutions(grid);
+            // // 4. Find all solutions with brute force
+            // int solutionCount = FindAllSolutions(grid);
+            
+            // 4: check to see if only one solution
+            bool multipleSolutions = CheckIfMultipleSolutions(grid);
 
+            // // 5. Revert to last grid if multiple solutions OR if not humanly solvable
+            // if (solutionCount != 1 || !HumanlySolvable(grid, difficulty))
+            // {
+            //     grid = new SudokuGrid9x9(lastGrid);
+            //     Debug.Log("Current grid state (after re-adding the clues):");
+            //     grid.PrintGrid();
+            //     iterationCount++;
+            // }
+            
             // 5. Revert to last grid if multiple solutions OR if not humanly solvable
-            if (solutionCount != 1 || !HumanlySolvable(grid, difficulty))
+            if (multipleSolutions || !HumanlySolvable(grid, difficulty))
             {
                 grid = new SudokuGrid9x9(lastGrid);
                 Debug.Log("Current grid state (after re-adding the clues):");
@@ -152,6 +164,11 @@ public class SudokuGenerator9x9
     private bool HumanlySolvable(SudokuGrid9x9 sudokuGrid9X9, PuzzleDifficulty difficulty)
     {
         return _wfcGridSolver.HumanlySolvable(sudokuGrid9X9, difficulty);
+    }
+    
+    private bool CheckIfMultipleSolutions(SudokuGrid9x9 sudokuGrid9X9)
+    {
+        return _wfcGridSolver.HasMultipleSolutions(sudokuGrid9X9);
     }
 
     private int FindAllSolutions(SudokuGrid9x9 grid9X9)
