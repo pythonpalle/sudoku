@@ -4,29 +4,32 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+public enum PuzzleDifficulty
+{
+    Simple,
+    Easy,
+    Medium,
+    Hard
+}
+
 public class SudokuGenerator9x9
 {
-    private const int GENERATION_ITERATION_LIMIT = 250;
     private System.Random random = new System.Random();
 
     private SudokuGrid9x9 grid;
     private WFCGridSolver _wfcGridSolver;
     
-    private Stack<Move> solvedGridMoves;
     private Stack<Move> puzzleGridRemovalMoves;
-
-    private bool solvedGridCompleted => solvedGridMoves.Count >= 81;
-
+    
     public SudokuGenerator9x9()
     {
         grid = new SudokuGrid9x9(true);
         _wfcGridSolver = new WFCGridSolver();
         
-        solvedGridMoves = new Stack<Move>();
         puzzleGridRemovalMoves = new Stack<Move>();
     }
 
-    public void Generate()
+    public void Generate(PuzzleDifficulty difficulty)
     {
         _wfcGridSolver.SetGrid(grid);
         bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(false);
@@ -38,7 +41,7 @@ public class SudokuGenerator9x9
         if (solvedGridCreated)
         {
             Debug.Log("<<< SOLVED GRID COMPLETE, NOW REMOVING CLUES... >>>");
-            puzzleCreated = TryCreatePuzzleFromSolvedGrid();
+            puzzleCreated = TryCreatePuzzleFromSolvedGrid(difficulty);
         }
     }
 
@@ -80,46 +83,8 @@ public class SudokuGenerator9x9
 
         return effectedTiles;
     }
-    
-    private List<TileIndex> RemoveTilesWithMissingCandidate(List<TileIndex> effectedTiles, TileIndex placeTileIndex)
-    {
-        List<TileIndex> filteredTiles = new List<TileIndex>();
-        int number = grid[placeTileIndex].Number;
 
-        foreach (TileIndex index in effectedTiles)
-        {
-            if (grid[index].Candidates.Contains(number))
-            {
-                filteredTiles.Add(index);
-            }
-        }
-
-        return filteredTiles;
-    }
-
-    private TileIndex FindLowestEntropyTile()
-    {
-        int lowestEntropy = FindLowestEntropy();
-
-        List<TileIndex> lowestEntropyTiles = new List<TileIndex>();
-        foreach (var tile in grid.Tiles)
-        {
-            if (!tile.Used && tile.Entropy == lowestEntropy)
-                lowestEntropyTiles.Add(tile.index);
-        }
-
-        if (lowestEntropyTiles.Count <= 0)
-        {
-            Debug.LogWarning("All tiles are placed.");
-            return new TileIndex(0, 0);
-        }
-
-        int randomIndex = random.Next(lowestEntropyTiles.Count);
-        TileIndex lowestEntropyTileIndex = lowestEntropyTiles[randomIndex];
-        return lowestEntropyTileIndex;
-    }
-    
-    private bool TryCreatePuzzleFromSolvedGrid()
+    private bool TryCreatePuzzleFromSolvedGrid(PuzzleDifficulty difficulty)
     {
         bool[,] visitedTiles = new bool[9, 9];
 
@@ -144,7 +109,7 @@ public class SudokuGenerator9x9
             int solutionCount = FindAllSolutions(grid);
 
             // 5. Revert to last grid if multiple solutions OR if not humanly solvable
-            if (solutionCount != 1 || !HumanlySolvable(grid))
+            if (solutionCount != 1 || !HumanlySolvable(grid, difficulty))
             {
                 grid = new SudokuGrid9x9(lastGrid);
                 Debug.Log("Current grid state (after re-adding the clues):");
@@ -162,8 +127,10 @@ public class SudokuGenerator9x9
         return true;
     }
 
-    private bool HumanlySolvable(SudokuGrid9x9 sudokuGrid9X9)
+    private bool HumanlySolvable(SudokuGrid9x9 sudokuGrid9X9, PuzzleDifficulty difficulty)
     {
+        return _wfcGridSolver.HumanlySolvable(sudokuGrid9X9, difficulty);
+
         // TODO:
         
         // List all strategies

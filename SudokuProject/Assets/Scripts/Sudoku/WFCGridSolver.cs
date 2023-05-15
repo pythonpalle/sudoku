@@ -37,6 +37,17 @@ public class WFCGridSolver
         Debug.Log("Solutions found: " + solvedGrids.Count);
         return solvedGrids.Count;
     }
+    
+    public bool HumanlySolvable(SudokuGrid9x9 grid9x9, PuzzleDifficulty difficulty)
+    {
+        // techniques:
+        // simple: naked single, hidden single
+        // easy: naked pair, hidden pair, pointing pairs
+        // medium: naked triple, naked quad, pointing triples, hidden triple, hidden quad
+        // hard: xwing, swordfish, jellyfish, xywing, xyzwing
+        
+        return true;
+    }
 
     private void FindAllSolutions()
     {
@@ -271,4 +282,6 @@ public class WFCGridSolver
                 grid.AddCandidateToIndex(index, number);
         }
     }
+
+    
 }
