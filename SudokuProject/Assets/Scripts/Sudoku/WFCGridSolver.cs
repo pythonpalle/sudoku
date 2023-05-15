@@ -10,14 +10,12 @@ public class WFCGridSolver
     public WFCGridSolver()
     {
         moves = new Stack<Move>();
-        //lastHumanlySolvableGrid = new SudokuGrid9x9(true);
     }
 
     private const int GENERATION_ITERATION_LIMIT = 16_384;
 
     private Stack<Move> moves;
     public SudokuGrid9x9 grid { get; protected set; }
-   // private SudokuGrid9x9 lastHumanlySolvableGrid;
     private System.Random random = new System.Random();
     
     
@@ -44,42 +42,36 @@ public class WFCGridSolver
     public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, PuzzleDifficulty difficulty)
     {
         grid = new SudokuGrid9x9(gridToCheck);
-        
-        List<SolveMethod> solveMethods = new List<SolveMethod>
-        {
-            new NakedSingle()
-        };
 
+        List<DigitMethod> digitMethods = GetDigitMethods(difficulty);
+        List<CandidateMethod> candidatesMethods = GetCandidateMethods(difficulty);
+        
         int iterations = 0;
-        
-        //Debug.Log("Checking for human solve. ");
-        //Debug.Log("Current state: ");
-        grid.PrintGrid();
-
+     
         while (!gridFilled)
         {
-            bool someMethodYieldProgress = SomeProgressFromMethod(solveMethods);
-            if (!someMethodYieldProgress)
+            // start with hidden single (checking if cell with one entropy, placing digit)
+            if (TryProgressWithHiddenSingle())
             {
-                //Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
-                return false;
+                return true;
             }
             
-           // Debug.Log("Next solve state: ");
+            // bool someMethodYieldProgress = SomeProgressFromMethods(solveMethods);
+            // if (!someMethodYieldProgress)
+            // {
+            //     Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
+            //     return false;
+            // }
+            
+            Debug.Log("Next solve state: ");
             grid.PrintGrid();
             iterations++;
 
             if (iterations > 90) 
             {
-                //Debug.LogError("Maximum iterations reached.");
+                Debug.LogError("Maximum iterations reached.");
                 return false;
             }
-
-            // if (grid == lastHumanlySolvableGrid)
-            // {
-            //     //Debug.LogError("From previous calculations, this grid is solvable.");
-            //     return true;
-            // }
         }
 
         
@@ -94,22 +86,59 @@ public class WFCGridSolver
         // hard: naked triple, naked quad, pointing triples, hidden triple, hidden quad
         
         // x-treme: xwing, swordfish, jellyfish, xywing, xyzwing
-        //lastHumanlySolvableGrid = gridToCheck;
         return true;
     }
 
-    private bool SomeProgressFromMethod(List<SolveMethod> solveMethods)
+    private List<DigitMethod> GetDigitMethods(PuzzleDifficulty difficulty)
     {
-        foreach (var method in solveMethods)
+        List<DigitMethod> method = new List<DigitMethod>
         {
-            if (method.TryMakeProgress(grid))
+        };
+        return method;
+    }
+
+    private List<CandidateMethod> GetCandidateMethods(PuzzleDifficulty difficulty)
+    {
+        return new List<CandidateMethod>();
+    }
+
+    private bool TryProgressWithHiddenSingle()
+    {
+        foreach (var tile in grid.Tiles)
+        {
+            if (tile.Entropy == 1)
             {
-                grid = new SudokuGrid9x9(method.grid);
+                HandleNextSolveStep(tile.index); 
                 return true;
             }
         }
 
         return false;
+    }
+
+    private bool SomeProgressFromMethods(List<CandidateMethod> solveMethods)
+    {
+        foreach (var method in solveMethods)
+        {
+            if (method.TryFindCandidates(grid, out CandidateRemoval removal))
+            {
+                RemoveCandidates(removal);
+                return true;
+            }
+        }
+    
+        return false;
+    }
+
+    private void RemoveCandidates(CandidateRemoval removal)
+    {
+        foreach (var index in removal.indexes)
+        {
+            foreach (var candidate in removal.candidates)
+            {
+                grid.RemoveCandidateFromIndex(index, candidate);
+            }
+        }
     }
 
     private void FindAllSolutions()
