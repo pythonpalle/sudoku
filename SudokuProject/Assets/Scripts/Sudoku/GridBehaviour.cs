@@ -107,6 +107,7 @@ public class GridBehaviour : MonoBehaviour
         if (complete)
         {
             Debug.Log("You solved it, hurray!");
+            EventManager.PuzzleComplete();
         }
     }
 

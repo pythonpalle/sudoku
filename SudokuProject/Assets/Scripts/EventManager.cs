@@ -26,6 +26,8 @@ public static class EventManager
     public static UnityAction OnUIElementHover;
     public static UnityAction OnUIElementExit;
     public static UnityAction<EnterType> OnSelectButtonClicked;
+    
+    public static UnityAction OnPuzzleComplete;
 
     public static void GenerateGrid(SudokuGrid9x9 grid)
     {
@@ -95,5 +97,10 @@ public static class EventManager
     public static void TilePointerEnter(TileBehaviour tile)
     {
         OnTilePointerEnter?.Invoke(tile);
+    }
+
+    public static void PuzzleComplete()
+    {
+        OnPuzzleComplete?.Invoke();
     }
 }
