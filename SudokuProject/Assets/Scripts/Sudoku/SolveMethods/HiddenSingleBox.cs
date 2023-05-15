@@ -70,4 +70,7 @@ public class HiddenSingleBox : DigitMethod
         
         return false;
     }
+    
+    public override string GetName => "Hidden Single Box";
+
 }

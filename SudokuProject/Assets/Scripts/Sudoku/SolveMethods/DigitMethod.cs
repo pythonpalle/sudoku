@@ -8,4 +8,6 @@ public abstract class DigitMethod
         digit = -1;
         return false;
     }
+
+    public virtual string GetName => "";
 }

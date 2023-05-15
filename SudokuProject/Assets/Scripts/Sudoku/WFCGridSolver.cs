@@ -61,7 +61,7 @@ public class WFCGridSolver
 
     private void GetCandidateMethods(PuzzleDifficulty difficulty)
     {
-
+        candidatesMethods = new List<CandidateMethod>();
     }
 
     public int GetSolutionCount(SudokuGrid9x9 originalGrid)
@@ -125,6 +125,7 @@ public class WFCGridSolver
             if (method.TryFindDigit(grid, out TileIndex index, out _))
             {
                 HandleNextSolveStep(index);
+                Debug.Log("Solved with method: " + method.GetName);
                 return true;
             }
         }

@@ -18,4 +18,7 @@ public class NakedSingle : DigitMethod
         digit = -1;
         return false;
     }
+    
+    public override string GetName => "Naked Single";
+
 }
