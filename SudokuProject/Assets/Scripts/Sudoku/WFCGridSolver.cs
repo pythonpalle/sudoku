@@ -75,6 +75,7 @@ public class WFCGridSolver
         {
             HandleNextSolveStep(true);
 
+            // cancal solve means the algorithm has backtracked and tried all possible options 
             if (cancelSolve)
             {
                 break;
