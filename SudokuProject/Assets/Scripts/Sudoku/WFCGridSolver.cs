@@ -7,14 +7,23 @@ using UnityEngine;
 
 public class WFCGridSolver
 {
-    public WFCGridSolver()
+    public WFCGridSolver(PuzzleDifficulty puzzleDifficulty)
     {
         moves = new Stack<Move>();
+        difficulty = puzzleDifficulty;
+
+        SetupSolveMethods();
     }
 
     private const int GENERATION_ITERATION_LIMIT = 16_384;
-
+    
     private Stack<Move> moves;
+    private PuzzleDifficulty difficulty;
+
+    private List<DigitMethod> digitMethods;
+    List<CandidateMethod> candidatesMethods;
+
+
     public SudokuGrid9x9 grid { get; protected set; }
     private System.Random random = new System.Random();
     
@@ -29,6 +38,31 @@ public class WFCGridSolver
     {
         grid = new SudokuGrid9x9(other);
     }
+    
+    private void SetupSolveMethods()
+    {
+        GetDigitMethods(difficulty);
+        GetCandidateMethods(difficulty);
+    }
+    
+    private void GetDigitMethods(PuzzleDifficulty difficulty)
+    {
+        digitMethods = new List<DigitMethod>();
+
+        if (difficulty != PuzzleDifficulty.Easy)
+        {
+            // adding naked single first since it is by far the fastest
+            digitMethods.Add(new NakedSingle()); 
+            //digitMethods.Add(new HiddenSingleRowCol());
+        }
+        
+        digitMethods.Add(new HiddenSingleBox());
+    }
+
+    private void GetCandidateMethods(PuzzleDifficulty difficulty)
+    {
+
+    }
 
     public int GetSolutionCount(SudokuGrid9x9 originalGrid)
     {
@@ -42,16 +76,13 @@ public class WFCGridSolver
     public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, PuzzleDifficulty difficulty)
     {
         grid = new SudokuGrid9x9(gridToCheck);
-
-        List<DigitMethod> digitMethods = GetDigitMethods(difficulty);
-        List<CandidateMethod> candidatesMethods = GetCandidateMethods(difficulty);
         
         int iterations = 0;
      
         while (!gridFilled)
         {
             // start with digit methods, place digit directly
-            if (TryProgressWithDigitMethods(digitMethods))
+            if (TryProgressWithDigitMethods())
             {
                 return true;
             }
@@ -87,21 +118,7 @@ public class WFCGridSolver
         return true;
     }
 
-    private List<DigitMethod> GetDigitMethods(PuzzleDifficulty difficulty)
-    {
-        List<DigitMethod> method = new List<DigitMethod>
-        {
-            new HiddenSingleBox()
-        };
-        return method;
-    }
-
-    private List<CandidateMethod> GetCandidateMethods(PuzzleDifficulty difficulty)
-    {
-        return new List<CandidateMethod>();
-    }
-
-    private bool TryProgressWithDigitMethods(List<DigitMethod> digitMethods)
+    private bool TryProgressWithDigitMethods()
     {
         foreach (var method in digitMethods)
         {
@@ -115,9 +132,9 @@ public class WFCGridSolver
         return false;
     }
 
-    private bool SomeProgressFromMethods(List<CandidateMethod> solveMethods)
+    private bool TryProgressWithCandidateMethods()
     {
-        foreach (var method in solveMethods)
+        foreach (var method in candidatesMethods)
         {
             if (method.TryFindCandidates(grid, out CandidateRemoval removal))
             {

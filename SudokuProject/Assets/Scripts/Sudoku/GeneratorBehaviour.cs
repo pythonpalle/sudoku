@@ -10,7 +10,7 @@ public class GeneratorBehaviour : MonoBehaviour
 
     void Awake()
     {
-        generator = new SudokuGenerator9x9();
+        generator = new SudokuGenerator9x9(_difficultyObject.Difficulty);
     }
 
     private void Start()

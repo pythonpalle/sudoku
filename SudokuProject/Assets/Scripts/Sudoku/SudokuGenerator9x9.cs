@@ -20,13 +20,17 @@ public class SudokuGenerator9x9
     
     private Stack<Move> puzzleGridRemovalMoves;
     
-    public SudokuGenerator9x9()
+    public SudokuGenerator9x9(PuzzleDifficulty difficulty)
     {
         grid = new SudokuGrid9x9(true);
-        _wfcGridSolver = new WFCGridSolver();
+        this.difficulty = difficulty;
+
+        _wfcGridSolver = new WFCGridSolver(difficulty);
         
         puzzleGridRemovalMoves = new Stack<Move>();
     }
+
+    private PuzzleDifficulty difficulty;
 
     public void Generate(PuzzleDifficulty difficulty)
     {
