@@ -134,9 +134,9 @@ public class WFCGridSolver
 
         // techniques:
 
-        // easy:  naked single (box), hidden single (box),
+        // easy:  hidden single (box),
         
-        // medium:  naked single (row/col), hidden single (row/col),
+        // medium:  naked single, hidden single (row/col),
         //          naked pair, hidden pair, pointing pairs
         
         // hard: naked triple, naked quad, pointing triples, hidden triple, hidden quad
