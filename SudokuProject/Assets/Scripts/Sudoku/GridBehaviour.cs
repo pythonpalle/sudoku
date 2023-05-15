@@ -192,18 +192,21 @@ public class GridBehaviour : MonoBehaviour
         if (doubleClickTile.HasDigit)
         {
             SelectAllTilesWithDigit(doubleClickTile);
-        }
-        else
-        {
-            if (doubleClickTile.CornerMarks.Count > 0)
-                SelectAllTilesWithCorner(doubleClickTile);
-            
-            if (doubleClickTile.CenterMarks.Count > 0)
-                SelectAllTilesWithCenter(doubleClickTile);
             
             if (doubleClickTile.ColorMarks.Count > 0)
                 SelectAllTilesWithColor(doubleClickTile);
+
+            return;
         }
+       
+        if (doubleClickTile.CornerMarks.Count > 0)
+            SelectAllTilesWithCorner(doubleClickTile);
+        
+        if (doubleClickTile.CenterMarks.Count > 0)
+            SelectAllTilesWithCenter(doubleClickTile);
+        
+        if (doubleClickTile.ColorMarks.Count > 0)
+            SelectAllTilesWithColor(doubleClickTile);
     }
 
     private void SelectAllTilesWithDigit(TileBehaviour doubleClickTile)
@@ -227,7 +230,7 @@ public class GridBehaviour : MonoBehaviour
         {
             foreach (var tile in tileBehaviours)
             {
-                if (tile.CornerMarks.Contains(corner))
+                if (tile.CornerMarks.Contains(corner) && !tile.HasDigit)
                     tile.Select();
             }
         }
@@ -242,7 +245,7 @@ public class GridBehaviour : MonoBehaviour
         {
             foreach (var tile in tileBehaviours)
             {
-                if (tile.CenterMarks.Contains(center))
+                if (tile.CenterMarks.Contains(center) && !tile.HasDigit)
                     tile.Select();
             }
         }
