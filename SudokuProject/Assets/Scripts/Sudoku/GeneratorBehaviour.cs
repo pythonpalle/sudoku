@@ -6,7 +6,7 @@ using UnityEngine;
 public class GeneratorBehaviour : MonoBehaviour
 {
     private SudokuGenerator9x9 generator;
-    [SerializeField] private PuzzleDifficulty _difficulty;
+    [SerializeField] private DifficultyObject _difficultyObject;
 
     void Awake()
     {
@@ -20,6 +20,6 @@ public class GeneratorBehaviour : MonoBehaviour
 
     public void GenerateFullGrid()
     {
-        generator.Generate(_difficulty);
+        generator.Generate(_difficultyObject.Difficulty);
     }
 }
