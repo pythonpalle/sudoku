@@ -6,7 +6,6 @@ using UnityEngine;
 
 public enum PuzzleDifficulty
 {
-    Simple,
     Easy,
     Medium,
     Hard
@@ -87,8 +86,11 @@ public class SudokuGenerator9x9
     private bool TryCreatePuzzleFromSolvedGrid(PuzzleDifficulty difficulty)
     {
         bool[,] visitedTiles = new bool[9, 9];
-
+        
         int iterationCount = 0;
+
+        int maxMoves = GetMaxMovesFromDifficulty(difficulty);
+        maxMoves = 1;
         
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))
@@ -114,10 +116,11 @@ public class SudokuGenerator9x9
                 grid = new SudokuGrid9x9(lastGrid);
                 Debug.Log("Current grid state (after re-adding the clues):");
                 grid.PrintGrid();
+                iterationCount++;
             }
 
             iterationCount++;
-            if (iterationCount > 0)
+            if (iterationCount > maxMoves)
                 break;
         }
 
@@ -127,21 +130,25 @@ public class SudokuGenerator9x9
         return true;
     }
 
+    private int GetMaxMovesFromDifficulty(PuzzleDifficulty difficulty)
+    {
+        switch (difficulty)
+        {
+            case PuzzleDifficulty.Easy:
+                return 21;
+            case PuzzleDifficulty.Medium:
+                return 31;
+            case PuzzleDifficulty.Hard:
+                return 41;
+            
+            default:
+                return 41;
+        }
+    }
+
     private bool HumanlySolvable(SudokuGrid9x9 sudokuGrid9X9, PuzzleDifficulty difficulty)
     {
         return _wfcGridSolver.HumanlySolvable(sudokuGrid9X9, difficulty);
-
-        // TODO:
-        
-        // List all strategies
-        
-        // if can place number
-        // place it
-        // print strategy used
-        
-        // keep solving until found solution
-        
-        return true;
     }
 
     private int FindAllSolutions(SudokuGrid9x9 grid9X9)

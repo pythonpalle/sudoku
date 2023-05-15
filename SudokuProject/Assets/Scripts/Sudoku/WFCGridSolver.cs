@@ -16,7 +16,7 @@ public class WFCGridSolver
     private const int GENERATION_ITERATION_LIMIT = 16_384;
 
     private Stack<Move> moves;
-    public SudokuGrid9x9 grid { get; private set; }
+    public SudokuGrid9x9 grid { get; protected set; }
     private System.Random random = new System.Random();
     List<SudokuGrid9x9> solvedGrids = new List<SudokuGrid9x9>();
 
@@ -40,13 +40,65 @@ public class WFCGridSolver
     
     public bool HumanlySolvable(SudokuGrid9x9 grid9x9, PuzzleDifficulty difficulty)
     {
+        grid = new SudokuGrid9x9(grid9x9);
+        
+        List<SolveMethod> solveMethods = new List<SolveMethod>
+        {
+            new NakedSingle()
+        };
+
+        int iterations = 0;
+
+        while (!gridFilled)
+        {
+            bool someMethodYieldProgress = SomeProgressFromMethod(solveMethods, out SudokuGrid9x9 outGrid);
+            if (!someMethodYieldProgress)
+            {
+                Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
+                return false;
+            }
+            
+            Debug.Log("Next solve state: ");
+            grid.PrintGrid();
+            iterations++;
+
+            if (iterations > 10)
+            {
+                Debug.LogError("Maximum iterations reached.");
+                return false;
+            }
+        }
+
+        
+
         // techniques:
-        // simple: naked single, hidden single
-        // easy: naked pair, hidden pair, pointing pairs
-        // medium: naked triple, naked quad, pointing triples, hidden triple, hidden quad
-        // hard: xwing, swordfish, jellyfish, xywing, xyzwing
+
+        // easy:  naked single (box), hidden single (box),
+        
+        // medium:  naked single (row/col), hidden single (row/col),
+        //          naked pair, hidden pair, pointing pairs
+        
+        // hard: naked triple, naked quad, pointing triples, hidden triple, hidden quad
+        
+        // x-treme: xwing, swordfish, jellyfish, xywing, xyzwing
         
         return true;
+    }
+
+    private bool SomeProgressFromMethod(List<SolveMethod> solveMethods, out SudokuGrid9x9 sudokuGrid9X9)
+    {
+        sudokuGrid9X9 = new SudokuGrid9x9(grid);
+        
+        foreach (var method in solveMethods)
+        {
+            if (method.TryMakeProgress(grid, out SudokuGrid9x9 outGrid))
+            {
+                grid = new SudokuGrid9x9(outGrid);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void FindAllSolutions()
@@ -107,7 +159,7 @@ public class WFCGridSolver
         return true;
     }
 
-    private void HandleNextSolveStep(bool findAll = false)
+    protected void HandleNextSolveStep(bool findAll = false)
     {
         TileIndex lowestEntropyTileIndex = FindLowestEntropyTile(findAll);
 
