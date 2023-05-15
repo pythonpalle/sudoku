@@ -47,13 +47,13 @@ public class WFCGridSolver
     
     private void GetDigitMethods(PuzzleDifficulty difficulty)
     {
-        digitMethods = new List<DigitMethod>();
+        digitMethods = new List<DigitMethod>(); 
 
         if (difficulty != PuzzleDifficulty.Easy)
         {
             // adding naked single first since it is by far the fastest
             digitMethods.Add(new NakedSingle()); 
-            //digitMethods.Add(new HiddenSingleRowCol());
+            digitMethods.Add(new HiddenSingleRowCol());
         }
         
         digitMethods.Add(new HiddenSingleBox());
@@ -71,7 +71,6 @@ public class WFCGridSolver
         moves = new Stack<Move>();
         cancelSolve = false;
         
-        int iterations = 0;
         while (!gridFilled)
         {
             HandleNextSolveStep(true);
@@ -81,14 +80,6 @@ public class WFCGridSolver
                 break;
             }
             
-            // iterations++;
-            //
-            // if (iterations >= GENERATION_ITERATION_LIMIT)
-            // {
-            //     Debug.LogWarning("Maximum iterations reached, couldn't generate grid.");
-            //     return false;
-            // }
-
             if (solvedGrids.Count > 1)
             {
                 Debug.Log("Several solutions found!");
@@ -97,7 +88,6 @@ public class WFCGridSolver
         }
 
         return solvedGrids.Count > 1;
-        return false;
     }
 
     public int GetSolutionCount(SudokuGrid9x9 originalGrid)
