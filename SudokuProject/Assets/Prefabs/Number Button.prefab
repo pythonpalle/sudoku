@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0.98080873, a: 1}
+  m_Color: {r: 0, g: 0.5921569, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -166,12 +166,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   number: 0
+  hasNumber: 1
   backgroundImage: {fileID: 6830367561553300533}
   colorImage: {fileID: 3081820462202245841}
   digitText: {fileID: 7249207476843012714}
   centerText: {fileID: 3559857956564267518}
   cornerText: {fileID: 3099945098548847741}
   colorTransform: {fileID: 1472638395385665029}
+  useOwnColor: 0
+  ownColor: {r: 0, g: 0, b: 0, a: 0}
   tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
   backgroundColor: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
   textColor: {fileID: 11400000, guid: 6fee8faf98e77994aa108aa73842619f, type: 2}
@@ -846,8 +849,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
