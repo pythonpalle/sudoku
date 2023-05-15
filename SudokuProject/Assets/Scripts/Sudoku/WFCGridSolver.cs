@@ -50,8 +50,8 @@ public class WFCGridSolver
      
         while (!gridFilled)
         {
-            // start with hidden single (checking if cell with one entropy, placing digit)
-            if (TryProgressWithHiddenSingle())
+            // start with digit methods, place digit directly
+            if (TryProgressWithDigitMethods(digitMethods))
             {
                 return true;
             }
@@ -63,8 +63,6 @@ public class WFCGridSolver
             //     return false;
             // }
             
-            Debug.Log("Next solve state: ");
-            grid.PrintGrid();
             iterations++;
 
             if (iterations > 90) 
@@ -93,6 +91,7 @@ public class WFCGridSolver
     {
         List<DigitMethod> method = new List<DigitMethod>
         {
+            new HiddenSingleBox()
         };
         return method;
     }
@@ -102,13 +101,13 @@ public class WFCGridSolver
         return new List<CandidateMethod>();
     }
 
-    private bool TryProgressWithHiddenSingle()
+    private bool TryProgressWithDigitMethods(List<DigitMethod> digitMethods)
     {
-        foreach (var tile in grid.Tiles)
+        foreach (var method in digitMethods)
         {
-            if (tile.Entropy == 1)
+            if (method.TryFindDigit(grid, out TileIndex index, out _))
             {
-                HandleNextSolveStep(tile.index); 
+                HandleNextSolveStep(index);
                 return true;
             }
         }
@@ -199,7 +198,7 @@ public class WFCGridSolver
         return true;
     }
 
-    protected void HandleNextSolveStep(TileIndex nextIndex)
+    private void HandleNextSolveStep(TileIndex nextIndex)
     {
         if (grid[nextIndex].Entropy <= 0)
         {
