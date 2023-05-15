@@ -122,6 +122,8 @@ public class SudokuGenerator9x9
     private bool TryCreatePuzzleFromSolvedGrid()
     {
         bool[,] visitedTiles = new bool[9, 9];
+
+        int iterationCount = 0;
         
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))
@@ -148,6 +150,10 @@ public class SudokuGenerator9x9
                 Debug.Log("Current grid state (after re-adding the clues):");
                 grid.PrintGrid();
             }
+
+            iterationCount++;
+            if (iterationCount > 0)
+                break;
         }
 
         Debug.Log("The puzzle is finished, Hurray!");
@@ -170,38 +176,6 @@ public class SudokuGenerator9x9
         
         return true;
     }
-
-    // private void MakeLatestMovesPermanentClues()
-    // {
-    //     TileIndex middleIndex = new TileIndex(4, 4);
-    //     bool lastMoveMiddleTile = puzzleGridRemovalMoves.Peek().Index == middleIndex;
-    //     
-    //     MakeLatestMovePermanentClue();
-    //     
-    //     // middle tile has no symmetric neighbour 
-    //     if (!lastMoveMiddleTile)
-    //         MakeLatestMovePermanentClue();
-    // }
-    //
-    // private void MakeLatestMovePermanentClue()
-    // {
-    //     Move latestMove = puzzleGridRemovalMoves.Pop();
-    //     TileIndex latestIndex = latestMove.Index;
-    //     int latestNumber = latestMove.Number;
-    //     
-    //     grid.SetNumberToIndex(latestIndex, latestNumber);
-    //     
-    //     // // not sure yet ?
-    //     //grid.AddCandidateToIndex(tileIndex, tileNumber);
-    //     
-    //     var effectedIndecies = latestMove.EffectedTileIndecies;
-    //     RemoveStrikes(latestNumber, effectedIndecies);
-    //
-    //     // // antingen ingenting eller lägga till 3 strikes
-    //     // grid.ResetStrikesToIndex(latestIndex, latestNumber);
-    // }
-
-    
 
     private int FindAllSolutions(SudokuGrid9x9 grid9X9)
     {
@@ -385,16 +359,5 @@ public class SudokuGenerator9x9
         }
 
         return lowestValue;
-    }
-
-    private void Propagate(int number, List<TileIndex> tilesToPropagate, bool remove = true)
-    {
-        foreach (TileIndex index in tilesToPropagate)
-        {
-            if (remove)
-                grid.RemoveCandidateFromIndex(index, number);
-            else
-                grid.AddCandidateToIndex(index, number);
-        }
     }
 }

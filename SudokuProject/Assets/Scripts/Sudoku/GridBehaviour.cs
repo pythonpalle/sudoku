@@ -96,10 +96,31 @@ public class GridBehaviour : MonoBehaviour
             case EnterType.DigitMark:
                 HandleRemoveContradictions();
                 HandleAddContradictionsInList(tiles, number);
+                HandleCompletion();
                 break;
         }
     }
     
+    private void HandleCompletion()
+    {
+        bool complete = CheckComplete();
+        if (complete)
+        {
+            Debug.Log("You solved it, hurray!");
+        }
+    }
+
+    private bool CheckComplete()
+    {
+        foreach (var tile in tileBehaviours)
+        {
+            if (!tile.HasDigit || tile.Contradicted)
+                return false;
+        }
+
+        return true;
+    }
+
     private void OnRemoveEntryEvent(List<TileBehaviour> tiles, EnterType enterType, bool colorRemoval)
     {
         // special case for color removal, since it can't remove anything else
