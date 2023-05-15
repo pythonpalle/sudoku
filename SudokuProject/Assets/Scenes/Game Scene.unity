@@ -2407,7 +2407,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1012564446}
   m_Layer: 5
-  m_Name: Pop Up
+  m_Name: Complete Screen Popup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4097,7 +4097,7 @@ GameObject:
   - component: {fileID: 1388267052}
   - component: {fileID: 1388267051}
   m_Layer: 5
-  m_Name: Complete Screen
+  m_Name: Complete Screen Activator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4681,6 +4681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35a74dda0fdb04c4cb610c7a11b279e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _difficulty: 0
 --- !u!4 &1578095868
 Transform:
   m_ObjectHideFlags: 0
