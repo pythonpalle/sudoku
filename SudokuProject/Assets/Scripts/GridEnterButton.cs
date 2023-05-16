@@ -7,15 +7,20 @@ using UnityEngine.UI;
 
 public class GridEnterButton : MonoBehaviour
 {
+    [Header("Transforms")]
     [SerializeField] private Button button;
     [SerializeField] private TextMeshProUGUI textMesh;
+    [SerializeField] private Image frame;
+    
+    [Header("Enter Type")]
     [SerializeField] private EnterType enterType;
+
+    [Header("Color Objects")]
+    [SerializeField] private ColorObject selectColorObject;
+    [SerializeField] private ColorObject deselectColorObject;
     
     private Color selectColor = Color.blue;
     private Color deSelectColor = Color.white;
-
-    [SerializeField] private ColorObject selectColorObject;
-    [SerializeField] private ColorObject deselectColorObject;
 
     private void Start()
     {
@@ -62,11 +67,13 @@ public class GridEnterButton : MonoBehaviour
     {
         button.image.color = selectColor;
         textMesh.color = deSelectColor;
+        frame.color = deSelectColor;
     }
     
     private void Deselect()
     {
         button.image.color = deSelectColor;
         textMesh.color = selectColor;
+        frame.color = selectColor;
     }
 }
