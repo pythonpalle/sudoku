@@ -141,7 +141,9 @@ public class WFCGridSolver
         
         // hard: naked triple, naked quad, pointing triples, hidden triple, hidden quad
         
-        // x-treme: xwing, swordfish, jellyfish, xywing, xyzwing
+        // x-treme: brute force
+        
+        // diabolical (or hard): xwing, swordfish, jellyfish, xywing, xyzwing
         return true;
     }
 

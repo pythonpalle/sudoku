@@ -8,7 +8,8 @@ public enum PuzzleDifficulty
 {
     Easy,
     Medium,
-    Hard
+    Hard,
+    Extreme
 }
 
 public class SudokuGenerator9x9
@@ -157,7 +158,7 @@ public class SudokuGenerator9x9
                 return 41;
             
             default:
-                return 41;
+                return 81;
         }
     }
 
