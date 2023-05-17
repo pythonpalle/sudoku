@@ -38,6 +38,11 @@ public struct TileIndex
         return false;
     }
 
+    public override string ToString()
+    {
+        return $"({row}, {col})";
+    }
+
 
     public override int GetHashCode()
     {

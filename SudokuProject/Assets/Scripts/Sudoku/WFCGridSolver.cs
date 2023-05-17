@@ -53,7 +53,9 @@ public class WFCGridSolver
         {
              // adding naked single first since it is by far the fastest
              digitMethods.Add(new NakedSingle()); 
-             digitMethods.Add(new HiddenSingleRowCol()); 
+             
+             digitMethods.Add(new HiddenSingleColumn()); 
+             digitMethods.Add(new HiddenSingleInRow()); 
         }
         
         digitMethods.Add(new HiddenSingleBox());
@@ -88,7 +90,7 @@ public class WFCGridSolver
             
             if (solvedGrids.Count > 1)
             {
-                Debug.Log("Several solutions found!");
+                //Debug.Log("Several solutions found!");
                 return true;
             }
         }
@@ -165,16 +167,20 @@ public class WFCGridSolver
             if (method.TryFindDigit(grid, out TileIndex index, out int digit))
             {
                 HandleNextSolveStep(index, digit);
-                Debug.Log("Progressed: " + method.GetName);
+                // Debug.Log($"Found a {digit} at {index} using {method.GetName}");
+                // Debug.Log($"Current grid: ");
+                // grid.PrintGrid();
                 return true;
             }
             else
             {
-                Debug.LogWarning("No Progressed using: " + method.GetName);
+                //Debug.LogWarning("No Progressed using: " + method.GetName);
             }
         }
 
-        Debug.LogWarning("NO PROGRESS USING ANY DIGIT METHOD");
+        Debug.LogWarning("NO PROGRESS USING ANY DIGIT METHOD AT CURRENT STATE:");
+        grid.PrintGrid();
+        
         return false;
     }
 

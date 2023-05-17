@@ -10,6 +10,102 @@ public class PointingPair : CandidateMethod
         List<TileIndex> indices = new List<TileIndex>();
         removal = new CandidateRemoval();
 
+        if (TryFindPairInRow(grid, out TileIndex rowIndex1, out TileIndex rowIndex2, out int rowDigit))
+        {
+            indices = GetEffectedRowTiles(grid, rowIndex1, rowDigit);
+            if (indices.Count > 0)
+            {
+                removal.candidate = rowDigit;
+                removal.indexes = indices;
+                return true;
+            }
+        }
+        
+        else if (TryFindPairInCol(grid, out TileIndex colIndex1, out TileIndex colIndex2, out int colDigit))
+        {
+            indices = GetEffectedColTiles(grid, colIndex1, colDigit);
+            if (indices.Count > 0)
+            {
+                removal.candidate = colDigit;
+                removal.indexes = indices;
+                return true;
+            }
+        }
+        
+        
+        Debug.Log("Nothing found with " + GetName);
+        return false;
+    }
+
+    private List<TileIndex> GetEffectedColTiles(SudokuGrid9x9 grid, TileIndex tileIndex, int digit)
+    {
+        return GetEffectedTiles(grid, false, tileIndex, digit);
+    }
+
+    private List<TileIndex> GetEffectedRowTiles(SudokuGrid9x9 grid, TileIndex tileIndex, int digit)
+    {
+        return GetEffectedTiles(grid, true, tileIndex, digit);
+    }
+
+    private List<TileIndex> GetEffectedTiles(SudokuGrid9x9 grid, bool rowPair, TileIndex tileIndex, int digit)
+    {
+        int tileRow = tileIndex.row;
+        int tileCol = tileIndex.col;
+
+        List<TileIndex> effectedTiles = new List<TileIndex>();
+        
+        // Tiles in same row or column
+        for (int i = 0; i < 9; i++)
+        {
+            if (rowPair)
+            {
+                var rowTile = grid[i, tileCol];
+                if (rowTile.Candidates.Contains(digit) && rowTile.index != tileIndex)
+                    effectedTiles.Add(rowTile.index);
+            }
+            else
+            {
+                var colTile = grid[tileRow, i];
+
+                if (colTile.Candidates.Contains(digit) && colTile.index != tileIndex) 
+                    effectedTiles.Add(colTile.index);
+            }
+            
+        }
+        
+        // Tiles in same box
+        int topLeftBoxRow = tileRow - tileRow % 3;
+        int topLeftBoxCol = tileCol - tileCol % 3;
+
+        for (int deltaRow = 0; deltaRow < 3; deltaRow++)
+        {
+            for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+            {
+                SudokuTile boxTile = grid[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol];
+                
+                if (boxTile.Candidates.Contains(digit) && boxTile.index != tileIndex)
+                    effectedTiles.Add(boxTile.index);
+            } 
+        }
+
+        return effectedTiles;
+    }
+
+    private bool TryFindPairInRow(SudokuGrid9x9 grid, out TileIndex tileIndex, out TileIndex tileIndex1, out int digit)
+    {
+        return TryFindPairIn(grid, true, out tileIndex, out tileIndex1, out digit);
+    }
+    
+    private bool TryFindPairInCol(SudokuGrid9x9 grid, out TileIndex tileIndex, out TileIndex tileIndex1, out int digit)
+    {
+        return TryFindPairIn(grid, false, out tileIndex, out tileIndex1, out digit);
+    }
+
+    private bool TryFindPairIn(SudokuGrid9x9 grid, bool inRow, out TileIndex tileIndex, out TileIndex tileIndex1,
+        out int digit)
+    {
+        List<TileIndex> indices = new List<TileIndex>();
+        
         // for every box
         foreach (var box in Boxes.boxes)
         {
@@ -37,52 +133,31 @@ public class PointingPair : CandidateMethod
 
                 if (indices.Count == 2)
                 {
-                    removal.candidate = candidate;
-                    removal.indexes = new List<TileIndex>(2);
-
-                    if (indices[0].row == indices[1].row)
+                    if (inRow && indices[0].row == indices[1].row)
                     {
-                        int effectedRow = indices[0].row;
-                        
-                        for (int i = 0; i < 9; i++)
-                        {
-                            if (i == indices[0].col || i == indices[1].col) continue;
-                            
-                            removal.indexes.Add(new TileIndex(effectedRow, i));
-                        }
-
-                        Debug.LogWarning("PAIR FOUND!");
+                        tileIndex1 = indices[0];
+                        tileIndex = indices[1];
+                        digit = candidate;
                         return true;
                     }
                     
-                    else if (indices[0].col == indices[1].col)
+                    if (!inRow && indices[0].col == indices[1].col)
                     {
-                        int effectedCol = indices[0].col;
-                        
-                        for (int i = 0; i < 9; i++)
-                        {
-                            if (i == indices[0].row || i == indices[1].row) continue;
-                            
-                            removal.indexes.Add(new TileIndex(i, effectedCol));
-                        }
-
-                        Debug.LogWarning("PAIR FOUND!");
+                        tileIndex1 = indices[0];
+                        tileIndex = indices[1];
+                        digit = candidate;
                         return true;
                     }
                 }
             }
         }
-        
-        // foreach box 1-9:
-        //      foreach row 1-3:
-        //          foreach number 1-9:
-        //              check numCount
-        //              if numCount == 2
-        //                  return true
-        
-        Debug.Log("Nothing found with " + GetName);
+
+        tileIndex1 = tileIndex = new TileIndex();
+        digit = -1;
         return false;
     }
+
+    
 
     public override string GetName => "Pointing Pair";
 }
