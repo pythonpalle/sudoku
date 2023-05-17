@@ -175,6 +175,8 @@ public class PointingPair : CandidateMethod
                             tileIndex1 = indices[0];
                             tileIndex = indices[1];
                             digit = candidate;
+                            //här:leta efter siffror, och sen kanske runt om hittar!!
+                            
                             return true;
                         }
                     }
