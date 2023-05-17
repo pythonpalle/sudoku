@@ -8,9 +8,9 @@
         digit = 0;
 
         // check columns
-        for (int row = 1; row <= 9; row++)
+        for (int row = 0; row < 9; row++)
         {
-            for (int candidate = 0; candidate < 9; candidate++)
+            for (int candidate = 1; candidate <= 9; candidate++)
             {
                 int numberOfCandidates = 0;
                 
@@ -39,9 +39,9 @@
         }
         
         // check rows
-        for (int col = 1; col <= 9; col++)
+        for (int col = 0; col < 9; col++)
         {
-            for (int candidate = 0; candidate < 9; candidate++)
+            for (int candidate = 1; candidate <= 9; candidate++)
             {
                 int numberOfCandidates = 0;
                 

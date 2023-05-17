@@ -1,34 +1,18 @@
-﻿
-
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.WSA;
 
 public class HiddenSingleBox : DigitMethod
 {
-    private static TileIndex box1 = new TileIndex(0, 0);
-    private static TileIndex box2 = new TileIndex(3, 0);
-    private static TileIndex box3 = new TileIndex(6, 0);
-    private static TileIndex box4 = new TileIndex(0, 3);
-    private static TileIndex box5 = new TileIndex(3, 3);
-    private static TileIndex box6 = new TileIndex(6, 3);
-    private static TileIndex box7 = new TileIndex(0, 6);
-    private static TileIndex box8 = new TileIndex(3, 6);
-    private static TileIndex box9 = new TileIndex(6, 6);
+    
 
-    private static List<TileIndex> boxes = new List<TileIndex>
-    {
-        box1, box2, box3,
-        box4, box5, box6,
-        box7, box8, box9
-    };
+   
     
     public override bool TryFindDigit(SudokuGrid9x9 grid, out TileIndex index, out int digit)
     {
         index = new TileIndex();
         digit = 0;
 
-        foreach (var box in boxes)
+        foreach (var box in Boxes.boxes)
         {
             int row = box.row;
             int col = box.col;

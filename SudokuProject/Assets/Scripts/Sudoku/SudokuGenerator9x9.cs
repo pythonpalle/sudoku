@@ -95,39 +95,38 @@ public class SudokuGenerator9x9
         int iterationCount = 0;
 
         int maxMoves = GetMaxMovesFromDifficulty(difficulty);
+         maxMoves = 200;
+        
+        bool removeSymmetric = difficulty != PuzzleDifficulty.Hard;
+        bool checkForHumanSolve = true;
 
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))
         {
+            iterationCount++;
+            if (iterationCount > maxMoves)
+            {
+                Debug.LogWarning("Max iteration reached.");
+                break;
+            }
+            
             SudokuGrid9x9 lastGrid = new SudokuGrid9x9(grid);
             
             //  1. Find lowest entropy tile
             TileIndex lowestEntropyTileIndex = FindLowestEntropyTileIndexFromUnVisited(visitedTiles);
-            //TileIndex lowestEntropyTileIndex = GetRandomTileIndex(visitedTiles);
             
             //  2. Remove it from grid, propagate
             RemoveFromGrid(visitedTiles, lowestEntropyTileIndex);
             
             // 3. Find symmetric neighbour, remove and propagate
-            RemoveSymmetric(visitedTiles, lowestEntropyTileIndex);
+            if (removeSymmetric)
+                RemoveSymmetric(visitedTiles, lowestEntropyTileIndex);
 
-            // // 4. Find all solutions with brute force
-            // int solutionCount = FindAllSolutions(grid);
-            
             // 4: check to see if only one solution
             bool multipleSolutions = CheckIfMultipleSolutions(grid);
 
-            // // 5. Revert to last grid if multiple solutions OR if not humanly solvable
-            // if (solutionCount != 1 || !HumanlySolvable(grid, difficulty))
-            // {
-            //     grid = new SudokuGrid9x9(lastGrid);
-            //     Debug.Log("Current grid state (after re-adding the clues):");
-            //     grid.PrintGrid();
-            //     iterationCount++;
-            // }
-            
             // 5. Revert to last grid if multiple solutions OR if not humanly solvable
-            if (multipleSolutions || !HumanlySolvable(grid, difficulty))
+            if (multipleSolutions || (checkForHumanSolve && !HumanlySolvable(grid, difficulty)))
             {
                 grid = new SudokuGrid9x9(lastGrid);
                 Debug.Log("Current grid state (after re-adding the clues):");
@@ -135,9 +134,7 @@ public class SudokuGenerator9x9
                 iterationCount++;
             }
 
-            iterationCount++;
-            if (iterationCount > maxMoves)
-                break;
+            
         }
 
         Debug.Log("The puzzle is finished, Hurray!");
@@ -170,11 +167,6 @@ public class SudokuGenerator9x9
     private bool CheckIfMultipleSolutions(SudokuGrid9x9 sudokuGrid9X9)
     {
         return _wfcGridSolver.HasMultipleSolutions(sudokuGrid9X9);
-    }
-
-    private int FindAllSolutions(SudokuGrid9x9 grid9X9)
-    {
-        return _wfcGridSolver.GetSolutionCount(grid9X9);
     }
 
     private void RemoveSymmetric(bool[,] visitedTiles, TileIndex lowestEntropyTileIndex)

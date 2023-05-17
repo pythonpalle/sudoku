@@ -51,9 +51,9 @@ public class WFCGridSolver
 
         if (difficulty != PuzzleDifficulty.Easy)
         {
-            // adding naked single first since it is by far the fastest
-            digitMethods.Add(new NakedSingle()); 
-            digitMethods.Add(new HiddenSingleRowCol());
+             // adding naked single first since it is by far the fastest
+             digitMethods.Add(new NakedSingle()); 
+             digitMethods.Add(new HiddenSingleRowCol()); 
         }
         
         digitMethods.Add(new HiddenSingleBox());
@@ -62,6 +62,11 @@ public class WFCGridSolver
     private void GetCandidateMethods(PuzzleDifficulty difficulty)
     {
         candidatesMethods = new List<CandidateMethod>();
+        
+        if (difficulty != PuzzleDifficulty.Easy)
+        {
+            candidatesMethods.Add(new PointingPair());
+        }
     }
     
     public bool HasMultipleSolutions(SudokuGrid9x9 originalGrid)
@@ -108,19 +113,6 @@ public class WFCGridSolver
      
         while (!gridFilled)
         {
-            // start with digit methods, place digit directly
-            if (TryProgressWithDigitMethods())
-            {
-                return true;
-            }
-            
-            // bool someMethodYieldProgress = SomeProgressFromMethods(solveMethods);
-            // if (!someMethodYieldProgress)
-            // {
-            //     Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
-            //     return false;
-            // }
-            
             iterations++;
 
             if (iterations > 90) 
@@ -128,6 +120,25 @@ public class WFCGridSolver
                 Debug.LogError("Maximum iterations reached.");
                 return false;
             }
+            
+            // start with digit methods, place digit directly
+            if (TryProgressWithDigitMethods())
+            {
+                continue;
+            }
+            
+            bool someMethodYieldProgress = TryProgressWithCandidateMethods();
+            if (someMethodYieldProgress)
+            {
+                continue;
+            }
+            else
+            {
+                Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
+                return false;
+            }
+            
+            
         }
 
         
@@ -151,14 +162,19 @@ public class WFCGridSolver
     {
         foreach (var method in digitMethods)
         {
-            if (method.TryFindDigit(grid, out TileIndex index, out _))
+            if (method.TryFindDigit(grid, out TileIndex index, out int digit))
             {
-                HandleNextSolveStep(index);
-                Debug.Log("Solved with method: " + method.GetName);
+                HandleNextSolveStep(index, digit);
+                Debug.Log("Progressed: " + method.GetName);
                 return true;
+            }
+            else
+            {
+                Debug.LogWarning("No Progressed using: " + method.GetName);
             }
         }
 
+        Debug.LogWarning("NO PROGRESS USING ANY DIGIT METHOD");
         return false;
     }
 
@@ -169,10 +185,15 @@ public class WFCGridSolver
             if (method.TryFindCandidates(grid, out CandidateRemoval removal))
             {
                 RemoveCandidates(removal);
+                Debug.LogWarning("Found candidate with: " + method.GetName);
                 return true;
             }
+            else
+            {
+                Debug.LogWarning("NO PROGRESS WITH CANDIDATE METHOD: " + method.GetName);
+            }
         }
-    
+
         return false;
     }
 
@@ -180,10 +201,7 @@ public class WFCGridSolver
     {
         foreach (var index in removal.indexes)
         {
-            foreach (var candidate in removal.candidates)
-            {
-                grid.RemoveCandidateFromIndex(index, candidate);
-            }
+            grid.RemoveCandidateFromIndex(index, removal.candidate);
         }
     }
 
@@ -245,18 +263,15 @@ public class WFCGridSolver
         return true;
     }
 
-    private void HandleNextSolveStep(TileIndex nextIndex)
+    private void HandleNextSolveStep(TileIndex nextIndex, int digit)
     {
-        if (grid[nextIndex].Entropy <= 0)
+        if (grid.AssignLowestPossibleValue(nextIndex, digit-1))
         {
-            HandleBackTracking(false);
+            CollapseWaveFunction(nextIndex, false);
         }
         else
         {
-            if (grid.AssignLowestPossibleValue(nextIndex, 0))
-            {
-                CollapseWaveFunction(nextIndex, false);
-            }
+            Debug.LogError("Can't assign value to tile");
         }
     }
 

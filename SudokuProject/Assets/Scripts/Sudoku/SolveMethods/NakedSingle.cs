@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using UnityEngine;
 
 public class NakedSingle : DigitMethod
 {
@@ -6,10 +7,11 @@ public class NakedSingle : DigitMethod
     {
         foreach (var tile in grid.Tiles)
         {
-            if (tile.Used && tile.Candidates.Count == 1)
+            if (!tile.Used && tile.Candidates.Count == 1)
             {
                 index = tile.index;
                 digit = tile.Candidates.Min();
+                
                 return true;
             }
         }

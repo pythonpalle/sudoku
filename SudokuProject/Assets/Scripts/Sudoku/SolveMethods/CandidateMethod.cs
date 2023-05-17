@@ -5,20 +5,22 @@ using UnityEngine;
 public struct CandidateRemoval
 {
     public List<TileIndex> indexes;
-    public List<int> candidates;
+    public int candidate;
 
-    public CandidateRemoval(List<TileIndex> indexes, List<int> candidates)
+    public CandidateRemoval(List<TileIndex> indexes, int candidate)
     {
         this.indexes = indexes;
-        this.candidates = candidates;
+        this.candidate = candidate;
     }
 }
 
 public abstract class CandidateMethod
 {
-    public virtual bool TryFindCandidates(SudokuGrid9x9 inGrid, out CandidateRemoval removal)
+    public virtual bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
         removal = new CandidateRemoval();
         return false;
     }
+
+    public virtual string GetName { get; set; }
 }
