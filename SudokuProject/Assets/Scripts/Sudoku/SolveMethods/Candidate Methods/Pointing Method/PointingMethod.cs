@@ -185,12 +185,12 @@ public abstract class PointingMethod : CandidateMethod
                         {
                             removal.candidateSet = new HashSet<int>{candidate};
                             removal.indexes = effectedTileIndices;
-                            Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
-                            Debug.Log("Effected indices: ");
-                            foreach (var index in removal.indexes)
-                            {
-                                Debug.Log(index);
-                            }
+                            // Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
+                            // Debug.Log("Effected indices: ");
+                            // foreach (var index in removal.indexes)
+                            // {
+                            //     Debug.Log(index);
+                            // }
 
                             return true;
                         }
