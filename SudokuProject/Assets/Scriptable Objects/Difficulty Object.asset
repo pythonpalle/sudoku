@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3868cfb579d54c118f4d6061ff1ae7d8, type: 3}
   m_Name: Difficulty Object
   m_EditorClassIdentifier: 
-  Difficulty: 0
+  Difficulty: 2
