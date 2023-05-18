@@ -15,12 +15,12 @@ public abstract class NakedMultiple : CandidateMethod
 
     private bool CandidatesFromMultipleInRowCol(SudokuGrid9x9 grid, int multCount, bool fromRow, out CandidateRemoval removal)
     {
-        List<SudokuTile> tiles = new List<SudokuTile>();
+        List<SudokuTile> multTiles = new List<SudokuTile>();
         removal = new CandidateRemoval();
 
         for (int row = 0; row < 9; row++)
         {
-            tiles.Clear();
+            multTiles.Clear();
             
             for (int col = 0; col < 9; col++)
             {
@@ -30,18 +30,18 @@ public abstract class NakedMultiple : CandidateMethod
                 if (tile.Used || tile.Entropy != multCount) 
                     continue;
                 
-                tiles.Add(tile);
+                multTiles.Add(tile);
             }
 
             // try find multiples
-            if (!TryFindMultipleFromTiles(tiles, multCount, out var multTiles))
-                continue;
-
-            if (TryFindEffectedTilesFromMultRowCol(grid, multTiles, fromRow, out removal))
-            {
+            if (TryFindMultipleFromTiles(grid, fromRow, multTiles, multCount, out removal))
                 return true;
-            }
-            
+
+            // if (TryFindEffectedTilesFromMultRowCol(grid, multTiles, fromRow, out removal))
+            // {
+            //     return true;
+            // }
+
         }
         
         return false;
@@ -49,60 +49,74 @@ public abstract class NakedMultiple : CandidateMethod
 
     private bool TryFindEffectedTilesFromMultRowCol(SudokuGrid9x9 grid, List<TileIndex> multTiles, bool fromRow, out CandidateRemoval removal)
     {
+        // todo: testa ej ha som out parameter
+        
+        
         var tileIndex = multTiles[0];
         
         int multRow = tileIndex.row;
         int multCol = tileIndex.col;
 
-        removal = new CandidateRemoval();
-        removal.candidateSet = grid[tileIndex].Candidates;
+        var candidateSet = grid[tileIndex].Candidates;
+        bool foundEffected = false;
 
-        
+        removal = new CandidateRemoval(new List<TileIndex>(), candidateSet);
+
         for (int i = 0; i < 9; i++)
         {
             var compareTile = fromRow ? grid[multRow, i] : grid[i, multCol];
             
             if (!ValidTile(compareTile, multTiles))
                 continue;
-            
-            removal.indexes.Add(compareTile.index);
+
+            if (candidateSet.Overlaps(compareTile.Candidates))
+            {
+                removal.indexes.Add(compareTile.index);
+                foundEffected = true;
+            }
         }
 
-        return false;
+        return foundEffected;
     }
 
-    private bool TryFindMultipleFromTiles(List<SudokuTile> tiles, int multCount, out List<TileIndex> outTiles) 
+    private bool TryFindMultipleFromTiles(SudokuGrid9x9 grid, bool fromRow, List<SudokuTile> rightEntropyTiles, int multCount, out CandidateRemoval removal) 
     {
-        outTiles = new List<TileIndex>();
+        var multTiles = new List<TileIndex>(multCount);
+        removal = new CandidateRemoval();
         
         // cant have n tiles that share n candidates if only n-1 tiles exist
-        if (tiles.Count < multCount)
+        if (rightEntropyTiles.Count < multCount)
             return false;
         
         HashSet<int> candidateSet = new HashSet<int>();
 
-        for (int i = 0; i < tiles.Count; i++)
+        for (int i = 0; i < rightEntropyTiles.Count; i++)
         {
-            var tile = tiles[i];
+            multTiles.Clear();
+
+            var tile = rightEntropyTiles[i];
             candidateSet = tile.Candidates;
-            outTiles.Clear();
             
-            for (int j = i+1; j < tiles.Count; j++)
+            for (int j = i+1; j < rightEntropyTiles.Count; j++)
             {
-                var compareTile = tiles[j];
+                var compareTile = rightEntropyTiles[j];
                 var compareSet = compareTile.Candidates;
 
-                if (compareSet == candidateSet)
+                if (candidateSet.SetEquals(compareSet))
                 {
-                    outTiles.Add(compareTile.index);
+                    multTiles.Add(compareTile.index);
                 }
             }
 
             // multCount - 1 since the compare tile hasn't been added yet
-            if (outTiles.Count == multCount - 1)
+            if (multTiles.Count == multCount - 1)
             {
-                outTiles.Add(tile.index);
-                return true;
+                multTiles.Add(tile.index);
+                
+                if (TryFindEffectedTilesFromMultRowCol(grid, multTiles, fromRow, out removal))
+                {
+                    return true;
+                }
             }
         }
 
@@ -119,7 +133,7 @@ public class NakedPair : NakedMultiple
         // todo: lägg till box check
         
         int multCount = 2;
-        return TryFindMultipleInCol(grid, multCount, out removal) || TryFindMultipleInRow(grid, multCount, out removal);
+        return TryFindMultipleInCol(grid, multCount, out removal); // || TryFindMultipleInRow(grid, multCount, out removal);
     }
 }
 

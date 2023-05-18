@@ -59,7 +59,7 @@ public abstract class PointingMethod : CandidateMethod
                     List<TileIndex> effectedTileIndices = FindEffectedIndicesFromBox(grid, indices, candidate, checkRow);
                     if (effectedTileIndices.Count > 0)
                     {
-                        removal.candidateSet = new HashSet<int>(candidate);
+                        removal.candidateSet = new HashSet<int>{candidate};
                         removal.indexes = effectedTileIndices;
                         
                         return true;

@@ -92,17 +92,17 @@ public class WFCGridSolver
             case PuzzleDifficulty.Hard:
                 candidatesMethods = new List<CandidateMethod>
                 {
-                    new PointingPairRowToBox(),
-                    new PointingPairColToBox(),
-                    
-                    new PointingTripleRowToBox(),
-                    new PointingTripleColToBox(),
-                    
-                    new PointingPairBoxToRow(),
-                    new PointingPairBoxToCol(),
-                    
-                    new PointingTripleBoxToRow(),
-                    new PointingTripleBoxToCol(),
+                    // new PointingPairRowToBox(),
+                    // new PointingPairColToBox(),
+                    //
+                    // new PointingTripleRowToBox(),
+                    // new PointingTripleColToBox(),
+                    //
+                    // new PointingPairBoxToRow(),
+                    // new PointingPairBoxToCol(),
+                    //
+                    // new PointingTripleBoxToRow(),
+                    // new PointingTripleBoxToCol(),
                     
                     new NakedPair(),
                     new NakedTriple(),
@@ -178,7 +178,7 @@ public class WFCGridSolver
             }
             else
             {
-                Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
+                //Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
                 return false;
             }
             
@@ -220,7 +220,7 @@ public class WFCGridSolver
             }
         }
 
-        Debug.LogWarning("NO PROGRESS USING ANY DIGIT METHOD AT CURRENT STATE:");
+        //Debug.LogWarning("NO PROGRESS USING ANY DIGIT METHOD AT CURRENT STATE:");
         grid.PrintGrid();
         
         return false;
@@ -234,7 +234,13 @@ public class WFCGridSolver
             {
                 RemoveCandidates(removal);
                 Debug.LogWarning("Found candidate(s) with: " + method.GetName);
-                Debug.Log("Digit: " + removal.candidateSet.Min());
+                string digits = String.Empty;
+                foreach (var candidate in removal.candidateSet)
+                {
+                    digits += $"{candidate}, ";
+                }
+                Debug.Log($"Digit(s): {digits}");
+                
                 Debug.Log("Indices: ");
                 foreach (var index in removal.indexes)
                 {
@@ -244,7 +250,6 @@ public class WFCGridSolver
             }
         }
         
-        // Debug.LogWarning("NO PROGRESS WITH CANDIDATE METHODS ");
         return false;
     }
 
