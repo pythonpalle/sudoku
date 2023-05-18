@@ -92,17 +92,17 @@ public class WFCGridSolver
             case PuzzleDifficulty.Hard:
                 candidatesMethods = new List<CandidateMethod>
                 {
-                    new PointingPairRowToBox(),
-                    new PointingPairColToBox(),
-                    
-                    new PointingTripleRowToBox(),
-                    new PointingTripleColToBox(),
-                    
-                    new PointingPairBoxToRow(),
-                    new PointingPairBoxToCol(),
-                    
-                    new PointingTripleBoxToRow(),
-                    new PointingTripleBoxToCol(),
+                    // new PointingPairRowToBox(),
+                    // new PointingPairColToBox(),
+                    //
+                    // new PointingTripleRowToBox(),
+                    // new PointingTripleColToBox(),
+                    //
+                    // new PointingPairBoxToRow(),
+                    // new PointingPairBoxToCol(),
+                    //
+                    // new PointingTripleBoxToRow(),
+                    // new PointingTripleBoxToCol(),
                     
                     new NakedPair(),
                     new NakedTriple(),
@@ -150,7 +150,6 @@ public class WFCGridSolver
     
     public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, PuzzleDifficulty difficulty)
     {
-        Debug.Log("checking if humanly solvable...");
         grid = new SudokuGrid9x9(gridToCheck);
         
         int iterations = 0;
@@ -220,7 +219,7 @@ public class WFCGridSolver
             }
         }
 
-        //Debug.LogWarning("NO PROGRESS USING ANY DIGIT METHOD AT CURRENT STATE:");
+        Debug.LogWarning("NO PROGRESS USING ANY DIGIT METHOD AT CURRENT STATE:");
         grid.PrintGrid();
         
         return false;

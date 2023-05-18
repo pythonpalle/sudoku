@@ -1,5 +1,7 @@
 ﻿
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class NakedMultiple : CandidateMethod
 {
@@ -11,6 +13,11 @@ public abstract class NakedMultiple : CandidateMethod
     protected bool TryFindMultipleInCol(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
     {
         return CandidatesFromMultipleInRowCol(grid, multCount, false, out removal);
+    }
+    
+    protected bool TryFindMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    {
+        return CandidatesFromMultipleInBox(grid, multCount, out removal);
     }
 
     private bool CandidatesFromMultipleInRowCol(SudokuGrid9x9 grid, int multCount, bool fromRow, out CandidateRemoval removal)
@@ -36,11 +43,6 @@ public abstract class NakedMultiple : CandidateMethod
             // try find multiples
             if (TryFindMultipleFromTiles(grid, fromRow, multTiles, multCount, out removal))
                 return true;
-
-            // if (TryFindEffectedTilesFromMultRowCol(grid, multTiles, fromRow, out removal))
-            // {
-            //     return true;
-            // }
 
         }
         
@@ -79,7 +81,7 @@ public abstract class NakedMultiple : CandidateMethod
         return foundEffected;
     }
 
-    private bool TryFindMultipleFromTiles(SudokuGrid9x9 grid, bool fromRow, List<SudokuTile> rightEntropyTiles, int multCount, out CandidateRemoval removal) 
+    private bool TryFindMultipleFromTiles(SudokuGrid9x9 grid, bool fromRow, List<SudokuTile> rightEntropyTiles, int multCount, out CandidateRemoval removal, bool boxCheck = false) 
     {
         var multTiles = new List<TileIndex>(multCount);
         removal = new CandidateRemoval();
@@ -112,8 +114,13 @@ public abstract class NakedMultiple : CandidateMethod
             if (multTiles.Count == multCount - 1)
             {
                 multTiles.Add(tile.index);
+
+                if (!boxCheck && TryFindEffectedTilesFromMultRowCol(grid, multTiles, fromRow, out removal))
+                {
+                    return true;
+                }
                 
-                if (TryFindEffectedTilesFromMultRowCol(grid, multTiles, fromRow, out removal))
+                if (boxCheck && TryFindEffectedTilesFromBox(grid, multTiles, out removal))
                 {
                     return true;
                 }
@@ -121,6 +128,67 @@ public abstract class NakedMultiple : CandidateMethod
         }
 
         return false;
+    }
+
+    private bool CandidatesFromMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    {
+        List<SudokuTile> multTiles = new List<SudokuTile>();
+        removal = new CandidateRemoval();
+        
+        foreach (var box in Boxes.boxes)
+        {
+            multTiles.Clear();
+
+            for (int deltaRow = 0; deltaRow < 3; deltaRow++)
+            {
+                for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+                {
+                    var tile = grid[box.row + deltaRow, box.col + deltaCol];
+                    
+                    if (tile.Used || tile.Entropy != multCount) 
+                        continue;
+                
+                    multTiles.Add(tile);
+                }
+            }
+            
+            if (TryFindMultipleFromTiles(grid, false, multTiles, multCount, out removal, true))
+                return true;
+        }
+
+        return false;
+    }
+    
+    private bool TryFindEffectedTilesFromBox(SudokuGrid9x9 grid, List<TileIndex> multTiles, out CandidateRemoval removal)
+    {
+        var tileIndex = multTiles[0];
+
+        int topLeftBoxRow = tileIndex.row - tileIndex.row % 3;
+        int topLeftBoxCol = tileIndex.col - tileIndex.col % 3;
+
+        var candidateSet = grid[tileIndex].Candidates;
+        bool foundEffected = false;
+
+        removal = new CandidateRemoval(new List<TileIndex>(), candidateSet);
+
+        for (int deltaRow = 0; deltaRow < 3; deltaRow++)
+        {
+            for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+            {
+                var compareTile = grid[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol];
+            
+                if (!ValidTile(compareTile, multTiles))
+                    continue;
+
+                if (candidateSet.Overlaps(compareTile.Candidates))
+                {
+                    removal.indexes.Add(compareTile.index);
+                    foundEffected = true;
+                }
+            } 
+        }
+        
+        return foundEffected;
     }
 }
 
@@ -133,7 +201,11 @@ public class NakedPair : NakedMultiple
         // todo: lägg till box check
         
         int multCount = 2;
-        return TryFindMultipleInCol(grid, multCount, out removal) || TryFindMultipleInRow(grid, multCount, out removal);
+        return 
+            // TryFindMultipleInCol(grid, multCount, out removal) 
+            // || TryFindMultipleInRow(grid, multCount, out removal)
+            // || 
+            TryFindMultipleInBox(grid, multCount, out removal);
     }
 }
 
@@ -146,7 +218,11 @@ public class NakedTriple : NakedMultiple
         // todo: lägg till box check
         
         int multCount = 3;
-        return TryFindMultipleInCol(grid, multCount, out removal) || TryFindMultipleInRow(grid, multCount, out removal);
+        return 
+            // TryFindMultipleInCol(grid, multCount, out removal) 
+            //    || TryFindMultipleInRow(grid, multCount, out removal)
+            //    || 
+               TryFindMultipleInBox(grid, multCount, out removal);
     }
 }
 
@@ -157,6 +233,10 @@ public class NakedQuad : NakedMultiple
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
         int multCount = 4;
-        return TryFindMultipleInCol(grid, multCount, out removal) || TryFindMultipleInRow(grid, multCount, out removal);
+        return 
+            // TryFindMultipleInCol(grid, multCount, out removal) 
+            //    || TryFindMultipleInRow(grid, multCount, out removal)
+            //    || 
+               TryFindMultipleInBox(grid, multCount, out removal);
     }
 }
