@@ -41,34 +41,59 @@ public class WFCGridSolver
     
     private void SetupSolveMethods()
     {
-        GetDigitMethods(difficulty);
-        GetCandidateMethods(difficulty);
+        GetDigitMethods();
+        GetCandidateMethods();
     }
     
-    private void GetDigitMethods(PuzzleDifficulty difficulty)
+    private void GetDigitMethods()
     {
-        digitMethods = new List<DigitMethod>(); 
-
-        if (difficulty != PuzzleDifficulty.Easy)
+        if (difficulty == PuzzleDifficulty.Easy)
         {
-             // adding naked single first since it is by far the fastest
-             digitMethods.Add(new NakedSingle()); 
-             
-             digitMethods.Add(new HiddenSingleColumn()); 
-             digitMethods.Add(new HiddenSingleInRow()); 
+            digitMethods = new List<DigitMethod>{new HiddenSingleBox()};
         }
-        
-        digitMethods.Add(new HiddenSingleBox());
+        else
+        {
+            digitMethods = new List<DigitMethod>
+            {
+                new NakedSingle(),
+                
+                new HiddenSingleColumn(), 
+                new HiddenSingleInRow(),
+                
+                new HiddenSingleBox()
+            };
+        }
     }
 
-    private void GetCandidateMethods(PuzzleDifficulty difficulty)
+    private void GetCandidateMethods()
     {
         candidatesMethods = new List<CandidateMethod>();
-        
-        if (difficulty != PuzzleDifficulty.Easy)
+
+        switch (difficulty)
         {
-            candidatesMethods.Add(new PointingPair());
+            case PuzzleDifficulty.Easy:
+                break;
+            
+            case PuzzleDifficulty.Medium:
+                candidatesMethods = new List<CandidateMethod>
+                {
+                    new PointingPairBoxToRow(),
+                    new PointingPairBoxToCol()
+                };
+                break;
+            
+            case PuzzleDifficulty.Hard:
+                candidatesMethods = new List<CandidateMethod>
+                {
+                    new PointingPairBoxToRow(),
+                    new PointingPairBoxToCol(),
+                    
+                    new PointingTripleBoxToRow(),
+                    new PointingTripleBoxToCol(),
+                };
+                break;
         }
+        
     }
     
     public bool HasMultipleSolutions(SudokuGrid9x9 originalGrid)
