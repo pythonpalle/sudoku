@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -82,6 +83,9 @@ public class WFCGridSolver
                     
                     new PointingTripleBoxToRow(),
                     new PointingTripleBoxToCol(),
+                    
+                    new NakedPair(),
+                    new NakedTriple(),
                 };
                 break;
             
@@ -100,7 +104,9 @@ public class WFCGridSolver
                     new PointingTripleBoxToRow(),
                     new PointingTripleBoxToCol(),
                     
-                    
+                    new NakedPair(),
+                    new NakedTriple(),
+                    new NakedQuad()
                 };
                 break;
         }
@@ -228,7 +234,7 @@ public class WFCGridSolver
             {
                 RemoveCandidates(removal);
                 Debug.LogWarning("Found candidate(s) with: " + method.GetName);
-                Debug.Log("Digit: " + removal.candidate);
+                Debug.Log("Digit: " + removal.candidateSet.Min());
                 Debug.Log("Indices: ");
                 foreach (var index in removal.indexes)
                 {
@@ -246,7 +252,10 @@ public class WFCGridSolver
     {
         foreach (var index in removal.indexes)
         {
-            grid.RemoveCandidateFromIndex(index, removal.candidate);
+            foreach (var candidate in removal.candidateSet)
+            {
+                grid.RemoveCandidateFromIndex(index, candidate);
+            }
         }
     }
 

@@ -59,7 +59,7 @@ public abstract class PointingMethod : CandidateMethod
                     List<TileIndex> effectedTileIndices = FindEffectedIndicesFromBox(grid, indices, candidate, checkRow);
                     if (effectedTileIndices.Count > 0)
                     {
-                        removal.candidate = candidate;
+                        removal.candidateSet = new HashSet<int>(candidate);
                         removal.indexes = effectedTileIndices;
                         
                         return true;
@@ -183,7 +183,7 @@ public abstract class PointingMethod : CandidateMethod
                         List<TileIndex> effectedTileIndices = FindEffectedIndicesRowColToBox(grid, indices, candidate);
                         if (effectedTileIndices.Count > 0)
                         {
-                            removal.candidate = candidate;
+                            removal.candidateSet = new HashSet<int>{candidate};
                             removal.indexes = effectedTileIndices;
                             Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
                             Debug.Log("Effected indices: ");
@@ -223,7 +223,7 @@ public abstract class PointingMethod : CandidateMethod
                         List<TileIndex> effectedTileIndices = FindEffectedIndicesRowColToBox(grid, indices, candidate);
                         if (effectedTileIndices.Count > 0)
                         {
-                            removal.candidate = candidate;
+                            removal.candidateSet = new HashSet<int>{candidate};
                             removal.indexes = effectedTileIndices;
                             Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
                             Debug.Log("Effected indices: ");
@@ -242,25 +242,21 @@ public abstract class PointingMethod : CandidateMethod
        
         return false;
     }
+    
 
-    private bool ValidTile(SudokuTile compareTile, List<TileIndex> indices)
-    {
-        return !compareTile.Used && indices.All(index => index != compareTile.index);
-    }
-
-    private bool AllIndicesHaveSameRowCol(List<TileIndex> tileIndices, bool checkRow)
-    {
-        if (checkRow)
-        {
-            int tileRow = tileIndices[0].row;
-            return tileIndices.All(tile => tile.row == tileRow);
-        }
-        else
-        {
-            int tileCol = tileIndices[0].col;
-            return tileIndices.All(tile => tile.col == tileCol);
-        }
-    }
+    // private bool AllIndicesHaveSameRowCol(List<TileIndex> tileIndices, bool checkRow)
+    // {
+    //     if (checkRow)
+    //     {
+    //         int tileRow = tileIndices[0].row;
+    //         return tileIndices.All(tile => tile.row == tileRow);
+    //     }
+    //     else
+    //     {
+    //         int tileCol = tileIndices[0].col;
+    //         return tileIndices.All(tile => tile.col == tileCol);
+    //     }
+    // }
     
     private bool AllIndicesInSameBox(List<TileIndex> indices, bool toRow)
     {
