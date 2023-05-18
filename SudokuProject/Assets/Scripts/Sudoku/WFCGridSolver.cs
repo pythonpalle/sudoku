@@ -92,17 +92,17 @@ public class WFCGridSolver
             case PuzzleDifficulty.Hard:
                 candidatesMethods = new List<CandidateMethod>
                 {
-                    // new PointingPairRowToBox(),
-                    // new PointingPairColToBox(),
-                    //
-                    // new PointingTripleRowToBox(),
-                    // new PointingTripleColToBox(),
-                    //
-                    // new PointingPairBoxToRow(),
-                    // new PointingPairBoxToCol(),
-                    //
-                    // new PointingTripleBoxToRow(),
-                    // new PointingTripleBoxToCol(),
+                    new PointingPairRowToBox(),
+                    new PointingPairColToBox(),
+                    
+                    new PointingTripleRowToBox(),
+                    new PointingTripleColToBox(),
+                    
+                    new PointingPairBoxToRow(),
+                    new PointingPairBoxToCol(),
+                    
+                    new PointingTripleBoxToRow(),
+                    new PointingTripleBoxToCol(),
                     
                     new NakedPair(),
                     new NakedTriple(),
