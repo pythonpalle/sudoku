@@ -133,7 +133,7 @@ public class NakedPair : NakedMultiple
         // todo: lägg till box check
         
         int multCount = 2;
-        return TryFindMultipleInCol(grid, multCount, out removal); // || TryFindMultipleInRow(grid, multCount, out removal);
+        return TryFindMultipleInCol(grid, multCount, out removal) || TryFindMultipleInRow(grid, multCount, out removal);
     }
 }
 
