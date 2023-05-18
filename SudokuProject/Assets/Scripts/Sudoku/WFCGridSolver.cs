@@ -78,18 +78,29 @@ public class WFCGridSolver
                 candidatesMethods = new List<CandidateMethod>
                 {
                     new PointingPairBoxToRow(),
-                    new PointingPairBoxToCol()
+                    new PointingPairBoxToCol(),
+                    
+                    new PointingTripleBoxToRow(),
+                    new PointingTripleBoxToCol(),
                 };
                 break;
             
             case PuzzleDifficulty.Hard:
                 candidatesMethods = new List<CandidateMethod>
                 {
-                    new PointingPairBoxToRow(),
-                    new PointingPairBoxToCol(),
+                    new PointingPairRowToBox(),
+                    new PointingPairColToBox(),
                     
-                    new PointingTripleBoxToRow(),
-                    new PointingTripleBoxToCol(),
+                    new PointingTripleRowToBox(),
+                    new PointingTripleColToBox(),
+                    
+                    // new PointingPairBoxToRow(),
+                    // new PointingPairBoxToCol(),
+                    //
+                    // new PointingTripleBoxToRow(),
+                    // new PointingTripleBoxToCol(),
+                    
+                    
                 };
                 break;
         }
@@ -107,7 +118,7 @@ public class WFCGridSolver
         {
             HandleNextSolveStep(true);
 
-            // cancal solve means the algorithm has backtracked and tried all possible options 
+            // cancel solve means the algorithm has backtracked and tried all possible options 
             if (cancelSolve)
             {
                 break;
@@ -115,7 +126,6 @@ public class WFCGridSolver
             
             if (solvedGrids.Count > 1)
             {
-                //Debug.Log("Several solutions found!");
                 return true;
             }
         }
@@ -216,15 +226,12 @@ public class WFCGridSolver
             if (method.TryFindCandidates(grid, out CandidateRemoval removal))
             {
                 RemoveCandidates(removal);
-                Debug.LogWarning("Found candidate with: " + method.GetName);
+                //Debug.LogWarning("Found candidate with: " + method.GetName);
                 return true;
             }
-            else
-            {
-                Debug.LogWarning("NO PROGRESS WITH CANDIDATE METHOD: " + method.GetName);
-            }
         }
-
+        
+        // Debug.LogWarning("NO PROGRESS WITH CANDIDATE METHODS ");
         return false;
     }
 

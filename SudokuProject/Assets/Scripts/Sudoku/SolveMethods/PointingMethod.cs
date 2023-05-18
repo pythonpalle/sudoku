@@ -13,6 +13,16 @@ public abstract class PointingMethod : CandidateMethod
     {
         return CandidatesFromBox(grid, pointers, false, out removal);
     }
+    
+    protected bool TryFindRowToBoxCandidates(SudokuGrid9x9 grid, int pointers, out CandidateRemoval removal)
+    {
+        return CandidatesToBox(grid, pointers, true, out removal);
+    }
+
+    protected bool TryFindColToBoxCandidates(SudokuGrid9x9 grid, int pointers, out CandidateRemoval removal)
+    {
+        return CandidatesToBox(grid, pointers, false, out removal);
+    }
 
     private bool CandidatesFromBox(SudokuGrid9x9 grid, int pointers, bool checkRow, out CandidateRemoval removal)
     {
@@ -44,20 +54,13 @@ public abstract class PointingMethod : CandidateMethod
                     } 
                 }
 
-                if (indices.Count == pointers && AllIndicesHaveSame(indices, checkRow))
+                if (indices.Count == pointers && AllIndicesHaveSameRowCol(indices, checkRow))
                 {
-                    List<TileIndex> effectedTileIndices = FindEffectedIndicesFromBox(grid, indices, pointers, candidate, checkRow);
+                    List<TileIndex> effectedTileIndices = FindEffectedIndicesFromBox(grid, indices, candidate, checkRow);
                     if (effectedTileIndices.Count > 0)
                     {
                         removal.candidate = candidate;
                         removal.indexes = effectedTileIndices;
-                        Debug.LogWarning($"Found pointing at {indices[0]}, {indices[1]} (digit: {candidate}");
-                        Debug.Log("Effected indices: ");
-                        foreach (var index in removal.indexes)
-                        {
-                            Debug.Log(index);
-                        }
-                        
                         
                         return true;
                     }
@@ -68,7 +71,7 @@ public abstract class PointingMethod : CandidateMethod
         return false;
     }
 
-    private List<TileIndex> FindEffectedIndicesFromBox(SudokuGrid9x9 grid, List<TileIndex> indices, int pointers, int candidate, bool checkRow)
+    private List<TileIndex> FindEffectedIndicesFromBox(SudokuGrid9x9 grid, List<TileIndex> indices, int candidate, bool checkRow)
     {
         int tileRow = indices[0].row;
         int tileCol = indices[0].col;
@@ -118,25 +121,116 @@ public abstract class PointingMethod : CandidateMethod
 
         return effectedTiles;
     }
+    
+    private List<TileIndex> FindEffectedIndicesToBox(SudokuGrid9x9 grid, List<TileIndex> indices, int candidate)
+    {
+        int tileRow = indices[0].row;
+        int tileCol = indices[0].col;
+
+        List<TileIndex> effectedTiles = new List<TileIndex>();
+
+        // Tiles in same box
+        int topLeftBoxRow = tileRow - tileRow % 3;
+        int topLeftBoxCol = tileCol - tileCol % 3;
+
+        for (int deltaRow = 0; deltaRow < 3; deltaRow++)
+        {
+            for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+            {
+                SudokuTile boxTile = grid[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol];
+                if (!ValidTile(boxTile, indices)) continue;
+                
+                if (boxTile.Candidates.Contains(candidate))
+                    effectedTiles.Add(boxTile.index);
+            } 
+        }
+
+        return effectedTiles;
+    }
+    
+    private bool CandidatesToBox(SudokuGrid9x9 grid, int pointers, bool toRow, out CandidateRemoval removal)
+    {
+        List<TileIndex> indices = new List<TileIndex>();
+        removal = new CandidateRemoval();
+
+        string rowString = toRow ? "ROW" : "COL";
+        Debug.Log($"Checking pointing from {rowString} to box...");
+        
+
+        
+        for (int candidate = 1; candidate <= 9; candidate++)
+        {
+            // row check
+            if (toRow)
+            {
+                for (int row = 0; row < 9; row++)
+                {
+                    indices.Clear();
+
+                    for (int col = 0; col < 9; col++)
+                    {
+
+                        SudokuTile rowTile = grid[row, col];
+
+                        if (!indices.Contains(rowTile.index) && !rowTile.Used && rowTile.Candidates.Contains(candidate))
+                        {
+                            indices.Add(rowTile.index);
+                        }
+
+                    }
+                }
+            }
+            // col check
+            else
+            {
+                for (int col = 0; col < 9; col++)
+                {
+                    indices.Clear();
+
+                    for (int row = 0; row < 9; row++)
+                    {
+
+                        SudokuTile colTile = grid[row, col];
+
+                        if (!indices.Contains(colTile.index) && !colTile.Used && colTile.Candidates.Contains(candidate))
+                        {
+                            indices.Add(colTile.index);
+                        }
+
+                    }
+                    
+                }
+            }
+            
+            if (indices.Count == pointers && AllIndicesInSameBox(indices, toRow))
+            {
+                List<TileIndex> effectedTileIndices = FindEffectedIndicesToBox(grid, indices, candidate);
+                if (effectedTileIndices.Count > 0)
+                {
+                    removal.candidate = candidate;
+                    removal.indexes = effectedTileIndices;
+                    Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
+                    Debug.Log("Effected indices: ");
+                    foreach (var index in removal.indexes)
+                    {
+                        Debug.Log(index);
+                    }
+
+                    return true;
+                }
+            }
+        }
+       
+        return false;
+    }
 
     private bool ValidTile(SudokuTile compareTile, List<TileIndex> indices)
     {
-        if (compareTile.Used) return false;
-
-        foreach (var index in indices)
-        {
-            if (index == compareTile.index)
-                return false;
-        }
-
-        return true;
-
-        return indices.All(index => index != compareTile.index);
+        return !compareTile.Used && indices.All(index => index != compareTile.index);
     }
 
-    private bool AllIndicesHaveSame(List<TileIndex> tileIndices, bool checkRow)
+    private bool AllIndicesHaveSameRowCol(List<TileIndex> tileIndices, bool checkRow)
     {
-
         if (checkRow)
         {
             int tileRow = tileIndices[0].row;
@@ -148,5 +242,89 @@ public abstract class PointingMethod : CandidateMethod
             return tileIndices.All(tile => tile.col == tileCol);
         }
     }
+    
+    private bool AllIndicesInSameBox(List<TileIndex> indices, bool toRow)
+    {
+        int upperLeftRow = indices[0].row - indices[0].row%3;
+        int upperLeftCol = indices[0].col - indices[0].col%3;
+        
+        if (toRow)
+        {
+            var validRowIndices = new List<TileIndex>
+            {
+                new (indices[0].row, upperLeftCol),
+                new (indices[0].row, upperLeftCol+1),
+                new (indices[0].row, upperLeftCol+2),
+            };
+            
+            foreach (var index in indices)
+            {
+                if (!validRowIndices.Contains(index))
+                    return false;
+            }
+
+            return true;
+        }
+        else
+        {
+            var validColIndices = new List<TileIndex>
+            {
+                new (upperLeftRow, indices[0].col),
+                new (upperLeftRow+1, indices[0].col),
+                new (upperLeftRow+2, indices[0].col),
+            };
+            
+            foreach (var index in indices)
+            {
+                if (!validColIndices.Contains(index))
+                    return false;
+            }
+
+            return true;
+        }
+
+    }
 }
+
+public class PointingPairRowToBox : PointingMethod
+{
+    public override string GetName => "Pointing Pair Row To Box";
+
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
+    {
+        return TryFindRowToBoxCandidates(grid, 2, out removal);
+    }
+}
+
+public class PointingPairColToBox : PointingMethod
+{
+    public override string GetName => "Pointing Pair Col To Box";
+
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
+    {
+        return TryFindColToBoxCandidates(grid, 2, out removal);
+    }
+}
+
+public class PointingTripleRowToBox : PointingMethod
+{
+    public override string GetName => "Pointing Triple Row To Box";
+
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
+    {
+        return TryFindRowToBoxCandidates(grid, 3, out removal);
+    }
+}
+
+public class PointingTripleColToBox : PointingMethod
+{
+    public override string GetName => "Pointing Pair Col To Box";
+
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
+    {
+        return TryFindColToBoxCandidates(grid, 3, out removal);
+    }
+}
+
+
 
