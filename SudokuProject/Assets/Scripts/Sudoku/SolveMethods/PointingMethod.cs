@@ -122,7 +122,7 @@ public abstract class PointingMethod : CandidateMethod
         return effectedTiles;
     }
     
-    private List<TileIndex> FindEffectedIndicesToBox(SudokuGrid9x9 grid, List<TileIndex> indices, int candidate)
+    private List<TileIndex> FindEffectedIndicesRowColToBox(SudokuGrid9x9 grid, List<TileIndex> indices, int candidate)
     {
         int tileRow = indices[0].row;
         int tileCol = indices[0].col;
@@ -180,7 +180,7 @@ public abstract class PointingMethod : CandidateMethod
                     
                     if (indices.Count == pointers && AllIndicesInSameBox(indices, fromRow))
                     {
-                        List<TileIndex> effectedTileIndices = FindEffectedIndicesToBox(grid, indices, candidate);
+                        List<TileIndex> effectedTileIndices = FindEffectedIndicesRowColToBox(grid, indices, candidate);
                         if (effectedTileIndices.Count > 0)
                         {
                             removal.candidate = candidate;
@@ -220,7 +220,7 @@ public abstract class PointingMethod : CandidateMethod
                     
                     if (indices.Count == pointers && AllIndicesInSameBox(indices, fromRow))
                     {
-                        List<TileIndex> effectedTileIndices = FindEffectedIndicesToBox(grid, indices, candidate);
+                        List<TileIndex> effectedTileIndices = FindEffectedIndicesRowColToBox(grid, indices, candidate);
                         if (effectedTileIndices.Count > 0)
                         {
                             removal.candidate = candidate;
@@ -304,46 +304,3 @@ public abstract class PointingMethod : CandidateMethod
 
     }
 }
-
-public class PointingPairRowToBox : PointingMethod
-{
-    public override string GetName => "Pointing Pair Row To Box";
-
-    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
-    {
-        return TryFindRowToBoxCandidates(grid, 2, out removal);
-    }
-}
-
-public class PointingPairColToBox : PointingMethod
-{
-    public override string GetName => "Pointing Pair Col To Box";
-
-    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
-    {
-        return TryFindColToBoxCandidates(grid, 2, out removal);
-    }
-}
-
-public class PointingTripleRowToBox : PointingMethod
-{
-    public override string GetName => "Pointing Triple Row To Box";
-
-    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
-    {
-        return TryFindRowToBoxCandidates(grid, 3, out removal);
-    }
-}
-
-public class PointingTripleColToBox : PointingMethod
-{
-    public override string GetName => "Pointing Pair Col To Box";
-
-    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
-    {
-        return TryFindColToBoxCandidates(grid, 3, out removal);
-    }
-}
-
-
-
