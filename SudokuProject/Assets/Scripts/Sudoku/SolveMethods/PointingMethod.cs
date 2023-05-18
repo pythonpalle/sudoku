@@ -16,12 +16,12 @@ public abstract class PointingMethod : CandidateMethod
     
     protected bool TryFindRowToBoxCandidates(SudokuGrid9x9 grid, int pointers, out CandidateRemoval removal)
     {
-        return CandidatesToBox(grid, pointers, true, out removal);
+        return CandidatesRowColToBox(grid, pointers, true, out removal);
     }
 
     protected bool TryFindColToBoxCandidates(SudokuGrid9x9 grid, int pointers, out CandidateRemoval removal)
     {
-        return CandidatesToBox(grid, pointers, false, out removal);
+        return CandidatesRowColToBox(grid, pointers, false, out removal);
     }
 
     private bool CandidatesFromBox(SudokuGrid9x9 grid, int pointers, bool checkRow, out CandidateRemoval removal)
@@ -148,20 +148,20 @@ public abstract class PointingMethod : CandidateMethod
         return effectedTiles;
     }
     
-    private bool CandidatesToBox(SudokuGrid9x9 grid, int pointers, bool toRow, out CandidateRemoval removal)
+    private bool CandidatesRowColToBox(SudokuGrid9x9 grid, int pointers, bool fromRow, out CandidateRemoval removal)
     {
         List<TileIndex> indices = new List<TileIndex>();
         removal = new CandidateRemoval();
 
-        string rowString = toRow ? "ROW" : "COL";
-        Debug.Log($"Checking pointing from {rowString} to box...");
+        string rowString = fromRow ? "ROW" : "COL";
+//        Debug.Log($"Checking pointing from {rowString} to box...");
         
 
         
         for (int candidate = 1; candidate <= 9; candidate++)
         {
             // row check
-            if (toRow)
+            if (fromRow)
             {
                 for (int row = 0; row < 9; row++)
                 {
@@ -176,9 +176,28 @@ public abstract class PointingMethod : CandidateMethod
                         {
                             indices.Add(rowTile.index);
                         }
+                    }
+                    
+                    if (indices.Count == pointers && AllIndicesInSameBox(indices, fromRow))
+                    {
+                        List<TileIndex> effectedTileIndices = FindEffectedIndicesToBox(grid, indices, candidate);
+                        if (effectedTileIndices.Count > 0)
+                        {
+                            removal.candidate = candidate;
+                            removal.indexes = effectedTileIndices;
+                            Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
+                            Debug.Log("Effected indices: ");
+                            foreach (var index in removal.indexes)
+                            {
+                                Debug.Log(index);
+                            }
 
+                            return true;
+                        }
                     }
                 }
+
+                
             }
             // col check
             else
@@ -199,24 +218,24 @@ public abstract class PointingMethod : CandidateMethod
 
                     }
                     
-                }
-            }
-            
-            if (indices.Count == pointers && AllIndicesInSameBox(indices, toRow))
-            {
-                List<TileIndex> effectedTileIndices = FindEffectedIndicesToBox(grid, indices, candidate);
-                if (effectedTileIndices.Count > 0)
-                {
-                    removal.candidate = candidate;
-                    removal.indexes = effectedTileIndices;
-                    Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
-                    Debug.Log("Effected indices: ");
-                    foreach (var index in removal.indexes)
+                    if (indices.Count == pointers && AllIndicesInSameBox(indices, fromRow))
                     {
-                        Debug.Log(index);
-                    }
+                        List<TileIndex> effectedTileIndices = FindEffectedIndicesToBox(grid, indices, candidate);
+                        if (effectedTileIndices.Count > 0)
+                        {
+                            removal.candidate = candidate;
+                            removal.indexes = effectedTileIndices;
+                            Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
+                            Debug.Log("Effected indices: ");
+                            foreach (var index in removal.indexes)
+                            {
+                                Debug.Log(index);
+                            }
 
-                    return true;
+                            return true;
+                        }
+                    
+                    }
                 }
             }
         }

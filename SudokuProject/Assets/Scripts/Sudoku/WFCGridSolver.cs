@@ -94,11 +94,11 @@ public class WFCGridSolver
                     new PointingTripleRowToBox(),
                     new PointingTripleColToBox(),
                     
-                    // new PointingPairBoxToRow(),
-                    // new PointingPairBoxToCol(),
-                    //
-                    // new PointingTripleBoxToRow(),
-                    // new PointingTripleBoxToCol(),
+                    new PointingPairBoxToRow(),
+                    new PointingPairBoxToCol(),
+                    
+                    new PointingTripleBoxToRow(),
+                    new PointingTripleBoxToCol(),
                     
                     
                 };
@@ -144,6 +144,7 @@ public class WFCGridSolver
     
     public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, PuzzleDifficulty difficulty)
     {
+        Debug.Log("checking if humanly solvable...");
         grid = new SudokuGrid9x9(gridToCheck);
         
         int iterations = 0;
@@ -226,7 +227,13 @@ public class WFCGridSolver
             if (method.TryFindCandidates(grid, out CandidateRemoval removal))
             {
                 RemoveCandidates(removal);
-                //Debug.LogWarning("Found candidate with: " + method.GetName);
+                Debug.LogWarning("Found candidate(s) with: " + method.GetName);
+                Debug.Log("Digit: " + removal.candidate);
+                Debug.Log("Indices: ");
+                foreach (var index in removal.indexes)
+                {
+                    Debug.Log(index);
+                }
                 return true;
             }
         }
