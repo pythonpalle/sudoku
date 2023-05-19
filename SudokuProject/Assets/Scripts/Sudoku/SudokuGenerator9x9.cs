@@ -152,10 +152,10 @@ public class SudokuGenerator9x9
             case PuzzleDifficulty.Medium:
                 return 31;
             case PuzzleDifficulty.Hard:
-                return 81;
+                return 200;
             
             default:
-                return 81;
+                return 200;
         }
     }
 
