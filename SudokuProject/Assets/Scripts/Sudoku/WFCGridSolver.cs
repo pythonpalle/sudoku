@@ -206,7 +206,7 @@ public class WFCGridSolver
             }
             else
             {
-                Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
+                Debug.LogError("NOT SOLVABLE AT DIFFICULTY " + difficulty);
                 return false;
             }
             
@@ -244,7 +244,7 @@ public class WFCGridSolver
             }
             else
             {
-                //Debug.LogWarning("No Progressed using: " + method.GetName);
+               // Debug.LogWarning("No Progressed using: " + method.GetName);
             }
         }
 

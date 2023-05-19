@@ -95,7 +95,6 @@ public class SudokuGenerator9x9
         int iterationCount = 0;
 
         int maxMoves = GetMaxMovesFromDifficulty(difficulty);
-         maxMoves = 200;
         
         bool removeSymmetric = difficulty != PuzzleDifficulty.Hard;
         bool checkForHumanSolve = true;
@@ -149,11 +148,11 @@ public class SudokuGenerator9x9
         switch (difficulty)
         {
             case PuzzleDifficulty.Easy:
-                return 21;
+                return 16;
             case PuzzleDifficulty.Medium:
                 return 31;
             case PuzzleDifficulty.Hard:
-                return 41;
+                return 81;
             
             default:
                 return 81;
