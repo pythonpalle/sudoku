@@ -99,36 +99,47 @@ public class WFCGridSolver
             case PuzzleDifficulty.Hard:
                 candidatesMethods = new List<CandidateMethod>
                 {
-                    // Pointing Pairs
-                    new PointingPairRowToBox(),
-                    new PointingPairColToBox(),
-                    new PointingPairBoxToRow(),
-                    new PointingPairBoxToCol(),
+                    // // Pointing Pairs
+                    // new PointingPairRowToBox(),
+                    // new PointingPairColToBox(),
+                    // new PointingPairBoxToRow(),
+                    // new PointingPairBoxToCol(),
+                    //
+                    // // Pointing Triples
+                    // new PointingTripleRowToBox(),
+                    // new PointingTripleColToBox(),
+                    // new PointingTripleBoxToRow(),
+                    // new PointingTripleBoxToCol(),
+                    //
+                    // // Naked Pairs
+                    // new NakedPairInCol(),
+                    // new NakedPairInRow(),
+                    // new NakedPairInBox(),
+                    //
+                    // // TODO: Hidden pairs
+                    //
+                    // // Naked Triples
+                    // new NakedTripleInRow(),
+                    // new NakedTripleInCol(),
+                    // new NakedTripleInBox(),
+                    //
+                    // // TODO: Hidden triples 
+                    //
+                    // // Naked Quad (includes row, col and box)
+                    // new NakedQuad()
+                    //
+                    // // TODO: Hidden quads
                     
-                    // Pointing Triples
-                    new PointingTripleRowToBox(),
-                    new PointingTripleColToBox(),
-                    new PointingTripleBoxToRow(),
-                    new PointingTripleBoxToCol(),
                     
-                    // Naked Pairs
-                    new NakedPairInCol(),
-                    new NakedPairInRow(),
-                    new NakedPairInBox(),
+                    new HiddenPairInBox(),
+                    new HiddenPairInRow(),
+                    new HiddenPairInCol(),
                     
-                    // TODO: Hidden pairs
-
-                    // Naked Triples
-                    new NakedTripleInRow(),
-                    new NakedTripleInCol(),
-                    new NakedTripleInBox(),
+                    new HiddenTripleInBox(),
+                    new HiddenTripleInRow(),
+                    new HiddenTripleInCol(),
                     
-                    // TODO: Hidden triples 
-
-                    // Naked Quad (includes row, col and box)
-                    new NakedQuad()
-                    
-                    // TODO: Hidden quads
+                    new HiddenQuad()
                 };
                 break;
         }
