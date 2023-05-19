@@ -21,26 +21,26 @@ public abstract class HiddenMultiple : CandidateMethod
 
     private bool CandidatesFromMultipleInRowCol(SudokuGrid9x9 grid, int multCount, bool fromRow, out CandidateRemoval removal)
     {
-        List<SudokuTile> multTiles = new List<SudokuTile>();
+        List<SudokuTile> nonUseTiles = new List<SudokuTile>();
         removal = new CandidateRemoval();
 
         for (int row = 0; row < 9; row++)
         {
-            multTiles.Clear();
+            nonUseTiles.Clear();
             
             for (int col = 0; col < 9; col++)
             {
                 // invert index if checking column
                 var tile = fromRow ? grid[row, col] : grid[col, row];
 
-                if (tile.Used || tile.Entropy < multCount) 
+                if (tile.Used) 
                     continue;
                 
-                multTiles.Add(tile);
+                nonUseTiles.Add(tile);
             }
 
             // try find multiples
-            if (TryFindHiddenMultipleFromTiles(grid, multTiles, multCount, out removal))
+            if (TryFindHiddenMultipleFromTiles(grid, nonUseTiles, multCount, out removal))
                 return true;
 
         }
@@ -48,32 +48,33 @@ public abstract class HiddenMultiple : CandidateMethod
         return false;
     }
 
-    private bool TryFindHiddenMultipleFromTiles(SudokuGrid9x9 grid, List<SudokuTile> rightEntropyTiles, int multCount, out CandidateRemoval removal) 
+    private bool TryFindHiddenMultipleFromTiles(SudokuGrid9x9 grid, List<SudokuTile> nonUseTiles, int multCount, out CandidateRemoval removal) 
     {
         removal = new CandidateRemoval();
         
         // cant have n tiles that share n candidates if only n-1 tiles exist
-        if (rightEntropyTiles.Count < multCount)
+        if (nonUseTiles.Count < multCount)
             return false;
         
         
-        // key: candidate, value: tiles with that candidate
+        // key: candidate,
+        // value: tiles with that candidate
         Dictionary<int, List<TileIndex>> candidateCount = new Dictionary<int, List<TileIndex>>();
 
         // store witch tiles contain each index
         for (int candidate = 1; candidate <= 9; candidate++)
         {
-            for (int i = 0; i < rightEntropyTiles.Count; i++)
+            for (int i = 0; i < nonUseTiles.Count; i++)
             {
-                if (rightEntropyTiles[i].Candidates.Contains(candidate))
+                if (nonUseTiles[i].Candidates.Contains(candidate))
                 {
                     if (candidateCount.ContainsKey(candidate))
                     {
-                        candidateCount[candidate].Add(rightEntropyTiles[i].index);
+                        candidateCount[candidate].Add(nonUseTiles[i].index);
                     }
                     else
                     {
-                        candidateCount.Add(candidate, new List<TileIndex>{rightEntropyTiles[i].index});
+                        candidateCount.Add(candidate, new List<TileIndex>{nonUseTiles[i].index});
 
                         // // remove entry if more then multCount tiles share candidate
                         // if (candidateCount[candidate].Count > multCount)
@@ -106,6 +107,7 @@ public abstract class HiddenMultiple : CandidateMethod
             {
                 // don't compare the same candidate
                 if (candidatePair.Key == compareCandidatePair.Key) continue;
+                
                 if (compareCandidatePair.Value.Count != multCount) continue;
 
                 // exact match, those tiles are the hidden multiple
@@ -163,7 +165,7 @@ public abstract class HiddenMultiple : CandidateMethod
                 {
                     var tile = grid[box.row + deltaRow, box.col + deltaCol];
                     
-                    if (tile.Used || tile.Entropy != multCount) 
+                    if (tile.Used) 
                         continue;
                 
                     multTiles.Add(tile);

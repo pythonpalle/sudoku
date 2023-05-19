@@ -129,8 +129,8 @@ public class SudokuGenerator9x9
             if (multipleSolutions || (checkForHumanSolve && !HumanlySolvable(grid, difficulty)))
             {
                 grid = new SudokuGrid9x9(lastGrid);
-                Debug.Log("Current grid state (after re-adding the clues):");
-                grid.PrintGrid();
+                // Debug.Log("Current grid state (after re-adding the clues):");
+                // grid.PrintGrid();
                 iterationCount++;
             }
 
@@ -138,6 +138,7 @@ public class SudokuGenerator9x9
         }
 
         Debug.Log("The puzzle is finished, Hurray!");
+        grid.PrintGrid();
         EventManager.GenerateGrid(grid);
 
         return true;
