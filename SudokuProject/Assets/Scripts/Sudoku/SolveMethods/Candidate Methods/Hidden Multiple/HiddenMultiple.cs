@@ -94,48 +94,87 @@ public abstract class HiddenMultiple : CandidateMethod
             //     candidateCount.Remove(candidate);
             // }
         }
-        
-        
-        var multTiles = new List<int>();
-        foreach (var candidatePair in candidateCount)
-        {
-            if (candidatePair.Value.Count != multCount) continue;
-            
-            multTiles.Clear();
-            
-            foreach (var compareCandidatePair in candidateCount)
-            {
-                // don't compare the same candidate
-                if (candidatePair.Key == compareCandidatePair.Key) continue;
-                
-                if (compareCandidatePair.Value.Count != multCount) continue;
 
-                // exact match, those tiles are the hidden multiple
-                if (candidatePair.Value.SequenceEqual(compareCandidatePair.Value))
-                {
-                    multTiles.Add(compareCandidatePair.Key);
-                }
-            }
-            
-            // multCount - 1 since the compare tile hasn't been added yet
-            if (multTiles.Count == multCount - 1)
+        
+        int n = candidateCount.Count;
+        int k = multCount;
+        
+        // Lista med listor som innehåller indexer för mult tiles och lista med multcandidaterna 
+        List<(List<TileIndex>, HashSet<int>)> potentialMultiples = new List<(List<TileIndex>, HashSet<int>)>();
+        List<int> numbers = candidateCount.Keys.ToList();
+        int[] tempList = new int[k];
+        
+        FindAllCombinations(potentialMultiples, numbers, candidateCount, tempList, 0, n-1, 0, k);
+        foreach (var multList in potentialMultiples)
+        {
+            removal.indexes = multList.Item1;
+            var candidateSet = GetEffectedCandidates(grid, multList.Item1, multList.Item2);
+            removal.candidateSet = candidateSet; 
+            if (removal.candidateSet.Count > 0)
             {
-                removal.indexes = candidatePair.Value;
-                multTiles.Add(candidatePair.Key);
-                var candidateSet = GetEffectedCandidates(grid, multTiles.ToHashSet(), candidatePair.Value);
-                removal.candidateSet = candidateSet;
-                if (removal.candidateSet.Count > 0)
-                {
-                    return true;
-                }
+                return true;
             }
         }
+        
+        // var multTiles = new List<int>();
+        // foreach (var candidatePair in candidateCount)
+        // {
+        //     if (candidatePair.Value.Count != multCount) continue;
+        //     
+        //     multTiles.Clear();
+        //     
+        //     foreach (var compareCandidatePair in candidateCount)
+        //     {
+        //         // don't compare the same candidate
+        //         if (candidatePair.Key == compareCandidatePair.Key) continue;
+        //         
+        //         if (compareCandidatePair.Value.Count != multCount) continue;
+        //
+        //         // exact match, those tiles are the hidden multiple
+        //         if (candidatePair.Value.SequenceEqual(compareCandidatePair.Value))
+        //         {
+        //             multTiles.Add(compareCandidatePair.Key);
+        //         }
+        //     }
+        //     
+        //     // multCount - 1 since the compare tile hasn't been added yet
+        //     if (multTiles.Count == multCount - 1)
+        //     {
+        //         removal.indexes = candidatePair.Value;
+        //         multTiles.Add(candidatePair.Key);
+        //         var candidateSet = GetEffectedCandidates(grid, multTiles.ToHashSet(), candidatePair.Value);
+        //         removal.candidateSet = candidateSet;
+        //         if (removal.candidateSet.Count > 0)
+        //         {
+        //             return true;
+        //         }
+        //     }
+        // }
 
         return false;
     }
 
+    private HashSet<int> GetEffectedCandidates(SudokuGrid9x9 grid, List<TileIndex> indices, HashSet<int> sharedCandidates)
+    {
+        var everyCandidate = new HashSet<int>();
+        
+        // make set include every candidate from effected indices
+        foreach (var tileIndex in indices)
+        {
+            everyCandidate.UnionWith(grid[tileIndex].Candidates);
+        }
+        
+        // now remove the candidate multiple (pair, triple, etc)
+        everyCandidate.ExceptWith(sharedCandidates);
+
+        return everyCandidate;
+    }
+
+
     private HashSet<int> GetEffectedCandidates(SudokuGrid9x9 grid, HashSet<int> multCandidates, List<TileIndex> indices)
     {
+        // OLD METHOD
+        
         var everyCandidate = new HashSet<int>();
         
         // make set include every candidate from effected indices

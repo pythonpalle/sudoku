@@ -60,7 +60,14 @@ public abstract class NakedMultiple : CandidateMethod
         int multRow = tileIndex.row;
         int multCol = tileIndex.col;
 
-        var candidateSet = grid[tileIndex].Candidates;
+        HashSet<int> candidateSet = new HashSet<int>();
+        foreach (var index in multTiles)
+        {
+            candidateSet.UnionWith(grid[index].Candidates);
+        }
+        
+        
+        //var candidateSet = grid[tileIndex].Candidates;
         bool foundEffected = false;
 
         removal = new CandidateRemoval(new List<TileIndex>(), candidateSet);
@@ -100,8 +107,6 @@ public abstract class NakedMultiple : CandidateMethod
         List<List<TileIndex>> potentialMultiples = new List<List<TileIndex>>();
         SudokuTile[] tempList = new SudokuTile[k];
         FindAllCombinations(potentialMultiples, rightEntropyTiles, tempList, 0, n-1, 0, k);
-
-        Debug.Log("Potential multiples: " + potentialMultiples.Count);
         
         foreach (var multTileList in potentialMultiples)
         {
@@ -190,7 +195,14 @@ public abstract class NakedMultiple : CandidateMethod
         int topLeftBoxRow = tileIndex.row - tileIndex.row % 3;
         int topLeftBoxCol = tileIndex.col - tileIndex.col % 3;
 
-        var candidateSet = grid[tileIndex].Candidates;
+        //var candidateSet = grid[tileIndex].Candidates;
+        
+        HashSet<int> candidateSet = new HashSet<int>();
+        foreach (var index in multTiles)
+        {
+            candidateSet.UnionWith(grid[index].Candidates);
+        }
+        
         bool foundEffected = false;
 
         removal = new CandidateRemoval(new List<TileIndex>(), candidateSet);
