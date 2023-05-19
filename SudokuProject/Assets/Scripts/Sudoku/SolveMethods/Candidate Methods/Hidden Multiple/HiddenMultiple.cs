@@ -75,35 +75,38 @@ public abstract class HiddenMultiple : CandidateMethod
                     {
                         candidateCount.Add(candidate, new List<TileIndex>{rightEntropyTiles[i].index});
 
-                        // remove entry if more then multCount tiles share candidate
-                        if (candidateCount[candidate].Count > multCount)
-                        {
-                            candidateCount.Remove(candidate);
-                            break;
-                        }
+                        // // remove entry if more then multCount tiles share candidate
+                        // if (candidateCount[candidate].Count > multCount)
+                        // {
+                        //     candidateCount.Remove(candidate);
+                        //     break;
+                        // }
                         
                         // todo: optimera så att digit tiles från den row/col/box ignoreras på en gång
                     }
                 }
             }
             
-            // remove entry if less then multCount tiles share the same candidate
-            if (candidateCount.ContainsKey(candidate) && candidateCount[candidate].Count < multCount)
-            {
-                candidateCount.Remove(candidate);
-            }
+            // // remove entry if less then multCount tiles share the same candidate
+            // if (candidateCount.ContainsKey(candidate) && candidateCount[candidate].Count < multCount)
+            // {
+            //     candidateCount.Remove(candidate);
+            // }
         }
         
         
         var multTiles = new List<int>();
         foreach (var candidatePair in candidateCount)
         {
+            if (candidatePair.Value.Count != multCount) continue;
+            
             multTiles.Clear();
             
             foreach (var compareCandidatePair in candidateCount)
             {
-                // don't compare the same key
+                // don't compare the same candidate
                 if (candidatePair.Key == compareCandidatePair.Key) continue;
+                if (compareCandidatePair.Value.Count != multCount) continue;
 
                 // exact match, those tiles are the hidden multiple
                 if (candidatePair.Value.SequenceEqual(compareCandidatePair.Value))
