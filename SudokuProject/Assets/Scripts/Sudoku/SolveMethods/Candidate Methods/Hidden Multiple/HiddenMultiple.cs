@@ -2,6 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 
+public struct MultiCombo
+{
+    public List<TileIndex> tileIndices;
+    public HashSet<int> candidates;
+
+    public MultiCombo(List<TileIndex> indices, HashSet<int> candidates)
+    {
+        tileIndices = indices;
+        this.candidates = candidates;
+    }
+}
+
 public abstract class HiddenMultiple : CandidateMethod
 {
     protected bool TryFindMultipleInRow(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
@@ -92,15 +104,15 @@ public abstract class HiddenMultiple : CandidateMethod
         int k = multCount;
         
         // Lista med listor som innehåller indexer för mult tiles och lista med multcandidaterna 
-        List<(List<TileIndex>, HashSet<int>)> potentialMultiples = new List<(List<TileIndex>, HashSet<int>)>();
+        List<MultiCombo> potentialMultiples = new List<MultiCombo>();
         List<int> numbers = candidateCount.Keys.ToList();
         int[] tempList = new int[k];
         
         FindAllCombinations(potentialMultiples, numbers, candidateCount, tempList, 0, n-1, 0, k);
         foreach (var multList in potentialMultiples)
         {
-            removal.indexes = multList.Item1;
-            var candidateSet = GetEffectedCandidates(grid, multList.Item1, multList.Item2);
+            removal.indexes = multList.tileIndices;
+            var candidateSet = GetEffectedCandidates(grid, multList.tileIndices, multList.candidates);
             removal.candidateSet = candidateSet; 
             if (removal.candidateSet.Count > 0)
             {
@@ -163,23 +175,23 @@ public abstract class HiddenMultiple : CandidateMethod
     }
 
 
-    private HashSet<int> GetEffectedCandidates(SudokuGrid9x9 grid, HashSet<int> multCandidates, List<TileIndex> indices)
-    {
-        // OLD METHOD
-        
-        var everyCandidate = new HashSet<int>();
-        
-        // make set include every candidate from effected indices
-        foreach (var index in indices)
-        {
-            everyCandidate.UnionWith(grid[index].Candidates);
-        }
-        
-        // now remove the candidate multiple (pair, triple, etc)
-        everyCandidate.ExceptWith(multCandidates);
-
-        return everyCandidate;
-    }
+    // private HashSet<int> GetEffectedCandidates(SudokuGrid9x9 grid, HashSet<int> multCandidates, List<TileIndex> indices)
+    // {
+    //     // OLD METHOD
+    //     
+    //     var everyCandidate = new HashSet<int>();
+    //     
+    //     // make set include every candidate from effected indices
+    //     foreach (var index in indices)
+    //     {
+    //         everyCandidate.UnionWith(grid[index].Candidates);
+    //     }
+    //     
+    //     // now remove the candidate multiple (pair, triple, etc)
+    //     everyCandidate.ExceptWith(multCandidates);
+    //
+    //     return everyCandidate;
+    // }
 
     private bool CandidatesFromMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
     {
@@ -210,3 +222,4 @@ public abstract class HiddenMultiple : CandidateMethod
         return false;
     }
 }
+

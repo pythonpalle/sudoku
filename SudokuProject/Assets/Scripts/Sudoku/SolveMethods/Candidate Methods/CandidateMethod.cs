@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.WSA;
 
@@ -68,7 +69,7 @@ public abstract class CandidateMethod
         }
     }
     
-    protected void FindAllCombinations( List<(List<TileIndex>, HashSet<int>)> combinations, List<int> numbers,
+    protected void FindAllCombinations( List<MultiCombo> combinations, List<int> numbers,
         Dictionary<int, List<TileIndex>> candidateCount, int[] tempList, int start, int end, int index, int k)
     {
         if (index >= k)
@@ -76,7 +77,11 @@ public abstract class CandidateMethod
             if (ValidCombination(tempList, k, candidateCount, out List<TileIndex> indices))
             {
                 HashSet<int> candidates = new HashSet<int>(tempList);
-                combinations.Add((indices, candidates));
+
+                MultiCombo combo = new MultiCombo(indices, candidates);
+
+                combinations.Add(combo);
+                //combinations.Add((indices, candidates));
             }
             
             return;
