@@ -76,23 +76,15 @@ public abstract class HiddenMultiple : CandidateMethod
                     {
                         candidateCount.Add(candidate, new List<TileIndex>{nonUseTiles[i].index});
 
-                        // // remove entry if more then multCount tiles share candidate
-                        // if (candidateCount[candidate].Count > multCount)
-                        // {
-                        //     candidateCount.Remove(candidate);
-                        //     break;
-                        // }
-                        
-                        // todo: optimera så att digit tiles från den row/col/box ignoreras på en gång
+                        // remove entry if more then multCount tiles share candidate
+                        if (candidateCount[candidate].Count > multCount)
+                        {
+                            candidateCount.Remove(candidate);
+                            break;
+                        }
                     }
                 }
             }
-            
-            // // remove entry if less then multCount tiles share the same candidate
-            // if (candidateCount.ContainsKey(candidate) && candidateCount[candidate].Count < multCount)
-            // {
-            //     candidateCount.Remove(candidate);
-            // }
         }
 
         
