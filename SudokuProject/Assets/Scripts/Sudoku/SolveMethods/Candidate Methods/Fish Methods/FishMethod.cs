@@ -42,7 +42,7 @@ public class FishMethod : CandidateMethod
 
         for (int digit = 1; digit <= 9; digit++)
         {
-            // (int: rad, List: column-nummber i raden som digit finns i)
+            // (int: rad (col), List: columner i raden som digit finns i)
             Dictionary<int, List<int>> rowCandidates = new Dictionary<int, List<int>>();
             for (int row = 0; row < 9; row++)
             {
@@ -79,7 +79,6 @@ public class FishMethod : CandidateMethod
             KeyValuePair<int, List<int>>[] tempList = new KeyValuePair<int, List<int>>[k];
 
             FindAllCombinations(combinations, rowLists, tempList, grid, rowCandidates, digit, fishInRow, 0, n-1, 0, k);
-            // todo: find valid combinations of rows
             foreach (var effectedTileList in combinations)
             {
                 if (effectedTileList.Count > 0)
