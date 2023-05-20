@@ -26,12 +26,12 @@ public class FishMethod : CandidateMethod
                || TryFindFishInCol(grid, multCount, out removal);
     }
     
-    private bool TryFindFishInRow(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindFishInRow(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
     {
         return CandidatesFromFishInRowCol(grid, multCount, true, out removal);
     }
     
-    private bool TryFindFishInCol(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindFishInCol(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
     {
         return CandidatesFromFishInRowCol(grid, multCount, false, out removal);
     }
@@ -50,43 +50,43 @@ public class FishMethod : CandidateMethod
                 
                 for (int col = 0; col < 9; col++)
                 {
-                    var tile = grid[row, col];
+                    var tile = fishInRow ? grid[row, col] : grid[col, row];
                     if (!tile.Used && tile.Candidates.Contains(digit))
                     {
                         rowCandidates[row].Add(col);
                     }
                 }
-
+                
                 // only point of including row if number of occurences for digit is between 2 and _multCount_
                 if (rowCandidates[row].Count > multCount || rowCandidates[row].Count < 2)
                 {
                     rowCandidates.Remove(row);
                 }
-                
-                // can't be fish in row if less then _multCount_ rows
-                if (rowCandidates.Count < multCount)
+            }
+            
+            // can't be fish in row if less then _multCount_ rows
+            if (rowCandidates.Count < multCount)
+            {
+                continue;
+            }
+
+            List<List<TileIndex>> combinations = new List<List<TileIndex>>();
+            List<KeyValuePair<int, List<int>>> rowLists = rowCandidates.ToList();
+
+            int n = rowLists.Count;
+            int k = multCount;
+            
+            KeyValuePair<int, List<int>>[] tempList = new KeyValuePair<int, List<int>>[k];
+
+            FindAllCombinations(combinations, rowLists, tempList, grid, rowCandidates, digit, fishInRow, 0, n-1, 0, k);
+            // todo: find valid combinations of rows
+            foreach (var effectedTileList in combinations)
+            {
+                if (effectedTileList.Count > 0)
                 {
-                    return false;
-                }
-
-                List<List<TileIndex>> combinations = new List<List<TileIndex>>();
-                List<int> rowList = rowCandidates.Keys.ToList();
-
-                int n = rowList.Count;
-                int k = multCount;
-
-                int[] tempList = new int[k];
-
-                FindAllCombinations(combinations, rowList, tempList, grid, fishInRow, 0, n-1, 0, k);
-                // todo: find valid combinations of rows
-                foreach (var effectedTileList in combinations)
-                {
-                    if (effectedTileList.Count > 0)
-                    {
-                        removal.indexes = effectedTileList;
-                        removal.candidateSet = new HashSet<int>(digit);
-                        return true;
-                    }
+                    removal.indexes = effectedTileList;
+                    removal.candidateSet = new HashSet<int>{digit};
+                    return true;
                 }
             }
         }
@@ -94,17 +94,23 @@ public class FishMethod : CandidateMethod
         return false;
     }
     
-    private void FindAllCombinations(List<List<TileIndex>> combinations, List<int> colNumbers, int[] tempList, 
-        SudokuGrid9x9 grid, bool fishRow, int start, int end, int index, int k)
+    private void FindAllCombinations(List<List<TileIndex>> combinations, List<KeyValuePair<int, List<int>>> colNumbers,
+        KeyValuePair<int, List<int>>[] tempList, SudokuGrid9x9 grid, Dictionary<int, List<int>> rowCandidates, int digit, bool fishRow, int start, int end,
+        int index, int k)
     {
         // from https://www.geeksforgeeks.org/print-all-possible-combinations-of-r-elements-in-a-given-array-of-size-n/
         
         if (index == k)
         {
-            if (ValidCombination(tempList, k, fishRow))
+            if (ValidCombination(tempList, k))
             {
-                List<TileIndex> indices = GetIndicesFromTiles(grid, tempList, fishRow);
-                combinations.Add(indices);
+                List<TileIndex> indices = GetIndicesFromTiles(grid, tempList, fishRow, rowCandidates, digit);
+                
+                // only bother including it if it has indices
+                if (indices.Count > 0)
+                {
+                    combinations.Add(indices);
+                }
             }
             
             return;
@@ -113,18 +119,67 @@ public class FishMethod : CandidateMethod
         for (int i = start; ( (i <= end) && (end - i + 1 >= k - index)); i++)
         {
             tempList[index] = colNumbers[i];
-            FindAllCombinations(combinations, colNumbers, tempList, grid, fishRow, i + 1, end, index + 1, k);
+            FindAllCombinations(combinations, colNumbers, tempList, grid, rowCandidates, digit, fishRow, i + 1, end, index + 1, k);
         }
     }
 
-    bool ValidCombination(int[] tempList, int k, bool fishRow)
+    bool ValidCombination(KeyValuePair<int, List<int>>[] tempList, int k)
     {
-        return false;
+        HashSet<int> allColumns = new HashSet<int>();
+        HashSet<int> allRows = new HashSet<int>();
+
+        foreach (var pair in tempList)
+        {
+            if (allRows.Contains(pair.Key))
+            {
+                Debug.LogError("Pairs with same key (row) should not be possible.");
+                return false;
+            }
+            else
+            {
+                allRows.Add(pair.Key);
+            }
+
+            foreach (var col in pair.Value)
+            {
+                allColumns.Add(col);
+            }
+        }
+
+        bool rightAmountOfColumns = allColumns.Count == k;
+        if (rightAmountOfColumns)
+        {
+            Debug.Log("Right amount of columns (" + k + ")");
+        }
+        
+        return rightAmountOfColumns;
     }
     
-    List<TileIndex> GetIndicesFromTiles(SudokuGrid9x9 grid, int[] tempList, bool fishRow)
+    List<TileIndex> GetIndicesFromTiles(SudokuGrid9x9 grid, KeyValuePair<int, List<int>>[] tempList, bool fishRow,
+        Dictionary<int, List<int>> rowCandidates, int digit)
     {
         List<TileIndex> effectedIndices = new List<TileIndex>();
+        List<int> colList = tempList[0].Value;
+
+        foreach (var pair in tempList)
+        {
+            int row = pair.Key;
+            
+            for (int col = 0; col < 9; col++)
+            {
+                // skip tiles in fish
+                if (colList.Contains(col))
+                    continue;
+
+                var potentialTile = fishRow ? grid[row, col] : grid[col, row];
+                if (!potentialTile.Used && potentialTile.Candidates.Contains(digit))
+                {
+                    effectedIndices.Add(potentialTile.index);
+                }
+                
+            }
+        }
+        
         return effectedIndices;
     }
 

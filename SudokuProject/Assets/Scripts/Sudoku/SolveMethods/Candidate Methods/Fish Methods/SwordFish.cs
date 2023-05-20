@@ -11,3 +11,23 @@ public class SwordFish : FishMethod
         return TryFindFish(grid, 3, out removal);
     }
 }
+
+public class SwordFishRow : FishMethod
+{
+    public override string GetName => "SwordFish Row";
+
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
+    {
+        return TryFindFishInRow(grid, 3, out removal);
+    }
+}
+
+public class SwordFishCol : FishMethod
+{
+    public override string GetName => "SwordFish Col";
+
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
+    {
+        return TryFindFishInCol(grid, 3, out removal);
+    }
+}

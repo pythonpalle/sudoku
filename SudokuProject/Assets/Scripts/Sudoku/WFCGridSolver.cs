@@ -136,11 +136,23 @@ public class WFCGridSolver
                     //
                     // // Hidden Quad (includes row, col and box)
                     // new HiddenQuad(),
-                    
+                    //
                     // // Fish Methods (include row and col)
                     // new XWing(),
                     // new SwordFish(),
                     // new JellyFish(),
+                    
+                    // XWings
+                    new XWingRow(),
+                    new XWingCol(),
+                    
+                    // Swordfish
+                    new SwordFishRow(),
+                    new SwordFishCol(),
+                    
+                    // JellyFish
+                    new JellyFishRow(),
+                    new JellyFishCol()
                 };
                 break;
         }
