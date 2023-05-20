@@ -119,12 +119,13 @@ public class FishMethod : CandidateMethod
 
     bool ValidCombination(int[] tempList, int k, bool fishRow)
     {
-        
+        return false;
     }
     
     List<TileIndex> GetIndicesFromTiles(SudokuGrid9x9 grid, int[] tempList, bool fishRow)
     {
-        
+        List<TileIndex> effectedIndices = new List<TileIndex>();
+        return effectedIndices;
     }
 
     // private bool CandidatesFromFishInRowCol(SudokuGrid9x9 grid, int multCount, bool fishInRow, out CandidateRemoval removal)
