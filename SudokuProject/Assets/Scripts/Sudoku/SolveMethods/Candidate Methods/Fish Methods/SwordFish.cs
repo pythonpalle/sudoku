@@ -2,17 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwordFish : MonoBehaviour
+public class SwordFish : FishMethod
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public override string GetName => "SwordFish";
 
-    // Update is called once per frame
-    void Update()
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
-        
+        return TryFindFish(grid, 3, out removal);
     }
 }

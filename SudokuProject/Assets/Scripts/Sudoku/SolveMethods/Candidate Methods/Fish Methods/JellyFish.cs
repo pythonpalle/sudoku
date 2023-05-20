@@ -2,17 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JellyFish : MonoBehaviour
+public class JellyFish : FishMethod
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public override string GetName => "JellyFish";
 
-    // Update is called once per frame
-    void Update()
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
-        
+        return TryFindFish(grid, 4, out removal);
     }
 }

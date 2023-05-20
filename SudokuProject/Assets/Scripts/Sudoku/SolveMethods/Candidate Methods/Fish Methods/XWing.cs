@@ -2,17 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class XWing : MonoBehaviour
+public class XWing : FishMethod
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public override string GetName => "XWing";
 
-    // Update is called once per frame
-    void Update()
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
-        
+        return TryFindFish(grid, 2, out removal);
     }
 }
