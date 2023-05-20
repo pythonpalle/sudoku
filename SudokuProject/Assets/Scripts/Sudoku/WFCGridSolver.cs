@@ -99,32 +99,32 @@ public class WFCGridSolver
             case PuzzleDifficulty.Hard:
                 candidatesMethods = new List<CandidateMethod>
                 {
-                    // // Pointing Pairs
-                    // new PointingPairRowToBox(),
-                    // new PointingPairColToBox(),
-                    // new PointingPairBoxToRow(),
-                    // new PointingPairBoxToCol(),
-                    //
-                    // // Pointing Triples
-                    // new PointingTripleRowToBox(),
-                    // new PointingTripleColToBox(),
-                    // new PointingTripleBoxToRow(),
-                    // new PointingTripleBoxToCol(),
+                    // Pointing Pairs
+                    new PointingPairRowToBox(),
+                    new PointingPairColToBox(),
+                    new PointingPairBoxToRow(),
+                    new PointingPairBoxToCol(),
                     
-                    // // Naked Pairs
-                    // new NakedPairInCol(),
-                    // new NakedPairInRow(),
-                    // new NakedPairInBox(),
+                    // Pointing Triples
+                    new PointingTripleRowToBox(),
+                    new PointingTripleColToBox(),
+                    new PointingTripleBoxToRow(),
+                    new PointingTripleBoxToCol(),
+                    
+                    // Naked Pairs
+                    new NakedPairInCol(),
+                    new NakedPairInRow(),
+                    new NakedPairInBox(),
                     
                     // Hidden pairs
                     new HiddenPairInBox(),
                     new HiddenPairInRow(),
                     new HiddenPairInCol(),
                     
-                    // // Naked Triples
-                    // new NakedTripleInRow(),
-                    // new NakedTripleInCol(),
-                    // new NakedTripleInBox(),
+                    // Naked Triples
+                    new NakedTripleInRow(),
+                    new NakedTripleInCol(),
+                    new NakedTripleInBox(),
                     
                     // Hidden triples 
                     new HiddenTripleInBox(),
