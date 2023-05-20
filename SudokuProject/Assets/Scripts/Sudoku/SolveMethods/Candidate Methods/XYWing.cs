@@ -13,7 +13,7 @@ public class XYWing : CandidateMethod
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
         removal = new CandidateRemoval();
-        List<SudokuTile> twoEntropyTiles = FindAllTilesWithEntropy(grid, 2);
+        List<TileIndex> twoEntropyTiles = FindAllIndicesWithEntropy(grid, 2);
         
         if (twoEntropyTiles.Count < 3)
         {
@@ -21,17 +21,23 @@ public class XYWing : CandidateMethod
             return false;
         }
 
-        foreach (var baseTile in twoEntropyTiles)
+        foreach (var baseIndex in twoEntropyTiles)
         {
-            HashSet<int> baseCandidates = baseTile.Candidates;
+            var baseTile = grid[baseIndex];
+            HashSet<int> baseCandidates = new HashSet<int>(baseTile.Candidates);
 
-            foreach (var wing1 in twoEntropyTiles)
+            foreach (var wing1_index in twoEntropyTiles)
             {
+                var wing1 = grid[wing1_index];
+
+                // can't be same tile
+                if (wing1_index == baseIndex) continue;
+                
                 // wing1 must intersect with the base
                 if (!TilesIntersect(baseTile.index, wing1.index))
                     continue;
                 
-                HashSet<int> wing1_Candidates = wing1.Candidates;
+                HashSet<int> wing1_Candidates = new HashSet<int>(wing1.Candidates);
                 HashSet<int> commonCandidates_Base_Wing1 = new HashSet<int>(baseCandidates);
                 commonCandidates_Base_Wing1.IntersectWith(wing1_Candidates);
                 
@@ -40,36 +46,42 @@ public class XYWing : CandidateMethod
                     continue;
                 
                 // Get the 2 uncommon candidates (symmetric difference)
-                HashSet<int> difference_Base_Wing1 = baseCandidates;
-                difference_Base_Wing1.UnionWith(wing1_Candidates);
+                HashSet<int> difference_Base_Wing1 = new HashSet<int>(baseCandidates);
                 difference_Base_Wing1.SymmetricExceptWith(wing1_Candidates);
                 
                 Assert.AreEqual(difference_Base_Wing1.Count, 2);
+                Assert.IsFalse(wing1_Candidates.SetEquals(difference_Base_Wing1));
+                Assert.IsFalse(baseCandidates.SetEquals(difference_Base_Wing1));
 
-                foreach (var wing2 in twoEntropyTiles)
+                foreach (var wing2_index in twoEntropyTiles)
                 {
+                    var wing2 = grid[wing2_index];
+
+                    // can't be same tile
+                    if (wing2.index == baseTile.index || wing1.index == baseTile.index) continue;
+                    
                     // wing2 must also intersect with the base
                     if (!TilesIntersect(baseTile.index, wing2.index))
                         continue;
                     
-                    HashSet<int> wing2_Candidates = wing2.Candidates;
+                    HashSet<int> wing2_Candidates = new HashSet<int>(wing2.Candidates);
                     
                     // wing2's candidate must be exactly the 2 uncommon ones
                     if (!wing2_Candidates.SetEquals(difference_Base_Wing1))
                         continue;
 
-                    // should now have valid XYWing, only need to check for intersections
-                    DebugWing(baseTile, wing1, wing2);
-
-                    HashSet<int> intersectSet = wing2_Candidates;
+                    HashSet<int> intersectSet = new HashSet<int>(wing2_Candidates);
                     intersectSet.IntersectWith(wing1_Candidates);
                     
                     Assert.AreEqual(1, intersectSet.Count);
                     
                     int intersectCandidate = intersectSet.Min();
 
-                    if (TryFindIntersectTiles(grid, wing1, wing2, intersectCandidate, out List<TileIndex> intersectIndices))
+                    if (TryFindIntersectTiles(grid, baseTile, wing1, wing2, intersectCandidate, out List<TileIndex> intersectIndices))
                     {
+                        // should now have valid XYWing
+                        DebugWing(baseTile, wing1, wing2);
+                        
                         removal.indexes = intersectIndices;
                         removal.candidateSet = intersectSet;
                         return true;
@@ -81,10 +93,12 @@ public class XYWing : CandidateMethod
         return false;
     }
 
-    private bool TryFindIntersectTiles(SudokuGrid9x9 grid, SudokuTile wing1, SudokuTile wing2, int intersectCandidate, out List<TileIndex> tileIndices)
+    private bool TryFindIntersectTiles(SudokuGrid9x9 grid, SudokuTile baseTile, SudokuTile wing1, SudokuTile wing2,
+        int intersectCandidate, out List<TileIndex> tileIndices)
     {
         tileIndices = new List<TileIndex>();
 
+        TileIndex baseIndex = baseTile.index;
         TileIndex wing1Index = wing1.index;
         TileIndex wing2Index = wing2.index;
         
@@ -95,7 +109,11 @@ public class XYWing : CandidateMethod
             
             TileIndex intersectIndex = intersectTile.index;
 
-            if (intersectTile.index == wing1Index || intersectTile.index == wing2Index)
+            // wing can't intersect with itself
+            if (intersectTile.index == wing1Index 
+                || intersectTile.index == wing2Index
+                || intersectTile.index == baseIndex)
+                continue;
             
             if (!TilesIntersect(intersectTile.index, wing1Index))
                 continue;
@@ -113,21 +131,21 @@ public class XYWing : CandidateMethod
     }
 
 
-    private bool TilesIntersect(TileIndex tile1, TileIndex tile2)
+    private bool TilesIntersect(TileIndex index1, TileIndex index2)
     {
         // same row
-        if (tile1.row == tile2.row)
+        if (index1.row == index2.row)
             return true;
         
         // same col
-        if (tile1.col == tile2.col)
+        if (index1.col == index2.col)
             return true;
         
-        int boxRowTile1 = tile1.row - tile1.row % 3;
-        int boxRowTile2 = tile2.row - tile1.row % 3;
+        int boxRowTile1 = index1.row - index1.row % 3;
+        int boxRowTile2 = index2.row - index2.row % 3;
         
-        int boxColTile1 = tile1.col - tile1.col % 3;
-        int boxColTile2 = tile2.col - tile1.col % 3;
+        int boxColTile1 = index1.col - index1.col % 3;
+        int boxColTile2 = index2.col - index2.col % 3;
         
         // same box
         return (boxRowTile1 == boxRowTile2
@@ -145,11 +163,24 @@ public class XYWing : CandidateMethod
     private List<SudokuTile> FindAllTilesWithEntropy(SudokuGrid9x9 grid, int entropy)
     {
         List<SudokuTile> entropyList = new List<SudokuTile>();
-
+        
         foreach (var tile in grid.Tiles)
         {
             if (!tile.Used && tile.Entropy == entropy)
                 entropyList.Add(tile);
+        }
+
+        return entropyList;
+    }
+    
+    private List<TileIndex> FindAllIndicesWithEntropy(SudokuGrid9x9 grid, int entropy)
+    {
+        List<TileIndex> entropyList = new List<TileIndex>();
+        
+        foreach (var tile in grid.Tiles)
+        {
+            if (!tile.Used && tile.Entropy == entropy)
+                entropyList.Add(tile.index);
         }
 
         return entropyList;

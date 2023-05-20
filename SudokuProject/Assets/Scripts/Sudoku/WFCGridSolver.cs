@@ -99,55 +99,58 @@ public class WFCGridSolver
             case PuzzleDifficulty.Hard:
                 candidatesMethods = new List<CandidateMethod>
                 {
-                    // Pointing Pairs
-                    new PointingPairRowToBox(),
-                    new PointingPairColToBox(),
-                    new PointingPairBoxToRow(),
-                    new PointingPairBoxToCol(),
+                    // // Pointing Pairs
+                    // new PointingPairRowToBox(),
+                    // new PointingPairColToBox(),
+                    // new PointingPairBoxToRow(),
+                    // new PointingPairBoxToCol(),
+                    //
+                    // // Pointing Triples
+                    // new PointingTripleRowToBox(),
+                    // new PointingTripleColToBox(),
+                    // new PointingTripleBoxToRow(),
+                    // new PointingTripleBoxToCol(),
+                    //
+                    // // Naked Pairs
+                    // new NakedPairInCol(),
+                    // new NakedPairInRow(),
+                    // new NakedPairInBox(),
+                    //
+                    // // Hidden pairs
+                    // new HiddenPairInBox(),
+                    // new HiddenPairInRow(),
+                    // new HiddenPairInCol(),
+                    //
+                    // // Naked Triples
+                    // new NakedTripleInRow(),
+                    // new NakedTripleInCol(),
+                    // new NakedTripleInBox(),
+                    //
+                    // // Hidden triples 
+                    // new HiddenTripleInBox(),
+                    // new HiddenTripleInRow(),
+                    // new HiddenTripleInCol(),
+                    //
+                    // // Naked Quad (includes row, col and box)
+                    // new NakedQuad(),
+                    //
+                    // // Hidden Quad (includes row, col and box)
+                    // new HiddenQuad(),
+                    //
+                    // // XWings
+                    // new XWingRow(),
+                    // new XWingCol(),
+                    //
+                    // // Swordfish
+                    // new SwordFishRow(),
+                    // new SwordFishCol(),
+                    //
+                    // // JellyFish
+                    // new JellyFishRow(),
+                    // new JellyFishCol(),
                     
-                    // Pointing Triples
-                    new PointingTripleRowToBox(),
-                    new PointingTripleColToBox(),
-                    new PointingTripleBoxToRow(),
-                    new PointingTripleBoxToCol(),
-                    
-                    // Naked Pairs
-                    new NakedPairInCol(),
-                    new NakedPairInRow(),
-                    new NakedPairInBox(),
-                    
-                    // Hidden pairs
-                    new HiddenPairInBox(),
-                    new HiddenPairInRow(),
-                    new HiddenPairInCol(),
-                    
-                    // Naked Triples
-                    new NakedTripleInRow(),
-                    new NakedTripleInCol(),
-                    new NakedTripleInBox(),
-                    
-                    // Hidden triples 
-                    new HiddenTripleInBox(),
-                    new HiddenTripleInRow(),
-                    new HiddenTripleInCol(),
-                    
-                    // Naked Quad (includes row, col and box)
-                    new NakedQuad(),
-                    
-                    // Hidden Quad (includes row, col and box)
-                    new HiddenQuad(),
-                    
-                    // XWings
-                    new XWingRow(),
-                    new XWingCol(),
-                    
-                    // Swordfish
-                    new SwordFishRow(),
-                    new SwordFishCol(),
-                    
-                    // JellyFish
-                    new JellyFishRow(),
-                    new JellyFishCol()
+                    // Wings
+                    new XYWing(),
                 };
                 break;
         }
@@ -272,25 +275,30 @@ public class WFCGridSolver
         {
             if (method.TryFindCandidates(grid, out CandidateRemoval removal))
             {
+                DebugRemoval(removal, method);
                 RemoveCandidates(removal);
-                Debug.LogWarning("Found candidate(s) with: " + method.GetName);
-                string digits = String.Empty;
-                foreach (var candidate in removal.candidateSet)
-                {
-                    digits += $"{candidate}, ";
-                }
-                Debug.Log($"Digit(s): {digits}");
-                
-                Debug.Log("Indices: ");
-                foreach (var index in removal.indexes)
-                {
-                    Debug.Log(index);
-                }
                 return true;
             }
         }
         
         return false;
+    }
+
+    private void DebugRemoval(CandidateRemoval removal, CandidateMethod method)
+    {
+        Debug.LogWarning("Found candidate(s) with: " + method.GetName);
+        string digits = String.Empty;
+        foreach (var candidate in removal.candidateSet)
+        {
+            digits += $"{candidate}, ";
+        }
+        Debug.Log($"Digit(s): {digits}");
+                
+        Debug.Log("Indices: ");
+        foreach (var index in removal.indexes)
+        {
+            Debug.Log(index);
+        }
     }
 
     private void RemoveCandidates(CandidateRemoval removal)
