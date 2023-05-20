@@ -19,7 +19,7 @@ public struct Fish
     public int Size => combos.Count;
 }
 
-public class FishMethod : CandidateMethod
+public abstract class FishMethod : CandidateMethod
 {
     protected bool TryFindFish(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
     {

@@ -5,6 +5,8 @@ using UnityEngine;
 public class XWing : FishMethod
 {
     public override string GetName => "XWing";
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Hard;
+
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
@@ -15,6 +17,8 @@ public class XWing : FishMethod
 public class XWingRow : FishMethod
 {
     public override string GetName => "XWing Row";
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Hard;
+
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
@@ -25,6 +29,8 @@ public class XWingRow : FishMethod
 public class XWingCol : FishMethod
 {
     public override string GetName => "XWing Col";
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Hard;
+
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {

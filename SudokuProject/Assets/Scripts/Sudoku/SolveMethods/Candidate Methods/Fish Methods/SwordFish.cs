@@ -5,6 +5,8 @@ using UnityEngine;
 public class SwordFish : FishMethod
 {
     public override string GetName => "SwordFish";
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Hard;
+
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
@@ -15,6 +17,8 @@ public class SwordFish : FishMethod
 public class SwordFishRow : FishMethod
 {
     public override string GetName => "SwordFish Row";
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Hard;
+
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
@@ -25,6 +29,8 @@ public class SwordFishRow : FishMethod
 public class SwordFishCol : FishMethod
 {
     public override string GetName => "SwordFish Col";
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Hard;
+
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {

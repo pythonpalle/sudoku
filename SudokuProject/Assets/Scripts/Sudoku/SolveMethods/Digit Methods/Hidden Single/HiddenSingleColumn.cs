@@ -1,6 +1,7 @@
 ﻿public class HiddenSingleColumn : DigitMethod
 {
     public override string GetName => "Hidden Single Column";
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Medium;
 
     public override bool TryFindDigit(SudokuGrid9x9 grid, out TileIndex index, out int digit)
     {

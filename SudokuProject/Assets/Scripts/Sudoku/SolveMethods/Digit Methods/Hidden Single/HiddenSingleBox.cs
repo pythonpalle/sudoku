@@ -57,4 +57,5 @@ public class HiddenSingleBox : DigitMethod
     
     public override string GetName => "Hidden Single Box";
 
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Easy;
 }

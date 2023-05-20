@@ -6,6 +6,7 @@ using UnityEngine;
 public class PointingPairBoxToRow : PointingMethod
 {
     public override string GetName => "Pointing Pair Box To Row";
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Medium;
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {

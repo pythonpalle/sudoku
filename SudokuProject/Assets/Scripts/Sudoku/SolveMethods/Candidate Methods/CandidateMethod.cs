@@ -19,13 +19,17 @@ public struct CandidateRemoval
 
 public abstract class CandidateMethod
 {
+    public abstract string GetName { get; }
+
+    public abstract PuzzleDifficulty Difficulty { get; }
+    
+
     public virtual bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
         removal = new CandidateRemoval();
         return false;
     }
 
-    public virtual string GetName { get; set; }
     
     protected bool AllIndicesHaveSameRowCol(List<TileIndex> tileIndices, bool checkRow)
     {
