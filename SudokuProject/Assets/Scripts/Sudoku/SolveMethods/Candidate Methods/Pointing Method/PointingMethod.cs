@@ -225,16 +225,8 @@ public abstract class PointingMethod : CandidateMethod
                         {
                             removal.candidateSet = new HashSet<int>{candidate};
                             removal.indexes = effectedTileIndices;
-                            Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
-                            Debug.Log("Effected indices: ");
-                            foreach (var index in removal.indexes)
-                            {
-                                Debug.Log(index);
-                            }
-
                             return true;
                         }
-                    
                     }
                 }
             }
@@ -243,20 +235,6 @@ public abstract class PointingMethod : CandidateMethod
         return false;
     }
     
-
-    // private bool AllIndicesHaveSameRowCol(List<TileIndex> tileIndices, bool checkRow)
-    // {
-    //     if (checkRow)
-    //     {
-    //         int tileRow = tileIndices[0].row;
-    //         return tileIndices.All(tile => tile.row == tileRow);
-    //     }
-    //     else
-    //     {
-    //         int tileCol = tileIndices[0].col;
-    //         return tileIndices.All(tile => tile.col == tileCol);
-    //     }
-    // }
     
     private bool AllIndicesInSameBox(List<TileIndex> indices, bool toRow)
     {

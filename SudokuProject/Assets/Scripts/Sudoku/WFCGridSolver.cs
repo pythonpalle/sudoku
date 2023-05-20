@@ -8,10 +8,10 @@ using UnityEngine;
 
 public class WFCGridSolver
 {
-    public WFCGridSolver(PuzzleDifficulty puzzleDifficulty)
+    public WFCGridSolver(PuzzleDifficulty puzzleMAXDifficultyForHumanSolve)
     {
         moves = new Stack<Move>();
-        difficulty = puzzleDifficulty;
+        maxDifficultyForHumanSolve = puzzleMAXDifficultyForHumanSolve;
 
         SetupSolveMethods();
     }
@@ -19,7 +19,11 @@ public class WFCGridSolver
     private const int GENERATION_ITERATION_LIMIT = 16_384;
     
     private Stack<Move> moves;
-    private PuzzleDifficulty difficulty;
+    
+    private PuzzleDifficulty maxDifficultyForHumanSolve;
+
+    public PuzzleDifficulty highestSuccessfulDifficulty { get; private set; } = PuzzleDifficulty.Easy;
+    private PuzzleDifficulty highestAttemptedDifficulty = PuzzleDifficulty.Easy;
 
     private List<DigitMethod> digitMethods;
     List<CandidateMethod> candidatesMethods;
@@ -48,7 +52,7 @@ public class WFCGridSolver
     
     private void GetDigitMethods()
     {
-        if (difficulty == PuzzleDifficulty.Easy)
+        if (maxDifficultyForHumanSolve == PuzzleDifficulty.Easy)
         {
             digitMethods = new List<DigitMethod>{new HiddenSingleBox()};
         }
@@ -70,7 +74,7 @@ public class WFCGridSolver
     {
         candidatesMethods = new List<CandidateMethod>();
 
-        switch (difficulty)
+        switch (maxDifficultyForHumanSolve)
         {
             case PuzzleDifficulty.Easy:
                 break;
@@ -222,27 +226,14 @@ public class WFCGridSolver
             }
             else
             {
-                Debug.LogError("NOT SOLVABLE AT DIFFICULTY " + difficulty);
+                Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
                 return false;
             }
             
             
         }
 
-        
-
-        // techniques:
-
-        // easy:  hidden single (box),
-        
-        // medium:  naked single, hidden single (row/col),
-        //          naked pair, hidden pair, pointing pairs
-        
-        // hard: naked triple, naked quad, pointing triples, hidden triple, hidden quad
-        
-        // x-treme: brute force
-        
-        // diabolical (or hard): xwing, swordfish, jellyfish, xywing, xyzwing
+        highestSuccessfulDifficulty = highestAttemptedDifficulty;
         return true;
     }
 
@@ -253,19 +244,9 @@ public class WFCGridSolver
             if (method.TryFindDigit(grid, out TileIndex index, out int digit))
             {
                 HandleNextSolveStep(index, digit);
-                // Debug.Log($"Found a {digit} at {index} using {method.GetName}");
-                // Debug.Log($"Current grid: ");
-                // grid.PrintGrid();
                 return true;
             }
-            else
-            {
-               // Debug.LogWarning("No Progressed using: " + method.GetName);
-            }
         }
-
-        Debug.LogWarning("NO PROGRESS USING ANY DIGIT METHOD AT CURRENT STATE:");
-        grid.PrintGrid();
         
         return false;
     }
@@ -276,13 +257,25 @@ public class WFCGridSolver
         {
             if (method.TryFindCandidates(grid, out CandidateRemoval removal))
             {
-                DebugRemoval(removal, method);
                 RemoveCandidates(removal);
+                UpdateAttemptedDifficult(method.Difficulty);
                 return true;
             }
         }
         
         return false;
+    }
+
+    private void UpdateAttemptedDifficult(PuzzleDifficulty latestDifficult)
+    {
+        int latestDifficultValue = (int) latestDifficult;
+        int highestAttemptedValue = (int) highestAttemptedDifficulty;
+
+        if (latestDifficultValue > highestAttemptedValue)
+        {
+            highestAttemptedDifficulty = latestDifficult;
+            Debug.Log("Highest Attempted difficult during solve: " + latestDifficult);
+        }
     }
 
     private void DebugRemoval(CandidateRemoval removal, CandidateMethod method)

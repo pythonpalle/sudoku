@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// NOTE: order important for comparison
 public enum PuzzleDifficulty
 {
     Easy,
     Medium,
-    Hard,
-    Extreme
+    Hard
 }
 
 public class SudokuGenerator9x9
@@ -23,17 +23,44 @@ public class SudokuGenerator9x9
     
     public SudokuGenerator9x9(PuzzleDifficulty difficulty)
     {
-        grid = new SudokuGrid9x9(true);
-        this.difficulty = difficulty;
+        SetupConstructor(difficulty);
+    }
 
+    private void SetupConstructor(PuzzleDifficulty difficulty)
+    {
+        grid = new SudokuGrid9x9(true);
         _wfcGridSolver = new WFCGridSolver(difficulty);
-        
         puzzleGridRemovalMoves = new Stack<Move>();
     }
 
-    private PuzzleDifficulty difficulty;
 
     public void Generate(PuzzleDifficulty difficulty)
+    {
+        int attempts = 0;
+        int maxAttempts = 10;
+        
+        do
+        {
+            SetupConstructor(difficulty);
+            TryGenerate(difficulty);
+            attempts++;
+
+            if (attempts > maxAttempts)
+            {
+                Debug.LogWarning($"Too many attempts, a {difficulty} puzzle could not be created.");
+                Debug.LogWarning($"Instead, the difficulty is {_wfcGridSolver.highestSuccessfulDifficulty}.");
+                break;
+            }
+
+        } while (_wfcGridSolver.highestSuccessfulDifficulty != difficulty);
+        
+        Debug.Log($"The puzzle is finished after {attempts} attempts, Hurray!");
+        Debug.Log($"Difficulty used: {_wfcGridSolver.highestSuccessfulDifficulty}");
+        grid.PrintGrid();
+        EventManager.GenerateGrid(grid);
+    }
+
+    private void TryGenerate(PuzzleDifficulty difficulty)
     {
         _wfcGridSolver.SetGrid(grid);
         bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(false);
@@ -44,12 +71,12 @@ public class SudokuGenerator9x9
         bool puzzleCreated = false; 
         if (solvedGridCreated)
         {
-            Debug.Log("<<< SOLVED GRID COMPLETE, NOW REMOVING CLUES... >>>");
             puzzleCreated = TryCreatePuzzleFromSolvedGrid(difficulty);
+            Debug.Log($"Difficulty from last attempt: {_wfcGridSolver.highestSuccessfulDifficulty}");
         }
     }
 
-    
+
     private List<TileIndex> FindEffectedTileIndicies(TileIndex tileIndex)
     {
         int tileRow = tileIndex.row;
@@ -132,13 +159,7 @@ public class SudokuGenerator9x9
                 // grid.PrintGrid();
                 iterationCount++;
             }
-
-            
         }
-
-        Debug.Log("The puzzle is finished, Hurray!");
-        grid.PrintGrid();
-        EventManager.GenerateGrid(grid);
 
         return true;
     }
