@@ -7,6 +7,7 @@ using UnityEngine;
 // NOTE: order important for comparison
 public enum PuzzleDifficulty
 {
+    Simple,
     Easy,
     Medium,
     Hard
@@ -20,6 +21,11 @@ public class SudokuGenerator9x9
     private WFCGridSolver _wfcGridSolver;
     
     private Stack<Move> puzzleGridRemovalMoves;
+
+    private PuzzleDifficulty bestUsedDifficulty = PuzzleDifficulty.Simple;
+    private SudokuGrid9x9 hardestUsedGrid;
+
+    private bool simple;
     
     public SudokuGenerator9x9(PuzzleDifficulty difficulty)
     {
@@ -36,6 +42,12 @@ public class SudokuGenerator9x9
 
     public void Generate(PuzzleDifficulty difficulty)
     {
+        if (difficulty == PuzzleDifficulty.Simple)
+        {
+            simple = true;
+            difficulty = PuzzleDifficulty.Easy;
+        }    
+        
         int attempts = 0;
         int maxAttempts = 10;
         
@@ -48,11 +60,12 @@ public class SudokuGenerator9x9
             if (attempts > maxAttempts)
             {
                 Debug.LogWarning($"Too many attempts, a {difficulty} puzzle could not be created.");
-                Debug.LogWarning($"Instead, the difficulty is {_wfcGridSolver.highestSuccessfulDifficulty}.");
+                Debug.LogWarning($"Instead, the difficulty is {bestUsedDifficulty}.");
+                grid = new SudokuGrid9x9(hardestUsedGrid);
                 break;
             }
-
-        } while (_wfcGridSolver.highestSuccessfulDifficulty != difficulty);
+        } 
+        while (_wfcGridSolver.highestSuccessfulDifficulty != difficulty);
         
         Debug.Log($"The puzzle is finished after {attempts} attempts, Hurray!");
         Debug.Log($"Difficulty used: {_wfcGridSolver.highestSuccessfulDifficulty}");
@@ -73,6 +86,13 @@ public class SudokuGenerator9x9
         {
             puzzleCreated = TryCreatePuzzleFromSolvedGrid(difficulty);
             Debug.Log($"Difficulty from last attempt: {_wfcGridSolver.highestSuccessfulDifficulty}");
+
+            if ((int)_wfcGridSolver.highestSuccessfulDifficulty > (int)bestUsedDifficulty)
+            {
+                bestUsedDifficulty = _wfcGridSolver.highestSuccessfulDifficulty;
+                Debug.Log($"Best Used difficulty: {bestUsedDifficulty}");
+                hardestUsedGrid = new SudokuGrid9x9(grid);
+            }
         }
     }
 
@@ -121,7 +141,7 @@ public class SudokuGenerator9x9
         
         int iterationCount = 0;
 
-        int maxMoves = GetMaxMovesFromDifficulty(difficulty);
+        int maxMoves = simple ? 16 : 200;
         
         bool removeSymmetric = difficulty != PuzzleDifficulty.Hard;
         bool checkForHumanSolve = true;
@@ -137,9 +157,19 @@ public class SudokuGenerator9x9
             }
             
             SudokuGrid9x9 lastGrid = new SudokuGrid9x9(grid);
+
+            TileIndex lowestEntropyTileIndex;
+
             
-            //  1. Find lowest entropy tile
-            TileIndex lowestEntropyTileIndex = FindLowestEntropyTileIndexFromUnVisited(visitedTiles);
+            //  1. Find lowest entropy tile (or random if simple)
+            if (simple)
+            {
+                 lowestEntropyTileIndex = FindRandomTileIndexFromUnVisited(visitedTiles);
+
+            }else
+            {
+                 lowestEntropyTileIndex = FindRandomTileIndexFromUnVisited(visitedTiles);
+            }  
             
             //  2. Remove it from grid, propagate
             RemoveFromGrid(visitedTiles, lowestEntropyTileIndex);
@@ -168,13 +198,9 @@ public class SudokuGenerator9x9
     {
         switch (difficulty)
         {
-            case PuzzleDifficulty.Easy:
+            case PuzzleDifficulty.Simple:
                 return 16;
-            case PuzzleDifficulty.Medium:
-                return 31;
-            case PuzzleDifficulty.Hard:
-                return 200;
-            
+
             default:
                 return 200;
         }
@@ -262,31 +288,25 @@ public class SudokuGenerator9x9
         return randomTile.index;
     }
     
-    private TileIndex FindLowestEntropyTileIndexFromUnVisited(bool[,] visited)
+    private TileIndex FindRandomTileIndexFromUnVisited(bool[,] visited)
     {
-        int lowestEntropy = FindLowestEntropyFromUnVisited(visited);
-
-        List<SudokuTile> lowestEntropyTiles = new List<SudokuTile>();
+        List<TileIndex> nonVisitTiles = new List<TileIndex>();
         for (int row = 0; row < 9; row++)
         {
             for (int col = 0; col < 9; col++)
             {
                 if (visited[row, col]) continue;
-
-                var tile = grid[row, col];
-                if (tile.Entropy == lowestEntropy)
-                {
-                    lowestEntropyTiles.Add(tile);
-                }
+                
+                nonVisitTiles.Add(new TileIndex(row,col));
             }
         }
 
-        int randomIndex = random.Next(lowestEntropyTiles.Count);
-        SudokuTile lowestEntropyTile = lowestEntropyTiles[randomIndex];
-        return lowestEntropyTile.index;
+        int randomInt = random.Next(nonVisitTiles.Count);
+        TileIndex randomIndex = nonVisitTiles[randomInt];
+        return randomIndex;
     }
     
-    private SudokuTile FindHighestEntropyTileFromVisited(bool[,] visited)
+    private TileIndex FindHighestEntropyTileFromVisited(bool[,] visited)
     {
         int lowestEntropy = FindHighestEntropyFromVisited(visited);
 
@@ -307,7 +327,7 @@ public class SudokuGenerator9x9
 
         int randomIndex = random.Next(lowestEntropyTiles.Count);
         SudokuTile lowestEntropyTile = lowestEntropyTiles[randomIndex];
-        return lowestEntropyTile;
+        return lowestEntropyTile.index;
     }
 
     private int FindLowestEntropy()

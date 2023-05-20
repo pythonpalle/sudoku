@@ -1,7 +1,7 @@
 ﻿public class HiddenPairInRow : HiddenMultiple
 {
     public override string GetName => "Hidden Pair In Row";
-    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Hard;
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Medium;
 
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)

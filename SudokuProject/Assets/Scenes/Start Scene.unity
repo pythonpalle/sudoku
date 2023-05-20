@@ -1336,6 +1336,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 817503380}
     m_Modifications:
+    - target: {fileID: 2781887957231767090, guid: dcd765f1b287e244d8590ca6ec6210c3, type: 3}
+      propertyPath: m_fontSize
+      value: 44.29
+      objectReference: {fileID: 0}
+    - target: {fileID: 2781887957231767090, guid: dcd765f1b287e244d8590ca6ec6210c3, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 44.29
+      objectReference: {fileID: 0}
     - target: {fileID: 2781887957486458356, guid: dcd765f1b287e244d8590ca6ec6210c3, type: 3}
       propertyPath: m_Name
       value: Difficulty Popup Activator

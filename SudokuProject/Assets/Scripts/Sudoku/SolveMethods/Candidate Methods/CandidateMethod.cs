@@ -17,11 +17,9 @@ public struct CandidateRemoval
     }
 }
 
-public abstract class CandidateMethod
+public abstract class CandidateMethod : SolveMethod
 {
-    public abstract string GetName { get; }
 
-    public abstract PuzzleDifficulty Difficulty { get; }
     
 
     public virtual bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)

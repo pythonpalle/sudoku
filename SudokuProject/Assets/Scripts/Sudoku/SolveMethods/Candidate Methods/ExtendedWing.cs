@@ -100,7 +100,7 @@ public abstract class ExtendedWing : CandidateMethod
                     if (TryFindIntersectTiles(grid, baseTile, wing1, wing2, intersectCandidate, xyzWing, out List<TileIndex> intersectIndices))
                     {
                         // should now have valid XYWing
-                        DebugWing(baseTile, wing1, wing2);
+                        // DebugWing(baseTile, wing1, wing2);
                         
                         removal.indexes = intersectIndices;
                         removal.candidateSet = wing1_wing2_intersect_set;

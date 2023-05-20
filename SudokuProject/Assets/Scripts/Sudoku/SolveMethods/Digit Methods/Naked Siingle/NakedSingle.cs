@@ -22,5 +22,5 @@ public class NakedSingle : DigitMethod
     }
     
     public override string GetName => "Naked Single";
-    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Medium;
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Easy;
 }

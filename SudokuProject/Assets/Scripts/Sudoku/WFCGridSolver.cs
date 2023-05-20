@@ -13,7 +13,7 @@ public class WFCGridSolver
         moves = new Stack<Move>();
         maxDifficultyForHumanSolve = puzzleMAXDifficultyForHumanSolve;
 
-        SetupSolveMethods();
+        SetupSolveMethods(puzzleMAXDifficultyForHumanSolve);
     }
 
     private const int GENERATION_ITERATION_LIMIT = 16_384;
@@ -22,8 +22,8 @@ public class WFCGridSolver
     
     private PuzzleDifficulty maxDifficultyForHumanSolve;
 
-    public PuzzleDifficulty highestSuccessfulDifficulty { get; private set; } = PuzzleDifficulty.Easy;
-    private PuzzleDifficulty highestAttemptedDifficulty = PuzzleDifficulty.Easy;
+    public PuzzleDifficulty highestSuccessfulDifficulty { get; private set; } = PuzzleDifficulty.Simple;
+    private PuzzleDifficulty highestAttemptedDifficulty = PuzzleDifficulty.Simple;
 
     private List<DigitMethod> digitMethods;
     List<CandidateMethod> candidatesMethods;
@@ -44,14 +44,17 @@ public class WFCGridSolver
         grid = new SudokuGrid9x9(other);
     }
     
-    private void SetupSolveMethods()
+    private void SetupSolveMethods(PuzzleDifficulty difficulty)
     {
-        GetDigitMethods();
-        GetCandidateMethods();
+        GetDigitMethods(difficulty);
+        GetCandidateMethods(difficulty);
     }
     
-    private void GetDigitMethods()
+    private void GetDigitMethods(PuzzleDifficulty puzzleDifficulty)
     {
+        digitMethods = MethodContainer.GetDigitMethodsOfDifficulty(puzzleDifficulty);
+        return;
+        
         if (maxDifficultyForHumanSolve == PuzzleDifficulty.Easy)
         {
             digitMethods = new List<DigitMethod>{new HiddenSingleBox()};
@@ -70,8 +73,11 @@ public class WFCGridSolver
         }
     }
 
-    private void GetCandidateMethods()
+    private void GetCandidateMethods(PuzzleDifficulty puzzleDifficulty)
     {
+        candidatesMethods = MethodContainer.GetCandidatesMethodsOfDifficulty(puzzleDifficulty);
+        return;
+        
         candidatesMethods = new List<CandidateMethod>();
 
         switch (maxDifficultyForHumanSolve)
@@ -244,6 +250,7 @@ public class WFCGridSolver
             if (method.TryFindDigit(grid, out TileIndex index, out int digit))
             {
                 HandleNextSolveStep(index, digit);
+                UpdateAttemptedDifficult(method.Difficulty);
                 return true;
             }
         }

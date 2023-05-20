@@ -10,12 +10,14 @@ public class DifficultySelector : MonoBehaviour
     [SerializeField] private DifficultyObject difficultyObject;
 
     [Header("Buttons")] 
+    [SerializeField] private Button simpleButton;
     [SerializeField] private Button easyButton;
     [SerializeField] private Button mediumButton;
     [SerializeField] private Button hardButton;
 
     private void OnEnable()
     {
+        simpleButton.onClick.AddListener(OnSimpleButton);
         easyButton.onClick.AddListener(OnEasyButton);
         mediumButton.onClick.AddListener(OnMediumButton);
         hardButton.onClick.AddListener(OnHardButton);
@@ -23,9 +25,15 @@ public class DifficultySelector : MonoBehaviour
     
     private void OnDisable()
     {
+        simpleButton.onClick.RemoveListener(OnSimpleButton);
         easyButton.onClick.RemoveListener(OnEasyButton);
         mediumButton.onClick.RemoveListener(OnMediumButton);
         hardButton.onClick.RemoveListener(OnHardButton);
+    }
+    
+    private void OnSimpleButton()
+    {
+        SetDifficultyAndResetPuzzle(PuzzleDifficulty.Simple);
     }
 
     private void OnEasyButton()
