@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.WSA;
 
 public struct Fish
@@ -103,7 +104,7 @@ public class FishMethod : CandidateMethod
         {
             if (ValidCombination(tempList, k))
             {
-                List<TileIndex> indices = GetIndicesFromTiles(grid, tempList, fishRow, rowCandidates, digit);
+                List<TileIndex> indices = GetIndicesFromTiles(grid, tempList, fishRow, digit);
                 
                 // only bother including it if it has indices
                 if (indices.Count > 0)
@@ -129,16 +130,10 @@ public class FishMethod : CandidateMethod
 
         foreach (var pair in tempList)
         {
-            if (allRows.Contains(pair.Key))
-            {
-                Debug.LogError("Pairs with same key (row) should not be possible.");
-                return false;
-            }
-            else
-            {
-                allRows.Add(pair.Key);
-            }
-
+            Assert.IsFalse(allRows.Contains(pair.Key));
+            
+            allRows.Add(pair.Key);
+            
             foreach (var col in pair.Value)
             {
                 allColumns.Add(col);
@@ -146,28 +141,47 @@ public class FishMethod : CandidateMethod
         }
 
         bool rightAmountOfColumns = allColumns.Count == k;
-        if (rightAmountOfColumns)
-        {
-            Debug.Log("Right amount of columns (" + k + ")");
-        }
+        // if (rightAmountOfColumns)
+        // {
+        //     Debug.Log("Valid fish: ");
+        //     foreach (var pair in tempList)
+        //     {
+        //         string rowString = "";
+        //         foreach (var col in pair.Value)
+        //         {
+        //             rowString += $"{col}, ";
+        //         }
+        //         
+        //         Debug.Log($"Row: {pair.Key}. Cols: {rowString}");
+        //     }
+        // }
         
         return rightAmountOfColumns;
     }
     
-    List<TileIndex> GetIndicesFromTiles(SudokuGrid9x9 grid, KeyValuePair<int, List<int>>[] tempList, bool fishRow,
-        Dictionary<int, List<int>> rowCandidates, int digit)
+    List<TileIndex> GetIndicesFromTiles(SudokuGrid9x9 grid, KeyValuePair<int, List<int>>[] tempList, bool fishRow, int digit)
     {
         List<TileIndex> effectedIndices = new List<TileIndex>();
-        List<int> colList = tempList[0].Value;
+
+        HashSet<int> colSet = new HashSet<int>();
+        HashSet<int> invalidRows = new HashSet<int>();
 
         foreach (var pair in tempList)
         {
-            int row = pair.Key;
+            invalidRows.Add(pair.Key);
+            colSet.UnionWith(pair.Value);
+        }
+
+        Assert.AreEqual(colSet.Count, tempList.Length);
+
+        
+        foreach (int col in colSet)
+        {
             
-            for (int col = 0; col < 9; col++)
+            for (int row = 0; row < 9; row++)
             {
                 // skip tiles in fish
-                if (colList.Contains(col))
+                if (invalidRows.Contains(row))
                     continue;
 
                 var potentialTile = fishRow ? grid[row, col] : grid[col, row];

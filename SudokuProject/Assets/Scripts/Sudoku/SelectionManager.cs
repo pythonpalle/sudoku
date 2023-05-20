@@ -185,42 +185,25 @@ public class SelectionManager : MonoBehaviour
         {
             EventManager.SelectButtonClicked(EnterType.CenterMark);
             return;
-        } 
-        // else if (selectionObject.colorSelectKeyIsReleased || 
-        //     selectionObject.cornerSelectKeyIsReleased||
-        //     selectionObject.centerSelectKeyIsReleased )
-        // {
-        //     Debug.Log("Go to digit mark");
-        //     EventManager.SelectButtonClicked(EnterType.DigitMark);
-        //     return;
-        // } 
-        
+        }
+
         else if (selectionObject.colorSelectKeyIsReleased )
         {
-            Debug.Log("color select released");
             EventManager.SelectButtonClicked(EnterType.DigitMark);
             return;
         } 
         
         else if (selectionObject.cornerSelectKeyIsReleased )
         {
-            Debug.Log("corner select released");
             EventManager.SelectButtonClicked(EnterType.DigitMark);
             return;
         } 
         
         else if (selectionObject.centerSelectKeyIsReleased )
         {
-            Debug.Log("center select released");
             EventManager.SelectButtonClicked(EnterType.DigitMark);
             return;
-        } 
-        
-        // HandleCornerButtonDetection();
-        // HandleCenterButtonDetection();
-        //
-        // if (CheckColorButtonDetection())
-        //     return;
+        }
     }
 
     private bool CheckColorButtonDetection()
