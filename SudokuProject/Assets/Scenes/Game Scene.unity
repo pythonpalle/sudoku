@@ -810,7 +810,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
-  hintObject: {fileID: 0}
+  hintObject: {fileID: 11400000, guid: 23ba180c1afa1db4c9900627d814750d, type: 2}
   boxes:
   - {fileID: 5508750209443585459}
   - {fileID: 577388623}
@@ -9844,6 +9844,18 @@ PrefabInstance:
     - target: {fileID: 5508750207990723707, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_Name
       value: Box
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620339047043894390, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620339047043894390, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620339047043894390, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8386286028687009137, guid: 295aea6db1b78be458bc50a11b15be5e, type: 3}
       propertyPath: m_text

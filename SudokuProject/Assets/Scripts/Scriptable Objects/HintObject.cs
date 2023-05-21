@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class HintObject : ScriptableObject
 {
     public UnityAction OnRequestGrid;
-    public UnityAction<SudokuGrid9x9> OnSendGridCopy;
+    public UnityAction<SudokuGrid9x9, bool> OnSendGridCopy;
     public UnityAction<TileIndex> OnHintFound;
 
     public void RequestGrid()
@@ -15,9 +15,9 @@ public class HintObject : ScriptableObject
         OnRequestGrid?.Invoke();
     }
     
-    public void SendGridCopy(SudokuGrid9x9 copy)
+    public void SendGridCopy(SudokuGrid9x9 copy, bool contradictedGrid)
     {
-        OnSendGridCopy?.Invoke(copy);
+        OnSendGridCopy?.Invoke(copy, contradictedGrid);
     }
 
     public void HintFound(TileIndex hintIndex)

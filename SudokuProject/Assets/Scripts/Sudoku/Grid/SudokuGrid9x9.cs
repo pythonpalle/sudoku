@@ -7,7 +7,7 @@ public struct SudokuGrid9x9
 {
     const int size = 9;
     
-    public SudokuGrid9x9(bool createTiles)
+    public SudokuGrid9x9(bool _)
     {
         Tiles = new SudokuTile[size,size];
         SetupTiles();
@@ -206,5 +206,10 @@ public struct SudokuGrid9x9
         {
             tile.DebugTileInfo();
         }
+    }
+
+    public void UpdateCandidatesForIndex(TileIndex index, HashSet<int> updatedCandidates)
+    {
+        Tiles[index.row, index.col].UpdateCandidates(updatedCandidates);
     }
 }

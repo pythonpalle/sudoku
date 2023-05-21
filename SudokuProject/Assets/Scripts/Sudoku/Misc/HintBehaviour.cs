@@ -29,6 +29,7 @@ public class HintBehaviour : MonoBehaviour
         hintObject.OnSendGridCopy += OnSendGridCopy;
     }
     
+
     private void OnDisable()
     {
         hintButton.onClick.RemoveListener(OnHintButtonClicked);
@@ -41,8 +42,14 @@ public class HintBehaviour : MonoBehaviour
         hintObject.RequestGrid();
     }
     
-    private void OnSendGridCopy(SudokuGrid9x9 gridCopy)
+    private void OnSendGridCopy(SudokuGrid9x9 gridCopy, bool contradiction)
     {
+        if (contradiction)
+        {
+            Debug.Log("Can't find hint; grid contradicted.");
+            return;
+        }
+        
         if (TryFindHint(gridCopy, out TileIndex hintIndex))
         {
             hintObject.HintFound(hintIndex);

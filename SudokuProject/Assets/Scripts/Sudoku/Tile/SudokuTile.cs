@@ -215,8 +215,13 @@ public struct SudokuTile
 
     public void DebugTileInfo()
     {
-        Debug.Log($"Index: {index.row}, {index.col}");
+        Debug.Log($"Index: {index}");
         Debug.Log($"Number: {Number}");
         Debug.Log($"Entropy: {Entropy}");
+    }
+
+    public void UpdateCandidates(HashSet<int> updatedCandidates)
+    {
+        Candidates = new HashSet<int>(updatedCandidates);
     }
 }

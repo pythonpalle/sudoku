@@ -54,7 +54,73 @@ public class GridBehaviour : MonoBehaviour
 
     private void OnRequestGrid()
     {
-        hintObject.SendGridCopy(grid);
+        bool contradiction = GridHasContradiction();
+        // don't bother updating candidates if the grid is contradicted anyway
+        if (!contradiction)
+        {
+            UpdateGridCandidates();
+        }
+        
+        hintObject.SendGridCopy(grid, GridHasContradiction());
+    }
+
+    private void UpdateGridCandidates()
+    {
+        foreach (var tile in grid.Tiles)
+        {
+            if (tile.Used) continue;
+            HashSet<int> updatedCandidates = new HashSet<int> {1,2,3,4,5,6,7,8,9};
+
+            for (int candidate = 1; candidate <= 9; candidate++)
+            {
+                if (CandidateIntersectsTile(tile, candidate))
+                    updatedCandidates.Remove(candidate);
+            }
+
+            grid.UpdateCandidatesForIndex(tile.index, updatedCandidates);
+        }
+    }
+
+    private bool CandidateIntersectsTile(SudokuTile tile, int candidate)
+    {
+        var tileIndex = tile.index;
+        
+        int tileRow = tileIndex.row;
+        int tileCol = tileIndex.col;
+        
+        // Tiles in same row or column
+        for (int i = 0; i < 9; i++)
+        {
+            var rowTile = grid[i, tileCol];
+            if (Intersection(tileIndex, rowTile, candidate))
+                return true;
+            
+            var colTile = grid[tileRow, i];
+            if (Intersection(tileIndex, colTile, candidate))
+                return true;
+        }
+        
+        // Tiles in same box
+        int topLeftBoxRow = tileRow - tileRow % 3;
+        int topLeftBoxCol = tileCol - tileCol % 3;
+
+        for (int deltaRow = 0; deltaRow < 3; deltaRow++)
+        {
+            for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+            {
+                SudokuTile boxTile = grid[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol];
+                
+                if (Intersection(tileIndex, boxTile, candidate))
+                    return true;
+            } 
+        }
+
+        return false;
+    }
+
+    private bool Intersection(TileIndex tileIndex, SudokuTile compareTile, int candidate)
+    {
+        return compareTile.index != tileIndex && compareTile.Number == candidate;
     }
 
     private void OnHintFound(TileIndex hintIndex)
@@ -142,6 +208,17 @@ public class GridBehaviour : MonoBehaviour
         }
 
         return true;
+    }
+
+    private bool GridHasContradiction()
+    {
+        foreach (var tile in tileBehaviours)
+        {
+            if (tile.Contradicted)
+                return true;
+        }
+
+        return false;
     }
 
     private void OnRemoveEntryEvent(List<TileBehaviour> tiles, EnterType enterType, bool colorRemoval)
@@ -371,6 +448,8 @@ public class GridBehaviour : MonoBehaviour
 
     private void AddDigitToGrid(TileBehaviour tileBehaviour, int number, bool remove)
     {
+        if (tileBehaviour.Permanent) return;
+        
         int row = tileBehaviour.row;
         int col = tileBehaviour.col;
 
@@ -378,18 +457,22 @@ public class GridBehaviour : MonoBehaviour
             number = 0;
 
         grid.SetNumberToIndex(row, col, number);
+        Debug.Log($"Grid after adding {number} to index ({row}, {col}):");
+        grid.PrintGrid();
     }
 
-    private void EnterNormalNumber(TileBehaviour tileBehaviour, int number)
-    {
-        if (tileBehaviour.Permanent)
-            return;
-
-        int row = tileBehaviour.row;
-        int col = tileBehaviour.col;
-
-        grid.SetNumberToIndex(row, col, number);
-    }
+    // private void EnterNormalNumber(TileBehaviour tileBehaviour, int number)
+    // {
+    //     if (tileBehaviour.Permanent)
+    //         return;
+    //
+    //     int row = tileBehaviour.row;
+    //     int col = tileBehaviour.col;
+    //
+    //     grid.SetNumberToIndex(row, col, number);
+    //     Debug.Log($"Grid after adding {number} to index ({row}, {col}):");
+    //     grid.PrintGrid();
+    // }
 
     private void HandleRemoveContradictions( )
     {
@@ -506,7 +589,7 @@ public class GridBehaviour : MonoBehaviour
     {
         foreach (var tile in selectedTiles)
         {
-            EnterNormalNumber(tile, 0);
+            AddDigitToGrid(tile, 0, true);
             tile.TryUpdateNumber(0, EnterType.DigitMark, true);
         }
         

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -442,6 +443,44 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     public void Hint()
     {
-        Debug.Log("TileBehaviour Hint");
+        if (!isHinting)
+            StartCoroutine(PlayHintAnimation());
+    }
+
+    private bool isHinting;
+    private IEnumerator PlayHintAnimation()
+    {
+        isHinting = true;
+        
+        var startScale = transform.localScale;
+        float upscaledFactor = 1.3f;
+        var upscaleScale = startScale * upscaledFactor;
+        
+        float timeForUpscale = 0.5f;
+        
+        int scaleShiftCount = 0;
+        int numberOfScaleShifts = 6;
+        
+        bool scaleUp = true;
+        float t = 0;
+
+        while (scaleShiftCount < numberOfScaleShifts)
+        {
+            yield return new WaitForEndOfFrame();
+            t += Time.deltaTime / timeForUpscale;
+
+            transform.localScale = scaleUp ? 
+                Vector3.Lerp(startScale, upscaleScale, t) 
+                : Vector3.Lerp(upscaleScale, startScale, t);
+            
+            if (t > 1)
+            {
+                scaleUp = !scaleUp;
+                t = 0;
+                scaleShiftCount++;
+            }
+        }
+        
+        isHinting = false;
     }
 }
