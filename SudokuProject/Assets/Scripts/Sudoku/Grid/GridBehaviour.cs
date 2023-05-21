@@ -462,22 +462,7 @@ public class GridBehaviour : MonoBehaviour
             number = 0;
 
         grid.SetNumberToIndex(row, col, number);
-        Debug.Log($"Grid after adding {number} to index ({row}, {col}):");
-        grid.PrintGrid();
     }
-
-    // private void EnterNormalNumber(TileBehaviour tileBehaviour, int number)
-    // {
-    //     if (tileBehaviour.Permanent)
-    //         return;
-    //
-    //     int row = tileBehaviour.row;
-    //     int col = tileBehaviour.col;
-    //
-    //     grid.SetNumberToIndex(row, col, number);
-    //     Debug.Log($"Grid after adding {number} to index ({row}, {col}):");
-    //     grid.PrintGrid();
-    // }
 
     private void HandleRemoveContradictions( )
     {

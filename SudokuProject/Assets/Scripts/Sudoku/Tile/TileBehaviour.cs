@@ -48,7 +48,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     public List<int> CenterMarks { get; private set; } = new List<int>();
     public List<int> CornerMarks  { get; private set; } = new List<int>();
-    public List<int> ColorMarks { get; private set; }
+    public List<int> ColorMarks { get; private set; } = new List<int>();
 
 
     // private fields
