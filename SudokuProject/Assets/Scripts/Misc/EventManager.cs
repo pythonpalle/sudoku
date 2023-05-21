@@ -64,7 +64,7 @@ public static class EventManager
     public static void RemoveEntry(List<TileBehaviour> tiles, EnterType enterType, bool colorRemoval = false)
     {
         OnRemoveEntry?.Invoke(tiles, enterType, colorRemoval);
-        OnNewCommand?.Invoke();
+        // OnNewCommand?.Invoke();
     }
 
     public static void UIElementHover()

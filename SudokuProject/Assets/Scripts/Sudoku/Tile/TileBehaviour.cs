@@ -137,10 +137,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         
         TileStates.Add(state);
         stateCounter++;
-        
-        Debug.Log("On new command...");
-        Debug.Log($"Tile states: {TileStates.Count}");
-        Debug.Log($"stateCounter: {stateCounter}");
     }
 
     private void ChangeState(bool undo)
@@ -150,18 +146,15 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         else
             stateCounter++;
         
-        string type = undo ? "undo" : "redo";
-        Debug.Log($"Try state change (state counter: {stateCounter}, type: {type})");
+
         if (undo && stateCounter <= 0)
         {
-            Debug.Log("state counter at 1, can't undo");
             stateCounter = 1;
             return;
         }
         
         if (!undo && stateCounter > TileStates.Count)
         {
-            Debug.Log("state counter at max, can't redo");
             stateCounter --;
             return;
         }
@@ -169,8 +162,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         
         
         TileState lastState = TileStates[stateCounter-1];
-        Debug.Log($"counter: {stateCounter}");
-        Debug.Log($"reverted index: {stateCounter - 1}");
 
         Contradicted = lastState.contradicted;
         if (Contradicted)
@@ -189,7 +180,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         
         else if (CenterMarks.Count != lastState.Centers.Count)
         {
-            RemoveAllCenterMarks();
+            TryRemoveAllCenterMarks();
 
             foreach (var center in lastState.Centers)
             {
@@ -199,7 +190,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         
         else if (CornerMarks.Count != lastState.Corners.Count)
         {
-            RemoveAllCornerMarks();
+            TryRemoveAllCornerMarks();
 
             foreach (var corner in lastState.Corners)
             {
@@ -209,19 +200,13 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         
         else if (ColorMarks.Count != lastState.Colors.Count)
         {
-            RemoveAllColorMarks();
+            TryRemoveAllColorMarks();
 
             foreach (var color in lastState.Colors)
             {
                 TryUpdateColor(color, false);
             }
         }
-        
-        Debug.Log($"After {type}: ");
-        Debug.Log($"Tile states: {TileStates.Count}");
-        Debug.Log($"stateCounter: {stateCounter}");
-        
-        
     }
 
     private void OnUndo()
@@ -547,49 +532,66 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         return false;
     }
 
-    public void RemoveAllOfType(EnterType enterType)
+    public bool TryRemoveAllOfType(EnterType enterType)
     {
         switch (enterType)
         {
             case EnterType.DigitMark:
-                TryUpdateNumber(0, EnterType.DigitMark, true);
-                break;
+                return TryUpdateNumber(0, EnterType.DigitMark, true);
             
             case EnterType.CenterMark:
-                RemoveAllCenterMarks();
-                break;
+                return TryRemoveAllCenterMarks();
             
             case EnterType.CornerMark:
-                RemoveAllCornerMarks();
-                break;
+                return TryRemoveAllCornerMarks();
             
             case EnterType.ColorMark:
-                RemoveAllColorMarks();
-                break;
+                return TryRemoveAllColorMarks();
+            
+            default:
+                return false;
         }
     }
 
-    private void RemoveAllCenterMarks()
+    private bool TryRemoveAllCenterMarks()
     {
-        CenterMarks.Clear();
         centerText.text = String.Empty;
+
+        if (CenterMarks.Count > 0)
+        {
+            CenterMarks.Clear();
+            return true;
+        }
+
+        return false;
     }
 
-    private void RemoveAllCornerMarks()
+    private bool TryRemoveAllCornerMarks()
     {
-        CornerMarks.Clear();
         foreach (var text in cornerTextList)
         {
             text.text = string.Empty;
         }
+        
+        if (CornerMarks.Count > 0)
+        {
+            CornerMarks.Clear();
+            return true;
+        }
+
+        return false;
     }
     
-    private void RemoveAllColorMarks()
+    private bool TryRemoveAllColorMarks()
     {
+        bool hadColors = ColorMarks.Count > 0;
+        
         ColorMarks.Clear();
         
         // passing in -1 to inactivate all color holder
         SetColorHolderObjectsActive(-1);
+
+        return hadColors;
     }
 
     public void Hint()

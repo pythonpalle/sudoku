@@ -240,7 +240,11 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         {
             if (CheckIfTilesContainType(tiles, EnterType.ColorMark))
             {
-                RemoveAllOfEntryType(tiles, EnterType.ColorMark);
+                // only seen as new command if some tiles where effected
+                if (RemoveAllOfEntryType(tiles, EnterType.ColorMark))
+                {
+                    EventManager.OnNewCommand?.Invoke();
+                }
             }
         
             return;
@@ -274,17 +278,22 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                     RemoveAllOfEntryType(tiles, type);
                 }
                 
+                EventManager.OnNewCommand?.Invoke();
                 return;
             }
         }
     }
 
-    private void RemoveAllOfEntryType(List<TileBehaviour> tiles, EnterType type)
+    private bool RemoveAllOfEntryType(List<TileBehaviour> tiles, EnterType type)
     {
+        bool somethingWasRemoved = false;
         foreach (var tile in tiles)
         {
-            tile.RemoveAllOfType(type);
+            if (tile.TryRemoveAllOfType(type))
+                somethingWasRemoved = true;
         }
+
+        return somethingWasRemoved;
     }
 
     private bool CheckIfTilesContainType(List<TileBehaviour> selectedTiles, EnterType enterType)
@@ -617,18 +626,14 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         else
             stateCounter++;
         
-        string type = undo ? "undo" : "redo";
-        Debug.Log($"Try state change (state counter: {stateCounter}, type: {type})");
         if (undo && stateCounter <= 0)
         {
-            Debug.Log("state counter at 1, can't undo");
             stateCounter = 1;
             return;
         }
         
         if (!undo && stateCounter > gridHistory.Count)
         {
-            Debug.Log("state counter at max, can't redo");
             stateCounter --;
             return;
         }
@@ -646,6 +651,4 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     {
         ChangeState(false);
     }
-    
-
 }

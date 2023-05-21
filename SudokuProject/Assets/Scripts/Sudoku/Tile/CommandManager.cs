@@ -9,17 +9,13 @@ public interface IHasCommand
 
 public class CommandManager : MonoBehaviour
 {
-    private int commandCounter;
-    
     private void OnEnable()
     {
-        EventManager.OnNewCommand += OnNewCommand;
         EventManager.OnSetupTiles += OnSetupTiles;
     }
     
     private void OnDisable()
     {
-        EventManager.OnNewCommand -= OnNewCommand;
         EventManager.OnSetupTiles -= OnSetupTiles;
     }
 
@@ -37,10 +33,9 @@ public class CommandManager : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.Y))
                 CallRedo();
         }
-
-        
     }
 
+    // puplic för att ska kunna kallas på från undo/redo-knapparna
     public void CallUndo()
     {
         EventManager.Undo();
@@ -49,11 +44,5 @@ public class CommandManager : MonoBehaviour
     public void CallRedo()
     {
         EventManager.Redo();
-    }
-
-
-    private void OnNewCommand()
-    {
-        commandCounter++;
     }
 }
