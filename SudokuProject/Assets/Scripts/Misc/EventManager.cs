@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public static class EventManager
 {
     public static UnityAction<SudokuGrid9x9> OnGridGenerated;
+    public static UnityAction OnSetupTiles;
     
     public static UnityAction<int,int, TileBehaviour> OnTileIndexSet;
     
@@ -23,11 +24,16 @@ public static class EventManager
     public static UnityAction<List<TileBehaviour>, EnterType, int> OnNumberEnter;
     public static UnityAction<List<TileBehaviour>, EnterType, bool> OnRemoveEntry;
 
+    public static UnityAction OnNewCommand;
+
     public static UnityAction OnUIElementHover;
     public static UnityAction OnUIElementExit;
     public static UnityAction<EnterType> OnSelectButtonClicked;
     
     public static UnityAction OnPuzzleComplete;
+
+    public static UnityAction OnUndo;
+    public static UnityAction OnRedo;
 
     public static void GenerateGrid(SudokuGrid9x9 grid)
     {
@@ -52,11 +58,13 @@ public static class EventManager
     public static void EnterNumber(List<TileBehaviour> tiles, EnterType enterType, int number)
     {
         OnNumberEnter?.Invoke(tiles, enterType, number);
+        OnNewCommand?.Invoke();
     }
 
     public static void RemoveEntry(List<TileBehaviour> tiles, EnterType enterType, bool colorRemoval = false)
     {
         OnRemoveEntry?.Invoke(tiles, enterType, colorRemoval);
+        OnNewCommand?.Invoke();
     }
 
     public static void UIElementHover()
@@ -102,5 +110,20 @@ public static class EventManager
     public static void PuzzleComplete()
     {
         OnPuzzleComplete?.Invoke();
+    }
+
+    public static void Undo()
+    {
+        OnUndo?.Invoke();
+    }
+    
+    public static void Redo()
+    {
+        OnRedo?.Invoke();
+    }
+
+    public static void TilesSetup()
+    {
+        OnSetupTiles?.Invoke();
     }
 }

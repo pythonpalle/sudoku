@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridBehaviour : MonoBehaviour
+public class GridBehaviour : MonoBehaviour, IHasCommand
 {
     private SudokuGrid9x9 grid;
     private List<SudokuGrid9x9> gridHistory;
@@ -33,6 +33,10 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnNumberEnter += OnNumberEnter;
         EventManager.OnRemoveEntry += OnRemoveEntryEvent;
         
+        EventManager.OnNewCommand += OnNewCommand;
+        EventManager.OnUndo += OnUndo;
+        EventManager.OnRedo += OnRedo;
+
         EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
         EventManager.OnSelectAllTiles += OnSelectAllTiles;
 
@@ -46,8 +50,14 @@ public class GridBehaviour : MonoBehaviour
     {
         EventManager.OnGridGenerated -= OnGridGenerated;
         EventManager.OnTileIndexSet -= OnTileIndexSet;
+        
         EventManager.OnNumberEnter -= OnNumberEnter; 
         EventManager.OnRemoveEntry -= OnRemoveEntryEvent;
+
+        EventManager.OnNewCommand -= OnNewCommand;
+        EventManager.OnUndo -= OnUndo;
+        EventManager.OnRedo -= OnRedo;
+        
         EventManager.OnSelectAllTilesWithNumber -= OnSelectAllTilesWithNumber;
         EventManager.OnSelectAllTiles -= OnSelectAllTiles;
 
@@ -165,12 +175,10 @@ public class GridBehaviour : MonoBehaviour
     private void OnGridGenerated(SudokuGrid9x9 generatedGrid)
     {
         grid = generatedGrid;
-        gridHistory = new List<SudokuGrid9x9>
-        {
-            new SudokuGrid9x9(grid)
-        };
+        gridHistory = new List<SudokuGrid9x9>();
         
         SetupTileNumbers();
+        EventManager.TilesSetup();
     }
     
     private void OnTileIndexSet(int row,  int col, TileBehaviour tileBehaviour)
@@ -586,4 +594,58 @@ public class GridBehaviour : MonoBehaviour
         
         HandleRemoveContradictions();
     }
+
+    private int stateCounter = 0;
+
+    public void OnNewCommand()
+    {
+        SudokuGrid9x9 newGrid = new SudokuGrid9x9(grid);
+        
+        while (gridHistory.Count > stateCounter)
+        {
+            gridHistory.RemoveAt(gridHistory.Count-1);
+        }
+        
+        gridHistory.Add(newGrid);
+        stateCounter++;
+    }
+
+    private void ChangeState(bool undo)
+    {
+        if (undo)
+            stateCounter--;
+        else
+            stateCounter++;
+        
+        string type = undo ? "undo" : "redo";
+        Debug.Log($"Try state change (state counter: {stateCounter}, type: {type})");
+        if (undo && stateCounter <= 0)
+        {
+            Debug.Log("state counter at 1, can't undo");
+            stateCounter = 1;
+            return;
+        }
+        
+        if (!undo && stateCounter > gridHistory.Count)
+        {
+            Debug.Log("state counter at max, can't redo");
+            stateCounter --;
+            return;
+        }
+        
+        grid = new SudokuGrid9x9(gridHistory[stateCounter - 1]);
+        hintObject.OnContradictionStatusUpdate(GridHasContradiction());
+    }
+
+    private void OnUndo()
+    {
+        ChangeState(true);
+    }
+    
+    private void OnRedo()
+    {
+        ChangeState(false);
+    }
+    
+
 }

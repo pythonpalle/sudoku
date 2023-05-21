@@ -1,12 +1,26 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler
+
+
+public struct TileState
+{
+    public int Digit;
+    public List<int> Corners;
+    public List<int> Centers;
+    public List<int> Colors;
+    public bool contradicted;
+
+}
+
+public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler, IHasCommand
 {
     // serialize fields
     [Header("Background")]
@@ -35,6 +49,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     [SerializeField] private ColorObject pencilMarkColor;
     [SerializeField] private ColorObject contradictionColor;
 
+    public List<TileState> TileStates = new List<TileState>();
+
 
     // public fields
     public int row { get; private set; }
@@ -46,9 +62,13 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     public bool Permanent { get; private set; } = false;
     public bool Contradicted { get; private set; } = false;
 
-    public List<int> CenterMarks { get; private set; } = new List<int>();
-    public List<int> CornerMarks  { get; private set; } = new List<int>();
-    public List<int> ColorMarks { get; private set; } = new List<int>();
+    // public List<int> CenterMarks { get; private set; } = new List<int>();
+    // public List<int> CornerMarks  { get; private set; } = new List<int>();
+    // public List<int> ColorMarks { get; private set; } = new List<int>();
+    
+    public List<int> CenterMarks = new List<int>();
+    public List<int> CornerMarks  = new List<int>();
+    public List<int> ColorMarks  = new List<int>();
 
 
     // private fields
@@ -61,6 +81,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private RectTransform tileAnimationParent;
 
     int centerMarkFontSize = 30;
+
+    private int stateCounter = 0;
 
     private void Start()
     {
@@ -83,12 +105,136 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private void OnEnable()
     {
         selectionObject.OnDeselectAllTiles += OnDeselectAllTiles;
-    }
 
+        EventManager.OnNewCommand += OnNewCommand;
+        EventManager.OnUndo += OnUndo;
+        EventManager.OnRedo += OnRedo;
+    }
+    
     private void OnDisable()
     {
         selectionObject.OnDeselectAllTiles -= OnDeselectAllTiles;
+        
+        EventManager.OnNewCommand -= OnNewCommand;
+        EventManager.OnUndo -= OnUndo;
+        EventManager.OnRedo -= OnRedo;
     }
+
+    
+    public void OnNewCommand()
+    {
+        TileState state = new TileState();
+        state.Centers = new List<int>(CenterMarks);
+        state.Corners = new List<int>(CornerMarks);
+        state.Colors = new List<int>(ColorMarks);
+        state.Digit = number;
+        state.contradicted = Contradicted;
+        
+        while (TileStates.Count > stateCounter)
+        {
+            TileStates.RemoveAt(TileStates.Count-1);
+        }
+        
+        TileStates.Add(state);
+        stateCounter++;
+        
+        Debug.Log("On new command...");
+        Debug.Log($"Tile states: {TileStates.Count}");
+        Debug.Log($"stateCounter: {stateCounter}");
+    }
+
+    private void ChangeState(bool undo)
+    {
+        if (undo)
+            stateCounter--;
+        else
+            stateCounter++;
+        
+        string type = undo ? "undo" : "redo";
+        Debug.Log($"Try state change (state counter: {stateCounter}, type: {type})");
+        if (undo && stateCounter <= 0)
+        {
+            Debug.Log("state counter at 1, can't undo");
+            stateCounter = 1;
+            return;
+        }
+        
+        if (!undo && stateCounter > TileStates.Count)
+        {
+            Debug.Log("state counter at max, can't redo");
+            stateCounter --;
+            return;
+        }
+        
+        
+        
+        TileState lastState = TileStates[stateCounter-1];
+        Debug.Log($"counter: {stateCounter}");
+        Debug.Log($"reverted index: {stateCounter - 1}");
+
+        Contradicted = lastState.contradicted;
+        if (Contradicted)
+        {
+            SetContradiction();
+        }
+        else
+        {
+            RemoveContradiction();
+        }
+
+        if (lastState.Digit != number)
+        {
+            TryUpdateDigit(lastState.Digit, false);
+        }
+        
+        else if (CenterMarks.Count != lastState.Centers.Count)
+        {
+            RemoveAllCenterMarks();
+
+            foreach (var center in lastState.Centers)
+            {
+                TryUpdateCenter(center, false);
+            }
+        }
+        
+        else if (CornerMarks.Count != lastState.Corners.Count)
+        {
+            RemoveAllCornerMarks();
+
+            foreach (var corner in lastState.Corners)
+            {
+                TryUpdateCorner(corner, false);
+            }
+        }
+        
+        else if (ColorMarks.Count != lastState.Colors.Count)
+        {
+            RemoveAllColorMarks();
+
+            foreach (var color in lastState.Colors)
+            {
+                TryUpdateColor(color, false);
+            }
+        }
+        
+        Debug.Log($"After {type}: ");
+        Debug.Log($"Tile states: {TileStates.Count}");
+        Debug.Log($"stateCounter: {stateCounter}");
+        
+        
+    }
+
+    private void OnUndo()
+    {
+        ChangeState(true);
+    }
+    
+    private void OnRedo()
+    {
+        ChangeState(false);
+    }
+    
+
     
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -498,4 +644,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     {
         tileAnimationParent = animationParent;
     }
+
+    
 }
