@@ -141,7 +141,7 @@ public class SudokuGenerator9x9
         
         int iterationCount = 0;
 
-        int maxMoves = simple ? 2 : 200;
+        int maxMoves = simple ? 16 : 200;
         
         bool removeSymmetric = difficulty != PuzzleDifficulty.Hard;
         bool checkForHumanSolve = true;

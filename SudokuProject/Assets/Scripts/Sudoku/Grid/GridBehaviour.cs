@@ -14,6 +14,9 @@ public class GridBehaviour : MonoBehaviour
     [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private HintObject hintObject;
     
+    [Header("Tile Animation Parent")]
+    [SerializeField] private RectTransform tileAnimationParent;
+    
     [Header("Grid Boxes")]
     [SerializeField] private List<GridBoxBehaviour> boxes;
     
@@ -155,7 +158,7 @@ public class GridBehaviour : MonoBehaviour
     {
         for (int i = 0; i < boxes.Count; i++)
         {
-            boxes[i].Setup(i);
+            boxes[i].Setup(i, tileAnimationParent);
         }    
     }
     

@@ -32,6 +32,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     [SerializeField] private ColorObject selectColor;
     [SerializeField] private ColorObject pencilMarkColor;
 
+    private RectTransform tileAnimationParent;
+
     
     // public fields
     public int row { get; private set; }
@@ -451,12 +453,16 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private IEnumerator PlayHintAnimation()
     {
         isHinting = true;
+
+        // switching parent to make tile render on top of every other tile
+        var defaultParent = transform.parent;
+        transform.SetParent(tileAnimationParent, true);
         
         var startScale = transform.localScale;
         float upscaledFactor = 1.3f;
         var upscaleScale = startScale * upscaledFactor;
         
-        float timeForUpscale = 0.5f;
+        float timeForUpscale = 0.3f;
         
         int scaleShiftCount = 0;
         int numberOfScaleShifts = 6;
@@ -480,7 +486,13 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
                 scaleShiftCount++;
             }
         }
-        
+
+        transform.SetParent(defaultParent, true);
         isHinting = false;
+    }
+
+    public void SetAnimationParent(RectTransform animationParent)
+    {
+        tileAnimationParent = animationParent;
     }
 }

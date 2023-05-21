@@ -8,7 +8,7 @@ public class GridBoxBehaviour : MonoBehaviour
 
     [SerializeField] private List<TileBehaviour> tiles;
 
-    public void Setup(int number)
+    public void Setup(int number, RectTransform tileAnimationParent)
     {
         this.number = number;
 
@@ -24,6 +24,7 @@ public class GridBoxBehaviour : MonoBehaviour
                 int col = startCol + deltaCol;
 
                 tiles[i].SetIndex(row, col);
+                tiles[i].SetAnimationParent(tileAnimationParent);
                 
                 i++;
             }
