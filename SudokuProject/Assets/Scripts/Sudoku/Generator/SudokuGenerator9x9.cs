@@ -49,7 +49,7 @@ public class SudokuGenerator9x9
         }    
         
         int attempts = 0;
-        int maxAttempts = 10;
+        int maxAttempts = 20;
         
         do
         {
@@ -65,10 +65,10 @@ public class SudokuGenerator9x9
                 break;
             }
         } 
-        while (_wfcGridSolver.highestSuccessfulDifficulty != difficulty);
+        while (bestUsedDifficulty != difficulty);
         
         Debug.Log($"The puzzle is finished after {attempts} attempts, Hurray!");
-        Debug.Log($"Difficulty used: {_wfcGridSolver.highestSuccessfulDifficulty}");
+        Debug.Log($"Difficulty used: {bestUsedDifficulty}");
         grid.PrintGrid();
         EventManager.GenerateGrid(grid);
     }
@@ -84,12 +84,12 @@ public class SudokuGenerator9x9
         bool puzzleCreated = false; 
         if (solvedGridCreated)
         {
-            puzzleCreated = TryCreatePuzzleFromSolvedGrid(difficulty);
-            Debug.Log($"Difficulty from last attempt: {_wfcGridSolver.highestSuccessfulDifficulty}");
+            puzzleCreated = TryCreatePuzzleFromSolvedGrid(difficulty, out PuzzleDifficulty lastUsedDifficulty);
+            Debug.Log($"Difficulty from last attempt: {lastUsedDifficulty}");
 
-            if ((int)_wfcGridSolver.highestSuccessfulDifficulty > (int)bestUsedDifficulty)
+            if ((int)lastUsedDifficulty > (int)bestUsedDifficulty)
             {
-                bestUsedDifficulty = _wfcGridSolver.highestSuccessfulDifficulty;
+                bestUsedDifficulty = lastUsedDifficulty;
                 Debug.Log($"Best Used difficulty: {bestUsedDifficulty}");
                 hardestUsedGrid = new SudokuGrid9x9(grid);
             }
@@ -135,16 +135,17 @@ public class SudokuGenerator9x9
         return effectedTiles;
     }
 
-    private bool TryCreatePuzzleFromSolvedGrid(PuzzleDifficulty difficulty)
+    private bool TryCreatePuzzleFromSolvedGrid(PuzzleDifficulty difficulty, out PuzzleDifficulty lastUsedDifficulty)
     {
         bool[,] visitedTiles = new bool[9, 9];
         
         int iterationCount = 0;
 
-        int maxMoves = simple ? 16 : 200;
+        int maxMoves = simple ? 16 : difficulty == PuzzleDifficulty.Easy ? 26 : 200;
         
         bool removeSymmetric = difficulty != PuzzleDifficulty.Hard;
-        bool checkForHumanSolve = true;
+
+        lastUsedDifficulty = PuzzleDifficulty.Simple;
 
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))
@@ -164,11 +165,11 @@ public class SudokuGenerator9x9
             //  1. Find lowest entropy tile (or random if simple)
             if (simple)
             {
-                 lowestEntropyTileIndex = FindRandomTileIndexFromUnVisited(visitedTiles);
+                lowestEntropyTileIndex = FindRandomTileIndexFromUnVisited(visitedTiles);
 
             }else
             {
-                 lowestEntropyTileIndex = FindRandomTileIndexFromUnVisited(visitedTiles);
+                lowestEntropyTileIndex = FindRandomTileIndexFromUnVisited(visitedTiles);
             }  
             
             //  2. Remove it from grid, propagate
@@ -181,14 +182,29 @@ public class SudokuGenerator9x9
             // 4: check to see if only one solution
             bool multipleSolutions = CheckIfMultipleSolutions(grid);
 
-            // 5. Revert to last grid if multiple solutions OR if not humanly solvable
-            if (multipleSolutions || (checkForHumanSolve && !HumanlySolvable(grid, difficulty)))
+            // 5. Revert to last grid if multiple solutions 
+            if (multipleSolutions)
             {
                 grid = new SudokuGrid9x9(lastGrid);
-                // Debug.Log("Current grid state (after re-adding the clues):");
-                // grid.PrintGrid();
-                iterationCount++;
+                continue;
             }
+            
+            // // 6. Also revert back if not humanly solveable
+            // else if (!HumanlySolvable(grid, difficulty, out PuzzleDifficulty usedDifficulty))
+            // {
+            //     grid = new SudokuGrid9x9(lastGrid);
+            // }
+
+            if (HumanlySolvable(grid, difficulty, out PuzzleDifficulty usedDifficulty))
+            {
+                lastUsedDifficulty = usedDifficulty;
+            }
+            else
+            {
+                grid = new SudokuGrid9x9(lastGrid);
+            }
+
+            
         }
 
         return true;
@@ -206,9 +222,9 @@ public class SudokuGenerator9x9
         }
     }
 
-    private bool HumanlySolvable(SudokuGrid9x9 sudokuGrid9X9, PuzzleDifficulty difficulty)
+    private bool HumanlySolvable(SudokuGrid9x9 sudokuGrid9X9, PuzzleDifficulty difficulty, out PuzzleDifficulty hardestDifficulty)
     {
-        return _wfcGridSolver.HumanlySolvable(sudokuGrid9X9, difficulty);
+        return _wfcGridSolver.HumanlySolvable(sudokuGrid9X9, difficulty, out hardestDifficulty);
     }
     
     private bool CheckIfMultipleSolutions(SudokuGrid9x9 sudokuGrid9X9)

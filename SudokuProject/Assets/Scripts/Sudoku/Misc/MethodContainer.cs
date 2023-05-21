@@ -4,17 +4,20 @@ using System.Collections.Generic;
 
 public static class MethodContainer
 {
-    public static readonly List<DigitMethod> DigitMethods = new List<DigitMethod>()
+    private static readonly List<DigitMethod> DigitMethods = new ()
     {
+        // Naked Single First because its fastest
         new NakedSingle(),
+        
+        // Hidden box single second because it's much easier for humans to find than in rows/cols,
+        // good for giving hints
+        new HiddenSingleBox(),
 
         new HiddenSingleColumn(),
         new HiddenSingleInRow(),
-
-        new HiddenSingleBox()
     };
 
-    public static readonly List<CandidateMethod> CandidateMethods = new List<CandidateMethod>()
+    private static readonly List<CandidateMethod> CandidateMethods = new ()
     {
         // Pointing Pairs
         new PointingPairRowToBox(),

@@ -11,8 +11,6 @@ public class WFCGridSolver
     public WFCGridSolver(PuzzleDifficulty puzzleMAXDifficultyForHumanSolve)
     {
         moves = new Stack<Move>();
-        maxDifficultyForHumanSolve = puzzleMAXDifficultyForHumanSolve;
-
         SetupSolveMethods(puzzleMAXDifficultyForHumanSolve);
     }
 
@@ -20,9 +18,8 @@ public class WFCGridSolver
     
     private Stack<Move> moves;
     
-    private PuzzleDifficulty maxDifficultyForHumanSolve;
 
-    public PuzzleDifficulty highestSuccessfulDifficulty { get; private set; } = PuzzleDifficulty.Simple;
+    private PuzzleDifficulty highestSuccessfulDifficulty { get; set; } = PuzzleDifficulty.Simple;
     private PuzzleDifficulty highestAttemptedDifficulty = PuzzleDifficulty.Simple;
 
     private List<DigitMethod> digitMethods;
@@ -140,15 +137,15 @@ public class WFCGridSolver
             }
         }
 
-        highestSuccessfulDifficulty = highestAttemptedDifficulty;
         
         Debug.LogWarning("NO HINT FOUND");
         return false;
     }
     
-    public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, PuzzleDifficulty difficulty)
+    public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, PuzzleDifficulty difficulty, out PuzzleDifficulty hardestUsed)
     {
         grid = new SudokuGrid9x9(gridToCheck);
+        highestSuccessfulDifficulty = highestAttemptedDifficulty = hardestUsed = PuzzleDifficulty.Simple;
         
         int iterations = 0;
      
@@ -159,6 +156,7 @@ public class WFCGridSolver
             if (iterations > 90) 
             {
                 Debug.LogError("Maximum iterations reached.");
+                hardestUsed = PuzzleDifficulty.Simple;
                 return false;
             }
             
@@ -182,7 +180,7 @@ public class WFCGridSolver
             
         }
 
-        highestSuccessfulDifficulty = highestAttemptedDifficulty;
+        hardestUsed = highestSuccessfulDifficulty = highestAttemptedDifficulty;
         return true;
     }
 
@@ -224,6 +222,12 @@ public class WFCGridSolver
             {
                 RemoveCandidates(removal);
                 UpdateAttemptedDifficult(method.Difficulty);
+
+                if (method.Difficulty == PuzzleDifficulty.Hard)
+                {
+                    Debug.LogWarning($"Hard method used: {method.GetName}");
+                }
+                
                 return true;
             }
         }
@@ -239,7 +243,6 @@ public class WFCGridSolver
         if (latestDifficultValue > highestAttemptedValue)
         {
             highestAttemptedDifficulty = latestDifficult;
-            Debug.Log("Highest Attempted difficult during solve: " + latestDifficult);
         }
     }
 

@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 16024529}
   - component: {fileID: 16024528}
   - component: {fileID: 16024527}
+  - component: {fileID: 16024530}
   m_Layer: 5
   m_Name: Redo Button
   m_TagString: Untagged
@@ -257,6 +258,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 16024525}
   m_CullTransparentMesh: 1
+--- !u!114 &16024530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16024525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c77ea57f788244444abe6d8547134b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  usePointerEnter: 1
+  usePointerExit: 1
 --- !u!224 &47834739 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5243590692779224252, guid: c25a8ce78a8cb5f41b035f8a33022836, type: 3}
@@ -1175,7 +1190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0.5921569, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -6175,7 +6190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0.5921569, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -8610,6 +8625,7 @@ GameObject:
   - component: {fileID: 1987577404}
   - component: {fileID: 1987577403}
   - component: {fileID: 1987577406}
+  - component: {fileID: 1987577407}
   m_Layer: 5
   m_Name: Hint Button
   m_TagString: Untagged
@@ -8738,6 +8754,20 @@ MonoBehaviour:
   selectColor: {fileID: 11400000, guid: 6fee8faf98e77994aa108aa73842619f, type: 2}
   invalidHintColor: {fileID: 11400000, guid: 90506eac03aaf8d409aaf7e41cf7787a, type: 2}
   _popupWindow: {fileID: 1667517313}
+--- !u!114 &1987577407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987577401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c77ea57f788244444abe6d8547134b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  usePointerEnter: 1
+  usePointerExit: 1
 --- !u!1 &1989382340
 GameObject:
   m_ObjectHideFlags: 0
@@ -9406,6 +9436,7 @@ GameObject:
   - component: {fileID: 2095587386}
   - component: {fileID: 2095587385}
   - component: {fileID: 2095587384}
+  - component: {fileID: 2095587387}
   m_Layer: 5
   m_Name: Undo Button
   m_TagString: Untagged
@@ -9528,6 +9559,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2095587382}
   m_CullTransparentMesh: 1
+--- !u!114 &2095587387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2095587382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c77ea57f788244444abe6d8547134b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  usePointerEnter: 1
+  usePointerExit: 1
 --- !u!1 &2100027529
 GameObject:
   m_ObjectHideFlags: 0
