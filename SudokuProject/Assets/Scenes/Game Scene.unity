@@ -810,6 +810,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
+  hintObject: {fileID: 0}
   boxes:
   - {fileID: 5508750209443585459}
   - {fileID: 577388623}
@@ -7147,8 +7148,9 @@ GameObject:
   - component: {fileID: 1987577405}
   - component: {fileID: 1987577404}
   - component: {fileID: 1987577403}
+  - component: {fileID: 1987577406}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Hint Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7257,6 +7259,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1987577401}
   m_CullTransparentMesh: 1
+--- !u!114 &1987577406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987577401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcd742fb8f76b3044baf9dc676d51ce7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hintObject: {fileID: 11400000, guid: 23ba180c1afa1db4c9900627d814750d, type: 2}
+  difficultyObject: {fileID: 11400000, guid: 6168c2ed25d594242ab75afc0a365596, type: 2}
+  hintButton: {fileID: 1987577403}
 --- !u!1 &1989382340
 GameObject:
   m_ObjectHideFlags: 0

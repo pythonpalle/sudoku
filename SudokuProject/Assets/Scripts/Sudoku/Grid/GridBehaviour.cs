@@ -10,7 +10,11 @@ public class GridBehaviour : MonoBehaviour
 
     private TileBehaviour[,] tileBehaviours = new TileBehaviour[9,9];
 
+    [Header("Scriptable Objects")]
     [SerializeField] private SelectionObject selectionObject;
+    [SerializeField] private HintObject hintObject;
+    
+    [Header("Grid Boxes")]
     [SerializeField] private List<GridBoxBehaviour> boxes;
     
     private void Start()
@@ -28,6 +32,9 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnSelectAllTiles += OnSelectAllTiles;
 
         selectionObject.OnRequestTile += OnRequestTile;
+
+        hintObject.OnRequestGrid += OnRequestGrid;
+        hintObject.OnHintFound += OnHintFound;
     }
     
     private void OnDisable()
@@ -40,6 +47,21 @@ public class GridBehaviour : MonoBehaviour
         EventManager.OnSelectAllTiles -= OnSelectAllTiles;
 
         selectionObject.OnRequestTile -= OnRequestTile;
+        
+        hintObject.OnRequestGrid -= OnRequestGrid;
+        hintObject.OnHintFound -= OnHintFound;
+    }
+
+    private void OnRequestGrid()
+    {
+        hintObject.SendGridCopy(grid);
+    }
+
+    private void OnHintFound(TileIndex hintIndex)
+    {
+        Debug.Log($"Sending hint instruction to {hintIndex}.");
+        TileBehaviour hintTileBehaviour = tileBehaviours[hintIndex.row, hintIndex.col];
+        hintTileBehaviour.Hint();
     }
 
     private void OnSelectAllTiles()

@@ -53,119 +53,11 @@ public class WFCGridSolver
     private void GetDigitMethods(PuzzleDifficulty puzzleDifficulty)
     {
         digitMethods = MethodContainer.GetDigitMethodsOfDifficulty(puzzleDifficulty);
-        return;
-        
-        if (maxDifficultyForHumanSolve == PuzzleDifficulty.Easy)
-        {
-            digitMethods = new List<DigitMethod>{new HiddenSingleBox()};
-        }
-        else
-        {
-            digitMethods = new List<DigitMethod>
-            {
-                new NakedSingle(),
-                
-                new HiddenSingleColumn(), 
-                new HiddenSingleInRow(),
-                
-                new HiddenSingleBox()
-            };
-        }
     }
 
     private void GetCandidateMethods(PuzzleDifficulty puzzleDifficulty)
     {
         candidatesMethods = MethodContainer.GetCandidatesMethodsOfDifficulty(puzzleDifficulty);
-        return;
-        
-        candidatesMethods = new List<CandidateMethod>();
-
-        switch (maxDifficultyForHumanSolve)
-        {
-            case PuzzleDifficulty.Easy:
-                break;
-            
-            case PuzzleDifficulty.Medium:
-                candidatesMethods = new List<CandidateMethod>
-                {
-                    // Pointing Pairs
-                    new PointingPairBoxToRow(),
-                    new PointingPairBoxToCol(),
-                    
-                    // Pointing Triples
-                    new PointingTripleBoxToRow(),
-                    new PointingTripleBoxToCol(),
-                    
-                    // Naked Pairs
-                    new NakedPairInCol(),
-                    new NakedPairInRow(),
-                    
-                    // Naked Triples
-                    new NakedTripleInRow(),
-                    new NakedTripleInCol(),
-                };
-                break;
-            
-            case PuzzleDifficulty.Hard:
-                candidatesMethods = new List<CandidateMethod>
-                {
-                    // Pointing Pairs
-                    new PointingPairRowToBox(),
-                    new PointingPairColToBox(),
-                    new PointingPairBoxToRow(),
-                    new PointingPairBoxToCol(),
-                    
-                    // Pointing Triples
-                    new PointingTripleRowToBox(),
-                    new PointingTripleColToBox(),
-                    new PointingTripleBoxToRow(),
-                    new PointingTripleBoxToCol(),
-                    
-                    // Naked Pairs
-                    new NakedPairInCol(),
-                    new NakedPairInRow(),
-                    new NakedPairInBox(),
-                    
-                    // Hidden pairs
-                    new HiddenPairInBox(),
-                    new HiddenPairInRow(),
-                    new HiddenPairInCol(),
-                    
-                    // Naked Triples
-                    new NakedTripleInRow(),
-                    new NakedTripleInCol(),
-                    new NakedTripleInBox(),
-                    
-                    // Hidden triples 
-                    new HiddenTripleInBox(),
-                    new HiddenTripleInRow(),
-                    new HiddenTripleInCol(),
-                    
-                    // Naked Quad (includes row, col and box)
-                    new NakedQuad(),
-                    
-                    // Hidden Quad (includes row, col and box)
-                    new HiddenQuad(),
-                    
-                    // XWings
-                    new XWingRow(),
-                    new XWingCol(),
-                    
-                    // Swordfish
-                    new SwordFishRow(),
-                    new SwordFishCol(),
-                    
-                    // JellyFish
-                    new JellyFishRow(),
-                    new JellyFishCol(),
-                    
-                    // Extended Wings
-                    new XYWing(),
-                    new XYZWing(),
-                };
-                break;
-        }
-        
     }
     
     public bool HasMultipleSolutions(SudokuGrid9x9 originalGrid)
@@ -201,6 +93,44 @@ public class WFCGridSolver
         
         Debug.Log("Solutions found: " + solvedGrids.Count);
         return solvedGrids.Count;
+    }
+
+    public bool TryFindProgression(SudokuGrid9x9 grid, PuzzleDifficulty difficulty, out TileIndex progressIndex)
+    {
+        this.grid = new SudokuGrid9x9(grid);
+        progressIndex = new TileIndex();
+
+        int iterations = 0;
+        while (!gridFilled)
+        {
+            iterations++;
+
+            if (iterations > 90) 
+            {
+                Debug.LogError("Maximum iterations reached.");
+                return false;
+            }
+            
+            // start with digit methods, place digit directly
+            if (TryFindDigitProgression(out progressIndex))
+            {
+                return true;
+            }
+            
+            bool someMethodYieldProgress = TryProgressWithCandidateMethods();
+            if (someMethodYieldProgress)
+            {
+                continue;
+            }
+            else
+            {
+                Debug.LogWarning("NOT PROGRESSION FOUND " + difficulty);
+                return false;
+            }
+        }
+
+        highestSuccessfulDifficulty = highestAttemptedDifficulty;
+        return true;
     }
     
     public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, PuzzleDifficulty difficulty)
@@ -255,6 +185,21 @@ public class WFCGridSolver
             }
         }
         
+        return false;
+    }
+    
+    private bool TryFindDigitProgression(out TileIndex index)
+    {
+        foreach (var method in digitMethods)
+        {
+            if (method.TryFindDigit(grid, out index, out int digit))
+            {
+                Debug.Log($"Found progress: {method.GetName} at index {index}, digit {digit}");
+                return true;
+            }
+        }
+
+        index = new TileIndex();
         return false;
     }
 

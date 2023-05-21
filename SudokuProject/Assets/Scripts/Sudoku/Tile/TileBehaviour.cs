@@ -439,4 +439,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         // passing in -1 to inactivate all color holder
         SetColorHolderObjectsActive(-1);
     }
+
+    public void Hint()
+    {
+        Debug.Log("TileBehaviour Hint");
+    }
 }

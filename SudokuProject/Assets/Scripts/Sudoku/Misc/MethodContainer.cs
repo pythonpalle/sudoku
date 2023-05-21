@@ -84,6 +84,7 @@ public static class MethodContainer
         SetUpAllDigitMethodDifficulties();
         switch (difficulty)
         {
+            case PuzzleDifficulty.Simple:
             case PuzzleDifficulty.Easy:
                 return easyDigitMethods;
             
@@ -126,6 +127,7 @@ public static class MethodContainer
         SetUpAllCandidateMethodDifficulties();
         switch (difficulty)
         {
+            case PuzzleDifficulty.Simple:
             case PuzzleDifficulty.Easy:
                 return easyCandidateMethods;
             
