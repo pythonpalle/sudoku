@@ -5,7 +5,7 @@ using UnityEngine;
 public class PopupWindow : MonoBehaviour
 {
     [SerializeField] private RectTransform popupWindow;
-    
+
     public void PopUp()
     {
         popupWindow.gameObject.SetActive(true);

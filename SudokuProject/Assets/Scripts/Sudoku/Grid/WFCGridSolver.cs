@@ -98,6 +98,17 @@ public class WFCGridSolver
     public bool TryFindProgression(SudokuGrid9x9 grid, PuzzleDifficulty difficulty, out TileIndex progressIndex)
     {
         this.grid = new SudokuGrid9x9(grid);
+
+        // can only progress if the grid is actually solveable
+        if (!TrySolveGrid())
+        {
+            Debug.LogWarning("Oops, can't solve this grid!");
+            progressIndex = new TileIndex(-1, -1);
+            return false;
+        }
+        
+        this.grid = new SudokuGrid9x9(grid);
+
         progressIndex = new TileIndex();
 
         int iterations = 0;

@@ -17,6 +17,9 @@ public class HintBehaviour : MonoBehaviour
     [Header("Color")] 
     [SerializeField] private ColorObject selectColor;
     [SerializeField] private ColorObject invalidHintColor;
+    
+    [Header("Popup")] 
+    [SerializeField] private PopupWindow _popupWindow;
 
     private WFCGridSolver _solver;
     
@@ -55,7 +58,10 @@ public class HintBehaviour : MonoBehaviour
         {
             hintObject.HintFound(hintIndex);
         }
-        
+        else
+        {
+            _popupWindow.PopUp();
+        }
     }
 
     private bool TryFindHint(SudokuGrid9x9 gridCopy, out TileIndex tileIndex)
