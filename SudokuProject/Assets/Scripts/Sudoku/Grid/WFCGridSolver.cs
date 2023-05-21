@@ -130,7 +130,9 @@ public class WFCGridSolver
         }
 
         highestSuccessfulDifficulty = highestAttemptedDifficulty;
-        return true;
+        
+        Debug.LogWarning("NO HINT FOUND");
+        return false;
     }
     
     public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, PuzzleDifficulty difficulty)
