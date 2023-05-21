@@ -365,11 +365,11 @@ public class GridBehaviour : MonoBehaviour
 
         if (enterType == EnterType.DigitMark)
         {
-            AddNumberToGrid(tileBehaviour, number, sameNumber);
+            AddDigitToGrid(tileBehaviour, number, sameNumber);
         }
     }
 
-    private void AddNumberToGrid(TileBehaviour tileBehaviour, int number, bool remove)
+    private void AddDigitToGrid(TileBehaviour tileBehaviour, int number, bool remove)
     {
         int row = tileBehaviour.row;
         int col = tileBehaviour.col;
