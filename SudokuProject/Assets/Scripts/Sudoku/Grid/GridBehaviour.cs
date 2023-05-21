@@ -29,8 +29,10 @@ public class GridBehaviour : MonoBehaviour
     {
         EventManager.OnGridGenerated += OnGridGenerated;
         EventManager.OnTileIndexSet += OnTileIndexSet;
+        
         EventManager.OnNumberEnter += OnNumberEnter;
         EventManager.OnRemoveEntry += OnRemoveEntryEvent;
+        
         EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
         EventManager.OnSelectAllTiles += OnSelectAllTiles;
 
@@ -59,12 +61,10 @@ public class GridBehaviour : MonoBehaviour
     {
         bool contradiction = GridHasContradiction();
         // don't bother updating candidates if the grid is contradicted anyway
-        if (!contradiction)
-        {
-            UpdateGridCandidates();
-        }
+        if (contradiction) return;
         
-        hintObject.SendGridCopy(grid, GridHasContradiction());
+        UpdateGridCandidates();
+        hintObject.SendGridCopy(grid);
     }
 
     private void UpdateGridCandidates()
@@ -188,6 +188,7 @@ public class GridBehaviour : MonoBehaviour
                 HandleRemoveContradictions();
                 HandleAddContradictionsInList(tiles, number);
                 HandleCompletion();
+                hintObject.UpdateContradictionStatus(GridHasContradiction());
                 break;
         }
     }
@@ -258,6 +259,7 @@ public class GridBehaviour : MonoBehaviour
                 if (type == EnterType.DigitMark)
                 {
                     HandleRemoveNormalNumbers(tiles);
+                    hintObject.UpdateContradictionStatus(GridHasContradiction());
                 }
                 else
                 {
@@ -532,6 +534,7 @@ public class GridBehaviour : MonoBehaviour
                 tile.SetContradiction();
             }
         }
+        
     }
 
     private List<TileBehaviour> GetEffectedTiles(TileBehaviour tile)

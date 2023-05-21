@@ -27,14 +27,15 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     [SerializeField] private List<ColorMarkHolder> colorMarkHolders;
     [SerializeField] private RectTransform spriteMask;
     
-    [Header("Scriptable objects")]
+    [Header("Selection")]
     [SerializeField] private SelectionObject selectionObject;
+    
+    [Header("Selection")]
     [SerializeField] private ColorObject selectColor;
     [SerializeField] private ColorObject pencilMarkColor;
+    [SerializeField] private ColorObject contradictionColor;
 
-    private RectTransform tileAnimationParent;
 
-    
     // public fields
     public int row { get; private set; }
     public int col { get; private set; }
@@ -47,7 +48,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     public List<int> CenterMarks { get; private set; } = new List<int>();
     public List<int> CornerMarks  { get; private set; } = new List<int>();
-    public List<int> ColorMarks; // { get; private set; }
+    public List<int> ColorMarks { get; private set; }
 
 
     // private fields
@@ -57,6 +58,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private Vector3 whitePartSelectScaleVector = Vector3.one * whitePartSelectScale;
     private Vector3 whitePartStartScale;
     
+    private RectTransform tileAnimationParent;
+
     int centerMarkFontSize = 30;
 
     private void Start()
@@ -369,7 +372,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     public void SetContradiction()
     {
         Contradicted = true;
-        whitePart.color = Color.red;
+        whitePart.color = contradictionColor.Color;
     }
 
     public void RemoveContradiction()

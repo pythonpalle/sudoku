@@ -14,12 +14,12 @@ public class HintBehaviour : MonoBehaviour
     [Header("Button")]
     [SerializeField] private Button hintButton;
 
+    [Header("Color")] 
+    [SerializeField] private ColorObject selectColor;
+    [SerializeField] private ColorObject invalidHintColor;
+
     private WFCGridSolver _solver;
-
-    private void Awake()
-    {
-    }
-
+    
     private void OnEnable()
     {
         _solver = new WFCGridSolver(difficultyObject.Difficulty);
@@ -27,6 +27,7 @@ public class HintBehaviour : MonoBehaviour
         hintButton.onClick.AddListener(OnHintButtonClicked);
 
         hintObject.OnSendGridCopy += OnSendGridCopy;
+        hintObject.OnContradictionStatusUpdate += OnContradictionStatusUpdate;
     }
     
 
@@ -35,6 +36,12 @@ public class HintBehaviour : MonoBehaviour
         hintButton.onClick.RemoveListener(OnHintButtonClicked);
         
         hintObject.OnSendGridCopy -= OnSendGridCopy;
+        hintObject.OnContradictionStatusUpdate -= OnContradictionStatusUpdate;
+    }
+
+    private void OnContradictionStatusUpdate(bool contradiction)
+    {
+        hintButton.image.color = contradiction ? invalidHintColor.Color : selectColor.Color;
     }
 
     private void OnHintButtonClicked()
@@ -42,14 +49,8 @@ public class HintBehaviour : MonoBehaviour
         hintObject.RequestGrid();
     }
     
-    private void OnSendGridCopy(SudokuGrid9x9 gridCopy, bool contradiction)
+    private void OnSendGridCopy(SudokuGrid9x9 gridCopy)
     {
-        if (contradiction)
-        {
-            Debug.Log("Can't find hint; grid contradicted.");
-            return;
-        }
-        
         if (TryFindHint(gridCopy, out TileIndex hintIndex))
         {
             hintObject.HintFound(hintIndex);

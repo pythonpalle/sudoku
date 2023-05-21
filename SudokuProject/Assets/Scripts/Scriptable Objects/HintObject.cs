@@ -7,21 +7,27 @@ using UnityEngine.Events;
 public class HintObject : ScriptableObject
 {
     public UnityAction OnRequestGrid;
-    public UnityAction<SudokuGrid9x9, bool> OnSendGridCopy;
+    public UnityAction<SudokuGrid9x9> OnSendGridCopy;
     public UnityAction<TileIndex> OnHintFound;
+    public UnityAction<bool> OnContradictionStatusUpdate;
 
     public void RequestGrid()
     {
         OnRequestGrid?.Invoke();
     }
     
-    public void SendGridCopy(SudokuGrid9x9 copy, bool contradictedGrid)
+    public void SendGridCopy(SudokuGrid9x9 copy)
     {
-        OnSendGridCopy?.Invoke(copy, contradictedGrid);
+        OnSendGridCopy?.Invoke(copy);
     }
 
     public void HintFound(TileIndex hintIndex)
     {
         OnHintFound?.Invoke(hintIndex);
+    }
+
+    public void UpdateContradictionStatus(bool gridHasContradiction)
+    {
+        OnContradictionStatusUpdate?.Invoke(gridHasContradiction);
     }
 }

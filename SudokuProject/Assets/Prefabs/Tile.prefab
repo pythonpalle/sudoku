@@ -2415,7 +2415,7 @@ MonoBehaviour:
   selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
   selectColor: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
   pencilMarkColor: {fileID: 11400000, guid: 5644fc9c05b3c2d48acebef0a4d623b6, type: 2}
-  ColorMarks: 
+  contradictionColor: {fileID: 11400000, guid: 90506eac03aaf8d409aaf7e41cf7787a, type: 2}
 --- !u!1 &2454568410499543091
 GameObject:
   m_ObjectHideFlags: 0
