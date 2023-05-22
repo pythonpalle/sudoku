@@ -52,7 +52,7 @@ public class SudokuGenerator9x9
         }    
         
         int attempts = 0;
-        int maxAttempts = 20;
+        int maxAttempts = 30;
         
         do
         {
