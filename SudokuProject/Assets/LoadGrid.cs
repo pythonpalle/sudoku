@@ -7,52 +7,70 @@ using Random = System.Random;
 public class LoadGrid : MonoBehaviour
 {
     [SerializeField] private List<LoadBox> LoadBoxes;
+    [SerializeField] private Transform loadCircle;
 
-    private List<LoadTile> _loadTiles;
-
+    private LoadTile[,] loadTileMatriX = new LoadTile[9,9];
     Random rnd = new Random();
-
-    private static List<string> numbers = new List<string>
-    {
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-    };
 
     private void Awake()
     {
-        _loadTiles = new List<LoadTile>();
-        
-        foreach (var box in LoadBoxes)
+        for (int i = 0; i < 9; i++)
         {
-            _loadTiles.AddRange(box.LoadTiles);
+            LoadBoxes[i].Setup(i);
+            foreach (var tile in LoadBoxes[i].LoadTiles)
+            {
+                loadTileMatriX[tile.row, tile.col] = tile;
+            }
         }
     }
 
-    public void Shuffle(PuzzleDifficulty difficulty)
+
+    public void Shuffle(SudokuGrid9x9 grid, PuzzleDifficulty difficulty)
     {
-        Debug.Log("Shuffle...");
-
         float numberOdds = GetNumberOddsFromDifficulty(difficulty);
+        
+        // added to the current one to change the grid slighlty
+        int randomAddedNumber = rnd.Next(10);
 
-        foreach (var tile in _loadTiles)
+        int iterations = 0;
+        int halfGridCount = 40;
+        
+        loadCircle.Rotate(Vector3.forward, -30f);
+        
+        for (int row = 0; row < 9; row++)
         {
-            bool useNumber = (float) rnd.NextDouble() < numberOdds;
-            string tileString = " ";
-            
-            if (useNumber)
+            for (int col = 0; col < 9; col++)
             {
-                int randIndex = rnd.Next(numbers.Count);
-                tileString = numbers[randIndex];
-            }
+                bool useNumber = (float) rnd.NextDouble() < numberOdds;
+                
+                int symRow = 8 - row;
+                int symCol = 8 - col;
 
-            tile.TileText.text = tileString;
+                UpdateText(grid, row, col, useNumber, randomAddedNumber);
+                UpdateText(grid, symRow, symCol, useNumber, randomAddedNumber);
+
+                iterations++;
+                if (iterations >= halfGridCount)
+                    return;
+            }
+        }
+    }
+
+    private void UpdateText(SudokuGrid9x9 grid, int row, int col, bool useNumber, int randomNumber)
+    {
+        var tile = loadTileMatriX[row, col];
+
+        if (useNumber)
+        {
+            int number = grid[row, col].Number;
+
+            number = (number + randomNumber) % 9 + 1;
+
+            tile.TileText.text = number.ToString();
+        }
+        else
+        {
+            tile.TileText.text = " ";
         }
     }
 

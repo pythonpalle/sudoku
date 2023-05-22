@@ -96,6 +96,13 @@ public class SudokuGenerator9x9
         }
     }
 
+    public SudokuGrid9x9 GetRandomCompleteGrid()
+    {
+        _wfcGridSolver.SetGrid(grid);
+        _wfcGridSolver.TrySolveGrid(false);
+        return new SudokuGrid9x9(_wfcGridSolver.grid);
+    }
+
     private IEnumerator TryCreatePuzzleFromSolvedGridRoutine(PuzzleDifficulty difficulty)
     {
         bool[,] visitedTiles = new bool[9, 9];
