@@ -19,8 +19,6 @@ public class DifficultySelector : MonoBehaviour
     [Header("Load Screen")] 
     [SerializeField] private LoadGrid loadGrid;
     
-    private bool sceneIsLoading;
-    
 
     private void OnEnable()
     {
@@ -67,22 +65,5 @@ public class DifficultySelector : MonoBehaviour
     private void LoadPuzzleScene()
     {
         SceneManager.LoadScene("Game Scene");
-    }
-
-    IEnumerator LoadSceneAsync()
-    {
-        sceneIsLoading = true;
-        
-        AsyncOperation operation = SceneManager.LoadSceneAsync("Game Scene");
-        loadGrid.gameObject.SetActive(true);
-
-        while (!operation.isDone)
-        {
-            Debug.Log($"Progress: {operation.progress}");
-            loadGrid.Shuffle();
-            yield return null;
-        }
-
-        sceneIsLoading = false;
     }
 }

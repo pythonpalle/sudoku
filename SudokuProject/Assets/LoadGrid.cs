@@ -10,46 +10,10 @@ public class LoadGrid : MonoBehaviour
 
     private List<LoadTile> _loadTiles;
 
-    private float timeOfLastShuffle;
-    private float timeBetweenShuffles = 0.1f;
-    
     Random rnd = new Random();
 
     private static List<string> numbers = new List<string>
     {
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        
         "1",
         "2",
         "3",
@@ -59,7 +23,6 @@ public class LoadGrid : MonoBehaviour
         "7",
         "8",
         "9",
-       
     };
 
     private void Awake()
@@ -72,22 +35,42 @@ public class LoadGrid : MonoBehaviour
         }
     }
 
-    public void Shuffle()
+    public void Shuffle(PuzzleDifficulty difficulty)
     {
-        // if (Time.time < timeOfLastShuffle + timeBetweenShuffles)
-        //     return;
-
         Debug.Log("Shuffle...");
+
+        float numberOdds = GetNumberOddsFromDifficulty(difficulty);
 
         foreach (var tile in _loadTiles)
         {
-            int randIndex = rnd.Next(numbers.Count);
-            string randomNumber = numbers[randIndex];
+            bool useNumber = (float) rnd.NextDouble() < numberOdds;
+            string tileString = " ";
+            
+            if (useNumber)
+            {
+                int randIndex = rnd.Next(numbers.Count);
+                tileString = numbers[randIndex];
+            }
 
-            tile.TileText.text = randomNumber;
+            tile.TileText.text = tileString;
         }
-        
+    }
 
-        timeOfLastShuffle = Time.time;
+    private float GetNumberOddsFromDifficulty(PuzzleDifficulty difficulty)
+    {
+        switch (difficulty)
+        {
+            case PuzzleDifficulty.Simple:
+                return 0.7f;
+            
+            case PuzzleDifficulty.Easy:
+                return 0.4f;
+            
+            case PuzzleDifficulty.Medium:
+                return 0.3f;
+            
+                default:
+                return 0.25f;
+        }
     }
 }

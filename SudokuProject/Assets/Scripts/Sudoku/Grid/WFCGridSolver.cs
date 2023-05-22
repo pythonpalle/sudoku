@@ -1,9 +1,5 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 public class WFCGridSolver
@@ -122,7 +118,7 @@ public class WFCGridSolver
             // start with digit methods, place digit directly
             if (TryFindDigitProgression(out progressIndex))
             {
-                return true;
+                return true; 
             }
             
             bool someMethodYieldProgress = TryProgressWithCandidateMethods();
@@ -142,7 +138,7 @@ public class WFCGridSolver
         return false;
     }
     
-    public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, PuzzleDifficulty difficulty, out PuzzleDifficulty hardestUsed)
+    public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, out PuzzleDifficulty hardestUsed)
     {
         grid = new SudokuGrid9x9(gridToCheck);
         highestSuccessfulDifficulty = highestAttemptedDifficulty = hardestUsed = PuzzleDifficulty.Simple;
@@ -173,7 +169,7 @@ public class WFCGridSolver
             }
             else
             {
-                Debug.LogWarning("NOT SOLVABLE AT DIFFICULTY " + difficulty);
+                Debug.LogWarning("NOT PROGRESSION FOUND " );
                 return false;
             }
             
@@ -280,9 +276,6 @@ public class WFCGridSolver
         moves = new Stack<Move>();        
         
         TrySolveGrid(true);
-        
-        // if (solvedGrids.Count > 1)
-        //     DebugAllSolutions();
     }
 
     private void DebugAllSolutions()

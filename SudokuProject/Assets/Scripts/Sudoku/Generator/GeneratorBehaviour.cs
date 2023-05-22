@@ -25,7 +25,6 @@ public class GeneratorBehaviour : MonoBehaviour
     public void GenerateFullGrid()
     {
         StartCoroutine(generator.GenerateWithRoutine(_difficultyObject.Difficulty));
-        //generator.GenerateWithRoutine(_difficultyObject.Difficulty);
     }
     
 
@@ -35,14 +34,14 @@ public class GeneratorBehaviour : MonoBehaviour
 
         int shuffleCount = 0;
         int minShuffles = 3;
-        float shuffleWait = 0.3f;
+        float shuffleWait = 0.1f;
         while (!generator.Finished || shuffleCount < minShuffles)
         {
-            loadGrid.Shuffle();
+            loadGrid.Shuffle(_difficultyObject.Difficulty);
             yield return new WaitForSeconds(shuffleWait);
             shuffleCount++;
         }
-        loadGrid.Shuffle();
+        loadGrid.Shuffle(_difficultyObject.Difficulty);
         yield return new WaitForSeconds(shuffleWait);
         
         loadGrid.gameObject.SetActive(false);
