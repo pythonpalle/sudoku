@@ -359,6 +359,7 @@ GameObject:
   - component: {fileID: 2781887957040697056}
   - component: {fileID: 2781887957040697058}
   - component: {fileID: 2781887957040697057}
+  - component: {fileID: 1869509532}
   m_Layer: 5
   m_Name: Alpha Cover
   m_TagString: Untagged
@@ -424,6 +425,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1869509532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2781887957040697063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3224809e707ed743b4619d3db69a436, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupWindow: {fileID: 2781887957486458358}
 --- !u!1 &2781887957122955329
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,8 +815,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.6
-  m_fontSizeBase: 42.6
+  m_fontSize: 44.29
+  m_fontSizeBase: 44.29
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -912,6 +926,8 @@ MonoBehaviour:
   easyButton: {fileID: 2781887958316118110}
   mediumButton: {fileID: 2781887956935844966}
   hardButton: {fileID: 2781887958709966890}
+  loadScreen: {fileID: 0}
+  loadGrid: {fileID: 0}
 --- !u!1 &2781887957568209872
 GameObject:
   m_ObjectHideFlags: 0

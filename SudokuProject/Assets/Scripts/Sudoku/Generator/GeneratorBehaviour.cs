@@ -15,7 +15,7 @@ public class GeneratorBehaviour : MonoBehaviour
 
     private void Start()
     {
-        Invoke("GenerateFullGrid", 0.01f); 
+        Invoke("GenerateFullGrid", 0.01f);
     }
 
     public void GenerateFullGrid()

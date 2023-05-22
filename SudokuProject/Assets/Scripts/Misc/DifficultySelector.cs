@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class DifficultySelector : MonoBehaviour
 {
+    [Header("Difficulty Object")]
     [SerializeField] private DifficultyObject difficultyObject;
 
     [Header("Buttons")] 
@@ -14,6 +15,13 @@ public class DifficultySelector : MonoBehaviour
     [SerializeField] private Button easyButton;
     [SerializeField] private Button mediumButton;
     [SerializeField] private Button hardButton;
+
+    [Header("Load Screen")] 
+    [SerializeField] private GameObject loadScreen;
+    [SerializeField] private LoadGrid loadGrid;
+
+    private bool sceneIsLoading;
+    
 
     private void OnEnable()
     {
@@ -59,6 +67,27 @@ public class DifficultySelector : MonoBehaviour
 
     private void LoadPuzzleScene()
     {
+        if (sceneIsLoading)
+            return;
+        
+        //StartCoroutine(LoadSceneAsync());
+
         SceneManager.LoadScene("Game Scene");
+    }
+
+    IEnumerator LoadSceneAsync()
+    {
+        sceneIsLoading = true;
+        
+        AsyncOperation operation = SceneManager.LoadSceneAsync("Game Scene");
+        loadScreen.SetActive(true);
+
+        while (!operation.isDone)
+        {
+            loadGrid.Shuffle();
+            yield return null;
+        }
+
+        sceneIsLoading = false;
     }
 }
