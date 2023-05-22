@@ -169,7 +169,7 @@ public class WFCGridSolver
             }
             else
             {
-                Debug.LogWarning("NOT PROGRESSION FOUND " );
+                Debug.LogWarning("NO PROGRESSION FOUND " );
                 return false;
             }
             

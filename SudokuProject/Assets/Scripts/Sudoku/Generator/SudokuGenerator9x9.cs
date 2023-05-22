@@ -88,7 +88,6 @@ public class SudokuGenerator9x9
         bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(false);
     
         grid = new SudokuGrid9x9(_wfcGridSolver.grid);
-        grid.PrintGrid();
     
         if (solvedGridCreated)
         {
@@ -110,8 +109,8 @@ public class SudokuGenerator9x9
         int iterationCount = 0;
 
         int maxMoves = simple ? 16 : difficulty == PuzzleDifficulty.Easy ? 26 : 200;
-        
-        bool removeSymmetric = difficulty != PuzzleDifficulty.Hard;
+
+        bool removeSymmetric = true;//difficulty != PuzzleDifficulty.Hard;
 
         //var lastUsedDifficulty = PuzzleDifficulty.Simple;
         lastUsedDifficulty = PuzzleDifficulty.Simple;
@@ -129,7 +128,7 @@ public class SudokuGenerator9x9
             yield return HandleNextRemovalStepRoutine(visitedTiles, removeSymmetric, bestUsedDifficulty);
         }
 
-        DebugDifficulty();
+        UpdateDifficulty();
     }
 
     private IEnumerator HandleNextRemovalStepRoutine(bool[,] visitedTiles, bool removeSymmetric, PuzzleDifficulty difficulty)
@@ -307,13 +306,11 @@ public class SudokuGenerator9x9
         return lowestValue;
     }
     
-    private void DebugDifficulty()
+    private void UpdateDifficulty()
     {
-        Debug.Log($"Difficulty from last attempt: {lastUsedDifficulty}");
         if ((int)lastUsedDifficulty > (int)bestUsedDifficulty)
         {
             bestUsedDifficulty = lastUsedDifficulty;
-            Debug.Log($"Best Used difficulty: {bestUsedDifficulty}");
             hardestUsedGrid = new SudokuGrid9x9(grid);
         }
     }
