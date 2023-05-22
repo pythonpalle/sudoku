@@ -62,13 +62,9 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     public bool Permanent { get; private set; } = false;
     public bool Contradicted { get; private set; } = false;
 
-    // public List<int> CenterMarks { get; private set; } = new List<int>();
-    // public List<int> CornerMarks  { get; private set; } = new List<int>();
-    // public List<int> ColorMarks { get; private set; } = new List<int>();
-    
-    public List<int> CenterMarks = new List<int>();
-    public List<int> CornerMarks  = new List<int>();
-    public List<int> ColorMarks  = new List<int>();
+    public List<int> CenterMarks { get; private set; } = new List<int>();
+    public List<int> CornerMarks  { get; private set; } = new List<int>();
+    public List<int> ColorMarks { get; private set; } = new List<int>();
 
 
     // private fields
@@ -123,13 +119,15 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     
     public void OnNewCommand()
     {
-        TileState state = new TileState();
-        state.Centers = new List<int>(CenterMarks);
-        state.Corners = new List<int>(CornerMarks);
-        state.Colors = new List<int>(ColorMarks);
-        state.Digit = number;
-        state.contradicted = Contradicted;
-        
+        TileState state = new TileState
+        {
+            Centers = new List<int>(CenterMarks),
+            Corners = new List<int>(CornerMarks),
+            Colors = new List<int>(ColorMarks),
+            Digit = number,
+            contradicted = Contradicted
+        };
+
         while (TileStates.Count > stateCounter)
         {
             TileStates.RemoveAt(TileStates.Count-1);
