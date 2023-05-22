@@ -926,7 +926,6 @@ MonoBehaviour:
   easyButton: {fileID: 2781887958316118110}
   mediumButton: {fileID: 2781887956935844966}
   hardButton: {fileID: 2781887958709966890}
-  loadScreen: {fileID: 0}
   loadGrid: {fileID: 0}
 --- !u!1 &2781887957568209872
 GameObject:

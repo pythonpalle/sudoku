@@ -26,6 +26,8 @@ public class SudokuGenerator9x9
     private SudokuGrid9x9 hardestUsedGrid;
 
     private bool simple;
+
+    public bool Finished { get; private set; } = false;
     
     public SudokuGenerator9x9(PuzzleDifficulty difficulty)
     {
@@ -38,9 +40,46 @@ public class SudokuGenerator9x9
         _wfcGridSolver = new WFCGridSolver(difficulty);
         puzzleGridRemovalMoves = new Stack<Move>();
     }
+    
+    public IEnumerator GenerateWithRoutine(PuzzleDifficulty difficulty)
+    {
+        if (difficulty == PuzzleDifficulty.Simple)
+        {
+            simple = true;
+            difficulty = PuzzleDifficulty.Easy;
+        }    
+        
+        int attempts = 0;
+        int maxAttempts = 20;
+        
+        do
+        {
+            SetupConstructor(difficulty);
+            TryGenerate(difficulty);
+            attempts++;
+
+            if (attempts > maxAttempts)
+            {
+                Debug.LogWarning($"Too many attempts, a {difficulty} puzzle could not be created.");
+                Debug.LogWarning($"Instead, the difficulty is {bestUsedDifficulty}.");
+                grid = new SudokuGrid9x9(hardestUsedGrid);
+                break;
+            }
+
+            //yield return new WaitForEndOfFrame();
+            yield return null;
+        } 
+        while (bestUsedDifficulty != difficulty);
+        
+        Debug.Log($"The puzzle is finished after {attempts} attempts, Hurray!");
+        Debug.Log($"Difficulty used: {bestUsedDifficulty}");
+        grid.PrintGrid();
+        EventManager.GenerateGrid(grid);
+        Finished = true;
+    }
 
 
-    public void Generate(PuzzleDifficulty difficulty)
+    private void Generate(PuzzleDifficulty difficulty)
     {
         if (difficulty == PuzzleDifficulty.Simple)
         {
@@ -71,6 +110,7 @@ public class SudokuGenerator9x9
         Debug.Log($"Difficulty used: {bestUsedDifficulty}");
         grid.PrintGrid();
         EventManager.GenerateGrid(grid);
+        Finished = true;
     }
 
     private void TryGenerate(PuzzleDifficulty difficulty)
