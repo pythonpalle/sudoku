@@ -59,7 +59,6 @@ public class SudokuGenerator9x9
             SetupConstructor(difficulty);
 
             yield return TryGenerateRoutine(difficulty);
-            //TryGenerate(difficulty);
             
             attempts++;
 
@@ -108,7 +107,7 @@ public class SudokuGenerator9x9
         
         int iterationCount = 0;
 
-        int maxMoves = simple ? 16 : difficulty == PuzzleDifficulty.Easy ? 26 : 200;
+        int maxMoves = simple ? 13 : difficulty == PuzzleDifficulty.Easy ? 26 : 200;
 
         bool removeSymmetric = true;//difficulty != PuzzleDifficulty.Hard;
 
