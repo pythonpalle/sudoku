@@ -1,12 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.WSA;
-
+﻿
 public class HiddenSingleBox : DigitMethod
 {
-    
-
-   
-    
     public override bool TryFindDigit(SudokuGrid9x9 grid, out TileIndex index, out int digit)
     {
         index = new TileIndex();
