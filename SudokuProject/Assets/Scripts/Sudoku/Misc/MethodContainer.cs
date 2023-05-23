@@ -57,6 +57,9 @@ public static class MethodContainer
         // Hidden Quad (includes row, col and box)
         new HiddenQuad(),
         
+        // Uniqueness
+        new UniquenessRectangle(),
+        
         // XWings
         new XWingRow(),
         new XWingCol(),

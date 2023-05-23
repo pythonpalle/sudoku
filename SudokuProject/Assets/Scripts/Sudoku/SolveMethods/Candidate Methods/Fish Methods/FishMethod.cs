@@ -137,21 +137,6 @@ public abstract class FishMethod : CandidateMethod
         }
 
         bool rightAmountOfColumns = allColumns.Count == k;
-        // if (rightAmountOfColumns)
-        // {
-        //     Debug.Log("Valid fish: ");
-        //     foreach (var pair in tempList)
-        //     {
-        //         string rowString = "";
-        //         foreach (var col in pair.Value)
-        //         {
-        //             rowString += $"{col}, ";
-        //         }
-        //         
-        //         Debug.Log($"Row: {pair.Key}. Cols: {rowString}");
-        //     }
-        // }
-        
         return rightAmountOfColumns;
     }
     

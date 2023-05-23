@@ -134,4 +134,38 @@ public abstract class CandidateMethod : SolveMethod
         
         return sharedCandidates.Count == multCount;
     }
+    
+    protected bool TilesIntersect(TileIndex index1, TileIndex index2)
+    {
+        // same row
+        if (index1.row == index2.row)
+            return true;
+        
+        // same col
+        if (index1.col == index2.col)
+            return true;
+        
+        int boxRowTile1 = index1.row - index1.row % 3;
+        int boxRowTile2 = index2.row - index2.row % 3;
+        
+        int boxColTile1 = index1.col - index1.col % 3;
+        int boxColTile2 = index2.col - index2.col % 3;
+        
+        // same box
+        return (boxRowTile1 == boxRowTile2
+                && boxColTile1 == boxColTile2);
+    }
+
+    protected List<TileIndex> FindAllIndicesWithEntropy(SudokuGrid9x9 grid, int entropy)
+    {
+        List<TileIndex> entropyList = new List<TileIndex>();
+        
+        foreach (var tile in grid.Tiles)
+        {
+            if (!tile.Used && tile.Entropy == entropy)
+                entropyList.Add(tile.index);
+        }
+
+        return entropyList;
+    }
 }

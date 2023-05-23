@@ -155,58 +155,13 @@ public abstract class ExtendedWing : CandidateMethod
     }
 
 
-    private bool TilesIntersect(TileIndex index1, TileIndex index2)
-    {
-        // same row
-        if (index1.row == index2.row)
-            return true;
-        
-        // same col
-        if (index1.col == index2.col)
-            return true;
-        
-        int boxRowTile1 = index1.row - index1.row % 3;
-        int boxRowTile2 = index2.row - index2.row % 3;
-        
-        int boxColTile1 = index1.col - index1.col % 3;
-        int boxColTile2 = index2.col - index2.col % 3;
-        
-        // same box
-        return (boxRowTile1 == boxRowTile2
-                && boxColTile1 == boxColTile2);
-    }
-
+    
+    
     private void DebugWing(SudokuTile baseTile, SudokuTile wing1, SudokuTile wing2)
     {
         Debug.Log("Potential wing found: ");
         Debug.Log($"baseTile: {baseTile.index}");
         Debug.Log($"wing1: {wing1.index}");
         Debug.Log($"wing2: {wing2.index}");
-    }
-
-    private List<SudokuTile> FindAllTilesWithEntropy(SudokuGrid9x9 grid, int entropy)
-    {
-        List<SudokuTile> entropyList = new List<SudokuTile>();
-        
-        foreach (var tile in grid.Tiles)
-        {
-            if (!tile.Used && tile.Entropy == entropy)
-                entropyList.Add(tile);
-        }
-
-        return entropyList;
-    }
-    
-    private List<TileIndex> FindAllIndicesWithEntropy(SudokuGrid9x9 grid, int entropy)
-    {
-        List<TileIndex> entropyList = new List<TileIndex>();
-        
-        foreach (var tile in grid.Tiles)
-        {
-            if (!tile.Used && tile.Entropy == entropy)
-                entropyList.Add(tile.index);
-        }
-
-        return entropyList;
     }
 }
