@@ -17,6 +17,8 @@ public class UniquenessRectangle : CandidateMethod
         foreach (var tileIndex1 in twoEntropyTiles)
         {
             var tile1 = grid[tileIndex1];
+
+            bool someTileInSameBox = false;
             
             foreach (var tileIndex2 in twoEntropyTiles)
             {
@@ -44,6 +46,11 @@ public class UniquenessRectangle : CandidateMethod
                 else
                     continue;
 
+                if (InSameBox(tileIndex1, tileIndex2))
+                {
+                    someTileInSameBox = true;
+                }
+
                 foreach (var tileIndex3 in twoEntropyTiles)
                 {
                     // can't be same index
@@ -60,6 +67,16 @@ public class UniquenessRectangle : CandidateMethod
                     if (rowIntersect_tiles_1_2 && tileIndex3.col == tileIndex1.col){}
                     else if (!rowIntersect_tiles_1_2 && tileIndex3.row == tileIndex1.row){}
                     else
+                        continue;
+                    
+                    
+                    if (InSameBox(tileIndex1, tileIndex3))
+                    {
+                        someTileInSameBox = true;
+                    }
+                    
+                    // not a deadly pattern if two corners don't share the same box
+                    if (!someTileInSameBox)
                         continue;
 
                     // now we have a potential uniqueness triangle
@@ -88,6 +105,19 @@ public class UniquenessRectangle : CandidateMethod
 
         return false;
     }
+
+    private bool InSameBox(TileIndex index1, TileIndex index2)
+    {
+        int boxRowTile1 = index1.row - index1.row % 3;
+        int boxRowTile2 = index2.row - index2.row % 3;
+        
+        int boxColTile1 = index1.col - index1.col % 3;
+        int boxColTile2 = index2.col - index2.col % 3;
+        
+        // same box
+        return (boxRowTile1 == boxRowTile2 && boxColTile1 == boxColTile2);
+    }
+    
 
     private void DebugRectangle(TileIndex tile1, TileIndex tile2, TileIndex tile3, TileIndex uniqueTileIndex, HashSet<int> removalCandidates)
     {
