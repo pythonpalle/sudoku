@@ -17,7 +17,6 @@ public struct TileState
     public List<int> Centers;
     public List<int> Colors;
     public bool contradicted;
-
 }
 
 public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler, IHasCommand

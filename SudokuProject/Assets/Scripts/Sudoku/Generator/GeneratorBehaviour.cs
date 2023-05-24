@@ -40,6 +40,7 @@ public class GeneratorBehaviour : MonoBehaviour
         int shuffleCount = 0;
         int minShuffles = 20;
         float shuffleWait = 0.1f;
+        
         while (!generator.Finished || shuffleCount < minShuffles)
         {
             loadGrid.Shuffle(grid, _difficultyObject.Difficulty);

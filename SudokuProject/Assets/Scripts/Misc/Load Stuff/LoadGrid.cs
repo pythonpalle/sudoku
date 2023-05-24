@@ -23,7 +23,7 @@ public class LoadGrid : MonoBehaviour
             }
         }
     }
-
+    
 
     public void Shuffle(SudokuGrid9x9 grid, PuzzleDifficulty difficulty)
     {
@@ -37,6 +37,7 @@ public class LoadGrid : MonoBehaviour
         
         loadCircle.Rotate(Vector3.forward, -30f);
         
+
         for (int row = 0; row < 9; row++)
         {
             for (int col = 0; col < 9; col++)
@@ -54,6 +55,7 @@ public class LoadGrid : MonoBehaviour
                     return;
             }
         }
+
     }
 
     private void UpdateText(SudokuGrid9x9 grid, int row, int col, bool useNumber, int randomNumber)
@@ -63,9 +65,7 @@ public class LoadGrid : MonoBehaviour
         if (useNumber)
         {
             int number = grid[row, col].Number;
-
             number = (number + randomNumber) % 9 + 1;
-
             tile.TileText.text = number.ToString();
         }
         else
@@ -85,10 +85,10 @@ public class LoadGrid : MonoBehaviour
                 return 0.4f;
             
             case PuzzleDifficulty.Medium:
-                return 0.3f;
+                return 0.38f;
             
                 default:
-                return 0.25f;
+                return 0.35f;
         }
     }
 }

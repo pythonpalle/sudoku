@@ -2292,6 +2292,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Load Grid
       objectReference: {fileID: 0}
+    - target: {fileID: 4162996033991113427, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
 --- !u!224 &556297621 stripped

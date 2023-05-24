@@ -22,6 +22,7 @@ public static class MethodContainer
         // Pointing Pairs
         new PointingPairRowToBox(),
         new PointingPairColToBox(),
+        
         new PointingPairBoxToRow(),
         new PointingPairBoxToCol(),
         
@@ -63,6 +64,10 @@ public static class MethodContainer
         // XWings
         new XWingRow(),
         new XWingCol(),
+
+        // Extended Wings
+        new XYWing(),
+        new XYZWing(),
         
         // Swordfish
         new SwordFishRow(),
@@ -71,10 +76,6 @@ public static class MethodContainer
         // JellyFish
         new JellyFishRow(),
         new JellyFishCol(),
-        
-        // Extended Wings
-        new XYWing(),
-        new XYZWing(),
     };
 
     private static List<DigitMethod> easyDigitMethods = new List<DigitMethod>();

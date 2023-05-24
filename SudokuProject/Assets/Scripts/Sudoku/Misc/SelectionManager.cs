@@ -14,7 +14,7 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private bool pointerOverGrid = false;
     
     private float timeOfLastClick;
-    private float maxTimeForDoubleClick = 0.2f;
+    private float maxTimeForDoubleClick = 0.5f;
 
     private void OnEnable()
     {

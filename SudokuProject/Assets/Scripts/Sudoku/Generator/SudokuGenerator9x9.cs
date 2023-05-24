@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +52,7 @@ public class SudokuGenerator9x9
         }    
         
         int attempts = 0;
-        int maxAttempts = 30;
+        int maxAttempts = 100;
         
         do
         {
@@ -106,7 +107,7 @@ public class SudokuGenerator9x9
         
         int iterationCount = 0;
 
-        int maxMoves = simple ? 13 : difficulty == PuzzleDifficulty.Easy ? 26 : 200;
+        int maxMoves = simple ? 13 : difficulty == PuzzleDifficulty.Easy ? 26 : Int32.MaxValue;
 
         bool removeSymmetric = true;//difficulty != PuzzleDifficulty.Hard;
 
