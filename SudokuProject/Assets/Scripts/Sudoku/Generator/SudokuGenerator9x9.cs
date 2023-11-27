@@ -27,6 +27,7 @@ public class SudokuGenerator9x9
 
     private SudokuGrid9x9 hardestUsedGrid;
 
+    //TODO: remove this variable, 
     private bool simple;
 
     public bool Finished { get; private set; } = false;
@@ -45,6 +46,7 @@ public class SudokuGenerator9x9
     
     public IEnumerator GenerateWithRoutine(PuzzleDifficulty difficulty)
     {
+        // TODO: figure out why I do this and then remove it
         if (difficulty == PuzzleDifficulty.Simple)
         {
             simple = true;
