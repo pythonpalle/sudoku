@@ -11,7 +11,7 @@ public class CameraSettings : MonoBehaviour
     
     private void OnDisable()
     {
-        colorObject.OnColorChange += OnColorUpdate;
+        colorObject.OnColorChange -= OnColorUpdate;
     }
     private void OnColorUpdate(Color color)
     {
