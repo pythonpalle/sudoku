@@ -5,7 +5,7 @@ using UnityEngine;
 public class UniquenessRectangle : CandidateMethod
 {
     public override string GetName => "Uniqueness Rectangle";
-    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Hard;
+    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Extreme;
 
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)

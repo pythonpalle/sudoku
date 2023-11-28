@@ -153,15 +153,9 @@ public abstract class ExtendedWing : CandidateMethod
 
         return tileIndices.Count > 0;
     }
-
-
     
-    
-    private void DebugWing(SudokuTile baseTile, SudokuTile wing1, SudokuTile wing2)
+    public override PuzzleDifficulty Difficulty
     {
-        Debug.Log("Potential wing found: ");
-        Debug.Log($"baseTile: {baseTile.index}");
-        Debug.Log($"wing1: {wing1.index}");
-        Debug.Log($"wing2: {wing2.index}");
+        get => PuzzleDifficulty.Extreme;
     }
 }

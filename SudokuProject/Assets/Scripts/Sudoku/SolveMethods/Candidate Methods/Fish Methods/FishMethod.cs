@@ -17,6 +17,11 @@ public struct Fish
 
 public abstract class FishMethod : CandidateMethod
 {
+    public override PuzzleDifficulty Difficulty
+    {
+        get => PuzzleDifficulty.Extreme;
+    }
+    
     protected bool TryFindFish(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
     {
         return TryFindFishInRow(grid, multCount, out removal)

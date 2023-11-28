@@ -15,6 +15,7 @@ public class DifficultySelector : MonoBehaviour
     [SerializeField] private Button easyButton;
     [SerializeField] private Button mediumButton;
     [SerializeField] private Button hardButton;
+    [SerializeField] private Button extremeButton;
 
     [Header("Load Screen")] 
     [SerializeField] private LoadGrid loadGrid;
@@ -26,6 +27,7 @@ public class DifficultySelector : MonoBehaviour
         easyButton.onClick.AddListener(OnEasyButton);
         mediumButton.onClick.AddListener(OnMediumButton);
         hardButton.onClick.AddListener(OnHardButton);
+        extremeButton.onClick.AddListener(OnExtremeButton);
     }
     
     private void OnDisable()
@@ -34,6 +36,7 @@ public class DifficultySelector : MonoBehaviour
         easyButton.onClick.RemoveListener(OnEasyButton);
         mediumButton.onClick.RemoveListener(OnMediumButton);
         hardButton.onClick.RemoveListener(OnHardButton);
+        extremeButton.onClick.RemoveListener(OnExtremeButton);
     }
     
     private void OnSimpleButton()
@@ -54,6 +57,11 @@ public class DifficultySelector : MonoBehaviour
     private void OnHardButton()
     {
         SetDifficultyAndResetPuzzle(PuzzleDifficulty.Hard);
+    }
+    
+    private void OnExtremeButton()
+    {
+        SetDifficultyAndResetPuzzle(PuzzleDifficulty.Extreme);
     }
     
     private void SetDifficultyAndResetPuzzle(PuzzleDifficulty difficulty)

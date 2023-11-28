@@ -10,7 +10,8 @@ public enum PuzzleDifficulty
     Simple,
     Easy,
     Medium,
-    Hard
+    Hard,
+    Extreme
 }
 
 public class SudokuGenerator9x9

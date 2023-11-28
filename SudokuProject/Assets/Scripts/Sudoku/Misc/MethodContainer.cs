@@ -81,10 +81,12 @@ public static class MethodContainer
     private static List<DigitMethod> easyDigitMethods = new List<DigitMethod>();
     private static List<DigitMethod> mediumDigitMethods = new List<DigitMethod>();
     private static List<DigitMethod> hardDigitMethods = new List<DigitMethod>();
+    private static List<DigitMethod> extremeDigitMethods = new List<DigitMethod>();
     
     private static List<CandidateMethod> easyCandidateMethods = new List<CandidateMethod>();
     private static List<CandidateMethod> mediumCandidateMethods = new List<CandidateMethod>();
     private static List<CandidateMethod> hardCandidateMethods = new List<CandidateMethod>();
+    private static List<CandidateMethod> extremeCandidateMethods = new List<CandidateMethod>();
 
     public static List<DigitMethod> GetDigitMethodsOfDifficulty(PuzzleDifficulty difficulty)
     {
@@ -100,6 +102,9 @@ public static class MethodContainer
             
             case PuzzleDifficulty.Hard:
                 return hardDigitMethods;
+            
+            case PuzzleDifficulty.Extreme:
+                return extremeDigitMethods;
         }
         
         return null;
@@ -110,6 +115,7 @@ public static class MethodContainer
         TrySetUpDigitMethod(easyDigitMethods, PuzzleDifficulty.Easy);
         TrySetUpDigitMethod(mediumDigitMethods, PuzzleDifficulty.Medium);
         TrySetUpDigitMethod(hardDigitMethods, PuzzleDifficulty.Hard);
+        TrySetUpDigitMethod(extremeDigitMethods, PuzzleDifficulty.Extreme);
     }
 
     private static void TrySetUpDigitMethod(List<DigitMethod> digitMethods, PuzzleDifficulty difficulty)
@@ -143,6 +149,9 @@ public static class MethodContainer
             
             case PuzzleDifficulty.Hard:
                 return hardCandidateMethods;
+            
+            case PuzzleDifficulty.Extreme:
+                return extremeCandidateMethods;
         }
         
         return null;
@@ -153,6 +162,7 @@ public static class MethodContainer
         TrySetUpCandidateMethod(easyCandidateMethods, PuzzleDifficulty.Easy);
         TrySetUpCandidateMethod(mediumCandidateMethods, PuzzleDifficulty.Medium);
         TrySetUpCandidateMethod(hardCandidateMethods, PuzzleDifficulty.Hard);
+        TrySetUpCandidateMethod(extremeCandidateMethods, PuzzleDifficulty.Extreme);
     }
 
     private static void TrySetUpCandidateMethod(List<CandidateMethod> candidateMethods, PuzzleDifficulty difficulty)
