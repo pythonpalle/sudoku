@@ -27,10 +27,7 @@ public class SudokuGenerator9x9
     private PuzzleDifficulty lastUsedDifficulty;
 
     private SudokuGrid9x9 hardestUsedGrid;
-
-    //TODO: remove this variable, 
-    //private bool simple;
-
+    
     public bool Finished { get; private set; } = false;
     
     public SudokuGenerator9x9(PuzzleDifficulty difficulty)
