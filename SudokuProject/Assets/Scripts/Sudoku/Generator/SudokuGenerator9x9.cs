@@ -28,7 +28,7 @@ public class SudokuGenerator9x9
     private SudokuGrid9x9 hardestUsedGrid;
 
     //TODO: remove this variable, 
-    private bool simple;
+    //private bool simple;
 
     public bool Finished { get; private set; } = false;
     
@@ -46,21 +46,18 @@ public class SudokuGenerator9x9
     
     public IEnumerator GenerateWithRoutine(PuzzleDifficulty difficulty)
     {
-        // TODO: figure out why I do this and then remove it
-        if (difficulty == PuzzleDifficulty.Simple)
-        {
-            simple = true;
-            difficulty = PuzzleDifficulty.Easy;
-        }    
-        
         int attempts = 0;
-        int maxAttempts = 100;
+        const int maxAttempts = 100;
         
         do
         {
             SetupConstructor(difficulty);
 
             yield return TryGenerateRoutine(difficulty);
+
+            // a grid can always be generated using difficulty simple
+            if (difficulty == PuzzleDifficulty.Simple)
+                break;
             
             attempts++;
 
@@ -108,12 +105,7 @@ public class SudokuGenerator9x9
         bool[,] visitedTiles = new bool[9, 9];
         
         int iterationCount = 0;
-
-        int maxMoves = simple ? 13 : difficulty == PuzzleDifficulty.Easy ? 26 : Int32.MaxValue;
-
-        bool removeSymmetric = true;//difficulty != PuzzleDifficulty.Hard;
-
-        //var lastUsedDifficulty = PuzzleDifficulty.Simple;
+        int maxMoves = GetMaxMoves(difficulty);
         lastUsedDifficulty = PuzzleDifficulty.Simple;
 
         // while puzzle is not finished:
@@ -126,16 +118,33 @@ public class SudokuGenerator9x9
                 break;
             }
 
-            yield return HandleNextRemovalStepRoutine(visitedTiles, removeSymmetric, bestUsedDifficulty);
+            yield return HandleNextRemovalStepRoutine(visitedTiles, true, bestUsedDifficulty);
         }
 
         UpdateDifficulty();
+    }
+
+    private int GetMaxMoves(PuzzleDifficulty difficulty)
+    {
+        switch (difficulty)
+        {
+            case PuzzleDifficulty.Simple:
+                return 13;
+            case PuzzleDifficulty.Easy:
+                return 26;
+            case PuzzleDifficulty.Medium:
+            case PuzzleDifficulty.Hard:
+                return Int32.MaxValue;
+        }
+        
+        return Int32.MaxValue;
     }
 
     private IEnumerator HandleNextRemovalStepRoutine(bool[,] visitedTiles, bool removeSymmetric, PuzzleDifficulty difficulty)
     {
         SudokuGrid9x9 lastGrid = new SudokuGrid9x9(grid);
 
+        //  1. Find lowest entropy tile
         TileIndex lowestEntropyTileIndex = FindLowestEntropyTileIndexFromVisited(visitedTiles);
             
         //  2. Remove it from grid, propagate
@@ -227,7 +236,8 @@ public class SudokuGenerator9x9
         {
             int symmetricRow = 8 - row;
             int symmetricCol = 8 - col;
-            TileIndex symmetricTileIndex = grid[symmetricRow, symmetricCol].index;
+            //TileIndex symmetricTileIndex = grid[symmetricRow, symmetricCol].index;
+            TileIndex symmetricTileIndex = new TileIndex(symmetricRow, symmetricCol);
             RemoveFromGrid(visitedTiles, symmetricTileIndex);
         }
     }

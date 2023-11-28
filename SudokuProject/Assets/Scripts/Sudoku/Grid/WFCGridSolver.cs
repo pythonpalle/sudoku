@@ -172,8 +172,6 @@ public class WFCGridSolver
                 Debug.LogWarning("NO PROGRESSION FOUND " );
                 return false;
             }
-            
-            
         }
 
         hardestUsed = highestSuccessfulDifficulty = highestAttemptedDifficulty;
