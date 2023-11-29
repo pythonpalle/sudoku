@@ -21,12 +21,10 @@ public class HintBehaviour : MonoBehaviour
     [Header("Popup")] 
     [SerializeField] private PopupWindow _popupWindow;
 
-    private WFCGridSolver _solver;
+    private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
     
     private void OnEnable()
     {
-        _solver = new WFCGridSolver(difficultyObject.Difficulty);
-        
         hintButton.onClick.AddListener(OnHintButtonClicked);
 
         hintObject.OnSendGridCopy += OnSendGridCopy;
@@ -66,6 +64,6 @@ public class HintBehaviour : MonoBehaviour
 
     private bool TryFindHint(SudokuGrid9x9 gridCopy, out TileIndex tileIndex)
     {
-        return _solver.TryFindProgression(gridCopy, difficultyObject.Difficulty, out tileIndex);
+        return _solver.TryFindProgression(gridCopy, PuzzleDifficulty.Extreme, out tileIndex);
     }
 }

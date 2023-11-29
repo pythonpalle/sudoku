@@ -167,10 +167,10 @@ public class SudokuGenerator9x9
             RemoveSymmetric(visitedTiles, lowestEntropyTileIndex);
 
         // 4: check to see if only one solution
-        bool multipleSolutions = CheckIfMultipleSolutions(grid);
+        bool hasOneSolution = HasOneSolution(grid);
 
         // 5. Revert to last grid if multiple solutions 
-        if (multipleSolutions)
+        if (!hasOneSolution)
         {
             grid = new SudokuGrid9x9(lastGrid);
             return null;
@@ -232,9 +232,9 @@ public class SudokuGenerator9x9
         return _wfcGridSolver.HumanlySolvable(sudokuGrid9X9, out hardestDifficulty);
     }
     
-    private bool CheckIfMultipleSolutions(SudokuGrid9x9 sudokuGrid9X9)
+    private bool HasOneSolution(SudokuGrid9x9 sudokuGrid9X9)
     {
-        return _wfcGridSolver.HasMultipleSolutions(sudokuGrid9X9);
+        return _wfcGridSolver.HasOneSolution(sudokuGrid9X9);
     }
 
     private void RemoveSymmetric(bool[,] visitedTiles, TileIndex lowestEntropyTileIndex)

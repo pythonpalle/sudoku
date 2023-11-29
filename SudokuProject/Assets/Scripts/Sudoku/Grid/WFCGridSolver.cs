@@ -21,11 +21,9 @@ public class WFCGridSolver
     private List<DigitMethod> digitMethods;
     List<CandidateMethod> candidatesMethods;
 
-
     public SudokuGrid9x9 grid { get; protected set; }
     private System.Random random = new System.Random();
-    
-    
+
     List<SudokuGrid9x9> solvedGrids = new List<SudokuGrid9x9>();
 
     private bool gridFilled => grid.AllTilesAreUsed();
@@ -53,7 +51,7 @@ public class WFCGridSolver
         candidatesMethods = MethodContainer.GetCandidatesMethodsOfDifficulty(puzzleDifficulty);
     }
     
-    public bool HasMultipleSolutions(SudokuGrid9x9 originalGrid)
+    public bool HasOneSolution(SudokuGrid9x9 originalGrid)
     {
         grid = new SudokuGrid9x9(originalGrid);
         solvedGrids = new List<SudokuGrid9x9>();
@@ -72,11 +70,11 @@ public class WFCGridSolver
             
             if (solvedGrids.Count > 1)
             {
-                return true;
+                return false;
             }
         }
 
-        return solvedGrids.Count > 1;
+        return solvedGrids.Count == 1;
     }
 
     public int GetSolutionCount(SudokuGrid9x9 originalGrid)
