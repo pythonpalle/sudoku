@@ -73,6 +73,10 @@ public class SudokuGenerator9x9
         
         Debug.Log($"The puzzle is finished after {attempts} attempts, Hurray!");
         Debug.Log($"Difficulty used: {bestUsedDifficulty}");
+        
+        // // creates empty instead
+        // grid = new SudokuGrid9x9(true);
+        
         grid.PrintGrid();
         EventManager.GenerateGrid(grid);
         Finished = true;
@@ -116,7 +120,7 @@ public class SudokuGenerator9x9
                 break;
             }
 
-            yield return HandleNextRemovalStepRoutine(visitedTiles, true, bestUsedDifficulty);
+            yield return HandleNextRemovalStepRoutine(visitedTiles, true);
         }
 
         UpdateDifficulty();
@@ -138,7 +142,7 @@ public class SudokuGenerator9x9
         return Int32.MaxValue;
     }
 
-    private IEnumerator HandleNextRemovalStepRoutine(bool[,] visitedTiles, bool removeSymmetric, PuzzleDifficulty difficulty)
+    private IEnumerator HandleNextRemovalStepRoutine(bool[,] visitedTiles, bool removeSymmetric)
     {
         SudokuGrid9x9 lastGrid = new SudokuGrid9x9(grid);
 
