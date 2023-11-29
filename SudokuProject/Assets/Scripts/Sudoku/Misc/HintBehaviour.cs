@@ -9,7 +9,7 @@ public class HintBehaviour : MonoBehaviour
 {
     [Header("Scriptable Objects")]
     [SerializeField] private HintObject hintObject;
-    [SerializeField] private DifficultyObject difficultyObject;
+    [SerializeField] private GridPort gridPort;
     
     [Header("Button")]
     [SerializeField] private Button hintButton;
@@ -27,8 +27,7 @@ public class HintBehaviour : MonoBehaviour
     {
         hintButton.onClick.AddListener(OnHintButtonClicked);
 
-        hintObject.OnSendGridCopy += OnSendGridCopy;
-        hintObject.OnContradictionStatusUpdate += OnContradictionStatusUpdate;
+        gridPort.OnContradictionStatusUpdate += OnContradictionStatusUpdate;
     }
     
 
@@ -36,8 +35,7 @@ public class HintBehaviour : MonoBehaviour
     {
         hintButton.onClick.RemoveListener(OnHintButtonClicked);
         
-        hintObject.OnSendGridCopy -= OnSendGridCopy;
-        hintObject.OnContradictionStatusUpdate -= OnContradictionStatusUpdate;
+        gridPort.OnContradictionStatusUpdate -= OnContradictionStatusUpdate;
     }
 
     private void OnContradictionStatusUpdate(bool contradiction)
@@ -47,12 +45,27 @@ public class HintBehaviour : MonoBehaviour
 
     private void OnHintButtonClicked()
     {
-        hintObject.RequestGrid();
-    }
-    
-    private void OnSendGridCopy(SudokuGrid9x9 gridCopy)
-    {
-        if (TryFindHint(gridCopy, out TileIndex hintIndex))
+        gridPort.RequestGrid();
+        
+        if (gridPort.gridContradicted)
+        {
+            Debug.Log("Can't give hint if grid has contradiction");
+            return;
+        }
+
+        // TODO: Custom error texts depending on if 
+        // a) not humanly solveable
+        // b) no solutions
+        // c) multiple solutions
+        
+        if (!_solver.HasOneSolution(gridPort.grid))
+        {
+            Debug.Log("Puzzle not solveable");
+            _popupWindow.PopUp();
+            return;
+        }
+        
+        if (TryFindHint(gridPort.grid, out TileIndex hintIndex))
         {
             hintObject.HintFound(hintIndex);
         }

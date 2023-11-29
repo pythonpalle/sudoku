@@ -13,7 +13,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     [Header("Scriptable Objects")]
     [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private HintObject hintObject;
-    [SerializeField] private CreationObject creationObject;
+    [SerializeField] private GridPort gridPort;
     
     [Header("Tile Animation Parent")]
     [SerializeField] private RectTransform tileAnimationParent;
@@ -44,9 +44,9 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
         selectionObject.OnRequestTile += OnRequestTile;
         
-        creationObject.OnRequestGrid += OnRequestGrid;
-
-        hintObject.OnRequestGrid += OnRequestGrid;
+        
+        //hintObject.OnRequestGrid += OnRequestGrid;
+        gridPort.OnRequestGrid += OnRequestGrid;
         hintObject.OnHintFound += OnHintFound;
     }
 
@@ -68,18 +68,20 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
         selectionObject.OnRequestTile -= OnRequestTile;
         
-        hintObject.OnRequestGrid -= OnRequestGrid;
+        //hintObject.OnRequestGrid -= OnRequestGrid;
+        gridPort.OnRequestGrid -= OnRequestGrid;
         hintObject.OnHintFound -= OnHintFound;
     }
 
     private void OnRequestGrid()
     {
-        bool contradiction = GridHasContradiction();
-        // don't bother updating candidates if the grid is contradicted anyway
-        if (contradiction) return;
+        // bool contradiction = GridHasContradiction();
+        // // don't bother updating candidates if the grid is contradicted anyway
+        // if (contradiction) return;
         
         UpdateGridCandidates();
-        hintObject.SendGridCopy(grid);
+        //hintObject.SendGridCopy(grid);
+        gridPort.SendGridCopy(grid);
     }
     
     private void OnImportGrid(SudokuGrid9x9 importedGrid)
@@ -213,7 +215,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                 HandleRemoveContradictions();
                 HandleAddContradictionsInList(tiles, number);
                 HandleCompletion();
-                hintObject.UpdateContradictionStatus(GridHasContradiction());
+                gridPort.UpdateContradictionStatus(GridHasContradiction());
                 break;
         }
     }
@@ -288,7 +290,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                 if (type == EnterType.DigitMark)
                 {
                     HandleRemoveNormalNumbers(tiles);
-                    hintObject.UpdateContradictionStatus(GridHasContradiction());
+                    gridPort.UpdateContradictionStatus(GridHasContradiction());
                 }
                 else
                 {
@@ -665,7 +667,9 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
         
         grid = new SudokuGrid9x9(gridHistory[stateCounter - 1]);
-        hintObject.OnContradictionStatusUpdate?.Invoke(GridHasContradiction());
+        
+        gridPort.UpdateContradictionStatus(GridHasContradiction());
+        //gridPort.OnContradictionStatusUpdate?.Invoke(GridHasContradiction());
     }
 
     private void OnUndo()
