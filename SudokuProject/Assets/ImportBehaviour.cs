@@ -45,6 +45,10 @@ public class ImportBehaviour : MonoBehaviour
         {
             SudokuGrid9x9 grid = ConvertSeedToGrid();
             grid.PrintGrid();
+            
+            EventManager.ImportGrid(grid);
+            
+            //importObject.ImportGrid(grid);
             Debug.Log("VALID SEED");
         }
         else
@@ -68,7 +72,6 @@ public class ImportBehaviour : MonoBehaviour
             int col = i % 9;
 
             int digitNumber = (int)Char.GetNumericValue(digitChar);
-            Debug.Log("Digit: " + digitNumber);
             
             grid.SetNumberToIndex(row, col, digitNumber);
         }

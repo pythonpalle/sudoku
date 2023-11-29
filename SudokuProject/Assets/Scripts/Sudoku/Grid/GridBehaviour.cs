@@ -28,6 +28,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     private void OnEnable()
     {
         EventManager.OnGridGenerated += OnGridGenerated;
+        EventManager.OnImportGrid += OnImportGrid;
         EventManager.OnTileIndexSet += OnTileIndexSet;
         
         EventManager.OnNumberEnter += OnNumberEnter;
@@ -45,10 +46,11 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         hintObject.OnRequestGrid += OnRequestGrid;
         hintObject.OnHintFound += OnHintFound;
     }
-    
+
     private void OnDisable()
     {
         EventManager.OnGridGenerated -= OnGridGenerated;
+        EventManager.OnImportGrid -= OnImportGrid;
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         
         EventManager.OnNumberEnter -= OnNumberEnter; 
@@ -75,6 +77,16 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         
         UpdateGridCandidates();
         hintObject.SendGridCopy(grid);
+    }
+    
+    private void OnImportGrid(SudokuGrid9x9 importedGrid)
+    {
+        foreach (var tile in importedGrid.Tiles)
+        {
+            var tileBehaviour = tileBehaviours[tile.index.row, tile.index.col];
+            tileBehaviour.TryUpdateNumber(tile.Number, EnterType.DigitMark, false);
+        }
+        EventManager.OnNewCommand?.Invoke();
     }
 
     private void UpdateGridCandidates()

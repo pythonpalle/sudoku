@@ -35,6 +35,8 @@ public static class EventManager
     public static UnityAction OnUndo;
     public static UnityAction OnRedo;
 
+    public static UnityAction<SudokuGrid9x9> OnImportGrid;
+
     public static void GenerateGrid(SudokuGrid9x9 grid)
     {
         OnGridGenerated?.Invoke(grid);
@@ -125,5 +127,10 @@ public static class EventManager
     public static void TilesSetup()
     {
         OnSetupTiles?.Invoke();
+    }
+
+    public static void ImportGrid(SudokuGrid9x9 grid)
+    {
+        OnImportGrid?.Invoke(grid);
     }
 }
