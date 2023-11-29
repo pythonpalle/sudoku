@@ -13,6 +13,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     [Header("Scriptable Objects")]
     [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private HintObject hintObject;
+    [SerializeField] private CreationObject creationObject;
     
     [Header("Tile Animation Parent")]
     [SerializeField] private RectTransform tileAnimationParent;
@@ -42,6 +43,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnSelectAllTiles += OnSelectAllTiles;
 
         selectionObject.OnRequestTile += OnRequestTile;
+        
+        creationObject.OnRequestGrid += OnRequestGrid;
 
         hintObject.OnRequestGrid += OnRequestGrid;
         hintObject.OnHintFound += OnHintFound;

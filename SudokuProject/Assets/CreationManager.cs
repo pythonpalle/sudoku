@@ -28,6 +28,8 @@ public class CreationManager : MonoBehaviour
 
     public void TryCreatePuzzle()
     {
+        creationObject.RequestGrid();
+        
         bool solveable = _gridSolver.HasOneSolution(grid);
         if (!solveable)
         {
