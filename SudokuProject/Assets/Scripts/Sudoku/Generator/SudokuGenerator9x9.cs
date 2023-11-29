@@ -74,13 +74,23 @@ public class SudokuGenerator9x9
         Debug.Log($"The puzzle is finished after {attempts} attempts, Hurray!");
         Debug.Log($"Difficulty used: {bestUsedDifficulty}");
         
-        // // creates empty instead
-        // grid = new SudokuGrid9x9(true);
-        
+        OnGridComplete();
+    }
+    
+    public void GenerateEmptyGrid()
+    {
+        grid = new SudokuGrid9x9(false);
+        OnGridComplete();
+    }
+
+    private void OnGridComplete()
+    {
         grid.PrintGrid();
         EventManager.GenerateGrid(grid);
         Finished = true;
     }
+
+    
 
     private IEnumerator TryGenerateRoutine(PuzzleDifficulty difficulty)
     {

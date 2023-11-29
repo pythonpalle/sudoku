@@ -2820,6 +2820,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _difficultyObject: {fileID: 11400000, guid: 6168c2ed25d594242ab75afc0a365596, type: 2}
   loadGrid: {fileID: 556297622}
+  createEmptyGrid: 1
 --- !u!4 &1578095868
 Transform:
   m_ObjectHideFlags: 0
@@ -3638,6 +3639,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1869509530}
+    - target: {fileID: 447108211608464846, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 447108211701679808, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -3646,6 +3651,10 @@ PrefabInstance:
       propertyPath: _popupWindow
       value: 
       objectReference: {fileID: 1667517313}
+    - target: {fileID: 447108211871618507, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 447108212012807488, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3738,6 +3747,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2034397941}
+    - target: {fileID: 447108212431576647, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2804435505978202239, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

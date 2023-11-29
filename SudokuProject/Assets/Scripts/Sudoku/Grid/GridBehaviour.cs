@@ -639,7 +639,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
         
         grid = new SudokuGrid9x9(gridHistory[stateCounter - 1]);
-        hintObject.OnContradictionStatusUpdate(GridHasContradiction());
+        hintObject.OnContradictionStatusUpdate?.Invoke(GridHasContradiction());
     }
 
     private void OnUndo()

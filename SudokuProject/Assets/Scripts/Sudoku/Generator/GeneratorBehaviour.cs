@@ -12,6 +12,9 @@ public class GeneratorBehaviour : MonoBehaviour
     
     [SerializeField] private DifficultyObject _difficultyObject;
     [SerializeField] private LoadGrid loadGrid;
+    
+    [Header("Grid Generation Settings")] 
+    [SerializeField] private bool createEmptyGrid;
 
     void Awake()
     {
@@ -21,8 +24,15 @@ public class GeneratorBehaviour : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(AnimateGrid());
-        Invoke("GenerateFullGrid", 0.01f);
+        if (createEmptyGrid)
+        {
+            generator.GenerateEmptyGrid();
+        }
+        else
+        {
+            StartCoroutine(AnimateGrid());
+            Invoke("GenerateFullGrid", 0.01f);
+        }
     }
 
     public void GenerateFullGrid()
