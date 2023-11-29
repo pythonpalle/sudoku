@@ -113,7 +113,7 @@ public struct SudokuTile
             if (value < 0 || value > highestNumber)
             {
                 throw new ArgumentOutOfRangeException(nameof(value),
-                    $"The valid range is between 1 and {highestNumber}.");
+                    $"The valid range is between 1 and {highestNumber}. Entered value was {value}");
             }
             
             RemoveCandidate(value);

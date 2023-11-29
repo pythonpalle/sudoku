@@ -420,7 +420,16 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         {
             for (int col = 0; col < 9; col++)
             {
-                tileBehaviours[row, col].SetStartNumber(grid[row, col].Number);
+                try
+                {
+                    tileBehaviours[row, col].SetStartNumber(grid[row, col].Number);
+                }
+                catch (NullReferenceException e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                
             }
         }
     }

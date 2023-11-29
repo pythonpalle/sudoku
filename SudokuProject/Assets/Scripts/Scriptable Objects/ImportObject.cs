@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public class ImportObject : ScriptableObject
 {
     public UnityAction<SudokuGrid9x9> OnGridImported;
+    public bool isSelected;
 
     public void ImportGrid(SudokuGrid9x9 grid)
     {

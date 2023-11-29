@@ -1,15 +1,98 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ImportBehaviour : MonoBehaviour
 {
     [SerializeField] private ImportObject importObject;
-    [SerializeField] private InputField inputField;
+    [SerializeField] private TMP_InputField inputField;
+
+    private string seedString = string.Empty;
+
+    private bool enterButtonIsPressed => Input.GetKeyDown(KeyCode.Return);
 
     public void OnInputEnter(string seedString)
     {
-        Debug.Log("Seed: " + seedString);
+        this.seedString = seedString;
+    }
+
+    // public void SetFieldSelected()
+    // {
+    //     importObject.isSelected = true;
+    // }
+    //
+    // public void SetFieldDeselected()
+    // {
+    //     importObject.isSelected = false;
+    // }
+
+    private void Update()
+    {
+        if (enterButtonIsPressed)
+        {
+            TryImportSeed();
+        }
+    }
+
+    public void TryImportSeed()
+    {
+        Debug.Log("Try import seed: " + seedString);
+
+        if (SeedIsValid())
+        {
+            SudokuGrid9x9 grid = ConvertSeedToGrid();
+            grid.PrintGrid();
+            Debug.Log("VALID SEED");
+        }
+        else
+        {
+            Debug.LogWarning("INVALID SEED");
+        }
+    }
+
+    private SudokuGrid9x9 ConvertSeedToGrid()
+    {
+        SudokuGrid9x9 grid = new SudokuGrid9x9(false);
+
+        for (int i = 0; i < seedString.Length; i++)
+        {
+            var digitChar = seedString[i];
+            
+            if (digitChar == '0' || digitChar == ' ')
+                continue;
+            
+            int row = i / 9;
+            int col = i % 9;
+
+            int digitNumber = (int)Char.GetNumericValue(digitChar);
+            Debug.Log("Digit: " + digitNumber);
+            
+            grid.SetNumberToIndex(row, col, digitNumber);
+        }
+
+        return grid;
+    }
+
+    private bool SeedIsValid()
+    {
+        if (seedString.Length > 81)
+        {
+            Debug.Log("Seed is too long");
+            return false;
+        }
+        
+        foreach (var digit in seedString)
+        {
+            if (!Char.IsDigit(digit) && digit != ' ')
+            {
+                Debug.Log("Seed contains a nonvalid digit");
+                return false;
+            }
+        }
+
+        return true;
     }
 }

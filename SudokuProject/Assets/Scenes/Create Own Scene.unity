@@ -607,7 +607,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 322199859}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1082602627}
+        m_TargetAssemblyTypeName: ImportBehaviour, Assembly-CSharp
+        m_MethodName: TryImportSeed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &322199859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -915,8 +927,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 14 2 783698 46 27 7 61 85 4291 86 4 5 4 7 9 8 3 92 6153 87 24 9 59 13 826728
-    9 53
+  m_text: Enter seed...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1275,7 +1286,6 @@ GameObject:
   m_Component:
   - component: {fileID: 490666051}
   - component: {fileID: 490666052}
-  - component: {fileID: 490666053}
   m_Layer: 5
   m_Name: Import Popup Activator
   m_TagString: Untagged
@@ -1317,20 +1327,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popupWindow: {fileID: 1082602626}
---- !u!114 &490666053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490666050}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01efe8816a1542d4ea8b1452c6179302, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  importObject: {fileID: 0}
-  inputField: {fileID: 0}
 --- !u!1 &540405958
 GameObject:
   m_ObjectHideFlags: 0
@@ -3162,6 +3158,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1082602626}
+  - component: {fileID: 1082602627}
   m_Layer: 5
   m_Name: Import Popup
   m_TagString: Untagged
@@ -3194,6 +3191,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1082602627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082602625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01efe8816a1542d4ea8b1452c6179302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  importObject: {fileID: 11400000, guid: 8a89b61021d558c4ea8959e96d21cc79, type: 2}
+  inputField: {fileID: 1527702625}
 --- !u!1001 &1102141927
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3992,7 +4003,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 490666053}
+      - m_Target: {fileID: 1082602627}
         m_TargetAssemblyTypeName: ImportBehaviour, Assembly-CSharp
         m_MethodName: OnInputEnter
         m_Mode: 0
@@ -4009,10 +4020,34 @@ MonoBehaviour:
       m_Calls: []
   m_OnSelect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1082602627}
+        m_TargetAssemblyTypeName: ImportBehaviour, Assembly-CSharp
+        m_MethodName: SetFieldSelected
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnDeselect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1082602627}
+        m_TargetAssemblyTypeName: ImportBehaviour, Assembly-CSharp
+        m_MethodName: SetFieldDeselected
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTextSelection:
     m_PersistentCalls:
       m_Calls: []
