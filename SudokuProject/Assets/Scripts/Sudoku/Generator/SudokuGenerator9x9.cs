@@ -234,7 +234,7 @@ public class SudokuGenerator9x9
     
     private bool HasOneSolution(SudokuGrid9x9 sudokuGrid9X9)
     {
-        return _wfcGridSolver.HasOneSolution(sudokuGrid9X9);
+        return _wfcGridSolver.HasOneSolution(sudokuGrid9X9); 
     }
 
     private void RemoveSymmetric(bool[,] visitedTiles, TileIndex lowestEntropyTileIndex)

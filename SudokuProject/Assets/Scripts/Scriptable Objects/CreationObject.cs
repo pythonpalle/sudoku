@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [CreateAssetMenu(menuName = "Sudoku/CreationObject")]
-public class CreationObject : MonoBehaviour
+public class CreationObject : ScriptableObject
 {
     // TODO: gör om till GridPort
     public UnityAction OnRequestGrid;

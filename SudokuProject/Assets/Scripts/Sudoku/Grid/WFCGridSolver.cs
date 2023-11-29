@@ -25,6 +25,7 @@ public class WFCGridSolver
     private System.Random random = new System.Random();
 
     List<SudokuGrid9x9> solvedGrids = new List<SudokuGrid9x9>();
+    public int SolutionCount => solvedGrids.Count;
 
     private bool gridFilled => grid.AllTilesAreUsed();
 
@@ -51,6 +52,9 @@ public class WFCGridSolver
         candidatesMethods = MethodContainer.GetCandidatesMethodsOfDifficulty(puzzleDifficulty);
     }
     
+    /// <summary>
+    ///   Looks for all solutions for a grid to see if it only has one solution.
+    /// </summary>
     public bool HasOneSolution(SudokuGrid9x9 originalGrid)
     {
         grid = new SudokuGrid9x9(originalGrid);
