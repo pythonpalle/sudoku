@@ -26,13 +26,18 @@ public class GeneratorBehaviour : MonoBehaviour
     {
         if (createEmptyGrid)
         {
-            generator.GenerateEmptyGrid();
+            Invoke("GenerateEmptyGrid", 0.01f);
         }
         else
         {
             StartCoroutine(AnimateGrid());
             Invoke("GenerateFullGrid", 0.01f);
         }
+    }
+    
+    public void GenerateEmptyGrid()
+    {
+        generator.GenerateEmptyGrid();
     }
 
     public void GenerateFullGrid()
