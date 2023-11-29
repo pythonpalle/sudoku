@@ -86,6 +86,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             var tileBehaviour = tileBehaviours[tile.index.row, tile.index.col];
             tileBehaviour.TryUpdateNumber(tile.Number, EnterType.DigitMark, false);
         }
+
+        grid = importedGrid;
         EventManager.OnNewCommand?.Invoke();
     }
 

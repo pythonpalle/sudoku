@@ -48,8 +48,7 @@ public class ImportBehaviour : MonoBehaviour
             
             EventManager.ImportGrid(grid);
             
-            //importObject.ImportGrid(grid);
-            Debug.Log("VALID SEED");
+            gameObject.SetActive(false);
         }
         else
         {
