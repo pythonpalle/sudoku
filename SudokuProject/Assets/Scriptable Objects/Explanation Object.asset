@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef0acf840acb4d7d886cce2f60a335f7, type: 3}
   m_Name: Explanation Object
   m_EditorClassIdentifier: 
-  explanationObjectPrefab: {fileID: 956477430329781581, guid: df54a91ecb162e744aafdb64fe1438c8, type: 3}
+  ExplanationPopupPrefab: {fileID: 3654506797689704536, guid: df54a91ecb162e744aafdb64fe1438c8, type: 3}
+  ExplanationPopupInstance: {fileID: 0}
+  Canvas: {fileID: 0}

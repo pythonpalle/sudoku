@@ -1014,6 +1014,8 @@ GameObject:
   - component: {fileID: 540405962}
   - component: {fileID: 540405961}
   - component: {fileID: 540405960}
+  - component: {fileID: 540405963}
+  - component: {fileID: 540405964}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1136,6 +1138,34 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 540405958}
   m_CullTransparentMesh: 1
+--- !u!114 &540405963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540405958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explanationObject: {fileID: 11400000, guid: 6440e291313445740ab54ffa1bbb7800, type: 2}
+  explanationText: Create
+--- !u!114 &540405964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540405958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c77ea57f788244444abe6d8547134b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  usePointerEnter: 1
+  usePointerExit: 1
 --- !u!1 &543081281
 GameObject:
   m_ObjectHideFlags: 0
@@ -3923,6 +3953,7 @@ GameObject:
   - component: {fileID: 1761550726}
   - component: {fileID: 1761550725}
   - component: {fileID: 1761550728}
+  - component: {fileID: 1761550729}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -4059,6 +4090,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+--- !u!114 &1761550729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1761550723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explanationObject: {fileID: 11400000, guid: 6440e291313445740ab54ffa1bbb7800, type: 2}
+  explanationText: Import
 --- !u!1 &1815511668
 GameObject:
   m_ObjectHideFlags: 0
@@ -4831,6 +4876,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 658145557}
+    - target: {fileID: 3331135339929381345, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3402977643215610466, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

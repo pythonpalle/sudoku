@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 5243590692779224249}
   - component: {fileID: 5243590692779224251}
   - component: {fileID: 5243590692779224246}
+  - component: {fileID: 905943594959612869}
   m_Layer: 5
   m_Name: Enter Button
   m_TagString: Untagged
@@ -104,7 +105,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5243590692779224253}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -200,19 +201,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5243590692779224248}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GridEnterManager, Assembly-CSharp
-        m_MethodName: TryRemoveNumbers
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &5243590692779224251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,6 +234,20 @@ MonoBehaviour:
   enterType: 0
   selectColorObject: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
   deselectColorObject: {fileID: 11400000, guid: 6fee8faf98e77994aa108aa73842619f, type: 2}
+--- !u!114 &905943594959612869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5243590692779224253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explanationObject: {fileID: 11400000, guid: 6440e291313445740ab54ffa1bbb7800, type: 2}
+  explanationText: Digit
 --- !u!1 &5243590693820939447
 GameObject:
   m_ObjectHideFlags: 0

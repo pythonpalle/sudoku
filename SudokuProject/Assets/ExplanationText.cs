@@ -4,12 +4,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     [SerializeField] private ExplanationObject explanationObject;
     [SerializeField] private string explanationText; 
     
     public void OnPointerEnter(PointerEventData eventData)
+    {
+        StopCoroutine($"DisplayPopupAfterSeconds");
+        StartCoroutine(DisplayPopupAfterSeconds(eventData, 1));
+    }
+    
+    private IEnumerator DisplayPopupAfterSeconds(PointerEventData eventData, float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        
+        DisplayPopup(eventData);
+    }
+
+    private void DisplayPopup(PointerEventData eventData)
     {
         if (explanationObject.HasSpawnedObject)
         {
@@ -25,8 +38,25 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
         explanationObject.ExplanationPopupInstance.TextMesh.text = explanationText;
     }
 
-    public void OnPointerExit(PointerEventData eventData) 
+    
+
+    public void OnPointerExit(PointerEventData eventData)
     {
-        explanationObject.ExplanationPopupInstance.gameObject.SetActive(false);
+        ClosePopup();
     }
+    
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        ClosePopup();
+    }
+
+    private void ClosePopup()
+    {
+        StopCoroutine($"DisplayPopupAfterSeconds");
+        
+        if (explanationObject.HasSpawnedObject)
+            explanationObject.ExplanationPopupInstance.gameObject.SetActive(false);
+    }
+
+    
 }

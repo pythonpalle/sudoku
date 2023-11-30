@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 2958227994105652861}
   - component: {fileID: 2700637258476776703}
   - component: {fileID: 2358149935236695982}
-  - component: {fileID: 9193596480025208336}
   m_Layer: 5
   m_Name: Number Button
   m_TagString: Untagged
@@ -179,19 +178,6 @@ MonoBehaviour:
   tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
   backgroundColor: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
   textColor: {fileID: 11400000, guid: 6fee8faf98e77994aa108aa73842619f, type: 2}
---- !u!114 &9193596480025208336
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1023878058788724101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  explanationObject: {fileID: 11400000, guid: 6440e291313445740ab54ffa1bbb7800, type: 2}
 --- !u!1 &3604089570290179963
 GameObject:
   m_ObjectHideFlags: 0
