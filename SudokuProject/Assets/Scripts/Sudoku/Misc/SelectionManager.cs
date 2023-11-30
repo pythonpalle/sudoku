@@ -17,6 +17,7 @@ public class SelectionManager : MonoBehaviour, IHasCommand
 
     private int stateCounter = 0;
     private List<List<TileBehaviour>> selectionHistory = new List<List<TileBehaviour>>();
+    private List<TileBehaviour> lastSelectedInBeforeUndo;
 
 
     private void OnEnable()
@@ -325,13 +326,9 @@ public class SelectionManager : MonoBehaviour, IHasCommand
             selectionHistory.RemoveAt(selectionHistory.Count-1);
         }
         
-        Debug.Log($"NC: State counter: {stateCounter}, tiles selected: {selectedTiles.Count}");
-
         selectionHistory.Add(selectedTiles);
         stateCounter++;
     }
-
-    private List<TileBehaviour> lastSelectedInBeforeUndo;
 
     private void ChangeState(bool undo)
     {
@@ -342,32 +339,44 @@ public class SelectionManager : MonoBehaviour, IHasCommand
         else
             stateCounter++;
         
-        // Debug.Log($"State counter: {stateCounter}");
+        // at the first undo, save current selection
+        if (undo && stateCounter == selectionHistory.Count - 1)
+        {
+            lastSelectedInBeforeUndo = new List<TileBehaviour>(selectionObject.SelectedTiles);
+        }
+        // at last redo, select the saved selection
+        else if (!undo && stateCounter == selectionHistory.Count + 1)
+        {
+            Debug.Log("Select last before undo!");
+            if (lastSelectedInBeforeUndo != null)
+            {
+                DeselectAllTiles();
+                foreach (var tile in lastSelectedInBeforeUndo)
+                {
+                    tile.Select();
+                }
+            }
+        }
         
+        // undo when has no states
         if (undo && stateCounter <= 0)
         {
+            DeselectAllTiles();
             stateCounter = 1;
             return;
         }
         
-        // if (undo && stateCounter > selectionHistory.Count)
-        // {
-        //     lastSelectedInBeforeUndo = new List<TileBehaviour>(selectionObject.SelectedTiles);
-        //     return;
-        // }
-
+        // redo at the end of the commands
         if (!undo && stateCounter > selectionHistory.Count)
         {
             stateCounter --;
             return;
         }
         
+        // select the tiles that was affected by the last undo/redo
         DeselectAllTiles();
-
         int chosenCounter = undo ? prevCounter : stateCounter;
-        
         var selectedTiles = selectionHistory[chosenCounter - 1];
-        Debug.Log($"Change: State counter: {stateCounter}, tiles selected: {selectedTiles.Count}");
         foreach (var tile in selectedTiles)
         {
             tile.Select();
