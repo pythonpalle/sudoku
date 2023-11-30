@@ -259,6 +259,8 @@ public class SelectionManager : MonoBehaviour
     {
         if (!selectionObject.HasSelectedTiles) return;
 
+        // if the user just double clicked, the last tile is the one that was just clicked.
+        // otherwise, it is the last tile selected by dragging
         TileBehaviour lastTile = lastSelectionWasDoubleClick 
             ? lastTileClicked 
             : selectionObject.LastSelected();
