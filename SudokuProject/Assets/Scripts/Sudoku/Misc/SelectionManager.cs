@@ -347,7 +347,6 @@ public class SelectionManager : MonoBehaviour, IHasCommand
         // at last redo, select the saved selection
         else if (!undo && stateCounter == selectionHistory.Count + 1)
         {
-            Debug.Log("Select last before undo!");
             if (lastSelectedInBeforeUndo != null)
             {
                 DeselectAllTiles();
