@@ -4,22 +4,46 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
+public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private ExplanationObject explanationObject;
-    [SerializeField] private string explanationText; 
+    [SerializeField] private string explanationText;
+
+    private IEnumerator routine;
+    private bool routineIsRunning;
     
     public void OnPointerEnter(PointerEventData eventData)
     {
-        StopCoroutine($"DisplayPopupAfterSeconds");
-        StartCoroutine(DisplayPopupAfterSeconds(eventData, 1));
+        if (routineIsRunning)
+            ClosePopup();
+
+        routine = DisplayPopupAfterSeconds(eventData, 1);
+        StartCoroutine(routine);
+    }
+    
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        ClosePopup();
+    }
+    
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        ClosePopup();
+    }
+    
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        ClosePopup();
     }
     
     private IEnumerator DisplayPopupAfterSeconds(PointerEventData eventData, float seconds)
     {
-        yield return new WaitForSeconds(seconds);
+        routineIsRunning = true;
         
+        yield return new WaitForSeconds(seconds);
         DisplayPopup(eventData);
+
+        routineIsRunning = false;
     }
 
     private void DisplayPopup(PointerEventData eventData)
@@ -38,25 +62,12 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
         explanationObject.ExplanationPopupInstance.TextMesh.text = explanationText;
     }
 
-    
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        ClosePopup();
-    }
-    
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        ClosePopup();
-    }
-
     private void ClosePopup()
     {
-        StopCoroutine($"DisplayPopupAfterSeconds");
+        StopCoroutine(routine);
+        routineIsRunning = false;
         
         if (explanationObject.HasSpawnedObject)
             explanationObject.ExplanationPopupInstance.gameObject.SetActive(false);
     }
-
-    
 }
