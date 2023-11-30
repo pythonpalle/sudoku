@@ -125,7 +125,6 @@ public class SelectionObject : ScriptableObject
         SelectedTiles = new List<TileBehaviour>();
     }
 
-
     public void TryAdd(TileBehaviour tile)
     {
         if (!SelectedTiles.Contains(tile))

@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class SelectionManager : MonoBehaviour
 {
-    
-    
     [SerializeField] private SelectionObject selectionObject;
-    
-    private TileBehaviour lastTileReference;
-
     [SerializeField] private bool pointerOverGrid = false;
     
+    private TileBehaviour lastTileReference;
+    
+    private TileBehaviour lastTileClicked;
+    private bool lastSelectionWasDoubleClick;
     private float timeOfLastClick;
     private float maxTimeForDoubleClick = 0.5f;
+
 
     private void OnEnable()
     {
@@ -82,9 +82,10 @@ public class SelectionManager : MonoBehaviour
     private void OnTilePointerDown(TileBehaviour tile)
     {
         bool doubleClick = Time.time < timeOfLastClick + maxTimeForDoubleClick;
-        if (doubleClick)
+        if (doubleClick && tile == lastTileClicked)
         {
             EventManager.SelectAllTilesWithNumber(tile);
+            lastSelectionWasDoubleClick = true;
         }
         else
         {
@@ -101,9 +102,12 @@ public class SelectionManager : MonoBehaviour
                 selectionObject.SetSelectionMode(SelectionMode.Selecting);
                 tile.Select();
             }
+
+            lastSelectionWasDoubleClick = false;
         }
 
         timeOfLastClick = Time.time;
+        lastTileClicked = tile;
     }
     
     private void OnTilePointerUp(TileBehaviour tile)
@@ -255,8 +259,10 @@ public class SelectionManager : MonoBehaviour
     {
         if (!selectionObject.HasSelectedTiles) return;
 
-        TileBehaviour lastTile = selectionObject.LastSelected();      
-        
+        TileBehaviour lastTile = lastSelectionWasDoubleClick 
+            ? lastTileClicked 
+            : selectionObject.LastSelected();
+
         int row = lastTile.row;
         int col = lastTile.col;
 
@@ -292,6 +298,8 @@ public class SelectionManager : MonoBehaviour
             
             if (lastTileReference)
                 lastTileReference.Select();
+
+            lastSelectionWasDoubleClick = false;
         }
     }
 }
