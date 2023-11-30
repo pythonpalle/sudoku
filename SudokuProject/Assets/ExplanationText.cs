@@ -64,7 +64,9 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void ClosePopup()
     {
-        StopCoroutine(routine);
+        if (routine != null)
+            StopCoroutine(routine);
+        
         routineIsRunning = false;
         
         if (explanationObject.HasSpawnedObject)

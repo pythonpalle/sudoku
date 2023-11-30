@@ -19,8 +19,6 @@ public class HintBehaviour : MonoBehaviour
     [SerializeField] private ColorObject selectColor;
     [SerializeField] private ColorObject invalidHintColor;
     
-    
-
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
     
     private void OnEnable()
@@ -50,7 +48,7 @@ public class HintBehaviour : MonoBehaviour
         // don't give hints if the grid is contradicted
         if (gridPort.gridContradicted)
         {
-            Debug.Log("Can't give hint if grid has contradiction");
+            OnHintButtonClickedWithContradiction();
             return;
         }
 
@@ -80,6 +78,36 @@ public class HintBehaviour : MonoBehaviour
                     return;
             }
         }
+    }
+
+    private void OnHintButtonClickedWithContradiction()
+    {
+        if (!hintButtonIsFlashing)
+            StartCoroutine(FlashHintButton());
+        
+        Debug.Log("Can't give hint if grid has contradiction");
+    }
+
+    private bool hintButtonIsFlashing;
+    private IEnumerator FlashHintButton()
+    {
+        hintButtonIsFlashing = true;
+
+        int totalNumberOfFlashes = 2;
+        float timeBetweenFlashes = 0.1f;
+
+        for (int flashCounter = 0; flashCounter < totalNumberOfFlashes; flashCounter++)
+        {
+            yield return new WaitForSeconds(timeBetweenFlashes);
+            hintButton.image.color = Color.black;
+            yield return new WaitForSeconds(timeBetweenFlashes);
+            hintButton.image.color = invalidHintColor.Color; 
+        }
+        
+        if (!gridPort.gridContradicted)
+            hintButton.image.color = selectColor.Color;
+
+        hintButtonIsFlashing = false;
     }
 
     private void DisplayWarning(string warningMessage)

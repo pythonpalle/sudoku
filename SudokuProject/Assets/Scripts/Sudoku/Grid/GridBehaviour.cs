@@ -20,7 +20,12 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     
     [Header("Grid Boxes")]
     [SerializeField] private List<GridBoxBehaviour> boxes;
-    
+
+    private void Awake()
+    {
+        gridPort.Reset();
+    }
+
     private void Start()
     {
         SetupBoxes();
@@ -43,9 +48,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnSelectAllTiles += OnSelectAllTiles;
 
         selectionObject.OnRequestTile += OnRequestTile;
-        
-        
-        //hintObject.OnRequestGrid += OnRequestGrid;
+
         gridPort.OnRequestGrid += OnRequestGrid;
         hintObject.OnHintFound += OnHintFound;
     }

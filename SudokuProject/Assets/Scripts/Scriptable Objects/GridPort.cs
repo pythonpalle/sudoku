@@ -30,4 +30,9 @@ public class GridPort : ScriptableObject
     {
         return grid.AsString();
     }
+
+    public void Reset()
+    {
+        gridContradicted = false;
+    }
 }

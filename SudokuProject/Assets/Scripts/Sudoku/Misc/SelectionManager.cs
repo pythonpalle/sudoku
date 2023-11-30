@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SelectionManager : MonoBehaviour
+public class SelectionManager : MonoBehaviour, IHasCommand
 {
     [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private bool pointerOverGrid = false;
@@ -14,6 +14,9 @@ public class SelectionManager : MonoBehaviour
     private bool lastSelectionWasDoubleClick;
     private float timeOfLastClick;
     private float maxTimeForDoubleClick = 0.5f;
+
+    private int stateCounter = 0;
+    private List<List<TileBehaviour>> selectionHistory = new List<List<TileBehaviour>>();
 
 
     private void OnEnable()
@@ -29,15 +32,19 @@ public class SelectionManager : MonoBehaviour
         
         EventManager.OnUIElementHover += OnUIElementHover;
         EventManager.OnUIElementExit += OnUIElementExit;
+
+        EventManager.OnNewCommand += OnNewCommand;
+        EventManager.OnUndo += OnUndo;
+        EventManager.OnRedo += OnRedo;
         
         selectionObject.ClearSelectedTiles(); 
-        selectionObject.SetSelectionMode(SelectionMode.None);
+        selectionObject.SetSelectionMode(SelectionMode.None); 
     }
     
     private void OnDisable()
     {
         EventManager.OnTileSelect -= OnTileSelect;
-        EventManager.OnTileDeselect -= OnTileDeselect;
+        EventManager.OnTileDeselect -= OnTileDeselect; 
         
         EventManager.OnTilePointerDown -= OnTilePointerDown;
         EventManager.OnTilePointerUp -= OnTilePointerUp;
@@ -45,6 +52,10 @@ public class SelectionManager : MonoBehaviour
         
         selectionObject.OnSendTileReference -= OnSendTileReference;
         
+        EventManager.OnNewCommand -= OnNewCommand;
+        EventManager.OnUndo -= OnUndo;
+        EventManager.OnRedo -= OnRedo;
+
         EventManager.OnUIElementHover -= OnUIElementHover;
         EventManager.OnUIElementExit -= OnUIElementExit;
     }
@@ -303,5 +314,73 @@ public class SelectionManager : MonoBehaviour
 
             lastSelectionWasDoubleClick = false;
         }
+    }
+
+    public void OnNewCommand()
+    {
+        var selectedTiles = new List<TileBehaviour>(selectionObject.SelectedTiles);
+        
+        while (selectionHistory.Count > stateCounter)
+        {
+            selectionHistory.RemoveAt(selectionHistory.Count-1);
+        }
+        
+        Debug.Log($"NC: State counter: {stateCounter}, tiles selected: {selectedTiles.Count}");
+
+        selectionHistory.Add(selectedTiles);
+        stateCounter++;
+    }
+
+    private List<TileBehaviour> lastSelectedInBeforeUndo;
+
+    private void ChangeState(bool undo)
+    {
+        int prevCounter = stateCounter;
+        
+        if (undo)
+            stateCounter--; 
+        else
+            stateCounter++;
+        
+        // Debug.Log($"State counter: {stateCounter}");
+        
+        if (undo && stateCounter <= 0)
+        {
+            stateCounter = 1;
+            return;
+        }
+        
+        // if (undo && stateCounter > selectionHistory.Count)
+        // {
+        //     lastSelectedInBeforeUndo = new List<TileBehaviour>(selectionObject.SelectedTiles);
+        //     return;
+        // }
+
+        if (!undo && stateCounter > selectionHistory.Count)
+        {
+            stateCounter --;
+            return;
+        }
+        
+        DeselectAllTiles();
+
+        int chosenCounter = undo ? prevCounter : stateCounter;
+        
+        var selectedTiles = selectionHistory[chosenCounter - 1];
+        Debug.Log($"Change: State counter: {stateCounter}, tiles selected: {selectedTiles.Count}");
+        foreach (var tile in selectedTiles)
+        {
+            tile.Select();
+        }
+    }
+
+    private void OnUndo()
+    {
+        ChangeState(true);
+    }
+    
+    private void OnRedo()
+    {
+        ChangeState(false);
     }
 }
