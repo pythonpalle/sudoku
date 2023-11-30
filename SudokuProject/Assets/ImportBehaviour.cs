@@ -41,7 +41,8 @@ public class ImportBehaviour : MonoBehaviour
     {
         Debug.Log("Try import seed: " + seedString);
 
-        if (SeedIsValid())
+        bool validSeed = SeedIsValid(out string error);
+        if (validSeed)
         {
             SudokuGrid9x9 grid = ConvertSeedToGrid();
             grid.PrintGrid();
@@ -52,7 +53,7 @@ public class ImportBehaviour : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("INVALID SEED");
+            Debug.LogWarning(error);
         }
     }
 
@@ -78,19 +79,21 @@ public class ImportBehaviour : MonoBehaviour
         return grid;
     }
 
-    private bool SeedIsValid()
+    private bool SeedIsValid(out string errorMessage)
     {
+        errorMessage = String.Empty;
+        
         if (seedString.Length > 81)
         {
-            Debug.Log("Seed is too long");
-            return false;
+            seedString = seedString.Substring(0, 81);
+            Debug.Log("Seed was too long, capped it at 81.");
         }
         
         foreach (var digit in seedString)
         {
             if (!Char.IsDigit(digit) && digit != ' ')
             {
-                Debug.Log("Seed contains a nonvalid digit");
+                errorMessage = "Seed must only contain digits and spaces!";
                 return false;
             }
         }

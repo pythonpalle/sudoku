@@ -936,7 +936,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 540405961}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 822256292}
+        m_TargetAssemblyTypeName: CreationManager, Assembly-CSharp
+        m_MethodName: TryCreatePuzzle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &540405961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2175,7 +2187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 503893f8ced9b304dbd0aeba3bbebaf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  creationObject: {fileID: 11400000, guid: ad57872acb98e2844b72c75f9e48c241, type: 2}
+  gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
 --- !u!1 &979531137
 GameObject:
   m_ObjectHideFlags: 0
@@ -3110,7 +3122,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 0
+  m_CharacterLimit: 81
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
@@ -3131,34 +3143,10 @@ MonoBehaviour:
       m_Calls: []
   m_OnSelect:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1082602627}
-        m_TargetAssemblyTypeName: ImportBehaviour, Assembly-CSharp
-        m_MethodName: SetFieldSelected
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnDeselect:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1082602627}
-        m_TargetAssemblyTypeName: ImportBehaviour, Assembly-CSharp
-        m_MethodName: SetFieldDeselected
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnTextSelection:
     m_PersistentCalls:
       m_Calls: []
