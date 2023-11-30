@@ -211,4 +211,28 @@ public struct SudokuGrid9x9
     {
         Tiles[index.row, index.col].UpdateCandidates(updatedCandidates);
     }
+
+    public string AsString()
+    {
+        string gridString = String.Empty;
+
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                int number = Tiles[row, col].Number;
+
+                if (number == 0)
+                {
+                    gridString += " ";
+                }
+                else
+                {
+                    gridString += number;
+                }
+            }
+        }
+
+        return gridString;
+    }
 }

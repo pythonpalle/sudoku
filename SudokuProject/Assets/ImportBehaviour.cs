@@ -19,16 +19,6 @@ public class ImportBehaviour : MonoBehaviour
         this.seedString = seedString;
     }
 
-    // public void SetFieldSelected()
-    // {
-    //     importObject.isSelected = true;
-    // }
-    //
-    // public void SetFieldDeselected()
-    // {
-    //     importObject.isSelected = false;
-    // }
-
     private void Update()
     {
         if (enterButtonIsPressed)
@@ -55,6 +45,12 @@ public class ImportBehaviour : MonoBehaviour
         {
             Debug.LogWarning(error);
         }
+    }
+
+    public void PasteSeed()
+    {
+        seedString = GUIUtility.systemCopyBuffer;
+        inputField.text = seedString;
     }
 
     private SudokuGrid9x9 ConvertSeedToGrid()

@@ -25,4 +25,9 @@ public class GridPort : ScriptableObject
         OnContradictionStatusUpdate?.Invoke(gridHasContradiction);
         gridContradicted = gridHasContradiction;
     }
+
+    public string GetGridAsSeed()
+    {
+        return grid.AsString();
+    }
 }
