@@ -86,6 +86,12 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             tileBehaviour.TryUpdateNumber(tile.Number, EnterType.DigitMark, false);
         }
 
+        foreach (var tileBehaviour in tileBehaviours)
+        {
+            if (CheckForContradiction(tileBehaviour))
+                tileBehaviour.SetContradiction();
+        }
+        
         grid = importedGrid;
         EventManager.OnNewCommand?.Invoke();
     }
@@ -523,8 +529,11 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
     private bool CheckForContradiction(TileBehaviour tile)
     {
-        var effectedTiles = GetEffectedTiles(tile);
         int tileNumber = tile.number;
+        if (tileNumber == 0)
+            return false;
+        
+        var effectedTiles = GetEffectedTiles(tile);
 
         foreach (var effectedTile in effectedTiles)
         {
