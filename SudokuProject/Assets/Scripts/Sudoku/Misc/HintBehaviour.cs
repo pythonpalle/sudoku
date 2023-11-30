@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -18,8 +19,7 @@ public class HintBehaviour : MonoBehaviour
     [SerializeField] private ColorObject selectColor;
     [SerializeField] private ColorObject invalidHintColor;
     
-    [Header("Popup")] 
-    [SerializeField] private PopupWindow _popupWindow;
+    
 
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
     
@@ -47,36 +47,48 @@ public class HintBehaviour : MonoBehaviour
     {
         gridPort.RequestGrid();
         
+        // don't give hints if the grid is contradicted
         if (gridPort.gridContradicted)
         {
             Debug.Log("Can't give hint if grid has contradiction");
             return;
         }
 
-        // TODO: Custom error texts depending on if 
-        // a) not humanly solveable
-        // b) no solutions
-        // c) multiple solutions
-        
-        if (!_solver.HasOneSolution(gridPort.grid))
+        // check if valid grid (only one solution)
+        if (_solver.HasOneSolution(gridPort.grid))
         {
-            Debug.Log("Puzzle not solveable");
-            _popupWindow.PopUp();
-            return;
-        }
-        
-        if (TryFindHint(gridPort.grid, out TileIndex hintIndex))
-        {
-            hintObject.HintFound(hintIndex);
+            // check to see if progression can be made with human methods
+            if (TryFindProgression(gridPort.grid, out TileIndex hintIndex))
+            {
+                hintObject.HintFound(hintIndex);
+            }
+            else
+            {
+                DisplayWarning("Solver could only progress using brute force.");
+            }
         }
         else
         {
-            _popupWindow.PopUp();
+            switch (_solver.SolutionsState)
+            {
+                case SolutionsState.Multiple:
+                    DisplayWarning("The puzzle has multiple solutions.");
+                    return;
+            
+                case SolutionsState.None:
+                    DisplayWarning("The puzzle is not solveable from this state.");
+                    return;
+            }
         }
     }
 
-    private bool TryFindHint(SudokuGrid9x9 gridCopy, out TileIndex tileIndex)
+    private void DisplayWarning(string warningMessage)
     {
-        return _solver.TryFindProgression(gridCopy, PuzzleDifficulty.Extreme, out tileIndex);
+        hintObject.DisplayWarningPopup(warningMessage);
+    }
+
+    private bool TryFindProgression(SudokuGrid9x9 gridCopy, out TileIndex tileIndex)
+    {
+        return _solver.TryFindProgression(gridCopy, out tileIndex);
     }
 }

@@ -68,19 +68,13 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
         selectionObject.OnRequestTile -= OnRequestTile;
         
-        //hintObject.OnRequestGrid -= OnRequestGrid;
         gridPort.OnRequestGrid -= OnRequestGrid;
         hintObject.OnHintFound -= OnHintFound;
     }
 
     private void OnRequestGrid()
     {
-        // bool contradiction = GridHasContradiction();
-        // // don't bother updating candidates if the grid is contradicted anyway
-        // if (contradiction) return;
-        
         UpdateGridCandidates();
-        //hintObject.SendGridCopy(grid);
         gridPort.SendGridCopy(grid);
     }
     

@@ -28,35 +28,35 @@ public class CreationManager : MonoBehaviour
 
     public void TryCreatePuzzle()
     {
-        creationObject.RequestGrid();
-        
-        bool solveable = _gridSolver.HasOneSolution(grid);
-        if (!solveable)
-        {
-            bool multipleSolutions = _gridSolver.SolutionCount > 1;
-            if (multipleSolutions)
-            {
-                Debug.LogWarning("the created puzzle has multiple solutions.");
-            }
-            else
-            {
-                Debug.LogWarning("the created puzzle has no solutions.");
-            }
-
-            return;
-        }
-
-        bool humanlySolveable = _gridSolver.HumanlySolvable(grid, out PuzzleDifficulty difficulty);
-        if (humanlySolveable)
-        {
-            Debug.Log("Puzzle looks ok too me, dude!");
-            Debug.Log($"It is rated difficulty {difficulty}");
-        }
-        else
-        {
-            Debug.LogWarning("the created puzzle may be very hard!");
-            return;
-        }
+        // creationObject.RequestGrid();
+        //
+        // bool solveable = _gridSolver.HasOneSolution(grid);
+        // if (!solveable)
+        // {
+        //     bool multipleSolutions = _gridSolver.SolutionCount > 1;
+        //     if (multipleSolutions)
+        //     {
+        //         Debug.LogWarning("the created puzzle has multiple solutions.");
+        //     }
+        //     else
+        //     {
+        //         Debug.LogWarning("the created puzzle has no solutions.");
+        //     }
+        //
+        //     return;
+        // }
+        //
+        // bool humanlySolveable = _gridSolver.HumanlySolvable(grid, out PuzzleDifficulty difficulty);
+        // if (humanlySolveable)
+        // {
+        //     Debug.Log("Puzzle looks ok too me, dude!");
+        //     Debug.Log($"It is rated difficulty {difficulty}");
+        // }
+        // else
+        // {
+        //     Debug.LogWarning("the created puzzle may be very hard!");
+        //     return;
+        // }
         
     }
 

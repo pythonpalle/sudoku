@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum SolutionsState
+{
+    None,
+    Single,
+    Multiple
+}
+
 public class WFCGridSolver
 {
     public WFCGridSolver(PuzzleDifficulty puzzleMAXDifficultyForHumanSolve)
@@ -13,7 +20,19 @@ public class WFCGridSolver
     private const int GENERATION_ITERATION_LIMIT = 16_384;
     
     private Stack<Move> moves;
-    
+
+    public SolutionsState SolutionsState
+    {
+        get
+        {
+            if (solutionCount == 0)
+                return SolutionsState.None;
+            else if (solutionCount == 1)
+                return SolutionsState.Single;
+            else
+                return SolutionsState.Multiple;
+        }
+    }
 
     private PuzzleDifficulty highestSuccessfulDifficulty { get; set; } = PuzzleDifficulty.Simple;
     private PuzzleDifficulty highestAttemptedDifficulty = PuzzleDifficulty.Simple;
@@ -25,7 +44,7 @@ public class WFCGridSolver
     private System.Random random = new System.Random();
 
     List<SudokuGrid9x9> solvedGrids = new List<SudokuGrid9x9>();
-    public int SolutionCount => solvedGrids.Count;
+    private int solutionCount => solvedGrids.Count;
 
     private bool gridFilled => grid.AllTilesAreUsed();
 
@@ -90,12 +109,19 @@ public class WFCGridSolver
         return solvedGrids.Count;
     }
 
-    public bool TryFindProgression(SudokuGrid9x9 grid, PuzzleDifficulty difficulty, out TileIndex progressIndex)
+    public bool TryFindProgression(SudokuGrid9x9 grid, out TileIndex progressIndex)
     {
         this.grid = new SudokuGrid9x9(grid);
 
+        // // in case the 
+        // var lowestEntropyIndex = FindLowestEntropyTile();
+
         // can only progress if the grid is actually solveable
-        if (!TrySolveGrid())
+        if (TrySolveGrid())
+        {
+            
+        }
+        else
         {
             Debug.LogWarning("Oops, can't solve this grid!");
             progressIndex = new TileIndex(-1, -1);
@@ -130,7 +156,7 @@ public class WFCGridSolver
             }
             else
             {
-                Debug.LogWarning("NOT PROGRESSION FOUND " + difficulty);
+                Debug.LogWarning("NOT PROGRESSION FOUND ");
                 return false;
             }
         }
@@ -312,9 +338,7 @@ public class WFCGridSolver
                 return false;
             }
             
-
             iterations++;
-
             if (iterations >= GENERATION_ITERATION_LIMIT)
             {
                 Debug.LogWarning("Maximum iterations reached, couldn't generate grid.");
