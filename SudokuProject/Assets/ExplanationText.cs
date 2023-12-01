@@ -49,7 +49,7 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void DisplayPopup(PointerEventData eventData)
     {
-        _popupPort.DisplayHoverText(explanationText, eventData.position);
+        EventManager.DisplayHoverText(explanationText, eventData.position);
         
         // if (explanationObject.HasSpawnedObject)
         // {
@@ -72,7 +72,7 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
         
         routineIsRunning = false;
         
-        _popupPort.CancelHoverText();
+        EventManager.CancelHoverText();
         
         // if (explanationObject.HasSpawnedObject)
         //     explanationObject.textMeshContainerInstance.gameObject.SetActive(false);

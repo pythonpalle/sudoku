@@ -36,6 +36,11 @@ public static class EventManager
     public static UnityAction OnRedo;
 
     public static UnityAction<SudokuGrid9x9> OnImportGrid;
+    
+    public static UnityAction<string, Vector2> OnDisplayHoverText;
+    public static UnityAction OnCancelHoverText;
+
+    
 
     public static void GenerateGrid(SudokuGrid9x9 grid)
     {
@@ -132,5 +137,15 @@ public static class EventManager
     public static void ImportGrid(SudokuGrid9x9 grid)
     {
         OnImportGrid?.Invoke(grid);
+    }
+    
+    public static void DisplayHoverText(string text, Vector2 position)
+    {
+        OnDisplayHoverText?.Invoke(text, position);
+    }
+    
+    public static void CancelHoverText()
+    {
+        OnCancelHoverText?.Invoke();
     }
 }
