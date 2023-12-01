@@ -9,12 +9,6 @@ public class CreationManager : MonoBehaviour
     [SerializeField] private GridPort gridPort;
     private WFCGridSolver _gridSolver = new WFCGridSolver(PuzzleDifficulty.Extreme);
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-            TryCreatePuzzle();
-    }
-
     public void TryCreatePuzzle()
     {
         gridPort.RequestGrid();
