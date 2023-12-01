@@ -659,7 +659,7 @@ RectTransform:
   m_Children:
   - {fileID: 1761550724}
   m_Father: {fileID: 222470058}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4704,7 +4704,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5184688797412245676, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
       propertyPath: m_Name
-      value: Popup Texts (1)
+      value: Popup Texts
       objectReference: {fileID: 0}
     - target: {fileID: 5184688797412245677, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
       propertyPath: m_Pivot.x
@@ -6022,7 +6022,7 @@ RectTransform:
   m_Children:
   - {fileID: 540405959}
   m_Father: {fileID: 222470058}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6674,6 +6674,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1869509530}
+    - target: {fileID: 447108211003949967, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 447108211608464846, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -6690,6 +6694,14 @@ PrefabInstance:
       propertyPath: _popupWindow
       value: 
       objectReference: {fileID: 1667517313}
+    - target: {fileID: 447108211861816117, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 626
+      objectReference: {fileID: 0}
+    - target: {fileID: 447108211861816117, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -368
+      objectReference: {fileID: 0}
     - target: {fileID: 447108211861816118, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
       propertyPath: m_IsActive
       value: 1

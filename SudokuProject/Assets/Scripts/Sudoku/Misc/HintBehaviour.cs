@@ -20,7 +20,8 @@ public class HintBehaviour : MonoBehaviour
     [SerializeField] private ColorObject invalidHintColor;
     
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
-    
+    private bool hintButtonIsFlashing;
+
     private void OnEnable()
     {
         hintButton.onClick.AddListener(OnHintButtonClicked);
@@ -88,7 +89,6 @@ public class HintBehaviour : MonoBehaviour
         Debug.Log("Can't give hint if grid has contradiction");
     }
 
-    private bool hintButtonIsFlashing;
     private IEnumerator FlashHintButton()
     {
         hintButtonIsFlashing = true;
