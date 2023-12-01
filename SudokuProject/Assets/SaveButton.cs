@@ -6,10 +6,18 @@ public class SaveButton : MonoBehaviour
 {
     [SerializeField] private GridPort _gridPort;
 
-    public void SaveGrid()
+    private string successfulSaveString = "Saved to clipboard!";
+    public void OnSaveButtonPressed()
+    {
+        SaveGrid();
+    }
+    
+    private void SaveGrid()
     {
         _gridPort.RequestGrid();
         string gridString = _gridPort.GetGridAsSeed();
+        
+        EventManager.DisplayFloatingPopupText(successfulSaveString, transform.position);
         
         GUIUtility.systemCopyBuffer = gridString;
         Debug.Log(gridString); 
