@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef0acf840acb4d7d886cce2f60a335f7, type: 3}
-  m_Name: Explanation Object
+  m_Script: {fileID: 11500000, guid: 2f6e825622db41a1aaca251cf3820029, type: 3}
+  m_Name: Text Popup Port
   m_EditorClassIdentifier: 
-  textMeshContainerPrefab: {fileID: 3654506797689704536, guid: df54a91ecb162e744aafdb64fe1438c8, type: 3}
-  textMeshContainerInstance: {fileID: 0}
-  Canvas: {fileID: 0}

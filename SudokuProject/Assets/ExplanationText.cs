@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] private ExplanationObject explanationObject;
+    [SerializeField] private TextPopupPort _popupPort;
     [SerializeField] private string explanationText;
 
     private IEnumerator routine;
@@ -41,6 +41,7 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
         routineIsRunning = true;
         
         yield return new WaitForSeconds(seconds);
+        
         DisplayPopup(eventData);
 
         routineIsRunning = false;
@@ -48,18 +49,20 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void DisplayPopup(PointerEventData eventData)
     {
-        if (explanationObject.HasSpawnedObject)
-        {
-            explanationObject.ExplanationPopupInstance.gameObject.SetActive(true);
-        }
-        else
-        {
-            explanationObject.Canvas = FindObjectOfType<Canvas>();
-            explanationObject.ExplanationPopupInstance = Instantiate(explanationObject.ExplanationPopupPrefab, explanationObject.Canvas.transform, false);
-        }
+        _popupPort.DisplayHoverText(explanationText, eventData.position);
         
-        explanationObject.ExplanationPopupInstance.transform.position = eventData.position;
-        explanationObject.ExplanationPopupInstance.TextMesh.text = explanationText;
+        // if (explanationObject.HasSpawnedObject)
+        // {
+        //     explanationObject.textMeshContainerInstance.gameObject.SetActive(true);
+        // }
+        // else
+        // {
+        //     explanationObject.Canvas = FindObjectOfType<Canvas>();
+        //     explanationObject.textMeshContainerInstance = Instantiate(explanationObject.textMeshContainerPrefab, explanationObject.Canvas.transform, false);
+        // }
+        //
+        // explanationObject.textMeshContainerInstance.transform.position = eventData.position;
+        // explanationObject.textMeshContainerInstance.TextMesh.text = explanationText;
     }
 
     private void ClosePopup()
@@ -69,7 +72,9 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
         
         routineIsRunning = false;
         
-        if (explanationObject.HasSpawnedObject)
-            explanationObject.ExplanationPopupInstance.gameObject.SetActive(false);
+        _popupPort.CancelHoverText();
+        
+        // if (explanationObject.HasSpawnedObject)
+        //     explanationObject.textMeshContainerInstance.gameObject.SetActive(false);
     }
 }

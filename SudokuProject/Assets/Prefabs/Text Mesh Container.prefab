@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2454183296177817599}
   - component: {fileID: 3654506797689704536}
   m_Layer: 5
-  m_Name: Explanation Poup Prefab
+  m_Name: Text Mesh Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

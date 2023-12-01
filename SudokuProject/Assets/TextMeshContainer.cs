@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ExplanationPopup : MonoBehaviour
+public class TextMeshContainer : MonoBehaviour
 {
     public TextMeshProUGUI TextMesh;
 }

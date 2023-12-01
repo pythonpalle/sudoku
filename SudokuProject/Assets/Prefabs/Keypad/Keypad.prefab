@@ -278,7 +278,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explanationObject: {fileID: 11400000, guid: 6440e291313445740ab54ffa1bbb7800, type: 2}
+  _popupPort: {fileID: 0}
   explanationText: Generate New
 --- !u!1 &447108211407501431
 GameObject:
@@ -990,7 +990,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explanationObject: {fileID: 11400000, guid: 6440e291313445740ab54ffa1bbb7800, type: 2}
+  _popupPort: {fileID: 0}
   explanationText: Save
 --- !u!114 &6425583821107970656
 MonoBehaviour:
@@ -2557,6 +2557,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Undo/Redo Buttons
       objectReference: {fileID: 0}
+    - target: {fileID: 5904768952781410868, guid: 5b11ad5f69ac73b4880412846542c431, type: 3}
+      propertyPath: _popupPort
+      value: 
+      objectReference: {fileID: 11400000, guid: 5fd5519008d696549af6946d3b6363d5, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b11ad5f69ac73b4880412846542c431, type: 3}
 --- !u!224 &447108212620062464 stripped
@@ -2785,7 +2789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explanationObject: {fileID: 11400000, guid: 6440e291313445740ab54ffa1bbb7800, type: 2}
+  _popupPort: {fileID: 0}
   explanationText: Hint
 --- !u!1001 &8487117242527888375
 PrefabInstance:

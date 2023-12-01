@@ -4,10 +4,10 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Sudoku/ExplanationObject")]
 public class ExplanationObject : ScriptableObject
 {
-    public ExplanationPopup ExplanationPopupPrefab;
+    public TextMeshContainer textMeshContainerPrefab;
     
-    [HideInInspector]public ExplanationPopup ExplanationPopupInstance;
-    public bool HasSpawnedObject => ExplanationPopupInstance != null;
+    [HideInInspector]public TextMeshContainer textMeshContainerInstance;
+    public bool HasSpawnedObject => textMeshContainerInstance != null;
     
     [HideInInspector] public Canvas Canvas;
 }
