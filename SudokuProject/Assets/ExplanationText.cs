@@ -6,11 +6,12 @@ using UnityEngine.EventSystems;
 
 public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] private TextPopupPort _popupPort;
     [SerializeField] private string explanationText;
 
     private IEnumerator routine;
     private bool routineIsRunning;
+
+    private bool isPoppedUp;
     
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -41,7 +42,6 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
         routineIsRunning = true;
         
         yield return new WaitForSeconds(seconds);
-        
         DisplayPopup(eventData);
 
         routineIsRunning = false;
@@ -50,31 +50,19 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private void DisplayPopup(PointerEventData eventData)
     {
         EventManager.DisplayHoverText(explanationText, eventData.position);
-        
-        // if (explanationObject.HasSpawnedObject)
-        // {
-        //     explanationObject.textMeshContainerInstance.gameObject.SetActive(true);
-        // }
-        // else
-        // {
-        //     explanationObject.Canvas = FindObjectOfType<Canvas>();
-        //     explanationObject.textMeshContainerInstance = Instantiate(explanationObject.textMeshContainerPrefab, explanationObject.Canvas.transform, false);
-        // }
-        //
-        // explanationObject.textMeshContainerInstance.transform.position = eventData.position;
-        // explanationObject.textMeshContainerInstance.TextMesh.text = explanationText;
+        isPoppedUp = true;
     }
 
     private void ClosePopup()
     {
-        if (routine != null)
+        if (routine != null && routineIsRunning)
             StopCoroutine(routine);
         
+        if (!isPoppedUp)
+            return;
+        
         routineIsRunning = false;
-        
         EventManager.CancelHoverText();
-        
-        // if (explanationObject.HasSpawnedObject)
-        //     explanationObject.textMeshContainerInstance.gameObject.SetActive(false);
+        isPoppedUp = false;
     }
 }
