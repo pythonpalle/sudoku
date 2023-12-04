@@ -109,3 +109,11 @@ public class GridEnterManager : MonoBehaviour
         EventManager.UserRemoveEntry(command);
     }
 }
+
+public struct GridEntry
+{
+    public List<TileBehaviour> SelectedTiles;
+    public EnterType EnterType;
+    public bool remove;
+    public int number;
+}
