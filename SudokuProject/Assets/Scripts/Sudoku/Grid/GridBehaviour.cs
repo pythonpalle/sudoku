@@ -37,8 +37,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnImportGrid += OnImportGrid;
         EventManager.OnTileIndexSet += OnTileIndexSet;
         
-        EventManager.OnNumberEnter += OnNumberEnter;
-        EventManager.OnRemoveEntry += OnRemoveEntryEvent;
+        EventManager.OnUserNumberEnter += OnNumberEnter;
+        EventManager.OnUserRemoveEntry += OnRemoveEntryEvent;
         
         EventManager.OnNewCommand += OnNewCommand;
         EventManager.OnUndo += OnUndo;
@@ -59,8 +59,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnImportGrid -= OnImportGrid;
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         
-        EventManager.OnNumberEnter -= OnNumberEnter; 
-        EventManager.OnRemoveEntry -= OnRemoveEntryEvent;
+        EventManager.OnUserNumberEnter -= OnNumberEnter; 
+        EventManager.OnUserRemoveEntry -= OnRemoveEntryEvent;
 
         EventManager.OnNewCommand -= OnNewCommand;
         EventManager.OnUndo -= OnUndo;

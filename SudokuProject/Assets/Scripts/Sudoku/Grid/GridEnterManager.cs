@@ -14,6 +14,7 @@ public enum EnterType
 public class GridEnterManager : MonoBehaviour
 {
     [SerializeField] private SelectionObject selectionObject;
+    [SerializeField] private CommandPort commandPort;
     
     private KeyCode[] NumberKeys = {
         KeyCode.Alpha0,
@@ -95,8 +96,11 @@ public class GridEnterManager : MonoBehaviour
         {
             return;
         }
+
+        // SudokuCommand command = new SudokuCommand(selectionObject.SelectedTiles, number, enterType, true);
+        // commandPort.ExecuteCommand(command);
         
-        EventManager.EnterNumber(selectionObject.SelectedTiles, enterType, number);
+        EventManager.UserEnterNumber(selectionObject.SelectedTiles, enterType, number);
     }
 
     public void TryRemoveNumbers(bool colorRemoval = false)
@@ -104,6 +108,6 @@ public class GridEnterManager : MonoBehaviour
         if (!selectionObject.HasSelectedTiles)
             return;
         
-        EventManager.RemoveEntry(selectionObject.SelectedTiles, enterType, colorRemoval);
+        EventManager.UserRemoveEntry(selectionObject.SelectedTiles, enterType, colorRemoval);
     }
 }

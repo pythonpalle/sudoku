@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IHasCommand
@@ -44,5 +45,21 @@ public class CommandManager : MonoBehaviour
     public void CallRedo()
     {
         EventManager.Redo();
+    }
+}
+
+public class SudokuCommand
+{
+    public List<TileBehaviour> tiles;
+    public int number;
+    public EnterType enterType;
+    public bool entry;
+    
+    public SudokuCommand(List<TileBehaviour> tiles, int number, EnterType enterType, bool entry)
+    {
+        this.tiles = tiles;
+        this.number = number;
+        this.enterType = enterType;
+        this.entry = entry;
     }
 }
