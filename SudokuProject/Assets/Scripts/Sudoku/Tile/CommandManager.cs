@@ -26,8 +26,8 @@ public class CommandManager : MonoBehaviour
     {
         EventManager.OnSetupTiles -= OnSetupTiles;
         
-        EventManager.OnUserNumberEnter += OnUserNumberEnter;
-        EventManager.OnUserRemoveEntry += OnUserRemoveEntry;
+        EventManager.OnUserNumberEnter -= OnUserNumberEnter;
+        EventManager.OnUserRemoveEntry -= OnUserRemoveEntry;
     }
 
     private void OnUserNumberEnter(SudokuCommand command)
@@ -37,6 +37,7 @@ public class CommandManager : MonoBehaviour
     
     private void OnUserRemoveEntry(SudokuCommand command)
     {
+        ExecuteCommand(command);
     }
 
     private void ExecuteCommand(SudokuCommand command)

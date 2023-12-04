@@ -40,8 +40,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         // EventManager.OnUserNumberEnter += OnNumberEnter;
         // EventManager.OnUserRemoveEntry += OnRemoveEntryEvent;
         
-        EventManager.OnExecuteCommand += OnNumberEnter;
-        EventManager.OnUserRemoveEntry += OnRemoveEntryEvent;
+        EventManager.OnExecuteCommand += OnExecuteCommand;
+        //EventManager.OnUserRemoveEntry += OnNewCommand;
         
         EventManager.OnNewCommand += OnNewCommand;
         EventManager.OnUndo += OnUndo;
@@ -65,8 +65,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         // EventManager.OnUserNumberEnter -= OnNumberEnter; 
         // EventManager.OnUserRemoveEntry -= OnRemoveEntryEvent;
         
-        EventManager.OnExecuteCommand -= OnNumberEnter; 
-        EventManager.OnUserRemoveEntry -= OnRemoveEntryEvent;
+        EventManager.OnExecuteCommand -= OnExecuteCommand; 
+        //EventManager.OnUserRemoveEntry -= OnNewCommand;
 
         EventManager.OnNewCommand -= OnNewCommand;
         EventManager.OnUndo -= OnUndo;
@@ -213,6 +213,14 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     {
         tileBehaviours[row, col] = tileBehaviour;
     }
+
+    private void OnExecuteCommand(SudokuCommand command)
+    {
+        if (command.entry)
+            OnNumberEnter(command);
+        else
+            OnRemoveEntry(command);
+    }
     
     private void OnNumberEnter(SudokuCommand command)
     {
@@ -233,39 +241,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
     }
     
-    private void HandleCompletion()
-    {
-        bool complete = CheckComplete();
-        if (complete)
-        {
-            Debug.Log("You solved it, hurray!");
-            EventManager.PuzzleComplete();
-        }
-    }
-
-    private bool CheckComplete()
-    {
-        foreach (var tile in tileBehaviours)
-        {
-            if (!tile.HasDigit || tile.Contradicted)
-                return false;
-        }
-
-        return true;
-    }
-
-    private bool GridHasContradiction()
-    {
-        foreach (var tile in tileBehaviours)
-        {
-            if (tile.Contradicted)
-                return true;
-        }
-
-        return false;
-    }
-
-    private void OnRemoveEntryEvent(SudokuCommand command)
+    private void OnRemoveEntry(SudokuCommand command)
     {
         var enterType = command.enterType;
         var tiles = command.tiles;
@@ -319,6 +295,40 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             }
         }
     }
+    
+    private void HandleCompletion()
+    {
+        bool complete = CheckComplete();
+        if (complete)
+        {
+            Debug.Log("You solved it, hurray!");
+            EventManager.PuzzleComplete();
+        }
+    }
+
+    private bool CheckComplete()
+    {
+        foreach (var tile in tileBehaviours)
+        {
+            if (!tile.HasDigit || tile.Contradicted)
+                return false;
+        }
+
+        return true;
+    }
+
+    private bool GridHasContradiction()
+    {
+        foreach (var tile in tileBehaviours)
+        {
+            if (tile.Contradicted)
+                return true;
+        }
+
+        return false;
+    }
+
+   
 
     private bool RemoveAllOfEntryType(List<TileBehaviour> tiles, EnterType type)
     {
