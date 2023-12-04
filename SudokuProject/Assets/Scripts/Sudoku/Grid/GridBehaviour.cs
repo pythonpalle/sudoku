@@ -208,8 +208,12 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         tileBehaviours[row, col] = tileBehaviour;
     }
     
-    private void OnNumberEnter(List<TileBehaviour> tiles, EnterType enterType, int number)
+    private void OnNumberEnter(SudokuCommand command)
     {
+        var tiles = command.tiles;
+        int number = command.number;
+        var enterType = command.enterType;
+        
         HandleEnterNumberToSelectedTiles(tiles, number, enterType);
         
         switch (enterType)
@@ -255,8 +259,11 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         return false;
     }
 
-    private void OnRemoveEntryEvent(List<TileBehaviour> tiles, EnterType enterType, bool colorRemoval)
+    private void OnRemoveEntryEvent(SudokuCommand command, bool colorRemoval)
     {
+        var enterType = command.enterType;
+        var tiles = command.tiles;
+        
         // special case for color removal, since it can't remove anything else
         if (enterType == EnterType.ColorMark && colorRemoval)
         {

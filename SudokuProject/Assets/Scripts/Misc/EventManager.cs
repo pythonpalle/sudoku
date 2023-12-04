@@ -21,8 +21,8 @@ public static class EventManager
     public static UnityAction<TileBehaviour> OnSelectAllTilesWithNumber;
     public static UnityAction OnSelectAllTiles;
     
-    public static UnityAction<List<TileBehaviour>, EnterType, int> OnUserNumberEnter;
-    public static UnityAction<List<TileBehaviour>, EnterType, bool> OnUserRemoveEntry;
+    public static UnityAction<SudokuCommand> OnUserNumberEnter;
+    public static UnityAction<SudokuCommand, bool> OnUserRemoveEntry;
 
     public static UnityAction OnNewCommand;
 
@@ -62,15 +62,15 @@ public static class EventManager
         OnTileDeselect?.Invoke(tileBehaviour);
     }
 
-    public static void UserEnterNumber(List<TileBehaviour> tiles, EnterType enterType, int number)
+    public static void UserEnterNumber(SudokuCommand command)
     {
-        OnUserNumberEnter?.Invoke(tiles, enterType, number);
+        OnUserNumberEnter?.Invoke(command);
         OnNewCommand?.Invoke();
     }
 
-    public static void UserRemoveEntry(List<TileBehaviour> tiles, EnterType enterType, bool colorRemoval = false)
+    public static void UserRemoveEntry(SudokuCommand command, bool colorRemoval = false)
     {
-        OnUserRemoveEntry?.Invoke(tiles, enterType, colorRemoval);
+        OnUserRemoveEntry?.Invoke(command, colorRemoval);
         // OnNewCommand?.Invoke();
     }
 

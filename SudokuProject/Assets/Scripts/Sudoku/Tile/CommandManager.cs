@@ -10,15 +10,34 @@ public interface IHasCommand
 
 public class CommandManager : MonoBehaviour
 {
+    private Stack<SudokuCommand> undoStack = new Stack<SudokuCommand>();
+    private Stack<SudokuCommand> redoStack = new Stack<SudokuCommand>();
+
+    
     private void OnEnable()
     {
         EventManager.OnSetupTiles += OnSetupTiles;
+        
+        EventManager.OnUserNumberEnter += OnUserNumberEnter;
+        EventManager.OnUserRemoveEntry += OnUserRemoveEntry;
     }
     
     private void OnDisable()
     {
         EventManager.OnSetupTiles -= OnSetupTiles;
+        
+        EventManager.OnUserNumberEnter += OnUserNumberEnter;
+        EventManager.OnUserRemoveEntry += OnUserRemoveEntry;
     }
+
+    private void OnUserRemoveEntry(SudokuCommand arg0, bool arg1)
+    {
+    }
+
+    private void OnUserNumberEnter(SudokuCommand command)
+    {
+    }
+    
 
     private void OnSetupTiles()
     {
