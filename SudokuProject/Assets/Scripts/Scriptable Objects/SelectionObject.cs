@@ -85,7 +85,7 @@ public class SelectionObject : ScriptableObject
 
     
     // fields
-    [SerializeField] private SelectionMode selectionMode = SelectionMode.None;
+    private SelectionMode selectionMode = SelectionMode.None;
     public List<TileBehaviour> SelectedTiles { get; private set; } = new List<TileBehaviour>();
 
     public bool IsSelecting => (selectionMode == SelectionMode.Selecting);

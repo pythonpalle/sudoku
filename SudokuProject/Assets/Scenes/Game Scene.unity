@@ -2560,10 +2560,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 1157210451}
     m_Modifications:
     - target: {fileID: 355342018133128770, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
-      propertyPath: gridPort
-      value: 
-      objectReference: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
-    - target: {fileID: 355342018133128770, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
       propertyPath: tileAnimationParent
       value: 
       objectReference: {fileID: 979531138}
