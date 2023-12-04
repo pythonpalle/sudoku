@@ -87,6 +87,7 @@ public class SelectionObject : ScriptableObject
     // fields
     private SelectionMode selectionMode = SelectionMode.None;
     public List<TileBehaviour> SelectedTiles { get; private set; } = new List<TileBehaviour>();
+    public List<TileIndex> SelectedIndices { get; private set; } = new List<TileIndex>();
 
     public bool IsSelecting => (selectionMode == SelectionMode.Selecting);
     public bool IsDeselecting => (selectionMode == SelectionMode.Deselecting);
@@ -112,6 +113,7 @@ public class SelectionObject : ScriptableObject
     public void DeselectAllTiles()
     {
         SelectedTiles.Clear();
+        SelectedIndices.Clear();
         OnDeselectAllTiles?.Invoke();
     }
     
@@ -123,6 +125,7 @@ public class SelectionObject : ScriptableObject
     public void ClearSelectedTiles()
     {
         SelectedTiles = new List<TileBehaviour>();
+        SelectedIndices.Clear();
     }
 
     public void TryAdd(TileBehaviour tile)
@@ -131,6 +134,13 @@ public class SelectionObject : ScriptableObject
         {
             SelectedTiles.Add(tile);
         }
+        
+        Debug.Log($"index: {tile.row}, {tile.col}");
+
+        if (!SelectedIndices.Contains(new TileIndex(tile.row, tile.col)))
+        {
+            SelectedIndices.Add(new TileIndex(tile.row, tile.col));
+        }
     }
 
     public void TryRemove(TileBehaviour tile)
@@ -138,6 +148,11 @@ public class SelectionObject : ScriptableObject
         if (SelectedTiles.Contains(tile))
         {
             SelectedTiles.Remove(tile);
+        }
+        
+        if (SelectedIndices.Contains(new TileIndex(tile.row, tile.col)))
+        {
+            SelectedIndices.Remove(new TileIndex(tile.row, tile.col));
         }
     }
 

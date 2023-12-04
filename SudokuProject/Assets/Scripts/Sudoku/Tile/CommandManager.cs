@@ -47,23 +47,32 @@ public class CommandManager : MonoBehaviour
         redoStack.Clear();
     }
     
-    // TODO: Undo, Redo
     public void Undo()
     {
+        Debug.Log($"Undo called, stack count: {undoStack.Count}");
+        
         if (undoStack.Count > 0)
         {
             var command = undoStack.Pop();
-            //EventManager.Undo(command);
+            EventManager.Undo(command);
             redoStack.Push(command);
+            
+            Debug.Log($"Number to undo: {command.number}");
+            Debug.Log($"Index: {command.tiles[0]}");
         }
     }
 
     public void Redo()
     {
+        Debug.Log($"Redo called, stack count: {redoStack.Count}");
+
         if (redoStack.Count > 0) {
             SudokuCommand command = redoStack.Pop();
-            //EventManager.Redo(command);
+            EventManager.Redo(command);
             undoStack.Push(command);
+            
+            Debug.Log($"Number to redo: {command.number}");
+            Debug.Log($"Index: {command.tiles[0]}");
         }
     }
 
@@ -78,21 +87,10 @@ public class CommandManager : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
         {
             if (Input.GetKeyDown(KeyCode.Z))
-                CallUndo();
+                Undo();
             else if (Input.GetKeyDown(KeyCode.Y))
-                CallRedo();
+                Redo();
         }
-    }
-
-    // puplic för att ska kunna kallas på från undo/redo-knapparna
-    public void CallUndo()
-    {
-        EventManager.Undo();
-    }
-
-    public void CallRedo()
-    {
-        EventManager.Redo();
     }
 }
 

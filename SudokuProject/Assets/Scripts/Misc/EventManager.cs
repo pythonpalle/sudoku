@@ -35,6 +35,9 @@ public static class EventManager
 
     public static UnityAction OnUndo;
     public static UnityAction OnRedo;
+    
+    public static UnityAction<SudokuCommand> OnUndoCommand;
+    public static UnityAction<SudokuCommand> OnRedoCommand;
 
     public static UnityAction<SudokuGrid9x9> OnImportGrid;
     
@@ -66,7 +69,7 @@ public static class EventManager
     public static void UserEnterNumber(SudokuCommand command)
     {
         OnUserNumberEnter?.Invoke(command);
-        OnNewCommand?.Invoke();
+        //OnNewCommand?.Invoke();
     }
 
     public static void UserRemoveEntry(SudokuCommand command)
@@ -122,12 +125,22 @@ public static class EventManager
 
     public static void Undo()
     {
-        OnUndo?.Invoke();
+       // OnUndo?.Invoke();
     }
     
     public static void Redo()
     {
-        OnRedo?.Invoke();
+        //OnRedo?.Invoke();
+    }
+    
+    public static void Undo(SudokuCommand command)
+    {
+        OnUndoCommand?.Invoke(command);
+    }
+    
+    public static void Redo(SudokuCommand command)
+    {
+        OnRedoCommand?.Invoke(command);
     }
 
     public static void TilesSetup()

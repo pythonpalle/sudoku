@@ -43,9 +43,12 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnExecuteCommand += OnExecuteCommand;
         //EventManager.OnUserRemoveEntry += OnNewCommand;
         
-        EventManager.OnNewCommand += OnNewCommand;
-        EventManager.OnUndo += OnUndo;
-        EventManager.OnRedo += OnRedo;
+        // EventManager.OnNewCommand += OnNewCommand;
+        // EventManager.OnUndo += OnUndo;
+        // EventManager.OnRedo += OnRedo;
+        
+        EventManager.OnUndoCommand += OnUndoCommand;
+        EventManager.OnRedoCommand += OnRedoCommand;
 
         EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
         EventManager.OnSelectAllTiles += OnSelectAllTiles;
@@ -68,9 +71,12 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnExecuteCommand -= OnExecuteCommand; 
         //EventManager.OnUserRemoveEntry -= OnNewCommand;
 
-        EventManager.OnNewCommand -= OnNewCommand;
-        EventManager.OnUndo -= OnUndo;
-        EventManager.OnRedo -= OnRedo;
+        // EventManager.OnNewCommand -= OnNewCommand;
+        // EventManager.OnUndo -= OnUndo;
+        // EventManager.OnRedo -= OnRedo;
+        
+        EventManager.OnUndoCommand -= OnUndoCommand;
+        EventManager.OnRedoCommand -= OnRedoCommand;
         
         EventManager.OnSelectAllTilesWithNumber -= OnSelectAllTilesWithNumber;
         EventManager.OnSelectAllTiles -= OnSelectAllTiles;
@@ -80,6 +86,35 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         gridPort.OnRequestGrid -= OnRequestGrid;
         hintObject.OnHintFound -= OnHintFound;
     }
+
+    private void OnUndoCommand(SudokuCommand command)
+    {
+        OnNumberEnter(command);
+        
+        // if (command.entry)
+        // {
+        //     OnRemoveEntry(command);
+        // }
+        // else
+        // {
+        //     OnNumberEnter(command);
+        // }
+    }
+
+    private void OnRedoCommand(SudokuCommand command)
+    {
+        OnNumberEnter(command);
+
+        // if (command.entry)
+        // {
+        //     OnNumberEnter(command);
+        // }
+        // else
+        // {
+        //     OnRemoveEntry(command);
+        // }
+    }
+    
 
     private void OnRequestGrid()
     {
@@ -240,11 +275,25 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                 break;
         }
     }
+
+    List<TileBehaviour> GetTilesFromIndices(List<TileIndex> tileIndices)
+    {
+        List<TileBehaviour> tileBehaviours = new List<TileBehaviour>();
+
+        foreach (var index in tileIndices)
+        {
+            tileBehaviours.Add(this.tileBehaviours[index.row, index.col]);
+        }
+
+        return tileBehaviours;
+    }
     
     private void OnRemoveEntry(SudokuCommand command)
     {
-        var enterType = command.enterType;
         var tiles = command.tiles;
+        int number = command.number;
+        var enterType = command.enterType;
+        
         var colorRemoval=  command.colorRemoval;
         
         // special case for color removal, since it can't remove anything else
