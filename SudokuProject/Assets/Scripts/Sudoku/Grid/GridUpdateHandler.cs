@@ -1,121 +1,24 @@
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridBehaviour : MonoBehaviour, IHasCommand
+public class GridUpdateHandler
 {
     private SudokuGrid9x9 grid;
     private List<SudokuGrid9x9> gridHistory;
-
     private TileBehaviour[,] tileBehaviours = new TileBehaviour[9,9];
-
-    [Header("Scriptable Objects")]
-    [SerializeField] private SelectionObject selectionObject;
-    [SerializeField] private HintObject hintObject;
     [SerializeField] private GridPort gridPort;
-    
-    [Header("Tile Animation Parent")]
-    [SerializeField] private RectTransform tileAnimationParent;
-    
-    [Header("Grid Boxes")]
-    [SerializeField] private List<GridBoxBehaviour> boxes;
-
-    private void Awake()
-    {
-        gridPort.Reset();
-    }
-
-    private void Start()
-    {
-        SetupBoxes();
-    }
-
-    private void OnEnable()
-    {
-        EventManager.OnGridGenerated += OnGridGenerated;
-        EventManager.OnImportGrid += OnImportGrid;
-        EventManager.OnTileIndexSet += OnTileIndexSet;
-        
-        // EventManager.OnUserNumberEnter += OnNumberEnter;
-        // EventManager.OnUserRemoveEntry += OnRemoveEntryEvent;
-        
-        EventManager.OnExecuteCommand += OnExecuteCommand;
-        //EventManager.OnUserRemoveEntry += OnNewCommand;
-        
-        // EventManager.OnNewCommand += OnNewCommand;
-        // EventManager.OnUndo += OnUndo;
-        // EventManager.OnRedo += OnRedo;
-        
-        EventManager.OnUndoCommand += OnUndoCommand;
-        EventManager.OnRedoCommand += OnRedoCommand;
-
-        EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
-        EventManager.OnSelectAllTiles += OnSelectAllTiles;
-
-        selectionObject.OnRequestTile += OnRequestTile;
-
-        gridPort.OnRequestGrid += OnRequestGrid;
-        hintObject.OnHintFound += OnHintFound;
-    }
-
-    private void OnDisable()
-    {
-        EventManager.OnGridGenerated -= OnGridGenerated;
-        EventManager.OnImportGrid -= OnImportGrid;
-        EventManager.OnTileIndexSet -= OnTileIndexSet;
-        
-        // EventManager.OnUserNumberEnter -= OnNumberEnter; 
-        // EventManager.OnUserRemoveEntry -= OnRemoveEntryEvent;
-        
-        EventManager.OnExecuteCommand -= OnExecuteCommand; 
-        //EventManager.OnUserRemoveEntry -= OnNewCommand;
-
-        // EventManager.OnNewCommand -= OnNewCommand;
-        // EventManager.OnUndo -= OnUndo;
-        // EventManager.OnRedo -= OnRedo;
-        
-        EventManager.OnUndoCommand -= OnUndoCommand;
-        EventManager.OnRedoCommand -= OnRedoCommand;
-        
-        EventManager.OnSelectAllTilesWithNumber -= OnSelectAllTilesWithNumber;
-        EventManager.OnSelectAllTiles -= OnSelectAllTiles;
-
-        selectionObject.OnRequestTile -= OnRequestTile;
-        
-        gridPort.OnRequestGrid -= OnRequestGrid;
-        hintObject.OnHintFound -= OnHintFound;
-    }
 
     private void OnUndoCommand(SudokuCommand command)
     {
         OnNumberEnter(command);
-        
-        // if (command.entry)
-        // {
-        //     OnRemoveEntry(command);
-        // }
-        // else
-        // {
-        //     OnNumberEnter(command);
-        // }
     }
 
     private void OnRedoCommand(SudokuCommand command)
     {
         OnNumberEnter(command);
-
-        // if (command.entry)
-        // {
-        //     OnNumberEnter(command);
-        // }
-        // else
-        // {
-        //     OnRemoveEntry(command);
-        // }
     }
     
-
     private void OnRequestGrid()
     {
         UpdateGridCandidates();
@@ -199,13 +102,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         return compareTile.index != tileIndex && compareTile.Number == candidate;
     }
 
-    private void OnHintFound(TileIndex hintIndex)
-    {
-        Debug.Log($"Sending hint instruction to {hintIndex}.");
-        TileBehaviour hintTileBehaviour = tileBehaviours[hintIndex.row, hintIndex.col];
-        hintTileBehaviour.Hint();
-    }
-
     private void OnSelectAllTiles()
     {
         SelectAllTiles();
@@ -227,13 +123,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         return tile.Permanent && enterType != EnterType.ColorMark;
     }
     
-    private void SetupBoxes()
-    {
-        for (int i = 0; i < boxes.Count; i++)
-        {
-            boxes[i].Setup(i, tileAnimationParent);
-        }    
-    }
     
     private void OnGridGenerated(SudokuGrid9x9 generatedGrid)
     {
@@ -291,7 +180,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     private void OnRemoveEntry(SudokuCommand command)
     {
         var tiles = command.tiles;
-        int number = command.number;
         var enterType = command.enterType;
         
         var colorRemoval=  command.colorRemoval;
@@ -376,8 +264,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
         return false;
     }
-
-   
 
     private bool RemoveAllOfEntryType(List<TileBehaviour> tiles, EnterType type)
     {
@@ -502,11 +388,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                     tile.Select();
             }
         }
-    }
-
-    private void OnRequestTile(int row, int col)
-    {
-        selectionObject.SendTileReference(tileBehaviours[row,col]);
     }
 
     private void SetupTileNumbers()
@@ -709,55 +590,5 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
         
         HandleRemoveContradictions();
-    }
-
-    private int stateCounter = 0;
-
-    public void OnNewCommand()
-    {
-        SudokuGrid9x9 newGrid = new SudokuGrid9x9(grid);
-        
-        while (gridHistory.Count > stateCounter)
-        {
-            gridHistory.RemoveAt(gridHistory.Count-1);
-        }
-        
-        gridHistory.Add(newGrid);
-        stateCounter++;
-    }
-
-    private void ChangeState(bool undo)
-    {
-        if (undo)
-            stateCounter--;
-        else
-            stateCounter++;
-        
-        if (undo && stateCounter <= 0)
-        {
-            stateCounter = 1;
-            return;
-        }
-        
-        if (!undo && stateCounter > gridHistory.Count)
-        {
-            stateCounter --;
-            return;
-        }
-        
-        grid = new SudokuGrid9x9(gridHistory[stateCounter - 1]);
-        
-        gridPort.UpdateContradictionStatus(GridHasContradiction());
-        //gridPort.OnContradictionStatusUpdate?.Invoke(GridHasContradiction());
-    }
-
-    private void OnUndo()
-    {
-        ChangeState(true);
-    }
-    
-    private void OnRedo()
-    {
-        ChangeState(false);
     }
 }
