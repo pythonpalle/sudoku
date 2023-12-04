@@ -101,6 +101,10 @@ public class GridEnterManager : MonoBehaviour
         // commandPort.ExecuteCommand(command);
         
         EventManager.UserEnterNumber(selectionObject.SelectedTiles, enterType, number);
+        
+        // TODO:
+        // CM: Execute Command 
+        // Grid Behaviour: Enter Digits
     }
 
     public void TryRemoveNumbers(bool colorRemoval = false)
