@@ -98,6 +98,10 @@ public class GridEnterManager : MonoBehaviour
 
         SudokuCommand command = new SudokuCommand(new List<TileBehaviour>(selectionObject.SelectedTiles), number, enterType, true);
         EventManager.UserEnterNumber(command);
+        
+        // TODO:
+        // CM: Execute Command 
+        // Grid Behaviour: Enter Digits
     }
 
     public void TryRemoveNumbers(bool colorRemoval = false)
