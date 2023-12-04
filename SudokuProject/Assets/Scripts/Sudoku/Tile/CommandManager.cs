@@ -30,14 +30,42 @@ public class CommandManager : MonoBehaviour
         EventManager.OnUserRemoveEntry += OnUserRemoveEntry;
     }
 
-    private void OnUserRemoveEntry(SudokuCommand arg0, bool arg1)
+    private void OnUserNumberEnter(SudokuCommand command)
+    {
+        ExecuteCommand(command);
+    }
+    
+    private void OnUserRemoveEntry(SudokuCommand command)
     {
     }
 
-    private void OnUserNumberEnter(SudokuCommand command)
+    private void ExecuteCommand(SudokuCommand command)
     {
+        EventManager.ExecuteCommand(command);
+        undoStack.Push(command);
+        redoStack.Clear();
     }
     
+    // TODO: Undo, Redo
+    public void Undo()
+    {
+        if (undoStack.Count > 0)
+        {
+            var command = undoStack.Pop();
+            //EventManager.Undo(command);
+            redoStack.Push(command);
+        }
+    }
+
+    public void Redo()
+    {
+        if (redoStack.Count > 0) {
+            SudokuCommand command = redoStack.Pop();
+            //EventManager.Redo(command);
+            undoStack.Push(command);
+        }
+    }
+
 
     private void OnSetupTiles()
     {
@@ -73,12 +101,14 @@ public class SudokuCommand
     public int number;
     public EnterType enterType;
     public bool entry;
+    public bool colorRemoval;
     
-    public SudokuCommand(List<TileBehaviour> tiles, int number, EnterType enterType, bool entry)
+    public SudokuCommand(List<TileBehaviour> tiles, int number, EnterType enterType, bool entry, bool colorRemoval = false)
     {
         this.tiles = tiles;
         this.number = number;
         this.enterType = enterType;
         this.entry = entry;
+        this.colorRemoval = colorRemoval;
     }
 }

@@ -110,7 +110,7 @@ public class GridEnterManager : MonoBehaviour
         if (!selectionObject.HasSelectedTiles)
             return;
         
-        SudokuCommand command = new SudokuCommand(selectionObject.SelectedTiles, 0, enterType, false);
-        EventManager.UserRemoveEntry(command, colorRemoval);
+        SudokuCommand command = new SudokuCommand(selectionObject.SelectedTiles, 0, enterType, false, colorRemoval);
+        EventManager.UserRemoveEntry(command);
     }
 }

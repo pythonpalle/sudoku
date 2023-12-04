@@ -22,7 +22,8 @@ public static class EventManager
     public static UnityAction OnSelectAllTiles;
     
     public static UnityAction<SudokuCommand> OnUserNumberEnter;
-    public static UnityAction<SudokuCommand, bool> OnUserRemoveEntry;
+    public static UnityAction<SudokuCommand> OnUserRemoveEntry;
+    public static UnityAction<SudokuCommand> OnExecuteCommand;
 
     public static UnityAction OnNewCommand;
 
@@ -68,9 +69,9 @@ public static class EventManager
         OnNewCommand?.Invoke();
     }
 
-    public static void UserRemoveEntry(SudokuCommand command, bool colorRemoval = false)
+    public static void UserRemoveEntry(SudokuCommand command)
     {
-        OnUserRemoveEntry?.Invoke(command, colorRemoval);
+        OnUserRemoveEntry?.Invoke(command);
         // OnNewCommand?.Invoke();
     }
 
@@ -152,5 +153,10 @@ public static class EventManager
     public static void DisplayFloatingPopupText(string text, Vector3 position)
     {
         OnDisplayFloatingPopupText?.Invoke(text, position);
+    }
+
+    public static void ExecuteCommand(SudokuCommand command)
+    {
+        OnExecuteCommand?.Invoke(command);
     }
 }

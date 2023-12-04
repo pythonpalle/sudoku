@@ -37,7 +37,10 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnImportGrid += OnImportGrid;
         EventManager.OnTileIndexSet += OnTileIndexSet;
         
-        EventManager.OnUserNumberEnter += OnNumberEnter;
+        // EventManager.OnUserNumberEnter += OnNumberEnter;
+        // EventManager.OnUserRemoveEntry += OnRemoveEntryEvent;
+        
+        EventManager.OnExecuteCommand += OnNumberEnter;
         EventManager.OnUserRemoveEntry += OnRemoveEntryEvent;
         
         EventManager.OnNewCommand += OnNewCommand;
@@ -59,7 +62,10 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnImportGrid -= OnImportGrid;
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         
-        EventManager.OnUserNumberEnter -= OnNumberEnter; 
+        // EventManager.OnUserNumberEnter -= OnNumberEnter; 
+        // EventManager.OnUserRemoveEntry -= OnRemoveEntryEvent;
+        
+        EventManager.OnExecuteCommand -= OnNumberEnter; 
         EventManager.OnUserRemoveEntry -= OnRemoveEntryEvent;
 
         EventManager.OnNewCommand -= OnNewCommand;
@@ -259,10 +265,11 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         return false;
     }
 
-    private void OnRemoveEntryEvent(SudokuCommand command, bool colorRemoval)
+    private void OnRemoveEntryEvent(SudokuCommand command)
     {
         var enterType = command.enterType;
         var tiles = command.tiles;
+        var colorRemoval=  command.colorRemoval;
         
         // special case for color removal, since it can't remove anything else
         if (enterType == EnterType.ColorMark && colorRemoval)
