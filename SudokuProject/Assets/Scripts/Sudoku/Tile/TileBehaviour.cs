@@ -156,8 +156,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
             return;
         }
         
-        
-        
         TileState lastState = TileStates[stateCounter-1];
 
         Contradicted = lastState.contradicted;
@@ -174,7 +172,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         {
             TryUpdateDigit(lastState.Digit, false);
         }
-        
         else if (CenterMarks.Count != lastState.Centers.Count)
         {
             TryRemoveAllCenterMarks();
@@ -184,7 +181,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
                 TryUpdateCenter(center, false);
             }
         }
-        
         else if (CornerMarks.Count != lastState.Corners.Count)
         {
             TryRemoveAllCornerMarks();
@@ -194,7 +190,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
                 TryUpdateCorner(corner, false);
             }
         }
-        
         else if (ColorMarks.Count != lastState.Colors.Count)
         {
             TryRemoveAllColorMarks();

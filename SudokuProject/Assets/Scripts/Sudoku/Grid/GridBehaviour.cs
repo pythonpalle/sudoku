@@ -691,7 +691,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         grid = new SudokuGrid9x9(gridHistory[stateCounter - 1]);
         
         gridPort.UpdateContradictionStatus(GridHasContradiction());
-        //gridPort.OnContradictionStatusUpdate?.Invoke(GridHasContradiction());
     }
 
     private void OnUndo()
