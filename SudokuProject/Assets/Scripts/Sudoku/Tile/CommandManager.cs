@@ -10,42 +10,42 @@ public interface IHasCommand
 
 public class CommandManager : MonoBehaviour
 {
-    private Stack<SudokuCommand> undoStack = new Stack<SudokuCommand>();
-    private Stack<SudokuCommand> redoStack = new Stack<SudokuCommand>();
+    private Stack<SudokuEntry> undoStack = new Stack<SudokuEntry>();
+    private Stack<SudokuEntry> redoStack = new Stack<SudokuEntry>();
 
     
     private void OnEnable()
     {
         EventManager.OnSetupTiles += OnSetupTiles;
         
-        EventManager.OnUserNumberEnter += OnUserNumberEnter;
-        EventManager.OnUserRemoveEntry += OnUserRemoveEntry;
+        // EventManager.OnUserNumberEnter += OnUserNumberEnter;
+        // EventManager.OnUserRemoveEntry += OnUserRemoveEntry;
     }
     
     private void OnDisable()
     {
         EventManager.OnSetupTiles -= OnSetupTiles;
         
-        EventManager.OnUserNumberEnter -= OnUserNumberEnter;
-        EventManager.OnUserRemoveEntry -= OnUserRemoveEntry;
+        // EventManager.OnUserNumberEnter -= OnUserNumberEnter;
+        // EventManager.OnUserRemoveEntry -= OnUserRemoveEntry;
     }
 
-    private void OnUserNumberEnter(SudokuCommand command)
-    {
-        ExecuteCommand(command);
-    }
-    
-    private void OnUserRemoveEntry(SudokuCommand command)
-    {
-        ExecuteCommand(command);
-    }
+    // private void OnUserNumberEnter(SudokuEntry entry)
+    // {
+    //     ExecuteCommand(entry);
+    // }
+    //
+    // private void OnUserRemoveEntry(SudokuEntry entry)
+    // {
+    //     ExecuteCommand(entry);
+    // }
 
-    private void ExecuteCommand(SudokuCommand command)
-    {
-        EventManager.ExecuteCommand(command);
-        undoStack.Push(command);
-        redoStack.Clear();
-    }
+    // private void ExecuteCommand(SudokuEntry entry)
+    // {
+    //     EventManager.ExecuteCommand(entry);
+    //     undoStack.Push(entry);
+    //     redoStack.Clear();
+    // }
     
     public void Undo()
     {
@@ -67,12 +67,12 @@ public class CommandManager : MonoBehaviour
         Debug.Log($"Redo called, stack count: {redoStack.Count}");
 
         if (redoStack.Count > 0) {
-            SudokuCommand command = redoStack.Pop();
-            EventManager.Redo(command);
-            undoStack.Push(command);
+            SudokuEntry entry = redoStack.Pop();
+            EventManager.Redo(entry);
+            undoStack.Push(entry);
             
-            Debug.Log($"Number to redo: {command.number}");
-            Debug.Log($"Index: {command.tiles[0]}");
+            Debug.Log($"Number to redo: {entry.number}");
+            Debug.Log($"Index: {entry.tiles[0]}");
         }
     }
 
@@ -91,23 +91,5 @@ public class CommandManager : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.Y))
                 Redo();
         }
-    }
-}
-
-public class SudokuCommand
-{
-    public List<TileBehaviour> tiles;
-    public int number;
-    public EnterType enterType;
-    public bool entry;
-    public bool colorRemoval;
-    
-    public SudokuCommand(List<TileBehaviour> tiles, int number, EnterType enterType, bool entry, bool colorRemoval = false)
-    {
-        this.tiles = tiles;
-        this.number = number;
-        this.enterType = enterType;
-        this.entry = entry;
-        this.colorRemoval = colorRemoval;
     }
 }

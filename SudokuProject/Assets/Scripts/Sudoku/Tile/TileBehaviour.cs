@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -257,8 +258,11 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
     }
 
-    private void SetDigit(int number)
+    private void SetDigit(int number, bool remove = false)
     {
+        if (remove)
+            number = 0;
+        
         this.number = number;
         numberText.text = number > 0 ? number.ToString() : string.Empty;
         if (number == 0)
@@ -295,20 +299,60 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
         return false;
     }
+    
+    public bool CanUpdateNumber(int number, EnterType enterType, bool remove)
+    {
+        if (Permanent && enterType != EnterType.ColorMark) return false;
+
+        switch (enterType)
+        {
+            case EnterType.DigitMark:
+                return TryUpdateDigit(number, remove);
+            
+            case EnterType.CornerMark:
+                return TryUpdateCorner(number, remove);
+            
+            case EnterType.CenterMark:
+                return TryUpdateCenter(number, remove);
+            
+            case EnterType.ColorMark:
+                return TryUpdateColor(number, remove);
+        }
+
+        return false;
+    }
 
     private bool TryUpdateDigit(int number, bool remove)
     {
+        if (CanUpdateDigit(number, remove))
+        {
+            SetDigit(number, remove);
+            return true;
+        }
+
+        return false;
+    }
+
+    bool CanUpdateDigit(int number, bool remove)
+    {
+        Debug.Log($"Curr nbr: {this.number}, new number: {number}, remove: {remove}");
+        
         if (Permanent) return false;
 
-        if (remove) number = 0;
-        SetDigit(number);
-        // numberText.color = Color.blue;
+        if (!remove && number == this.number)
+            return false;
+
+        if (remove && this.number == 0)
+            return false;
+
         return true;
     }
 
     private bool TryUpdateCorner(int addedNumber, bool remove)
     {
         if (Permanent || HasDigit) return false;
+
+        if (!CanUpdateCorner(addedNumber, remove)) return false;
         
         if (remove && CornerMarks.Contains(addedNumber))
         {
@@ -316,19 +360,33 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
         else
         {
-            if (CornerMarks.Contains(addedNumber))
-                return false;
-            
             CornerMarks.Add(addedNumber);
         }
 
         SortCornerMarks();
         return true;
     }
+
+    private bool CanUpdateCorner(int addedNumber, bool remove)
+    {
+        if (Permanent || HasDigit) return false;
+        
+        if (remove && CornerMarks.Contains(addedNumber))
+        {
+        }
+        else
+        {
+            if (CornerMarks.Contains(addedNumber))
+                return false;
+        }
+
+        return true;
+    }
     
     private bool TryUpdateCenter(int addedNumber, bool remove)
     {
-        if (Permanent || HasDigit) return false;
+        if (!CanUpdateCenter(addedNumber, remove))
+            return false;
         
         if (remove && CenterMarks.Contains(addedNumber))
         {
@@ -336,9 +394,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
         else
         {
-            if (CenterMarks.Contains(addedNumber))
-                return false;
-            
             CenterMarks.Add(addedNumber);
         }
 
@@ -346,10 +401,25 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         return true;
     }
     
+    private bool CanUpdateCenter(int addedNumber, bool remove)
+    {
+        if (Permanent || HasDigit) return false;
+        
+        if (remove && CenterMarks.Contains(addedNumber))
+        {
+        }
+        else
+        {
+            return false;
+        }
+
+        return true;
+    }
+    
     private bool TryUpdateColor(int colorNumber, bool remove)
     {
-        if (colorNumber <= 0)
-            remove = true;
+        if (!CanUpdateColor(colorNumber, remove))
+            return false;
         
         if (remove && ColorMarks.Contains(colorNumber))
         {
@@ -357,13 +427,27 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
         else
         {
-            if (ColorMarks.Contains(colorNumber))
-                return false;
-            
             ColorMarks.Add(colorNumber);
         }
 
         SortColorMarks();
+        return true;
+    }
+    
+    bool CanUpdateColor(int colorNumber, bool remove)
+    {
+        if (colorNumber <= 0)
+            remove = true;
+        
+        if (remove && ColorMarks.Contains(colorNumber))
+        {
+        }
+        else
+        {
+            if (ColorMarks.Contains(colorNumber))
+                return false;
+        }
+
         return true;
     }
 

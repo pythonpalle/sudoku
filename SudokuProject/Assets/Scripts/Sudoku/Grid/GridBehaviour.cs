@@ -37,10 +37,10 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnImportGrid += OnImportGrid;
         EventManager.OnTileIndexSet += OnTileIndexSet;
         
-        // EventManager.OnUserNumberEnter += OnNumberEnter;
-        // EventManager.OnUserRemoveEntry += OnRemoveEntryEvent;
+        EventManager.OnUserNumberEnter += OnNumberEnter;
+        EventManager.OnUserRemoveEntry += OnRemoveEntry;
         
-        EventManager.OnExecuteCommand += OnExecuteCommand;
+        // EventManager.OnExecuteCommand += OnExecuteCommand;
         //EventManager.OnUserRemoveEntry += OnNewCommand;
         
         // EventManager.OnNewCommand += OnNewCommand;
@@ -65,10 +65,10 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnImportGrid -= OnImportGrid;
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         
-        // EventManager.OnUserNumberEnter -= OnNumberEnter; 
-        // EventManager.OnUserRemoveEntry -= OnRemoveEntryEvent;
+        EventManager.OnUserNumberEnter -= OnNumberEnter; 
+        EventManager.OnUserRemoveEntry -= OnRemoveEntry;
         
-        EventManager.OnExecuteCommand -= OnExecuteCommand; 
+        // EventManager.OnExecuteCommand -= OnExecuteCommand; 
         //EventManager.OnUserRemoveEntry -= OnNewCommand;
 
         // EventManager.OnNewCommand -= OnNewCommand;
@@ -87,9 +87,9 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         hintObject.OnHintFound -= OnHintFound;
     }
 
-    private void OnUndoCommand(SudokuCommand command)
+    private void OnUndoCommand(SudokuEntry entry)
     {
-        OnNumberEnter(command);
+        OnNumberEnter(entry);
         
         // if (command.entry)
         // {
@@ -101,9 +101,9 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         // }
     }
 
-    private void OnRedoCommand(SudokuCommand command)
+    private void OnRedoCommand(SudokuEntry entry)
     {
-        OnNumberEnter(command);
+        OnNumberEnter(entry);
 
         // if (command.entry)
         // {
@@ -249,19 +249,19 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         tileBehaviours[row, col] = tileBehaviour;
     }
 
-    private void OnExecuteCommand(SudokuCommand command)
+    private void OnExecuteCommand(SudokuEntry entry)
     {
-        if (command.entry)
-            OnNumberEnter(command);
+        if (entry.entry)
+            OnNumberEnter(entry);
         else
-            OnRemoveEntry(command);
+            OnRemoveEntry(entry);
     }
     
-    private void OnNumberEnter(SudokuCommand command)
+    private void OnNumberEnter(SudokuEntry entry)
     {
-        var tiles = command.tiles;
-        int number = command.number;
-        var enterType = command.enterType;
+        var tiles = entry.tiles;
+        int number = entry.number;
+        var enterType = entry.enterType;
         
         HandleEnterNumberToSelectedTiles(tiles, number, enterType);
         
@@ -288,13 +288,12 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         return tileBehaviours;
     }
     
-    private void OnRemoveEntry(SudokuCommand command)
+    private void OnRemoveEntry(SudokuEntry entry)
     {
-        var tiles = command.tiles;
-        int number = command.number;
-        var enterType = command.enterType;
+        var tiles = entry.tiles;
+        var enterType = entry.enterType;
         
-        var colorRemoval=  command.colorRemoval;
+        var colorRemoval=  entry.colorRemoval;
         
         // special case for color removal, since it can't remove anything else
         if (enterType == EnterType.ColorMark && colorRemoval)
@@ -320,7 +319,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             EnterType.ColorMark
         };
 
-        // moving the given enter type to bottom of list, giving it top prioriy
+        // moving the given enter type to bottom of list, giving it top priority
         enterTypes.Remove(enterType);
         enterTypes.Insert(0, enterType);
 
@@ -381,12 +380,19 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
     private bool RemoveAllOfEntryType(List<TileBehaviour> tiles, EnterType type)
     {
+        int removeCount = 0;
+        
         bool somethingWasRemoved = false;
         foreach (var tile in tiles)
         {
             if (tile.TryRemoveAllOfType(type))
+            {
                 somethingWasRemoved = true;
+                removeCount++;
+            }
         }
+        
+        Debug.Log($"Command: Remove all of type {type} for {removeCount} tiles.");
 
         return somethingWasRemoved;
     }
@@ -534,11 +540,20 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         // if all selected tiles have the same number, remove the number (change to zero)
         bool allTilesHaveSameDigit = CheckIfAllTilesHaveNumber(selectedTiles, number, enterType);
 
+        int tileCount = 0;
+        
         foreach (var tileBehaviour in selectedTiles)
         {
             if (SkipTile(tileBehaviour, enterType)) continue;
 
-            EnterTileNumber(tileBehaviour, number, enterType, allTilesHaveSameDigit);
+            if (TryEnterTileNumber(tileBehaviour, number, enterType, allTilesHaveSameDigit))
+                tileCount++;
+        }
+
+        if (tileCount > 0)
+        {
+            string enterString = allTilesHaveSameDigit ? "Remove" : "Enter";
+            Debug.Log($"Command: {enterString} {number} with {enterType} for {tileCount} tiles.");
         }
     }
 
@@ -559,22 +574,24 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         return true;
     }
     
-    private void EnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType, bool sameNumber)
+    private bool TryEnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType, bool sameNumber)
     {
         if (SkipTile(tileBehaviour, enterType))
-            return;
+            return false;
         
-        tileBehaviour.TryUpdateNumber(number, enterType, sameNumber);
+        bool success = tileBehaviour.TryUpdateNumber(number, enterType, sameNumber);
 
         if (enterType == EnterType.DigitMark)
         {
-            AddDigitToGrid(tileBehaviour, number, sameNumber);
+            TryAddDigitToGrid(tileBehaviour, number, sameNumber);
         }
+
+        return success;
     }
 
-    private void AddDigitToGrid(TileBehaviour tileBehaviour, int number, bool remove)
+    private bool TryAddDigitToGrid(TileBehaviour tileBehaviour, int number, bool remove)
     {
-        if (tileBehaviour.Permanent) return;
+        if (tileBehaviour.Permanent) return false;
         
         int row = tileBehaviour.row;
         int col = tileBehaviour.col;
@@ -583,6 +600,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             number = 0;
 
         grid.SetNumberToIndex(row, col, number);
+        return true;
     }
 
     private void HandleRemoveContradictions( )
@@ -702,11 +720,17 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     
     private void HandleRemoveNormalNumbers(List<TileBehaviour> selectedTiles)
     {
+        int digitRemoveCount = 0;
+        
         foreach (var tile in selectedTiles)
         {
-            AddDigitToGrid(tile, 0, true);
-            tile.TryUpdateNumber(0, EnterType.DigitMark, true);
+            TryAddDigitToGrid(tile, 0, true);
+
+            if (tile.TryUpdateNumber(0, EnterType.DigitMark, true))
+                digitRemoveCount++;
         }
+        
+        Debug.Log($"Command: Remove digit from {digitRemoveCount} tiles.");
         
         HandleRemoveContradictions();
     }

@@ -4,11 +4,11 @@ using UnityEngine.Events;
 [CreateAssetMenu(menuName = "Sudoku/CommandPort")]
 public class CommandPort : ScriptableObject
 {
-    public UnityAction<SudokuCommand> OnCommandExecute;
+    public UnityAction<SudokuEntry> OnCommandExecute;
 
-    public void ExecuteCommand(SudokuCommand command)
+    public void ExecuteCommand(SudokuEntry entry)
     {
         Debug.Log("Executing command!");
-        OnCommandExecute?.Invoke(command);
+        OnCommandExecute?.Invoke(entry);
     }
 }

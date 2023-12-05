@@ -135,8 +135,6 @@ public class SelectionObject : ScriptableObject
             SelectedTiles.Add(tile);
         }
         
-        Debug.Log($"index: {tile.row}, {tile.col}");
-
         if (!SelectedIndices.Contains(new TileIndex(tile.row, tile.col)))
         {
             SelectedIndices.Add(new TileIndex(tile.row, tile.col));

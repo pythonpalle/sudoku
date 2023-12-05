@@ -96,8 +96,8 @@ public class GridEnterManager : MonoBehaviour
             return;
         }
 
-        SudokuCommand command = new SudokuCommand(new List<TileBehaviour>(selectionObject.SelectedTiles), number, enterType, true);
-        EventManager.UserEnterNumber(command);
+        SudokuEntry entry = new SudokuEntry(new List<TileBehaviour>(selectionObject.SelectedTiles), number, enterType, true);
+        EventManager.UserEnterNumber(entry);
         
         // TODO:
         // CM: Execute Command 
@@ -109,8 +109,8 @@ public class GridEnterManager : MonoBehaviour
         if (!selectionObject.HasSelectedTiles)
             return;
         
-        SudokuCommand command = new SudokuCommand(new List<TileBehaviour>(selectionObject.SelectedTiles), 0, enterType, false, colorRemoval);
-        EventManager.UserRemoveEntry(command);
+        SudokuEntry entry = new SudokuEntry(new List<TileBehaviour>(selectionObject.SelectedTiles), 0, enterType, false, colorRemoval);
+        EventManager.UserRemoveEntry(entry);
     }
 }
 
