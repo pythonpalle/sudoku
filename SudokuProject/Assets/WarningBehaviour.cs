@@ -3,34 +3,53 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WarningBehaviour : MonoBehaviour
+public class WarningBehaviour : MonoBehaviour, IHasCommand
 {
     [SerializeField] private ExplanationText warningText;
     [SerializeField] private GridPort _gridPort;
 
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
     
+    private int stateCounter;
+    private List<bool> solveableHistory = new List<bool>();
+    
     private void OnEnable()
     {
-        EventManager.OnNewCommand += UpdateSolveableState;
+        EventManager.OnNewCommand += OnNewCommand;
 
-        EventManager.OnRedo += UpdateSolveableState;
-        EventManager.OnUndo += UpdateSolveableState;
+        EventManager.OnRedo += OnRedo;
+        EventManager.OnUndo += OnUndo;
     }
     
     private void OnDisable()
     {
-        EventManager.OnNewCommand -= UpdateSolveableState;
+        EventManager.OnNewCommand -= OnNewCommand;
         
-        EventManager.OnRedo -= UpdateSolveableState;
-        EventManager.OnUndo -= UpdateSolveableState;
+        EventManager.OnRedo -= OnRedo;
+        EventManager.OnUndo -= OnUndo;
     }
 
-    private void UpdateSolveableState()
+    
+    
+
+    public void OnNewCommand(SudokuEntry entry)
     {
+        while (solveableHistory.Count > stateCounter)
+        {
+            solveableHistory.RemoveAt(solveableHistory.Count-1);
+        }
+        
         _gridPort.RequestGrid();
         bool solveable = _solver.HasOneSolution(_gridPort.grid);
+        
+        solveableHistory.Add(solveable);
+        stateCounter++;
 
+        UpdateSolvable(solveable);
+    }
+
+    void UpdateSolvable(bool solveable)
+    {
         if (solveable)
         {
             warningText.gameObject.SetActive(false);
@@ -40,9 +59,37 @@ public class WarningBehaviour : MonoBehaviour
             warningText.gameObject.SetActive(true);
         }
     }
-
-    private void UpdateSolveableState(SudokuEntry entry)
+    
+    private void OnUndo()
     {
-        UpdateSolveableState();
+        ChangeState(true);
+    }
+    
+    private void OnRedo()
+    {
+        ChangeState(false);
+    }
+
+    
+    private void ChangeState(bool undo)
+    {
+        if (undo)
+            stateCounter--;
+        else
+            stateCounter++;
+        
+        if (undo && stateCounter <= 0)
+        {
+            stateCounter = 1;
+            return;
+        }
+        
+        if (!undo && stateCounter > solveableHistory.Count)
+        {
+            stateCounter --;
+            return;
+        }
+        
+        UpdateSolvable(solveableHistory[stateCounter-1]);
     }
 }
