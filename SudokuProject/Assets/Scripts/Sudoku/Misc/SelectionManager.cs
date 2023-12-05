@@ -317,7 +317,7 @@ public class SelectionManager : MonoBehaviour, IHasCommand
         }
     }
 
-    public void OnNewCommand()
+    public void OnNewCommand(SudokuEntry entry)
     {
         var selectedTiles = new List<TileBehaviour>(selectionObject.SelectedTiles);
         

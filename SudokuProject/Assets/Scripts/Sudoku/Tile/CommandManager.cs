@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IHasCommand
 {
-    public abstract void OnNewCommand();
+    public abstract void OnNewCommand(SudokuEntry entry);
 }
 
 public class CommandManager : MonoBehaviour
@@ -21,7 +21,7 @@ public class CommandManager : MonoBehaviour
 
     private void OnSetupTiles()
     {
-        EventManager.CallNewCommand();
+        EventManager.CallNewCommand(null);
     }
 
     private void Update()

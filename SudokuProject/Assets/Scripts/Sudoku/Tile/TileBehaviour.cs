@@ -116,7 +116,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     }
 
     
-    public void OnNewCommand()
+    public void OnNewCommand(SudokuEntry entry)
     {
         TileState state = new TileState
         {

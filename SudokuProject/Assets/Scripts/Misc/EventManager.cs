@@ -23,7 +23,7 @@ public static class EventManager
     
     public static UnityAction<SudokuEntry> OnGridEnterFromUser;
 
-    public static UnityAction OnNewCommand;
+    public static UnityAction<SudokuEntry> OnNewCommand;
 
     public static UnityAction OnUIElementHover;
     public static UnityAction OnUIElementExit;
@@ -66,9 +66,9 @@ public static class EventManager
         OnGridEnterFromUser?.Invoke(entry);
     }
 
-    public static void CallNewCommand()
+    public static void CallNewCommand(SudokuEntry entry)
     {
-        OnNewCommand?.Invoke();
+        OnNewCommand?.Invoke(entry);
     }
 
     public static void UIElementHover()

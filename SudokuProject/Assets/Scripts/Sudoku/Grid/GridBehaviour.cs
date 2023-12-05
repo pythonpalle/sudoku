@@ -102,7 +102,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
         
         grid = importedGrid;
-        EventManager.CallNewCommand();
+        EventManager.CallNewCommand(null);
     }
 
     private void UpdateGridCandidates()
@@ -232,7 +232,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                 break;
         }
         
-        EventManager.CallNewCommand();
+        EventManager.CallNewCommand(entry);
     }
     
     private void HandleCompletion()
@@ -281,7 +281,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                 // only seen as new command if some tiles where effected
                 if (RemoveAllOfEntryType(tiles, EnterType.ColorMark))
                 {
-                    EventManager.CallNewCommand();
+                    EventManager.CallNewCommand(entry);
                 }
             }
         
@@ -316,7 +316,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                     RemoveAllOfEntryType(tiles, type);
                 }
                 
-                EventManager.CallNewCommand();
+                EventManager.CallNewCommand(entry);
                 return;
             }
         }
@@ -656,7 +656,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
     private int stateCounter = 0;
 
-    public void OnNewCommand()
+    public void OnNewCommand(SudokuEntry entry)
     {
         SudokuGrid9x9 newGrid = new SudokuGrid9x9(grid);
         
