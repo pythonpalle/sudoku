@@ -307,16 +307,16 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         switch (enterType)
         {
             case EnterType.DigitMark:
-                return TryUpdateDigit(number, remove);
+                return CanUpdateDigit(number, remove);
             
             case EnterType.CornerMark:
-                return TryUpdateCorner(number, remove);
+                return CanUpdateCorner(number, remove);
             
             case EnterType.CenterMark:
-                return TryUpdateCenter(number, remove);
+                return CanUpdateCenter(number, remove);
             
             case EnterType.ColorMark:
-                return TryUpdateColor(number, remove);
+                return CanUpdateColor(number, remove);
         }
 
         return false;
@@ -335,8 +335,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     bool CanUpdateDigit(int number, bool remove)
     {
-        Debug.Log($"Curr nbr: {this.number}, new number: {number}, remove: {remove}");
-        
         if (Permanent) return false;
 
         if (!remove && number == this.number)

@@ -23,9 +23,12 @@ public static class EventManager
     
     public static UnityAction<SudokuEntry> OnUserNumberEnter;
     public static UnityAction<SudokuEntry> OnUserRemoveEntry;
-    public static UnityAction<SudokuEntry> OnExecuteCommand;
+    
+    public static UnityAction<SudokuCommand> OnExecuteCommand;
 
     public static UnityAction OnNewCommand;
+    public static UnityAction<SudokuCommand> OnAddCommand;
+    
 
     public static UnityAction OnUIElementHover;
     public static UnityAction OnUIElementExit;
@@ -36,8 +39,8 @@ public static class EventManager
     public static UnityAction OnUndo;
     public static UnityAction OnRedo;
     
-    public static UnityAction<SudokuEntry> OnUndoCommand;
-    public static UnityAction<SudokuEntry> OnRedoCommand;
+    public static UnityAction<SudokuCommand> OnUndoCommand;
+    public static UnityAction<SudokuCommand> OnRedoCommand;
 
     public static UnityAction<SudokuGrid9x9> OnImportGrid;
     
@@ -133,14 +136,14 @@ public static class EventManager
         //OnRedo?.Invoke();
     }
     
-    public static void Undo(SudokuEntry entry)
+    public static void Undo(SudokuCommand command)
     {
-        OnUndoCommand?.Invoke(entry);
+        OnUndoCommand?.Invoke(command);
     }
     
-    public static void Redo(SudokuEntry entry)
+    public static void Redo(SudokuCommand command)
     {
-        OnRedoCommand?.Invoke(entry);
+        OnRedoCommand?.Invoke(command);
     }
 
     public static void TilesSetup()
@@ -168,8 +171,13 @@ public static class EventManager
         OnDisplayFloatingPopupText?.Invoke(text, position);
     }
 
-    public static void ExecuteCommand(SudokuEntry entry)
+    public static void ExecuteCommand(SudokuCommand command)
     {
-        OnExecuteCommand?.Invoke(entry);
+        OnExecuteCommand?.Invoke(command);
+    }
+
+    public static void AddNewCommand(SudokuCommand command)
+    {
+        OnAddCommand?.Invoke(command);
     }
 }

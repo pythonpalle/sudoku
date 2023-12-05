@@ -87,32 +87,14 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         hintObject.OnHintFound -= OnHintFound;
     }
 
-    private void OnUndoCommand(SudokuEntry entry)
+    private void OnUndoCommand(SudokuCommand command)
     {
-        OnNumberEnter(entry);
         
-        // if (command.entry)
-        // {
-        //     OnRemoveEntry(command);
-        // }
-        // else
-        // {
-        //     OnNumberEnter(command);
-        // }
     }
 
-    private void OnRedoCommand(SudokuEntry entry)
+    private void OnRedoCommand(SudokuCommand command)
     {
-        OnNumberEnter(entry);
-
-        // if (command.entry)
-        // {
-        //     OnNumberEnter(command);
-        // }
-        // else
-        // {
-        //     OnRemoveEntry(command);
-        // }
+        
     }
     
 
@@ -538,23 +520,56 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     private void HandleEnterNumberToSelectedTiles(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
     {
         // if all selected tiles have the same number, remove the number (change to zero)
-        bool allTilesHaveSameDigit = CheckIfAllTilesHaveNumber(selectedTiles, number, enterType);
+        bool remove = CheckIfAllTilesHaveNumber(selectedTiles, number, enterType);
 
-        int tileCount = 0;
-        
+        // int tileCount = 0;
+
+        List<TileBehaviour> tilesToUpdate = new List<TileBehaviour>();
+
         foreach (var tileBehaviour in selectedTiles)
         {
-            if (SkipTile(tileBehaviour, enterType)) continue;
-
-            if (TryEnterTileNumber(tileBehaviour, number, enterType, allTilesHaveSameDigit))
-                tileCount++;
+            if (tileBehaviour.CanUpdateNumber(number, enterType, remove))
+                tilesToUpdate.Add(tileBehaviour);
+            
+            // if (SkipTile(tileBehaviour, enterType)) continue;
+            //
+            // if (TryEnterTileNumber(tileBehaviour, number, enterType, allTilesHaveSameDigit))
+            //     tileCount++;
         }
 
-        if (tileCount > 0)
+        if (tilesToUpdate.Count > 0)
         {
-            string enterString = allTilesHaveSameDigit ? "Remove" : "Enter";
-            Debug.Log($"Command: {enterString} {number} with {enterType} for {tileCount} tiles.");
+            if (remove)
+                AddNewRemoveCommand(tilesToUpdate, number, enterType);
+            else
+                AddNewAddCommand(tilesToUpdate, number, enterType);
         }
+    }
+
+    private void AddNewRemoveCommand(List<TileBehaviour> tilesToUpdate, int number, EnterType enterType)
+    {
+        switch (enterType)
+        {
+            case EnterType.DigitMark:
+                RemoveDigitCommand command = new RemoveDigitCommand(tilesToUpdate, 0);
+                EventManager.AddNewCommand(command);
+                break;
+        }
+        
+        Debug.Log($"Command: remove {number} with {enterType} for {tilesToUpdate.Count} tiles.");
+    }
+
+    private void AddNewAddCommand(List<TileBehaviour> tilesToUpdate, int number, EnterType enterType)
+    {
+        switch (enterType)
+        {
+            case EnterType.DigitMark:
+                AddDigitCommand command = new AddDigitCommand(tilesToUpdate, number);
+                EventManager.AddNewCommand(command);
+                break;
+        }
+        
+        Debug.Log($"Command: add {number} with {enterType} for {tilesToUpdate.Count} tiles.");
     }
 
     private bool CheckIfAllTilesHaveNumber(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
@@ -581,7 +596,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         
         bool success = tileBehaviour.TryUpdateNumber(number, enterType, sameNumber);
 
-        if (enterType == EnterType.DigitMark)
+        if (enterType == EnterType.DigitMark && success)
         {
             TryAddDigitToGrid(tileBehaviour, number, sameNumber);
         }
@@ -731,6 +746,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
         
         Debug.Log($"Command: Remove digit from {digitRemoveCount} tiles.");
+        
         
         HandleRemoveContradictions();
     }
