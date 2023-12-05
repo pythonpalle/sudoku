@@ -21,7 +21,7 @@ public class CommandManager : MonoBehaviour
 
     private void OnSetupTiles()
     {
-        EventManager.OnNewCommand?.Invoke();
+        EventManager.CallNewCommand();
     }
 
     private void Update()

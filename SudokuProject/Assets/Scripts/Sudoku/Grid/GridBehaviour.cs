@@ -37,8 +37,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnImportGrid += OnImportGrid;
         EventManager.OnTileIndexSet += OnTileIndexSet;
         
-        EventManager.OnNumberEnter += OnNumberEnter;
-        EventManager.OnRemoveEntry += OnRemoveEntryEvent;
+        EventManager.OnGridEnterFromUser += OnGridEnterFromUser;
         
         EventManager.OnNewCommand += OnNewCommand;
         EventManager.OnUndo += OnUndo;
@@ -59,8 +58,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnImportGrid -= OnImportGrid;
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         
-        EventManager.OnNumberEnter -= OnNumberEnter; 
-        EventManager.OnRemoveEntry -= OnRemoveEntryEvent;
+        EventManager.OnGridEnterFromUser -= OnGridEnterFromUser; 
 
         EventManager.OnNewCommand -= OnNewCommand;
         EventManager.OnUndo -= OnUndo;
@@ -73,6 +71,14 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         
         gridPort.OnRequestGrid -= OnRequestGrid;
         hintObject.OnHintFound -= OnHintFound;
+    }
+
+    private void OnGridEnterFromUser(SudokuEntry entry)
+    {
+        if (entry.removal)
+            OnRemoveEntryEvent(entry);
+        else
+            OnNumberEnter(entry);
     }
 
     private void OnRequestGrid()
@@ -96,7 +102,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
         
         grid = importedGrid;
-        EventManager.OnNewCommand?.Invoke();
+        EventManager.CallNewCommand();
     }
 
     private void UpdateGridCandidates()
@@ -208,8 +214,12 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         tileBehaviours[row, col] = tileBehaviour;
     }
     
-    private void OnNumberEnter(List<TileBehaviour> tiles, EnterType enterType, int number)
+    private void OnNumberEnter(SudokuEntry entry)
     {
+        var tiles = entry.tiles;
+        var number = entry.number;
+        var enterType = entry.enterType;
+        
         HandleEnterNumberToSelectedTiles(tiles, number, enterType);
         
         switch (enterType)
@@ -221,6 +231,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                 gridPort.UpdateContradictionStatus(GridHasContradiction());
                 break;
         }
+        
+        EventManager.CallNewCommand();
     }
     
     private void HandleCompletion()
@@ -255,8 +267,12 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         return false;
     }
 
-    private void OnRemoveEntryEvent(List<TileBehaviour> tiles, EnterType enterType, bool colorRemoval)
+    private void OnRemoveEntryEvent(SudokuEntry entry)
     {
+        var tiles = entry.tiles;
+        var enterType = entry.enterType;
+        var colorRemoval = entry.colorRemoval;
+        
         // special case for color removal, since it can't remove anything else
         if (enterType == EnterType.ColorMark && colorRemoval)
         {
@@ -265,7 +281,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                 // only seen as new command if some tiles where effected
                 if (RemoveAllOfEntryType(tiles, EnterType.ColorMark))
                 {
-                    EventManager.OnNewCommand?.Invoke();
+                    EventManager.CallNewCommand();
                 }
             }
         
@@ -300,7 +316,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                     RemoveAllOfEntryType(tiles, type);
                 }
                 
-                EventManager.OnNewCommand?.Invoke();
+                EventManager.CallNewCommand();
                 return;
             }
         }

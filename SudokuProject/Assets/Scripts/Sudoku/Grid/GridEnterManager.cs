@@ -95,8 +95,9 @@ public class GridEnterManager : MonoBehaviour
         {
             return;
         }
-        
-        EventManager.EnterNumber(selectionObject.SelectedTiles, enterType, number);
+
+        SudokuEntry entry = new SudokuEntry(selectionObject.SelectedTiles, enterType, number, false, false);
+        EventManager.GridEnterFromUser(entry);
     }
 
     public void TryRemoveNumbers(bool colorRemoval = false)
@@ -104,6 +105,7 @@ public class GridEnterManager : MonoBehaviour
         if (!selectionObject.HasSelectedTiles)
             return;
         
-        EventManager.RemoveEntry(selectionObject.SelectedTiles, enterType, colorRemoval);
+        SudokuEntry entry = new SudokuEntry(selectionObject.SelectedTiles, enterType, 0, true, colorRemoval);
+        EventManager.GridEnterFromUser(entry);
     }
 }
