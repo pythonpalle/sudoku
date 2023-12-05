@@ -11,7 +11,7 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
     
     private int stateCounter;
-    private List<bool> solveableHistory = new List<bool>();
+    private List<SolutionsState> solveableHistory = new List<SolutionsState>();
     
     private void OnEnable()
     {
@@ -37,28 +37,45 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
         }
         
         _gridPort.RequestGrid();
+        string warningText;
 
-        bool solveable = true;
-        if (_gridPort.gridContradicted || !_solver.HasOneSolution(_gridPort.grid))
+        SolutionsState state = SolutionsState.Single;
+        if (_gridPort.gridContradicted)
         {
-            solveable = false;
-        }
-        
-        solveableHistory.Add(solveable);
-        stateCounter++;
-        
-        UpdateSolvable(solveable);
-    }
-
-    void UpdateSolvable(bool solveable)
-    {
-        if (solveable)
-        {
-            warningText.gameObject.SetActive(false);
+            state = SolutionsState.None;
         }
         else
         {
-            warningText.gameObject.SetActive(true);
+            _solver.HasOneSolution(_gridPort.grid);
+            // _solver.SetGrid(_gridPort.grid);
+            // _solver.TrySolveGrid(false);
+            state = _solver.SolutionsState;
+        }
+
+        solveableHistory.Add(state);
+        stateCounter++;
+        
+        UpdateSolvable(state);
+    }
+
+    void UpdateSolvable(SolutionsState state)
+    {
+        warningText.gameObject.SetActive(true);
+
+        switch (state)
+        {
+            case SolutionsState.Single:
+                warningText.gameObject.SetActive(false);
+                warningText.SetText("Grid can be solved!");
+                break;
+            
+            case SolutionsState.None:
+                warningText.SetText("Grid has no solutions!");
+                break;
+            
+            case SolutionsState.Multiple:
+                warningText.SetText("Grid has several solutions!");
+                break;
         }
     }
     

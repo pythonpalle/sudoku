@@ -13,6 +13,11 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private bool isPoppedUp;
     
+    public void SetText(string text)
+    {
+        explanationText = text;
+    }
+    
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (routineIsRunning)
