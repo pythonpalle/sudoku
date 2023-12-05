@@ -24,11 +24,14 @@ public class PopupTextHandler : MonoBehaviour
 
     private void OnDisplayHoverText(string text, Vector3 position)
     {
-        hoverExplanation.gameObject.SetActive(true);
         hoverExplanation.transform.position = position;
         hoverExplanation.TextMesh.text = text;
+        hoverExplanation.gameObject.SetActive(true);
+        
+        // float scaleModifier = 30 / hoverExplanation.TextMesh.fontSize;
+        // hoverExplanation.transform.localScale = Vector3.one * scaleModifier;
     }
-    
+
     private void OnDisplayFloatingPopupText(string text, Vector3 position)
     {
         floatingPopup.Popup(text, position);

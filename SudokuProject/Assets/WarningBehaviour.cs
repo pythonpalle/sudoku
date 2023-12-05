@@ -29,9 +29,6 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnUndo -= OnUndo;
     }
 
-    
-    
-
     public void OnNewCommand(SudokuEntry entry)
     {
         while (solveableHistory.Count > stateCounter)
@@ -40,11 +37,16 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
         }
         
         _gridPort.RequestGrid();
-        bool solveable = _solver.HasOneSolution(_gridPort.grid);
+
+        bool solveable = true;
+        if (_gridPort.gridContradicted || !_solver.HasOneSolution(_gridPort.grid))
+        {
+            solveable = false;
+        }
         
         solveableHistory.Add(solveable);
         stateCounter++;
-
+        
         UpdateSolvable(solveable);
     }
 

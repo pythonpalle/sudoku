@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explanationText: Grid is not solveable from this state!
+  explanationText: Grid's not solvable!
 --- !u!114 &64389109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1128,8 +1128,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 835898766}
-  - {fileID: 1795347481}
   - {fileID: 1973827214}
+  - {fileID: 1795347481}
   m_Father: {fileID: 1157210451}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2496,7 +2496,7 @@ RectTransform:
   m_Children:
   - {fileID: 695530406}
   m_Father: {fileID: 705058437}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3192,6 +3192,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 705058437}
     m_Modifications:
+    - target: {fileID: 5154058713251902572, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 154.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 5154058713251902572, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.1871
+      objectReference: {fileID: 0}
     - target: {fileID: 5184688797412245676, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
       propertyPath: m_Name
       value: Popup Texts
@@ -3206,7 +3214,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5184688797412245677, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5184688797412245677, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
       propertyPath: m_AnchorMax.x
@@ -3279,6 +3287,46 @@ PrefabInstance:
     - target: {fileID: 5184688797412245677, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5383386887985426864, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5383386888205456992, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5459724980997167000, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6469226715476303213, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 160
+      objectReference: {fileID: 0}
+    - target: {fileID: 6469226715476303213, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 6469226715476303213, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6877273810900924438, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_text
+      value: Hint could not be given!
+      objectReference: {fileID: 0}
+    - target: {fileID: 6877273810900924438, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_fontSize
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6877273810900924438, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_fontSizeMin
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6877273810900924438, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
