@@ -11,7 +11,7 @@ public static class SaveManager
 public class SaveData
 {
     public bool testBool;
-    private float[] testFloatArray;
+    public float[] testFloatArray;
     public int score;
 
     /// <summary>

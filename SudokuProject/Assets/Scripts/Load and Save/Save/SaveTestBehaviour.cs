@@ -18,6 +18,8 @@ public class SaveTestBehaviour : MonoBehaviour
             data.score = myScore;
             string jsonString = data.ToJson();
             
+            string repeatedVariableTestString = "{\"score\":10,\"score\":15}";
+            
             FileManager.WriteToFile("test.txt", jsonString);
         }
         
