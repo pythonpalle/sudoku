@@ -31,13 +31,13 @@ public class WFCGridSolver
                 return SolutionsState.Single;
             else
                 return SolutionsState.Multiple;
-        }
+        } 
     }
 
     private PuzzleDifficulty highestSuccessfulDifficulty { get; set; } = PuzzleDifficulty.Simple;
     private PuzzleDifficulty highestAttemptedDifficulty = PuzzleDifficulty.Simple;
 
-    private List<DigitMethod> digitMethods;
+    private List<DigitMethod> digitMethods; 
     List<CandidateMethod> candidatesMethods;
 
     public SudokuGrid9x9 grid { get; protected set; }
