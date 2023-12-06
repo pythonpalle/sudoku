@@ -1,6 +1,7 @@
 using System.Collections;
 using System.IO;
 using System.Collections.Generic;
+using Saving;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.SocialPlatforms.Impl;
@@ -8,6 +9,7 @@ using UnityEngine.SocialPlatforms.Impl;
 public class SaveTestBehaviour : MonoBehaviour, ISavable
 {
     public int myScore;
+    public string seed;
 
     // Update is called once per frame
     void Update()
@@ -16,8 +18,12 @@ public class SaveTestBehaviour : MonoBehaviour, ISavable
         {
             //PopulateSaveData();
 
-            var data = new SaveData();
-            data.score = myScore;
+            var data = new SaveData
+            {
+                score = myScore,
+                sudokuGames = new SudokuGameData[1]
+            };
+            data.sudokuGames[0] = new SudokuGameData(seed);
             string jsonString = data.ToJson();
             
             FileManager.WriteToFile("test.txt", jsonString);
@@ -30,6 +36,12 @@ public class SaveTestBehaviour : MonoBehaviour, ISavable
                 SaveData saveData = new SaveData();
                 saveData.LoadFromJson(jsonString);
                 myScore = saveData.score;
+                seed = "";
+
+                foreach (var number in saveData.sudokuGames[0].numbers)
+                {
+                    seed += number;
+                }
             }
             
             //LoadFromSaveData();
