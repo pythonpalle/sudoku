@@ -9,10 +9,10 @@ public class SaveButton : MonoBehaviour
     private string successfulSaveString = "Saved to clipboard!";
     public void OnSaveButtonPressed()
     {
-        SaveGrid();
+        SaveGrid(); 
     }
     
-    private void SaveGrid()
+    private void SaveGrid() 
     {
         _gridPort.RequestGrid();
         string gridString = _gridPort.GetGridAsSeed();
