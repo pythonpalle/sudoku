@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.SocialPlatforms.Impl;
 
-public class SaveTestBehaviour : MonoBehaviour
+public class SaveTestBehaviour : MonoBehaviour, ISavable
 {
     public int myScore;
 
@@ -14,11 +14,11 @@ public class SaveTestBehaviour : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            SaveData data = new SaveData();
+            //PopulateSaveData();
+
+            var data = new SaveData();
             data.score = myScore;
             string jsonString = data.ToJson();
-            
-            string repeatedVariableTestString = "{\"score\":10,\"score\":15}";
             
             FileManager.WriteToFile("test.txt", jsonString);
         }
@@ -31,7 +31,26 @@ public class SaveTestBehaviour : MonoBehaviour
                 saveData.LoadFromJson(jsonString);
                 myScore = saveData.score;
             }
+            
+            //LoadFromSaveData();
+        }
+    }
 
+    public void PopulateSaveData(SaveData data)
+    {
+        data.score = myScore;
+        string jsonString = data.ToJson();
+            
+        FileManager.WriteToFile("test.txt", jsonString);
+    }
+
+    public void LoadFromSaveData(SaveData data)
+    {
+        if (FileManager.LoadFromFile("test.txt", out string jsonString))
+        {
+            SaveData saveData = new SaveData();
+            saveData.LoadFromJson(jsonString);
+            myScore = saveData.score;
         }
     }
 }

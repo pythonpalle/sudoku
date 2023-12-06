@@ -1,32 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
+
 
 public static class SaveManager
 {
-   
-}
+    private static SaveData saveData = new SaveData();
 
-[System.Serializable]
-public class SaveData
-{
-    public bool testBool;
-    public float[] testFloatArray;
-    public int score;
+    public static UnityAction<SaveData> OnPopulateSaveData;
+    public static UnityAction<SaveData> OnLoadFromData;
 
-    /// <summary>
-    /// Converts the public fields of this game object to a JSON representation and returns it as a string.
-    /// </summary>
-    public string ToJson()
+    public static void PopulateSaveData()
     {
-        return JsonUtility.ToJson(this);
-    }
-
-    /// <summary>
-    /// Overrides the public fields in this object from the JSON string representation.
-    /// </summary>
-    public void LoadFromJson(string JsonString)
-    {
-        JsonUtility.FromJsonOverwrite(JsonString, this);
+        OnPopulateSaveData?.Invoke(saveData);
     }
 }

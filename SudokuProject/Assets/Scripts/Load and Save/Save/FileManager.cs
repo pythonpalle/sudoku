@@ -4,8 +4,11 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class FileManager 
+public static class FileManager
 {
+    // private static string SAVE_FOLDER =>
+    //     Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Saves" + Path.AltDirectorySeparatorChar;
+    
     public static bool WriteToFile(string fileName, string fileContents)
     {
         string fullFilePath = Path.Combine(Application.persistentDataPath, fileName);
