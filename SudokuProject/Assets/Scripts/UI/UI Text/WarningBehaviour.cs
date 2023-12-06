@@ -37,7 +37,6 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
         }
         
         _gridPort.RequestGrid();
-        string warningText;
 
         SolutionsState state = SolutionsState.Single;
         if (_gridPort.gridContradicted)
@@ -47,8 +46,6 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
         else
         {
             _solver.HasOneSolution(_gridPort.grid);
-            // _solver.SetGrid(_gridPort.grid);
-            // _solver.TrySolveGrid(false);
             state = _solver.SolutionsState;
         }
 
@@ -89,7 +86,6 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
         ChangeState(false);
     }
 
-    
     private void ChangeState(bool undo)
     {
         if (undo)
