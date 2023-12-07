@@ -1,38 +1,23 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace Saving
 {
     [System.Serializable]
-    public class UserSaveData
+    public class UserSaveData : SaveData
     {
-        public string ID;
-        public List<PuzzleDataHolder> puzzles { get; private set; }= new List<PuzzleDataHolder>();
-
-        /// <summary>
-        /// Converts the public fields of this game object to a JSON representation and returns it as a string.
-        /// </summary>
-        public string ToJson()
+        public UserSaveData(UserIdentifier identifier)
         {
-            return JsonUtility.ToJson(this);
+            this.identifier = identifier;
+            puzzles = new List<PuzzleDataHolder>();
         }
-    
-        /// <summary>
-        /// Overrides the public fields in this object from the JSON string representation.
-        /// </summary>
-        public void LoadFromJson(string jsonString)
+        
+        public UserSaveData()
         {
-            JsonUtility.FromJsonOverwrite(jsonString, this);
-        } 
-    }
-    
-    
+            puzzles = new List<PuzzleDataHolder>();
+        }
 
-
-    public interface IHasPuzzleData
-    {
-        void PopulateSaveData(PuzzleDataHolder dataHolder);
-        void LoadFromSaveData(PuzzleDataHolder dataHolder);
+        public UserIdentifier identifier { get; private set; }
+        public List<PuzzleDataHolder> puzzles { get; private set; }
     }
 }
 

@@ -6,9 +6,16 @@ using UnityEngine;
 
 public static class FileManager
 {
+    private static readonly string fileExtenstion = ".txt";
+    
+    private static string GetFullFilePathName(string fileName)
+    {
+        return Path.Combine(Application.persistentDataPath, fileName) + fileExtenstion;
+    }
+    
     public static bool WriteToFile(string fileName, string fileContents)
     {
-        string fullFilePath = Path.Combine(Application.persistentDataPath, fileName);
+        string fullFilePath = GetFullFilePathName(fileName);
         Debug.Log($"File path: {fullFilePath}");
 
         try
@@ -24,11 +31,18 @@ public static class FileManager
 
         return false;
     }
+
+    public static bool FileExists(string fileName)
+    {
+        string fullFilePath = GetFullFilePathName(fileName);
+        return (File.Exists(fullFilePath));
+    }
     
     public static bool LoadFromFile(string fileName, out string result)
     {
-        string fullFilePath = Path.Combine(Application.persistentDataPath, fileName);
-
+        string fullFilePath = GetFullFilePathName(fileName);
+        result = string.Empty;
+        
         try
         {
             result = File.ReadAllText(fullFilePath);
@@ -38,7 +52,6 @@ public static class FileManager
         catch (Exception e)
         {
             Debug.LogError(($"Failed to load from {fullFilePath} with exception {e}"));
-            result = string.Empty;
         }
 
         return false;
