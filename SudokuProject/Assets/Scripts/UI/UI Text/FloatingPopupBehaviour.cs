@@ -17,7 +17,7 @@ public class FloatingPopupBehaviour : MonoBehaviour
     private IEnumerator PopupRoutine(string text, Vector3 position)
     {
         TextMesh.text = text;
-        popupObject.transform.position = position; 
+        transform.position = position; 
         
         popupObject.SetActive(true);
         animator.SetTrigger("Play");

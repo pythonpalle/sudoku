@@ -1,14 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Saving;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class StartScreen : MonoBehaviour
 {
-    public void OnStartButtonPressed()
+    public void Awake()
     {
-        SceneManager.LoadScene("Game Scene");
+        SaveManager.TryGetCurrentUserData(out _);
     }
+
 
     public void OnQuitButtonPressed()
     {
