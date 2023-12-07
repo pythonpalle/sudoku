@@ -4,17 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
+public enum GridGenerationType
+{
+    random,
+    loaded,
+    empty
+}
 
 public class GeneratorBehaviour : MonoBehaviour
 {
     private SudokuGenerator9x9 generator;
     private SudokuGenerator9x9 fakeGenerator;
     
+    [SerializeField] private GeneratorPort _generatorPort;
     [SerializeField] private DifficultyObject _difficultyObject;
     [SerializeField] private LoadGrid loadGrid;
     
-    [Header("Grid Generation Settings")] 
-    [SerializeField] private bool createEmptyGrid;
+    //[Header("Grid Generation Settings")] 
+    //[SerializeField] private bool createEmptyGrid;
 
     void Awake()
     {
@@ -24,15 +31,31 @@ public class GeneratorBehaviour : MonoBehaviour
 
     private void Start()
     {
-        if (createEmptyGrid)
+        switch (_generatorPort.GenerationType)
         {
-            Invoke("GenerateEmptyGrid", 0.01f);
+            case GridGenerationType.empty:
+                Invoke("GenerateEmptyGrid", 0.01f);
+                break;
+            
+            case GridGenerationType.random:
+                StartCoroutine(AnimateGrid());
+                Invoke("GenerateFullGrid", 0.01f);
+                break;
+            
+            case GridGenerationType.loaded:
+                Debug.Log("Load grid yo!");
+                break;
         }
-        else
-        {
-            StartCoroutine(AnimateGrid());
-            Invoke("GenerateFullGrid", 0.01f);
-        }
+        
+        // if (createEmptyGrid)
+        // {
+        //     Invoke("GenerateEmptyGrid", 0.01f);
+        // }
+        // else
+        // {
+        //     StartCoroutine(AnimateGrid());
+        //     Invoke("GenerateFullGrid", 0.01f);
+        // }
     }
     
     public void GenerateEmptyGrid()

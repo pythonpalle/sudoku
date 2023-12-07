@@ -16,8 +16,8 @@ namespace Saving
             puzzles = new List<PuzzleDataHolder>();
         }
 
-        public UserIdentifier identifier { get; private set; }
-        public List<PuzzleDataHolder> puzzles { get; private set; }
+        public UserIdentifier identifier;// { get; private set; }
+        public List<PuzzleDataHolder> puzzles;// { get; private set; }
     }
 }
 

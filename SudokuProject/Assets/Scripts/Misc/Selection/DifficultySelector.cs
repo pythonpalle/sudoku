@@ -72,6 +72,7 @@ public class DifficultySelector : MonoBehaviour
 
     private void LoadPuzzleScene()
     {
-        SceneManager.LoadScene("Game Scene");
+        var sceneManager = GameObject.FindObjectOfType<SudokuGameSceneManager>();
+        sceneManager.LoadRandom();
     }
 }

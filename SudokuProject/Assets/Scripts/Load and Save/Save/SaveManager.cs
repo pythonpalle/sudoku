@@ -69,6 +69,10 @@ namespace Saving
         {
             currentUserData = new UserSaveData(userIdentifier);
             string dataAsJson = currentUserData.ToJson();
+            
+            Debug.Log("identifier: (SM)" + userIdentifier.id);
+            Debug.Log("identifier: (userData)" + currentUserData.identifier.id);
+            Debug.Log("json string: " + dataAsJson);
 
             if (FileManager.WriteToFile(userSaveFileName, dataAsJson))
             {
