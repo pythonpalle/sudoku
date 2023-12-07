@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.SocialPlatforms.Impl;
 
-public class SaveTestBehaviour : MonoBehaviour, ISavable
+public class SaveTestBehaviour : MonoBehaviour, IHasPuzzleData
 {
     public int myScore;
     public string seed;
@@ -14,55 +14,30 @@ public class SaveTestBehaviour : MonoBehaviour, ISavable
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            //PopulateSaveData();
-
-            var data = new SaveData
-            {
-                score = myScore,
-                sudokuGames = new SudokuGameData[1]
-            };
-            data.sudokuGames[0] = new SudokuGameData(seed);
-            string jsonString = data.ToJson();
-            
-            FileManager.WriteToFile("test.txt", jsonString);
-        }
-        
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            if (FileManager.LoadFromFile("test.txt", out string jsonString))
-            {
-                SaveData saveData = new SaveData();
-                saveData.LoadFromJson(jsonString);
-                myScore = saveData.score;
-                seed = "";
-
-                foreach (var number in saveData.sudokuGames[0].numbers)
-                {
-                    seed += number;
-                }
-            }
-            
-            //LoadFromSaveData();
-        }
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     
+        //     
+        //     FileManager.WriteToFile("test.txt", jsonString);
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.L))
+        // {
+        //     if (FileManager.LoadFromFile("test.txt", out string jsonString))
+        //     {
+        //         
+        //     }
+        //      
+        // }
     }
 
-    public void PopulateSaveData(SaveData data)
+    public void PopulateSaveData(PuzzleDataHolder dataHolder)
     {
-        data.score = myScore;
-        string jsonString = data.ToJson();
-            
-        FileManager.WriteToFile("test.txt", jsonString);
+        throw new System.NotImplementedException();
     }
 
-    public void LoadFromSaveData(SaveData data)
+    public void LoadFromSaveData(PuzzleDataHolder dataHolder)
     {
-        if (FileManager.LoadFromFile("test.txt", out string jsonString))
-        {
-            SaveData saveData = new SaveData();
-            saveData.LoadFromJson(jsonString);
-            myScore = saveData.score;
-        }
+        throw new System.NotImplementedException();
     }
 }

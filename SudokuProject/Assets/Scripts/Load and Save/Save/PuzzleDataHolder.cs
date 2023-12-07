@@ -3,7 +3,7 @@
 namespace Saving
 {
     [System.Serializable]
-    public class SudokuGameData
+    public class PuzzleDataHolder
     {
         // identifier
         public string id;
@@ -14,14 +14,17 @@ namespace Saving
         // grid
         public int[] numbers;
         public bool[] permanent;
+        
+        // status
+        public bool completed;
             
-        public SudokuGameData()
+        public PuzzleDataHolder()
         {
             numbers = new int[81];
             permanent = new bool[81];
         }
             
-        public SudokuGameData(string seed) //: base()
+        public PuzzleDataHolder(string seed) //: base()
         {
             numbers = new int[81];
             permanent = new bool[81];

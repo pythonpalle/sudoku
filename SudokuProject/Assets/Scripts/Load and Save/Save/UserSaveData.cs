@@ -1,14 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Saving
 {
     [System.Serializable]
-    public class SaveData
+    public class UserSaveData
     {
-        
-        public SudokuGameData[] sudokuGames;
-        public int score;
-    
+        public List<PuzzleDataHolder> puzzles { get; private set; }= new List<PuzzleDataHolder>();
+
         /// <summary>
         /// Converts the public fields of this game object to a JSON representation and returns it as a string.
         /// </summary>
@@ -20,17 +19,19 @@ namespace Saving
         /// <summary>
         /// Overrides the public fields in this object from the JSON string representation.
         /// </summary>
-        public void LoadFromJson(string JsonString)
+        public void LoadFromJson(string jsonString)
         {
-            JsonUtility.FromJsonOverwrite(JsonString, this);
+            JsonUtility.FromJsonOverwrite(jsonString, this);
         } 
     }
+    
+    
 
 
-    public interface ISavable
+    public interface IHasPuzzleData
     {
-        void PopulateSaveData(SaveData data);
-        void LoadFromSaveData(SaveData data);
+        void PopulateSaveData(PuzzleDataHolder dataHolder);
+        void LoadFromSaveData(PuzzleDataHolder dataHolder);
     }
 }
 

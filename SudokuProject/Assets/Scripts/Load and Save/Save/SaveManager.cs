@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
@@ -7,14 +8,28 @@ namespace Saving
 {
     public static class SaveManager
     {
-        private static SaveData saveData = new SaveData();
+        public static IDContainer CurrentID { get; private set; }
+        
+        private static UserSaveData currentUserData = new UserSaveData();
+        private static PuzzleDataHolder currentPuzzle;
 
-        public static UnityAction<SaveData> OnPopulateSaveData;
-        public static UnityAction<SaveData> OnLoadFromData;
-
-        public static void PopulateSaveData()
+        public static bool TryGetCurrentPuzzle(out PuzzleDataHolder puzzle)
         {
-            OnPopulateSaveData?.Invoke(saveData);
+            puzzle = null;
+
+            if (currentPuzzle != null)
+            {
+                puzzle = currentPuzzle;
+                return true;
+            }
+
+            return false;
         }
+    }
+
+    public struct IDContainer
+    {
+        public string userID;
+        public string puzzleID;
     }
 }
