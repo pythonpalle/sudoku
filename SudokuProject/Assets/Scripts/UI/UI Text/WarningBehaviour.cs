@@ -2,11 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WarningBehaviour : MonoBehaviour, IHasCommand
 {
     [SerializeField] private ExplanationText warningText;
     [SerializeField] private GridPort _gridPort;
+    
+    [Header("Colors")]
+    [SerializeField] private Image warningTriangle;
+    [SerializeField] private Color noSolutionColor;
+    [SerializeField] private Color multiSolutionColor;
 
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
     
@@ -68,10 +74,12 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
             
             case SolutionsState.None:
                 warningText.SetText("Grid has no solutions!");
+                warningTriangle.color = noSolutionColor;
                 break;
             
             case SolutionsState.Multiple:
                 warningText.SetText("Grid has several solutions!");
+                warningTriangle.color = multiSolutionColor;
                 break;
         }
     }

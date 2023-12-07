@@ -3094,6 +3094,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
+--- !u!114 &1080717209 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 325439768978502811, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+  m_PrefabInstance: {fileID: 355342017938154859}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1102141927
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3512,7 +3523,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1280860011
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3810,7 +3821,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 593683382}
         m_TargetAssemblyTypeName: PopupWindow, Assembly-CSharp
         m_MethodName: PopUp
         m_Mode: 1
@@ -6643,6 +6654,46 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1157210451}
     m_Modifications:
+    - target: {fileID: 325439768829319407, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: warningTriangle
+      value: 
+      objectReference: {fileID: 1080717209}
+    - target: {fileID: 325439768829319407, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: noSolutionColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 325439768829319407, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: noSolutionColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 325439768829319407, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: noSolutionColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 325439768829319407, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: noSolutionColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 325439768829319407, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: multiSolutionColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 325439768829319407, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: multiSolutionColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 325439768829319407, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: multiSolutionColor.g
+      value: 0.49450058
+      objectReference: {fileID: 0}
+    - target: {fileID: 325439768829319407, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: multiSolutionColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 325439768978502811, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 5e45b025577dc584c99a1925f92e7bdb, type: 3}
     - target: {fileID: 355342018133128770, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
       propertyPath: tileAnimationParent
       value: 
