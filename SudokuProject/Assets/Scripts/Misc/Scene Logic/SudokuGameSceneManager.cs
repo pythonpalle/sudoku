@@ -10,7 +10,7 @@ public class SudokuGameSceneManager : MonoBehaviour
     private string startSceneName = "Scenes/Start Scene";
     private string puzzleSceneName = "Scenes/Puzzle Select Scene"; 
     private string gameSceneName = "Scenes/Game Scene";
-    private string createOwnSceneName = "Scenes/Create Own Scene";
+    //private string createOwnSceneName = "Scenes/Create Own Scene";
 
     public void LoadStartScene()
     {
@@ -32,6 +32,7 @@ public class SudokuGameSceneManager : MonoBehaviour
     public void LoadCreateOwnScene()
     {
         generatorPort.GenerationType = GridGenerationType.empty;
-        SceneManager.LoadScene(createOwnSceneName);
+        SceneManager.LoadScene(gameSceneName);
+        //SceneManager.LoadScene(createOwnSceneName);
     }
 }
