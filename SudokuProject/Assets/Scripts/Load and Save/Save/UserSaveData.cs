@@ -6,6 +6,7 @@ namespace Saving
     [System.Serializable]
     public class UserSaveData
     {
+        public string ID;
         public List<PuzzleDataHolder> puzzles { get; private set; }= new List<PuzzleDataHolder>();
 
         /// <summary>

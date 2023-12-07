@@ -25,6 +25,18 @@ namespace Saving
 
             return false;
         }
+
+        public static bool TryGetUserDataFromFile(string userFileName)
+        {
+            if (FileManager.LoadFromFile(userFileName, out string dataAsJson))
+            {
+                currentUserData = new UserSaveData();
+                currentUserData.LoadFromJson(dataAsJson);
+                return true; 
+            }
+
+            return false;
+        }
     }
 
     public struct IDContainer
