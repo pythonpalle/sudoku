@@ -17,8 +17,7 @@ public class SudokuGameSceneManager : MonoBehaviour
     {
         SceneManager.LoadScene(startSceneName);
     }
-    
-    
+
     public void LoadPuzzleSelectScene()
     {
         SceneManager.LoadScene(puzzleSceneName);

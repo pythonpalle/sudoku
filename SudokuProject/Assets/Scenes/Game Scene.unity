@@ -218,18 +218,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7126686738025957929, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1102141928}
-    - target: {fileID: 7126686738025957929, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadPuzzleSelectScene
-      objectReference: {fileID: 0}
-    - target: {fileID: 7126686738025957929, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: GameSceneManager, Assembly-CSharp
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
 --- !u!224 &53182255 stripped
@@ -987,6 +975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popupWindow: {fileID: 345772278}
+  gameSceneManager: {fileID: 1102141928}
 --- !u!1 &346461071
 GameObject:
   m_ObjectHideFlags: 0
@@ -1347,7 +1336,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 402688025}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 345772280}
+        m_TargetAssemblyTypeName: SavePopupBehaviour, Assembly-CSharp
+        m_MethodName: OnYesButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &402688025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7738,7 +7739,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2104688917}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 345772280}
+        m_TargetAssemblyTypeName: SavePopupBehaviour, Assembly-CSharp
+        m_MethodName: OnNoButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2104688917
 MonoBehaviour:
   m_ObjectHideFlags: 0

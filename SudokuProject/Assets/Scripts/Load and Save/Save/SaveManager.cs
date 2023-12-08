@@ -6,8 +6,16 @@ using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+
+
 namespace Saving
 {
+    public enum SaveRequestLocation
+    {
+        SaveButton,
+        ExitGameButton,
+    }
+    
     public static class SaveManager
     {
         private static string userSaveFileName = "data";
@@ -21,7 +29,7 @@ namespace Saving
         
         private static GridGenerationType generationType;
 
-        public static UnityAction OnRequestFirstSave;
+        public static UnityAction<SaveRequestLocation> OnRequestFirstSave;
 
         public static bool TryGetCurrentPuzzle(out PuzzleDataHolder puzzle)
         {
@@ -36,7 +44,7 @@ namespace Saving
             return false; 
         }
 
-        public static bool TrySave(bool forceSave = false)
+        public static bool TrySave(SaveRequestLocation location, bool forceSave = false)
         {
             generationType = GenereratorTypeHolder.instance.GetType();
             
@@ -44,22 +52,22 @@ namespace Saving
             
             if (HasCreatedPuzzleData)
             {
-                return TrySaveProgressForCurrentPuzzle(forceSave);
+                return TrySaveProgressForCurrentPuzzle(location, forceSave);
             }
             else
             {
-                return TryCreateFirstSaveForCurrentPuzzle(forceSave);
+                return TryCreateFirstSaveForCurrentPuzzle(location, forceSave);
             }
             
             
         }
 
-        private static bool TrySaveProgressForCurrentPuzzle(bool forceSave)
+        private static bool TrySaveProgressForCurrentPuzzle(SaveRequestLocation location, bool forceSave)
         {
             throw new NotImplementedException();
         }
 
-        private static bool TryCreateFirstSaveForCurrentPuzzle(bool forceSave = false)
+        private static bool TryCreateFirstSaveForCurrentPuzzle(SaveRequestLocation location, bool forceSave = false)
         {
             Debug.Log("Try Create First save for puzzle...");
             
@@ -72,11 +80,12 @@ namespace Saving
                 // Populate all save data
                 // Write to file
                 // return writeSuccessul
+                Debug.Log("Trying to force save the game...");
             }
             else
             {
                 Debug.Log("OnRequestFirstSave invoked!");
-                OnRequestFirstSave?.Invoke();
+                OnRequestFirstSave?.Invoke(location);
                 return false;
             }
             

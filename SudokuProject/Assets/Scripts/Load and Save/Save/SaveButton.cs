@@ -8,9 +8,11 @@ public class SaveButton : MonoBehaviour
     [SerializeField] private GridPort _gridPort;
 
     private string successfulSaveString = "Saved to clipboard!";
+    private SaveRequestLocation location = SaveRequestLocation.SaveButton;
+    
     public void OnSaveButtonPressed()
     {
-        if (SaveManager.TrySave())
+        if (SaveManager.TrySave(location))
         {
         }
         

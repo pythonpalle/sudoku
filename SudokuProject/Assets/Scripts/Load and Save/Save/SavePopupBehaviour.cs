@@ -7,6 +7,9 @@ using UnityEngine;
 public class SavePopupBehaviour : MonoBehaviour
 {
     [SerializeField] private PopupWindow popupWindow;
+    [SerializeField] private SudokuGameSceneManager gameSceneManager;
+
+    private SaveRequestLocation _location;
 
     private void OnEnable()
     {
@@ -18,8 +21,9 @@ public class SavePopupBehaviour : MonoBehaviour
         SaveManager.OnRequestFirstSave -= OnRequestFirstSave;
     }
 
-    private void OnRequestFirstSave()
+    private void OnRequestFirstSave(SaveRequestLocation location)
     {
+        _location = location;
         Debug.Log("Popup Save Window!");
         popupWindow.PopUp();
     }
@@ -32,9 +36,16 @@ public class SavePopupBehaviour : MonoBehaviour
 
     public void OnNoButtonPressed()
     {
-        // if pressed return to puzzle select: go to puzzle select
-        
-        // else: close popup
+        switch (_location)
+        {
+            case SaveRequestLocation.SaveButton:
+                popupWindow.Close();
+                break;
+            
+            case SaveRequestLocation.ExitGameButton:
+                gameSceneManager.LoadPuzzleSelectScene();
+                break;
+        }
     }
     
     
