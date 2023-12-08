@@ -86,7 +86,7 @@ public class SelectionManager : MonoBehaviour, IHasCommand
         lastTileReference = tile; 
     }
 
-    public void SetPointerOverGrid(bool value)
+    private void SetPointerOverGrid(bool value)
     {
         pointerOverGrid = value;
     }
@@ -111,7 +111,7 @@ public class SelectionManager : MonoBehaviour, IHasCommand
                 if (!selectionObject.multiSelectKeyIsPressed)
                     selectionObject.DeselectAllTiles();
                 
-                selectionObject.SetSelectionMode(SelectionMode.Selecting);
+                selectionObject.SetSelectionMode(SelectionMode.Selecting); 
                 tile.Select();
             }
 
@@ -181,7 +181,7 @@ public class SelectionManager : MonoBehaviour, IHasCommand
 
     private void HandleRemoveSelection()
     {
-        if (selectionObject.SelectionKeyDown && !pointerOverGrid)
+        if (selectionObject.SelectionKeyPressed && !pointerOverGrid)
         {
             DeselectAllTiles();
             selectionObject.SetSelectionMode(SelectionMode.Selecting);

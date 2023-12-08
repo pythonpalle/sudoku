@@ -93,6 +93,7 @@ public class SelectionObject : ScriptableObject
 
     public bool HasSelectedTiles => SelectedTiles.Count > 0;
     public bool SelectionKeyDown => Input.GetMouseButton(0);
+    public bool SelectionKeyPressed => Input.GetMouseButtonDown(0);
 
     public UnityAction<int, int> OnRequestTile;
     public UnityAction<TileBehaviour> OnSendTileReference;
