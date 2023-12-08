@@ -185,9 +185,31 @@ namespace Saving
             return count;
         }
 
-        public static void TryCreateNewPuzzleSave(string puzzleSaveName, PuzzleDifficulty difficulty, GridGenerationType generationType)
+        public static bool TryCreateNewPuzzleSave(string puzzleSaveName, PuzzleDifficulty difficulty, GridGenerationType generationType)
         {
             Debug.Log($"Save and create puzzle with name {puzzleSaveName} and difficulty {difficulty} and type {generationType}!");
+            string id = Guid.NewGuid().ToString(); 
+
+            switch (generationType) 
+            {
+                case GridGenerationType.empty:
+                    return TryCreateNewSelfMadePuzzleSave(puzzleSaveName, difficulty);
+                
+                case GridGenerationType.random:
+                    return TryCreateNewRandomlyGenPuzzleSave(puzzleSaveName, difficulty);
+            }
+
+            return false;
+        }
+
+        private static bool TryCreateNewSelfMadePuzzleSave(string puzzleSaveName, PuzzleDifficulty difficulty)
+        {
+            throw new NotImplementedException();
+        }
+        
+        private static bool TryCreateNewRandomlyGenPuzzleSave(string puzzleSaveName, PuzzleDifficulty difficulty)
+        {
+            throw new NotImplementedException();
         }
     }
 
