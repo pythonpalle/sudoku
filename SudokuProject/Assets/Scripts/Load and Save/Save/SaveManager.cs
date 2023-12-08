@@ -31,6 +31,35 @@ namespace Saving
 
         public static UnityAction<SaveRequestLocation> OnRequestFirstSave;
 
+        private static List<IHasPuzzleData> puzzleDatas = new List<IHasPuzzleData>();
+        public static bool AddPuzzleDataListener(IHasPuzzleData data)
+        {
+            if (!puzzleDatas.Contains(data))
+            {
+                puzzleDatas.Add(data);
+                return true;
+            }
+            else
+            {
+                Debug.LogWarning($"Cannot add {data} since list already contains it!");
+                return false;
+            }
+        }
+        
+        public static bool RemovePuzzleDataListener(IHasPuzzleData data)
+        {
+            if (puzzleDatas.Contains(data))
+            {
+                puzzleDatas.Remove(data);
+                return true;
+            }
+            else
+            {
+                Debug.LogWarning($"Cannot remove {data} since list doesn't contains it!");
+                return false;
+            }
+        }
+        
         public static bool TryGetCurrentPuzzle(out PuzzleDataHolder puzzle)
         {
             puzzle = null;
@@ -64,7 +93,8 @@ namespace Saving
 
         private static bool TrySaveProgressForCurrentPuzzle(SaveRequestLocation location, bool forceSave)
         {
-            throw new NotImplementedException();
+            Debug.LogWarning("Save progress for current puzzle method not complete!");
+            return false;
         }
 
         private static bool TryCreateFirstSaveForCurrentPuzzle(SaveRequestLocation location, bool forceSave = false)
@@ -189,25 +219,73 @@ namespace Saving
         {
             Debug.Log($"Save and create puzzle with name {puzzleSaveName} and difficulty {difficulty} and type {generationType}!");
             string id = Guid.NewGuid().ToString(); 
-
-            switch (generationType) 
+            
+            // check to see if user data exists or can be created
+            if (!TryGetCurrentUserData(out _))
             {
-                case GridGenerationType.empty:
-                    return TryCreateNewSelfMadePuzzleSave(puzzleSaveName, difficulty);
-                
-                case GridGenerationType.random:
-                    return TryCreateNewRandomlyGenPuzzleSave(puzzleSaveName, difficulty);
+                Debug.LogError("User data not found, puzzle can't be created!");
+                return false;
             }
 
-            return false;
+            // check to see if user has puzzle list, else create one
+            if (currentUserData.puzzles == null)
+            {
+                currentUserData.puzzles = new List<PuzzleDataHolder>();
+                Debug.LogWarning("No puzzle list found for user, creating new one.");
+            }
+
+            // check if user already has puzzle with id _id_
+            foreach (var puzzle in currentUserData.puzzles)
+            {
+                if (puzzle.id == id)
+                {
+                    Debug.LogError($"Puzzle with id {id} already exists!");
+                    return false;
+                }
+            }
+
+            // NOTE: might cause reference problems
+            currentPuzzle = new PuzzleDataHolder();
+
+            // assign identifier values
+            currentPuzzle.name = puzzleSaveName;
+            currentPuzzle.id = id;
+            currentPuzzle.difficulty = (int)difficulty;
+
+            if (generationType == GridGenerationType.empty)
+                currentPuzzle.selfCreated = true;
+
+            // populate save datas from all puzzleDatas
+            foreach (var puzzleData in puzzleDatas)
+            {
+                puzzleData.PopulateSaveData(currentPuzzle, generationType);
+            }
+            
+            // Add puzzle data to user data
+            currentUserData.puzzles.Add(currentPuzzle);
+
+            // onvert data to json format
+            string jsonString = currentUserData.ToJson();
+            
+            // Write data to file
+            if (FileManager.WriteToFile(userSaveFileName, jsonString))
+            {
+                Debug.Log("Successfully created puzzle!");
+                return true;
+            }
+            else
+            {
+                Debug.LogError("Failed to write to file, puzzle was not created!");
+                return false;
+            }
         }
 
-        private static bool TryCreateNewSelfMadePuzzleSave(string puzzleSaveName, PuzzleDifficulty difficulty)
+        private static bool TryCreateNewSelfMadePuzzleSave(string puzzleName, string id, PuzzleDifficulty difficulty)
         {
-            throw new NotImplementedException();
+            return false;
         }
         
-        private static bool TryCreateNewRandomlyGenPuzzleSave(string puzzleSaveName, PuzzleDifficulty difficulty)
+        private static bool TryCreateNewRandomlyGenPuzzleSave(string puzzleSaveName, string id, PuzzleDifficulty difficulty)
         {
             throw new NotImplementedException();
         }

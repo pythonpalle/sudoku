@@ -13,7 +13,7 @@ public class GenereratorTypeHolder : MonoBehaviour
         instance = this;
     }
 
-    public GridGenerationType GetType()
+    public new GridGenerationType GetType()
     {
         return generatorPort.GenerationType;
     }

@@ -31,12 +31,22 @@ public class SaveTestBehaviour : MonoBehaviour, IHasPuzzleData
         // }
     }
 
-    public void PopulateSaveData(PuzzleDataHolder dataHolder)
+    public void PopulateSaveData(PuzzleDataHolder dataHolder, GridGenerationType gridGenerationType)
     {
         throw new System.NotImplementedException();
     }
 
     public void LoadFromSaveData(PuzzleDataHolder dataHolder)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void AddListenerToSaveManager()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void RemoveListenerFromSaveManager()
     {
         throw new System.NotImplementedException();
     }
