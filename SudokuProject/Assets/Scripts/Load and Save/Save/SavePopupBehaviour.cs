@@ -57,7 +57,15 @@ public class SavePopupBehaviour : MonoBehaviour
 
         PuzzleDifficulty difficulty = GetDifficulty();
         SaveManager.TryCreateNewPuzzleSave(puzzleSaveName, difficulty, generatorPort.GenerationType);
-        gameSceneManager.LoadPuzzleSelectScene();
+
+        if (_location == SaveRequestLocation.SaveButton)
+        {
+            popupWindow.Close();
+        }
+        else
+        {
+            gameSceneManager.LoadPuzzleSelectScene();
+        }
     }
 
     private PuzzleDifficulty GetDifficulty()
