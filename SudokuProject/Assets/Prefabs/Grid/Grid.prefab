@@ -128,6 +128,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   warningText: {fileID: 325439769259136188}
   _gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
+  warningTriangle: {fileID: 325439768978502811}
+  noSolutionColor: {r: 1, g: 0, b: 0, a: 1}
+  multiSolutionColor: {r: 1, g: 0.49450058, b: 0, a: 1}
 --- !u!1 &325439768978502809
 GameObject:
   m_ObjectHideFlags: 0
@@ -194,7 +197,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1f8b56d2fca971a4e8fe3283209f8a7b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5e45b025577dc584c99a1925f92e7bdb, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -463,6 +466,7 @@ GameObject:
   m_Component:
   - component: {fileID: 355342018133128771}
   - component: {fileID: 355342018133128770}
+  - component: {fileID: 1902678256}
   m_Layer: 5
   m_Name: Grid
   m_TagString: Untagged
@@ -520,6 +524,19 @@ MonoBehaviour:
   - {fileID: 355342018702208460}
   - {fileID: 355342017978490858}
   - {fileID: 355342018684162970}
+--- !u!114 &1902678256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355342018133128780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 586e66694d50464184dcbf00f29d4624, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
 --- !u!1 &3712433779357334980
 GameObject:
   m_ObjectHideFlags: 0

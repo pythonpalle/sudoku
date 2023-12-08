@@ -259,6 +259,7 @@ namespace Saving
             foreach (var puzzleData in puzzleDatas)
             {
                 puzzleData.PopulateSaveData(currentPuzzle, generationType);
+                Debug.Log("Populate save data...");
             }
             
             // Add puzzle data to user data

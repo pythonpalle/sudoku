@@ -7,8 +7,9 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 {
     private SudokuGrid9x9 grid;
     private List<SudokuGrid9x9> gridHistory;
+    private GridSaver gridSaver;
 
-    private TileBehaviour[,] tileBehaviours = new TileBehaviour[9,9];
+    public TileBehaviour[,] tileBehaviours { get; private set; }= new TileBehaviour[9,9];
 
     [Header("Scriptable Objects")]
     [SerializeField] private SelectionObject selectionObject;
@@ -84,7 +85,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     private void OnRequestGrid()
     {
         UpdateGridCandidates();
-        gridPort.SendGridCopy(grid);
+        gridPort.SendGridCopy(grid, tileBehaviours);
     }
     
     private void OnImportGrid(SudokuGrid9x9 importedGrid)
