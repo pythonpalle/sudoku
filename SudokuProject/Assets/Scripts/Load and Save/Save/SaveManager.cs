@@ -87,14 +87,53 @@ namespace Saving
             {
                 return TryCreateFirstSaveForCurrentPuzzle(location, forceSave);
             }
-            
-            
         }
 
         private static bool TrySaveProgressForCurrentPuzzle(SaveRequestLocation location, bool forceSave)
         {
-            Debug.LogWarning("Save progress for current puzzle method not complete!");
-            return false;
+            // check to see if user data exists or can be created
+            if (!TryGetCurrentUserData(out _))
+            {
+                Debug.LogError("User data not found, puzzle can't be created!");
+                return false;
+            }
+
+            // can't save progrees if there are no puzzles
+            Assert.IsFalse(currentUserData.puzzles == null);
+            Assert.IsFalse(currentPuzzle == null);
+
+            // populate save datas from all puzzleDatas
+            foreach (var puzzleData in puzzleDatas)
+            {
+                puzzleData.PopulateSaveData(currentPuzzle, generationType);
+                Debug.Log("Populate save data...");
+            }
+
+            // find puzzle with id that matches with current puzzle id, overwrite it
+            for (int i = 0; i < currentUserData.puzzles.Count; i++)
+            {
+                if (currentUserData.puzzles[i].id == currentPuzzle.id)
+                {
+                    currentUserData.puzzles[i] = currentPuzzle;
+                    break;
+                }
+            }
+
+            // onvert data to json format
+            string jsonString = currentUserData.ToJson();
+            
+            // Write data to file
+            if (FileManager.WriteToFile(userSaveFileName, jsonString))
+            {
+                Debug.Log($"Successfully saved progress for {currentPuzzle.name}!");
+                return true;
+            }
+            else
+            {
+                Debug.LogError("Failed to write to file, progress was not saved!");
+                return false;
+            }
+            
         }
 
         private static bool TryCreateFirstSaveForCurrentPuzzle(SaveRequestLocation location, bool forceSave = false)
@@ -157,10 +196,6 @@ namespace Saving
         {
             currentUserData = new UserSaveData(userIdentifier);
             string dataAsJson = currentUserData.ToJson();
-            
-            Debug.Log("identifier: (SM)" + userIdentifier.id);
-            Debug.Log("identifier: (userData)" + currentUserData.identifier.id);
-            Debug.Log("json string: " + dataAsJson);
 
             if (FileManager.WriteToFile(userSaveFileName, dataAsJson))
             {
