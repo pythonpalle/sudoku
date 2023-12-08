@@ -65,6 +65,9 @@ public class GridEnterManager : MonoBehaviour
 
     private void Update()
     {
+        if (!GameStateManager.gameIsActive)
+            return;
+        
         HandleNumberEnter();
         HandleNumberRemove();
     }

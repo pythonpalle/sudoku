@@ -162,6 +162,9 @@ public class SelectionManager : MonoBehaviour, IHasCommand
 
     private void Update()
     {
+        if (!GameStateManager.gameIsActive)
+            return;
+        
         HandleMoveTileSelectWithKeys();
         HandleAllCellsSelectDetection();
         HandleRemoveSelection();

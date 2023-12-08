@@ -9,10 +9,12 @@ public class PopupWindow : MonoBehaviour
     public void PopUp()
     {
         popupWindow.gameObject.SetActive(true);
+        GameStateManager.OnPopup();
     }
 
     public void Close()
     {
         popupWindow.gameObject.SetActive(false);
+        GameStateManager.OnPopupClose();
     }
 }
