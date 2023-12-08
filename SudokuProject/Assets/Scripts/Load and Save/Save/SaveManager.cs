@@ -13,7 +13,7 @@ namespace Saving
     public enum SaveRequestLocation
     {
         SaveButton,
-        ExitGameButton,
+        ExitGameButton, 
     }
     
     public static class SaveManager

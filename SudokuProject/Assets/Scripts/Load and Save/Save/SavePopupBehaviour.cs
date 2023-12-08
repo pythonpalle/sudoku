@@ -7,13 +7,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SavePopupBehaviour : MonoBehaviour
+namespace Saving
+{
+    public class SavePopupBehaviour : MonoBehaviour
 {
     [SerializeField] private PopupWindow popupWindow;
     [SerializeField] private SudokuGameSceneManager gameSceneManager;
     
     [Header("User input")]
-    [SerializeField] private TMP_InputField inputField;
     [SerializeField] private TextMeshProUGUI placeHolderText;
     [SerializeField] private TextMeshProUGUI userEnterText;
     
@@ -128,6 +129,6 @@ public class SavePopupBehaviour : MonoBehaviour
                 break;
         }
     }
-    
-    
 }
+}
+
