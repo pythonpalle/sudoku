@@ -16,7 +16,10 @@ public class GoBackToSelectBehaviour : MonoBehaviour
         }
         else
         {
-            SaveManager.TrySave(SaveRequestLocation.ExitGameButton, false);
+            if (SaveManager.TrySave(SaveRequestLocation.ExitGameButton, false))
+            {
+                _sceneManager.LoadPuzzleSelectScene();
+            }
         }
     }
 }
