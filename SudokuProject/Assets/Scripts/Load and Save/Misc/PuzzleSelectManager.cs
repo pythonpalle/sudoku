@@ -9,6 +9,7 @@ public class PuzzleSelectManager : MonoBehaviour
     private void Awake()
     {
         LoadAllPuzzles();
+        ResetCurrentPuzzle();
     }
 
     void LoadAllPuzzles()
@@ -17,6 +18,16 @@ public class PuzzleSelectManager : MonoBehaviour
         {
             int savedPuzzles = data.puzzles.Count;
             Debug.Log($"Puzzles saved: {savedPuzzles}");
+            
+            foreach (PuzzleDifficulty difficulty in Enum.GetValues(typeof(PuzzleDifficulty)))
+            {
+                Debug.Log($"difficulty: {difficulty}" + SaveManager.GetPuzzleCount(difficulty));
+            }
         }
+    }
+    
+    private void ResetCurrentPuzzle()
+    {
+        SaveManager.ResetCurrentPuzzle();
     }
 }

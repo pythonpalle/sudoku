@@ -32,6 +32,7 @@ namespace Saving
         public static UnityAction<SaveRequestLocation> OnRequestFirstSave;
 
         private static List<IHasPuzzleData> puzzleDatas = new List<IHasPuzzleData>();
+        
         public static bool AddPuzzleDataListener(IHasPuzzleData data)
         {
             if (!puzzleDatas.Contains(data))
@@ -58,19 +59,6 @@ namespace Saving
                 Debug.LogWarning($"Cannot remove {data} since list doesn't contains it!");
                 return false;
             }
-        }
-        
-        public static bool TryGetCurrentPuzzle(out PuzzleDataHolder puzzle)
-        {
-            puzzle = null;
-
-            if (currentPuzzle != null)
-            {
-                puzzle = currentPuzzle;
-                return true;
-            }
-
-            return false; 
         }
 
         public static bool TrySave(SaveRequestLocation location, bool forceSave = false)
@@ -141,22 +129,18 @@ namespace Saving
             // if saving a puzzle that is loaded, it should have already been created
             Assert.IsTrue(generationType != GridGenerationType.loaded);
 
+            // if forceSave, save the data without asking the user
             if (forceSave)
             {
-                // Create suitable name, id
-                // Populate all save data
-                // Write to file
-                // return writeSuccessul
                 Debug.Log("Trying to force save the game...");
             }
+            // else, ask user if they want to save
             else
             {
                 OnRequestFirstSave?.Invoke(location);
                 return false;
             }
-            
-            
-            
+
             return true;
         }
 
@@ -225,6 +209,8 @@ namespace Saving
 
         public static int GetTotalPuzzleCount()
         {
+            TryGetCurrentUserData(out _);
+            
             if (currentUserData == null || currentUserData.puzzles == null)
             {
                 return 0;
@@ -235,6 +221,8 @@ namespace Saving
 
         public static int GetPuzzleCount(PuzzleDifficulty difficulty)
         {
+            TryGetCurrentUserData(out _);
+
             if (currentUserData == null || currentUserData.puzzles == null)
             {
                 return 0;
@@ -316,14 +304,9 @@ namespace Saving
             }
         }
 
-        private static bool TryCreateNewSelfMadePuzzleSave(string puzzleName, string id, PuzzleDifficulty difficulty)
+        public static void ResetCurrentPuzzle()
         {
-            return false;
-        }
-        
-        private static bool TryCreateNewRandomlyGenPuzzleSave(string puzzleSaveName, string id, PuzzleDifficulty difficulty)
-        {
-            throw new NotImplementedException();
+            currentPuzzle = null;
         }
     }
 

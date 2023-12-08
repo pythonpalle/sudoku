@@ -46,9 +46,6 @@ public class SavePopupBehaviour : MonoBehaviour
     
     public void OnYesButtonPressed()
     {
-        // Get Name from inputField, send data to SaveManager,
-        // let Save Manager save
-
         string puzzleSaveName = placeHolderString;
 
         if (ValidEnteredName())
@@ -60,6 +57,7 @@ public class SavePopupBehaviour : MonoBehaviour
 
         PuzzleDifficulty difficulty = GetDifficulty();
         SaveManager.TryCreateNewPuzzleSave(puzzleSaveName, difficulty, generatorPort.GenerationType);
+        gameSceneManager.LoadPuzzleSelectScene();
     }
 
     private PuzzleDifficulty GetDifficulty()
