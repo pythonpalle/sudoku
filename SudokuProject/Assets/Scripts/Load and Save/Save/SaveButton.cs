@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Saving;
 using UnityEngine;
 
 public class SaveButton : MonoBehaviour
@@ -9,10 +10,16 @@ public class SaveButton : MonoBehaviour
     private string successfulSaveString = "Saved to clipboard!";
     public void OnSaveButtonPressed()
     {
-        SaveGrid(); 
+        if (SaveManager.TrySave())
+        {
+        }
+        
+        Debug.Log("Save button is pressed!");
+        
+        SaveGridString();
     }
     
-    private void SaveGrid() 
+    private void SaveGridString() 
     {
         _gridPort.RequestGrid();
         string gridString = _gridPort.GetGridAsSeed();

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -14,11 +15,13 @@ namespace Saving
         private static string userID = "1";
         private static string userName = "user";
         private static UserIdentifier userIdentifier { get;  set; } = new UserIdentifier(userName, userID);
-        
-        private static UserSaveData currentUserData { get;  set; } 
-        
-        
+        private static UserSaveData currentUserData { get;  set; }
         private static PuzzleDataHolder currentPuzzle;
+        private static bool HasCreatedPuzzleData => currentPuzzle != null;
+        
+        private static GridGenerationType generationType;
+
+        public static UnityAction OnRequestFirstSave;
 
         public static bool TryGetCurrentPuzzle(out PuzzleDataHolder puzzle)
         {
@@ -30,7 +33,56 @@ namespace Saving
                 return true;
             }
 
-            return false;
+            return false; 
+        }
+
+        public static bool TrySave(bool forceSave = false)
+        {
+            generationType = GenereratorTypeHolder.instance.GetType();
+            
+            Debug.Log($"Generation type: {generationType}");
+            
+            if (HasCreatedPuzzleData)
+            {
+                return TrySaveProgressForCurrentPuzzle(forceSave);
+            }
+            else
+            {
+                return TryCreateFirstSaveForCurrentPuzzle(forceSave);
+            }
+            
+            
+        }
+
+        private static bool TrySaveProgressForCurrentPuzzle(bool forceSave)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static bool TryCreateFirstSaveForCurrentPuzzle(bool forceSave = false)
+        {
+            Debug.Log("Try Create First save for puzzle...");
+            
+            // if saving a puzzle that is loaded, it should have already been created
+            Assert.IsTrue(generationType != GridGenerationType.loaded);
+
+            if (forceSave)
+            {
+                // Create suitable name, id
+                // Populate all save data
+                // Write to file
+                // return writeSuccessul
+            }
+            else
+            {
+                Debug.Log("OnRequestFirstSave invoked!");
+                OnRequestFirstSave?.Invoke();
+                return false;
+            }
+            
+            
+            
+            return true;
         }
 
         public static bool TryGetCurrentUserData(out UserSaveData saveData)
@@ -93,6 +145,11 @@ namespace Saving
             }
 
             return false;
+        }
+
+        public static void SetGenerationType(GridGenerationType generationType)
+        {
+            SaveManager.generationType = generationType;
         }
     }
 

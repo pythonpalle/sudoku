@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Saving;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -26,6 +27,7 @@ public class SudokuGameSceneManager : MonoBehaviour
     public void LoadRandom()
     {
         generatorPort.GenerationType = GridGenerationType.random;
+        SaveManager.SetGenerationType(generatorPort.GenerationType);
         SceneManager.LoadScene(gameSceneName);
     }
     
