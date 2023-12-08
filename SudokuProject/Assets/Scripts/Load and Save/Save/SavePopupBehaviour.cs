@@ -56,7 +56,15 @@ public class SavePopupBehaviour : MonoBehaviour
             puzzleSaveName = userEnterText.text;
         }
         
-        Debug.Log("Chosen name: " + puzzleSaveName);
+        // TODO: avgör svårighetsgrad genom att låta gridsolver lösa. Om ingen lösning, sätt extreme (Impossible?)
+
+        PuzzleDifficulty difficulty = GetDifficulty();
+        SaveManager.TryCreateNewPuzzleSave(puzzleSaveName, difficulty, generatorPort.GenerationType);
+    }
+
+    private PuzzleDifficulty GetDifficulty()
+    {
+        return _difficultyObject.Difficulty;
     }
 
     private bool ValidEnteredName()

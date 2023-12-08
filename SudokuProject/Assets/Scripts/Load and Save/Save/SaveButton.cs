@@ -16,8 +16,6 @@ public class SaveButton : MonoBehaviour
         {
         }
         
-        Debug.Log("Save button is pressed!");
-        
         SaveGridString();
     }
     

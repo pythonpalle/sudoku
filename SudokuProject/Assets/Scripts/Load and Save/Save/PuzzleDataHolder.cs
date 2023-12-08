@@ -10,6 +10,7 @@ namespace Saving
     
         public string name;
         public int difficulty;
+        public bool selfCreated;
             
         // grid
         public int[] numbers;

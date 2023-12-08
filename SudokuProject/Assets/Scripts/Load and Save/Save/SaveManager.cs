@@ -69,8 +69,6 @@ namespace Saving
 
         private static bool TryCreateFirstSaveForCurrentPuzzle(SaveRequestLocation location, bool forceSave = false)
         {
-            Debug.Log("Try Create First save for puzzle...");
-            
             // if saving a puzzle that is loaded, it should have already been created
             Assert.IsTrue(generationType != GridGenerationType.loaded);
 
@@ -84,7 +82,6 @@ namespace Saving
             }
             else
             {
-                Debug.Log("OnRequestFirstSave invoked!");
                 OnRequestFirstSave?.Invoke(location);
                 return false;
             }
@@ -186,6 +183,11 @@ namespace Saving
             }
 
             return count;
+        }
+
+        public static void TryCreateNewPuzzleSave(string puzzleSaveName, PuzzleDifficulty difficulty, GridGenerationType generationType)
+        {
+            Debug.Log($"Save and create puzzle with name {puzzleSaveName} and difficulty {difficulty} and type {generationType}!");
         }
     }
 
