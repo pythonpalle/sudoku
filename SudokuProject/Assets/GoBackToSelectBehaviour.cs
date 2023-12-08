@@ -5,9 +5,18 @@ using UnityEngine;
 
 public class GoBackToSelectBehaviour : MonoBehaviour
 {
+    [SerializeField] private GeneratorPort _generatorPort;
+    [SerializeField] private SudokuGameSceneManager _sceneManager;
+    
     public void OnGoBackButtonPressed()
     {
-        Debug.Log("Go Back button pressed!");
-        SaveManager.TrySave(SaveRequestLocation.ExitGameButton, false);
+        if (_generatorPort.isGenerating)
+        {
+            _sceneManager.LoadPuzzleSelectScene();
+        }
+        else
+        {
+            SaveManager.TrySave(SaveRequestLocation.ExitGameButton, false);
+        }
     }
 }

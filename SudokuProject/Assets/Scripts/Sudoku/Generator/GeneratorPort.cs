@@ -4,4 +4,6 @@
 public class GeneratorPort : ScriptableObject
 {
     public GridGenerationType GenerationType;
+
+    public bool isGenerating { get; set; }
 }

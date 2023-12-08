@@ -160,6 +160,33 @@ namespace Saving
         {
             SaveManager.generationType = generationType;
         }
+
+        public static int GetTotalPuzzleCount()
+        {
+            if (currentUserData == null || currentUserData.puzzles == null)
+            {
+                return 0;
+            }
+
+            return currentUserData.puzzles.Count;
+        }
+
+        public static int GetPuzzleCount(PuzzleDifficulty difficulty)
+        {
+            if (currentUserData == null || currentUserData.puzzles == null)
+            {
+                return 0;
+            }
+
+            int count = 0;
+            foreach (var puzzle in currentUserData.puzzles)
+            {
+                if (puzzle.difficulty == (int)difficulty)
+                    count++;
+            }
+
+            return count;
+        }
     }
 
     

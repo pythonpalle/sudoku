@@ -71,6 +71,8 @@ public class GeneratorBehaviour : MonoBehaviour
 
     private IEnumerator AnimateGrid()
     {
+        _generatorPort.isGenerating = true;
+        
         SudokuGrid9x9 grid = fakeGenerator.GetRandomCompleteGrid();
         
         loadGrid.gameObject.SetActive(true);
@@ -89,5 +91,7 @@ public class GeneratorBehaviour : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         loadGrid.gameObject.SetActive(false);
+
+        _generatorPort.isGenerating = false;
     }
 }
