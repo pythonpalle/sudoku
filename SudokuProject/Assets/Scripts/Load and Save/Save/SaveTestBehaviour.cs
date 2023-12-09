@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.SocialPlatforms.Impl;
 
-public class SaveTestBehaviour : MonoBehaviour, IHasPuzzleData
+public class SaveTestBehaviour : MonoBehaviour
 {
     public int myScore;
     public string seed;

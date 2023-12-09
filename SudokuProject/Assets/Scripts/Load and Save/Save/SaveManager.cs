@@ -32,13 +32,14 @@ namespace Saving
         public static UnityAction<SaveRequestLocation> OnRequestFirstSave;
         public static UnityAction<PuzzleDataHolder> OnPuzzleDeleted;
 
-        private static List<IHasPuzzleData> puzzleDatas = new List<IHasPuzzleData>();
+        private static List<ILoadPuzzleData> loadDatas = new List<ILoadPuzzleData>();
+        private static List<IPopulatePuzzleData> populateDatas = new List<IPopulatePuzzleData>();
         
-        public static bool AddPuzzleDataListener(IHasPuzzleData data)
+        public static bool AddLoadDataListener(ILoadPuzzleData data)
         {
-            if (!puzzleDatas.Contains(data))
+            if (!loadDatas.Contains(data))
             {
-                puzzleDatas.Add(data);
+                loadDatas.Add(data);
                 return true;
             }
             else
@@ -48,11 +49,39 @@ namespace Saving
             }
         }
         
-        public static bool RemovePuzzleDataListener(IHasPuzzleData data)
+        public static bool AddPopulateDataListener(IPopulatePuzzleData data)
         {
-            if (puzzleDatas.Contains(data))
+            if (!populateDatas.Contains(data))
             {
-                puzzleDatas.Remove(data);
+                populateDatas.Add(data);
+                return true;
+            }
+            else
+            {
+                Debug.LogWarning($"Cannot add {data} since list already contains it!");
+                return false;
+            }
+        }
+        
+        public static bool RemoveLoadDataListener(ILoadPuzzleData data)
+        {
+            if (loadDatas.Contains(data))
+            {
+                loadDatas.Remove(data);
+                return true;
+            }
+            else
+            {
+                Debug.LogWarning($"Cannot remove {data} since list doesn't contains it!");
+                return false;
+            }
+        }
+        
+        public static bool RemovePopulateDataListener(IPopulatePuzzleData data)
+        {
+            if (populateDatas.Contains(data))
+            {
+                populateDatas.Remove(data);
                 return true;
             }
             else
@@ -85,16 +114,16 @@ namespace Saving
             {
                 Debug.LogError("User data not found, puzzle can't be created!");
                 return false;
-            }
+            } 
 
             // can't save progrees if there are no puzzles
             Assert.IsFalse(currentUserData.puzzles == null);
             Assert.IsFalse(currentPuzzle == null);
 
             // populate save datas from all puzzleDatas
-            foreach (var puzzleData in puzzleDatas)
+            foreach (var puzzleData in populateDatas)
             {
-                puzzleData.PopulateSaveData(currentPuzzle, generationType);
+                puzzleData.PopulateSaveData(currentPuzzle, false);
                 Debug.Log("Populate save data...");
             }
 
@@ -152,7 +181,7 @@ namespace Saving
             // user data is already stored, return it
             if (currentUserData != null)
             {
-                saveData = currentUserData;
+                saveData = currentUserData; 
                 return true;
             }
 
@@ -276,13 +305,14 @@ namespace Saving
             currentPuzzle.id = id;
             currentPuzzle.difficulty = (int)difficulty;
 
-            if (generationType == GridGenerationType.empty)
+            bool selfCreated = generationType == GridGenerationType.empty;
+            if (selfCreated)
                 currentPuzzle.selfCreated = true;
 
             // populate save datas from all puzzleDatas
-            foreach (var puzzleData in puzzleDatas)
+            foreach (var puzzleData in populateDatas)
             {
-                puzzleData.PopulateSaveData(currentPuzzle, generationType);
+                puzzleData.PopulateSaveData(currentPuzzle, selfCreated);
                 Debug.Log("Populate save data...");
             }
             
@@ -337,7 +367,7 @@ namespace Saving
 
         public static void LoadCurrentPuzzle()
         {
-            foreach (var listener in puzzleDatas)
+            foreach (var listener in loadDatas)
             {
                 listener.LoadFromSaveData(currentPuzzle);
             }

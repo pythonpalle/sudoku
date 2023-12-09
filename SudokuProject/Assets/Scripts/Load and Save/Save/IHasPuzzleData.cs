@@ -1,21 +1,13 @@
 ﻿namespace Saving
 {
-    public interface IHasPuzzleData
+    public interface IPopulatePuzzleData
     {
-        void PopulateSaveData(PuzzleDataHolder dataHolder, GridGenerationType gridGenerationType);
-        void LoadFromSaveData(PuzzleDataHolder dataHolder);
+        void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate);
 
-        void AddListenerToSaveManager();
-        void RemoveListenerFromSaveManager();
-    }
-
-    public interface ISavePuzzleData
-    {
-        
     }
     
     public interface ILoadPuzzleData
     {
-        
+        void LoadFromSaveData(PuzzleDataHolder dataHolder);
     }
 }

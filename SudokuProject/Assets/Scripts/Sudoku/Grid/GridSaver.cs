@@ -2,14 +2,14 @@
 using Saving;
 using UnityEngine;
 
-public class GridSaver : MonoBehaviour, IHasPuzzleData
+public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 {
     [SerializeField] private GridPort _gridPort;
     [SerializeField] private GeneratorPort generatorPort;
 
     private void OnEnable()
     {
-        AddListenerToSaveManager();
+        AddListenersToSaveManager();
 
         if (generatorPort.GenerationType == GridGenerationType.loaded)
         {
@@ -17,32 +17,32 @@ public class GridSaver : MonoBehaviour, IHasPuzzleData
         }
     }
 
+    private void OnDisable()
+    {
+        RemoveListenersFromSaveManager();
+    }
+    
     private void LoadCurrentPuzzle()
     {
         SaveManager.LoadCurrentPuzzle();
     }
 
-    private void OnDisable()
+    public void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate)
     {
-        RemoveListenerFromSaveManager();
-    }
-
-    public void PopulateSaveData(PuzzleDataHolder dataHolder, GridGenerationType gridGenerationType)
-    {
-        bool selfCreated = dataHolder.selfCreated;
+        // if populating from a self created grid, all tiles will be permenant
         
         int i = 0;
         for (int row = 0; row < 9; row++)
         {
-            for (int col = 0; col < 9; col++)
+            for (int col = 0; col < 9; col++) 
             {
                 var tile = _gridPort.tileBehaviours[row, col];
                 
                 dataHolder.numbers[i] = tile.number;
-                dataHolder.permanent[i] = selfCreated || tile.Permanent;
+                dataHolder.permanent[i] = newSelfCreate || tile.Permanent;
 
                 i++;
-            }
+            } 
         }
     }
 
@@ -76,13 +76,15 @@ public class GridSaver : MonoBehaviour, IHasPuzzleData
         // Tell command manager to execute all commands in order
     }
 
-    public void AddListenerToSaveManager()
+    void AddListenersToSaveManager()
     {
-        SaveManager.AddPuzzleDataListener(this);
+        SaveManager.AddLoadDataListener(this);
+        SaveManager.AddPopulateDataListener(this);
     }
 
-    public void RemoveListenerFromSaveManager()
+    void RemoveListenersFromSaveManager()
     {
-        SaveManager.RemovePuzzleDataListener(this);
+        SaveManager.RemoveLoadDataListener(this);
+        SaveManager.RemovePopulateDataListener(this);
     }
 }
