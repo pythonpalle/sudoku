@@ -92,10 +92,13 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         
         
         // execute all commands
-        for (var index = 0; index < savedCounter; index++)
+        for (var index = 0; index < totalCommandCount; index++)
         {
             var commandData = puzzleData.commands[index];
             SudokuEntry entry = ToEntry(commandData);
+            
+            
+            
             EventManager.GridEnterFromUser(entry);
             yield return new WaitForEndOfFrame();
             Debug.Log("Enter command");
@@ -105,7 +108,7 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         CommandManager manager = FindObjectOfType<CommandManager>();
         
         // if saved counter is less then total command count, it means we have to go back a few command by undoing
-        for (int i = savedCounter; i < totalCommandCount; i++)
+        for (int i = savedCounter - 1; i < totalCommandCount; i++)
         {
             manager.CallUndo();
             Debug.Log("Undo!");

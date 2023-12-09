@@ -74,8 +74,8 @@ public static class EventManager
     {
         if (entry == null || entry.tiles == null || entry.tiles.Count == 0)
         {
-            Debug.Log("tried to call new command with 0 tiles");
-            return;
+            Debug.Log("new command with 0 tiles");
+            //return;
         }
         OnNewCommand?.Invoke(entry);
     }
