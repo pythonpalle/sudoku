@@ -329,6 +329,19 @@ namespace Saving
             FileManager.WriteToFile(userSaveFileName, jsonString);
             OnPuzzleDeleted?.Invoke(puzzleToRemove);
         }
+
+        public static void SetCurrentPuzzle(PuzzleDataHolder puzzle)
+        {
+            currentPuzzle = puzzle;
+        }
+
+        public static void LoadCurrentPuzzle()
+        {
+            foreach (var listener in puzzleDatas)
+            {
+                listener.LoadFromSaveData(currentPuzzle);
+            }
+        }
     }
 
     

@@ -46,6 +46,8 @@ namespace PuzzleSelect
         {
             Debug.Log($"Update puzzle name... but then:");
             Debug.Log($"Play puzzle {currentPuzzle.name}!");
+
+            puzzleSelectPort.SelectAndLoad(currentPuzzle);
         }
         
         public void OnDeleteButtonPressed()
@@ -55,7 +57,6 @@ namespace PuzzleSelect
 
         void DeletePuzzle()
         {
-            Debug.Log($"Telling EM to delete puzzle {currentPuzzle.name}...");
             SaveManager.TryDeletePuzzle(currentPuzzle);
         } 
         

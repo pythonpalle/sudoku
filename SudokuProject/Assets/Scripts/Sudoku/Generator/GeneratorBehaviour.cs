@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
+using Saving;
 
 public enum GridGenerationType
 {
@@ -42,21 +43,17 @@ public class GeneratorBehaviour : MonoBehaviour
                 Invoke("GenerateFullGrid", 0.01f);
                 break;
             
-            case GridGenerationType.loaded:
-                Debug.Log("Load grid yo!");
-                break;
+            // case GridGenerationType.loaded:
+            //     Invoke("LoadCurrent", 0.01f);
+            //     break;
         }
-        
-        // if (createEmptyGrid)
-        // {
-        //     Invoke("GenerateEmptyGrid", 0.01f);
-        // }
-        // else
-        // {
-        //     StartCoroutine(AnimateGrid());
-        //     Invoke("GenerateFullGrid", 0.01f);
-        // }
     }
+
+    // private void LoadCurrent()
+    // {
+    //     SaveManager.LoadCurrentPuzzle();
+    //     Debug.Log("Load grid yo!");
+    // }
     
     public void GenerateEmptyGrid()
     {

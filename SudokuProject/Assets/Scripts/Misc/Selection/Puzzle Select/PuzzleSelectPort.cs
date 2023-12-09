@@ -10,6 +10,8 @@ namespace PuzzleSelect
     public class PuzzleSelectPort : ScriptableObject
     {
         public UnityAction<UserSaveData> OnUserDataLoaded;
+        public UnityAction<PuzzleDataHolder> OnSelectAndLoad;
+        
         public UnityAction OnSelectPuzzleBox;
 
         public PuzzleSelectBox selectedBox;
@@ -26,6 +28,11 @@ namespace PuzzleSelect
             selectedPuzzle = data;
             
             OnSelectPuzzleBox?.Invoke();
+        }
+
+        public void SelectAndLoad(PuzzleDataHolder currentPuzzle)
+        {
+            OnSelectAndLoad?.Invoke(currentPuzzle);
         }
     }
 

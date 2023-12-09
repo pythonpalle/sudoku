@@ -5,12 +5,23 @@ using UnityEngine;
 public class GridSaver : MonoBehaviour, IHasPuzzleData
 {
     [SerializeField] private GridPort _gridPort;
+    [SerializeField] private GeneratorPort generatorPort;
 
     private void OnEnable()
     {
         AddListenerToSaveManager();
+
+        if (generatorPort.GenerationType == GridGenerationType.loaded)
+        {
+            Invoke("LoadCurrentPuzzle", 0.01f);
+        }
     }
-    
+
+    private void LoadCurrentPuzzle()
+    {
+        SaveManager.LoadCurrentPuzzle();
+    }
+
     private void OnDisable()
     {
         RemoveListenerFromSaveManager();
@@ -40,9 +51,29 @@ public class GridSaver : MonoBehaviour, IHasPuzzleData
         }
     }
 
-    public void LoadFromSaveData(PuzzleDataHolder dataHolder)
+    public void LoadFromSaveData(PuzzleDataHolder puzzleData)
     {
-        throw new NotImplementedException();
+        // create grid, populate it with permanent numbers
+        SudokuGrid9x9 grid = new SudokuGrid9x9(false);
+
+        var numbers = puzzleData.numbers;
+
+        for (int i = 0; i < 81; i++)
+        {
+            int row = i / 9;
+            int col = i % 9;
+            TileIndex index = new TileIndex(row, col);
+
+            grid.SetNumberToIndex(index, numbers[i]);
+        }
+        
+        Debug.Log("Created grid:");
+        grid.PrintGrid();
+        
+
+        EventManager.GenerateGrid(grid);
+
+        // Tell command manager to execute all commands in order
     }
 
     public void AddListenerToSaveManager()
