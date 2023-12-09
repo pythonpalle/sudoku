@@ -423,6 +423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explanationText: Paste
+  closeWhenClicked: 1
 --- !u!114 &168257868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -984,7 +985,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popupWindow: {fileID: 345772278}
   gameSceneManager: {fileID: 1102141928}
-  inputField: {fileID: 1020649624}
   placeHolderText: {fileID: 313200359}
   userEnterText: {fileID: 1197265337}
   _difficultyObject: {fileID: 11400000, guid: 6168c2ed25d594242ab75afc0a365596, type: 2}
@@ -1292,6 +1292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explanationText: Save
+  closeWhenClicked: 1
 --- !u!114 &402688023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1794,22 +1795,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1157210451}
     m_Modifications:
-    - target: {fileID: 806423929718486992, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 01f4a21af8b6d5140bf549d394a1915d, type: 3}
-    - target: {fileID: 806423929718486992, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
-      propertyPath: m_Color.b
-      value: 0.8078432
-      objectReference: {fileID: 0}
-    - target: {fileID: 806423929718486992, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
-      propertyPath: m_Color.g
-      value: 0.4784314
-      objectReference: {fileID: 0}
-    - target: {fileID: 806423929718486992, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
-      propertyPath: m_Color.r
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4013409521721508126, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1898,10 +1883,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Load Grid
       objectReference: {fileID: 0}
-    - target: {fileID: 4162996033991113427, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
 --- !u!224 &556297621 stripped
@@ -1914,31 +1895,12 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4613050239210755911, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
   m_PrefabInstance: {fileID: 556297620}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 556297623}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8849930a3d1770140b204e08561cce5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &556297623 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4162996033991113427, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
-  m_PrefabInstance: {fileID: 556297620}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &556297624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 556297623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 101c240e096dce1409a3a9d3ba6b2871, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GeneratorPort: {fileID: 11400000, guid: b00f77592638a0f4fa31cc807e02db32, type: 2}
-  typesToDeactivate: 02000000
 --- !u!1 &586185652
 GameObject:
   m_ObjectHideFlags: 0
@@ -7684,6 +7646,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explanationText: Don't Save
+  closeWhenClicked: 1
 --- !u!114 &2104688915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7843,6 +7806,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1157210451}
     m_Modifications:
+    - target: {fileID: 325439769259136188, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: closeOnClick
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 325439769259136188, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: closeWhenClicked
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 355342018133128770, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
       propertyPath: tileAnimationParent
       value: 

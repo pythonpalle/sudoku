@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private string explanationText;
+    [SerializeField] private bool closeWhenClicked = true;
 
     private IEnumerator routine;
     private bool routineIsRunning;
@@ -34,12 +35,14 @@ public class ExplanationText : MonoBehaviour, IPointerEnterHandler, IPointerExit
     
     public void OnPointerDown(PointerEventData eventData)
     {
-        ClosePopup();
+        if (closeWhenClicked)
+            ClosePopup();
     }
     
     public void OnPointerUp(PointerEventData eventData)
     {
-        ClosePopup();
+        if (closeWhenClicked)
+            ClosePopup();
     }
     
     private IEnumerator DisplayPopupAfterSeconds(PointerEventData eventData, float seconds)
