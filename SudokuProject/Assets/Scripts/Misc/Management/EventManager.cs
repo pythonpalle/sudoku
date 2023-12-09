@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,7 +39,10 @@ public static class EventManager
     
     public static UnityAction<string, Vector3> OnDisplayHoverText;
     public static UnityAction OnCancelHoverText;
+    
     public static UnityAction<string, Vector3> OnDisplayFloatingPopupText;
+    
+    public static UnityAction<Action> OnDisplayConfirmPopup;
 
 
     public static void GenerateGrid(SudokuGrid9x9 grid)
@@ -150,4 +154,10 @@ public static class EventManager
     {
         OnDisplayFloatingPopupText?.Invoke(text, position);
     }
+
+    public static void DisplayConfirmPopup(Action action)
+    {
+        OnDisplayConfirmPopup?.Invoke(action);
+    }
+
 }

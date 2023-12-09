@@ -308,6 +308,20 @@ namespace Saving
         {
             currentPuzzle = null;
         }
+
+        public static bool TryDeletePuzzle(PuzzleDataHolder puzzleToRemove)
+        {
+            if (!currentUserData.puzzles.Contains(puzzleToRemove))
+            {
+                Debug.LogError($"Couldn't remove {puzzleToRemove.name} because it's not in the puzzle list!");
+                return false;
+            }
+            
+            currentUserData.puzzles.Remove(puzzleToRemove);
+            string jsonString = currentUserData.ToJson();
+            FileManager.WriteToFile(userSaveFileName, jsonString);
+            return true;
+        }
     }
 
     

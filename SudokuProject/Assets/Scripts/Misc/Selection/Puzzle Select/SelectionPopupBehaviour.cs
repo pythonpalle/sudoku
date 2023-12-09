@@ -41,8 +41,14 @@ namespace PuzzleSelect
         
         public void OnDeleteButtonPressed()
         {
-            Debug.LogWarning($"Warn for deleting puzzle {currentPuzzle.name}!");
+            EventManager.DisplayConfirmPopup(DeletePuzzle);
         }
+
+        void DeletePuzzle()
+        {
+            Debug.Log($"Telling EM to delete puzzle {currentPuzzle.name}...");
+            SaveManager.TryDeletePuzzle(currentPuzzle);
+        } 
         
         public void OnRestartButtonPressed()
         {
