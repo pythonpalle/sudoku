@@ -1,15 +1,26 @@
 ﻿using Saving;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class PuzzleSelectBox : MonoBehaviour
+namespace PuzzleSelect
 {
-    [SerializeField] private TextMeshProUGUI nameText;
-    private PuzzleDataHolder puzzle;
-
-    public void SetData(PuzzleDataHolder puzzleData)
+    public class PuzzleSelectBox : MonoBehaviour
     {
-        puzzle = puzzleData;
-        nameText.text = puzzle.name; 
+        [SerializeField] private PuzzleSelectPort selectPort;
+        [SerializeField] private TextMeshProUGUI nameText;
+        private PuzzleDataHolder puzzle;
+
+        public void SetData(PuzzleDataHolder puzzleData)
+        {
+            puzzle = puzzleData;
+            nameText.text = puzzle.name; 
+        }
+
+        public void OnButtonPressed()
+        {
+            selectPort.SelectPuzzleBox(puzzle); 
+        }
     }
-}
+} 
+

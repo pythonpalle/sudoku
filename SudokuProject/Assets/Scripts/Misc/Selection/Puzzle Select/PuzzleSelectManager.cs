@@ -12,7 +12,7 @@ namespace PuzzleSelect
         // [SerializeField] private PuzzleSelectBox selectBoxPrefab;
         [SerializeField] private PuzzleSelectPort puzzleSelectPort;
 
-        private void Awake()
+        private void Start()
         {
             LoadAllPuzzles();
             ResetCurrentPuzzle();

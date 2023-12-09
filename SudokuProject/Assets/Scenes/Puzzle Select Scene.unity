@@ -187,6 +187,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4aa29f85f4dfc342a5eb6b11d521ba5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puzzleSelectPort: {fileID: 11400000, guid: 12e4ef2e78913584ea4cfd254336a2df, type: 2}
+  _popupWindow: {fileID: 1666594}
+  placeHolderText: {fileID: 813128407}
 --- !u!1 &6079169
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,7 +715,7 @@ RectTransform:
   m_Children:
   - {fileID: 1608154622}
   m_Father: {fileID: 733771738}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1115,7 +1118,7 @@ MonoBehaviour:
   m_fontSize: 14
   m_fontSizeBase: 14
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -1193,7 +1196,6 @@ RectTransform:
   - {fileID: 1492206318}
   - {fileID: 1577883680}
   - {fileID: 1379217970}
-  - {fileID: 1478390301}
   - {fileID: 357306663}
   - {fileID: 771913008}
   m_Father: {fileID: 1666593}
@@ -1236,7 +1238,7 @@ RectTransform:
   - {fileID: 1745170804}
   - {fileID: 898435707}
   m_Father: {fileID: 733771738}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2310,7 +2312,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _selectPort: {fileID: 11400000, guid: 12e4ef2e78913584ea4cfd254336a2df, type: 2}
   scrollContentParent: {fileID: 931070851}
-  selectBoxPrefab: {fileID: 8350243897922062514, guid: ee57cbe107993004e9cabe997006b2fa, type: 3}
+  selectBoxPrefab: {fileID: 3066125493808920523, guid: ee57cbe107993004e9cabe997006b2fa, type: 3}
 --- !u!1 &1379217969
 GameObject:
   m_ObjectHideFlags: 0
@@ -2500,42 +2502,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1430187884}
   m_CullTransparentMesh: 1
---- !u!1 &1478390300
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1478390301}
-  m_Layer: 5
-  m_Name: Create Own Popup
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1478390301
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1478390300}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 733771738}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.7504072, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1492206317
 GameObject:
   m_ObjectHideFlags: 0
@@ -3360,9 +3326,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PopupWindow, Assembly-CSharp
-        m_MethodName: Close
+      - m_Target: {fileID: 1666595}
+        m_TargetAssemblyTypeName: PuzzleSelect.SelectionPopupBehaviour, Assembly-CSharp
+        m_MethodName: OnPlayButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3504,6 +3470,14 @@ PrefabInstance:
     - target: {fileID: 8632227686653873737, guid: 82359ad9ca9e5bd4699b8f018c6cc842, type: 3}
       propertyPath: m_Name
       value: Exit cross
+      objectReference: {fileID: 0}
+    - target: {fileID: 8632227686653873742, guid: 82359ad9ca9e5bd4699b8f018c6cc842, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1666594}
+    - target: {fileID: 8632227686653873742, guid: 82359ad9ca9e5bd4699b8f018c6cc842, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Close
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82359ad9ca9e5bd4699b8f018c6cc842, type: 3}
@@ -3703,9 +3677,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CommandManager, Assembly-CSharp
-        m_MethodName: CallRedo
+      - m_Target: {fileID: 1666595}
+        m_TargetAssemblyTypeName: PuzzleSelect.SelectionPopupBehaviour, Assembly-CSharp
+        m_MethodName: OnRestartButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5223,9 +5197,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CommandManager, Assembly-CSharp
-        m_MethodName: CallRedo
+      - m_Target: {fileID: 1666595}
+        m_TargetAssemblyTypeName: PuzzleSelect.SelectionPopupBehaviour, Assembly-CSharp
+        m_MethodName: OnDeleteButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
