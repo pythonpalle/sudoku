@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Saving;
 using UnityEngine;
 
@@ -13,7 +15,7 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
         if (generatorPort.GenerationType == GridGenerationType.loaded)
         {
-            Invoke("LoadCurrentPuzzle", 0.01f);
+            Invoke("LoadCurrentPuzzle", 0.02f);
         }
     }
 
@@ -29,8 +31,9 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
     public void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate)
     {
-        // if populating from a self created grid, all tiles will be permenant
+        _gridPort.RequestGrid();
         
+        // set all permanent tiles
         int i = 0;
         for (int row = 0; row < 9; row++)
         {
@@ -71,9 +74,51 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         Debug.Log("Created grid:");
         grid.PrintGrid();
         
-        EventManager.GenerateGrid(grid); 
+        EventManager.GenerateGrid(grid);
 
-        // Tell command manager to execute all commands in order
+        StartCoroutine(PerformCommandsRoutine(puzzleData, 0.02f));
+    }
+
+    private IEnumerator PerformCommandsRoutine(PuzzleDataHolder puzzleData, float f)
+    {
+        // wait for grid to finish generating
+        yield return new WaitForSeconds(f);
+
+        _gridPort.RequestGrid();
+        yield return new WaitUntil(() => _gridPort.tileBehaviours != null);
+
+        int totalCommandCount = puzzleData.commands.Count;
+        int savedCounter = puzzleData.commandCounter;
+        
+        
+        // execute all commands
+        for (var index = 0; index < savedCounter; index++)
+        {
+            var commandData = puzzleData.commands[index];
+            SudokuEntry entry = ToEntry(commandData);
+            EventManager.GridEnterFromUser(entry);
+            yield return new WaitForEndOfFrame();
+            Debug.Log("Enter command");
+        }
+
+        // temp solution, fix later
+        CommandManager manager = FindObjectOfType<CommandManager>();
+        
+        // if saved counter is less then total command count, it means we have to go back a few command by undoing
+        for (int i = savedCounter; i < totalCommandCount; i++)
+        {
+            manager.CallUndo();
+            Debug.Log("Undo!");
+        }
+    }
+
+    private SudokuEntry ToEntry(SerializedCommandData commandData)
+    {
+        List<TileBehaviour> tiles = _gridPort.GetTiles(commandData.tiles);
+        EnterType enterType = (EnterType)Enum.ToObject(typeof(EnterType), commandData.enterType);
+        
+        SudokuEntry entry = new SudokuEntry(tiles, enterType, commandData.number, commandData.removal, commandData.colorRemoval);
+        return entry;
     }
 
     void AddListenersToSaveManager()

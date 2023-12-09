@@ -50,6 +50,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         selectionObject.OnRequestTile += OnRequestTile;
 
         gridPort.OnRequestGrid += OnRequestGrid;
+        gridPort.OnRequestTiles += OnRequestTiles;
         hintObject.OnHintFound += OnHintFound;
     }
 
@@ -71,7 +72,13 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         selectionObject.OnRequestTile -= OnRequestTile;
         
         gridPort.OnRequestGrid -= OnRequestGrid;
+        gridPort.OnRequestTiles -= OnRequestTiles;
         hintObject.OnHintFound -= OnHintFound;
+    }
+
+    private void OnRequestTiles()
+    {
+        gridPort.tileBehaviours = tileBehaviours;
     }
 
     private void OnGridEnterFromUser(SudokuEntry entry)
@@ -103,7 +110,9 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
         
         grid = importedGrid;
-        EventManager.CallNewCommand(null);
+        
+        ////TODO: make import a valid command, or hard code work around for self created puzzles
+        // EventManager.CallNewCommand(null);
     }
 
     private void UpdateGridCandidates()

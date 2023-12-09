@@ -19,11 +19,13 @@ namespace Saving
         // grid
         public int[] numbers;
         public bool[] permanent;
-        
-        
+
+        public List<SerializedCommandData> commands = new List<SerializedCommandData>();
+        public int commandCounter;
+
         // status
         public bool completed;
-            
+
         public PuzzleDataHolder()
         {
             numbers = new int[81];
@@ -34,7 +36,7 @@ namespace Saving
         {
             numbers = new int[81];
             permanent = new bool[81];
-                
+            
             for (int i = 0; i < seed.Length; i++)
             {
                 var digitChar = seed[i];
@@ -48,6 +50,25 @@ namespace Saving
                 int digitNumber = (int)Char.GetNumericValue(digitChar);
                 numbers[i] = digitNumber;
             }
+        }
+    }
+
+    [System.Serializable]
+    public class SerializedCommandData
+    {
+        public List<int> tiles;
+        public int enterType;
+        public int number;
+        public bool removal;
+        public bool colorRemoval;
+    
+        public SerializedCommandData(List<int> tiles, int enterType, int number, bool removal, bool colorRemoval)
+        {
+            this.tiles = tiles;
+            this.enterType = enterType;
+            this.number = number;
+            this.removal = removal;
+            this.colorRemoval = colorRemoval;
         }
     }
 }

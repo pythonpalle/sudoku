@@ -7400,6 +7400,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c58def9bfecc4f59ad81b26f248cbc29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
+  counters: 
 --- !u!1 &2043448233
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@
 
 public class SudokuEntry
 {
-    public List<TileBehaviour> tiles;
+    public List<TileBehaviour> tiles = new List<TileBehaviour>();
     public EnterType enterType;
     public int number;
     public bool removal;
@@ -15,5 +15,19 @@ public class SudokuEntry
         this.number = number;
         this.removal = removal;
         this.colorRemoval = colorRemoval;
+    }
+
+    public SudokuEntry(SudokuEntry other)
+    {
+        if (other == null)
+        {
+            return;
+        }
+        
+        tiles = new List<TileBehaviour>(other.tiles);
+        enterType = other.enterType;
+        number = other.number;
+        removal = other.removal;
+        colorRemoval = other.colorRemoval;
     }
 }

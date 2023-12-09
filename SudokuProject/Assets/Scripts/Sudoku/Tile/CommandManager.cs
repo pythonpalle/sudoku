@@ -9,22 +9,30 @@ public interface IHasCommand
     public abstract void OnNewCommand(SudokuEntry entry);
 }
 
-public class CommandManager : MonoBehaviour
+public class CommandManager : MonoBehaviour, IPopulatePuzzleData
 {
+    [SerializeField] private GridPort _gridPort;
+    
     private List<SudokuEntry> entries = new List<SudokuEntry>();
     public List<int> counters = new List<int>();
-    private int stateCounter;
+    
+    [SerializeField] private int stateCounter;
+    [SerializeField] private int entryCount;
 
     private void OnEnable()
     {
         EventManager.OnSetupTiles += OnSetupTiles;
         EventManager.OnNewCommand += OnNewCommand;
+
+        SaveManager.AddPopulateDataListener(this);
     }
     
     private void OnDisable()
     {
         EventManager.OnSetupTiles -= OnSetupTiles;
         EventManager.OnNewCommand -= OnNewCommand;
+        
+        SaveManager.RemovePopulateDataListener(this);
     }
 
     private void OnNewCommand(SudokuEntry entry)
@@ -34,10 +42,13 @@ public class CommandManager : MonoBehaviour
             entries.RemoveAt(entries.Count-1);
             counters.Remove(counters.Count - 1);
         }
-        
-        entries.Add(entry);
+
+        SudokuEntry newEntry = new SudokuEntry(entry);
+        entries.Add(newEntry);
         counters.Add(stateCounter);
         stateCounter++;
+
+        entryCount = entries.Count;
     }
 
     private bool TryChangeState(bool undo)
@@ -63,6 +74,8 @@ public class CommandManager : MonoBehaviour
             EventManager.Undo();
         else
             EventManager.Redo();
+
+        entryCount = entries.Count;
 
         return true;
     }
@@ -92,5 +105,46 @@ public class CommandManager : MonoBehaviour
     public void CallRedo()
     {
         TryChangeState(false);
+    }
+
+    public void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate)
+    {
+        Debug.Log("Populating save data...");
+        Debug.Log("new self create: " + newSelfCreate);
+        
+        // don't save commands for a self created sudoku
+        if (newSelfCreate)
+            return;
+        
+        _gridPort.RequestGrid();
+        dataHolder.commands.Clear();
+        
+        Debug.Log($"Entries: {entries.Count}");
+        
+        foreach (var entry in entries)
+        {
+            if (entry == null || entry.tiles == null || entry.tiles.Count == 0) continue;
+            
+            Debug.Log($"Entry: {entry.tiles.Count} tiles, {entry.enterType}");
+            
+            SerializedCommandData command = EntryToCommand(entry);
+            dataHolder.commands.Add(command);
+        }
+
+        dataHolder.commandCounter = stateCounter;
+    }
+
+    private SerializedCommandData EntryToCommand(SudokuEntry entry)
+    {
+        List<int> tiles = new List<int>();
+        
+        foreach (var tile in entry.tiles)
+        {
+            int i = tile.row * 9 + tile.col;
+            tiles.Add(i);
+        }
+        
+        SerializedCommandData data = new SerializedCommandData(tiles, (int)entry.enterType, entry.number, entry.removal, entry.colorRemoval);
+        return data;
     }
 }
