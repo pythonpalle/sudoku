@@ -9,6 +9,7 @@ public class ConfirmPopupWindow : MonoBehaviour
     private Action confirmAction;
 
     private PopupWindow _popupWindow;
+    [SerializeField] private bool closeOnConfirm;
 
     private void Start()
     {
@@ -36,8 +37,14 @@ public class ConfirmPopupWindow : MonoBehaviour
         if (confirmAction == null)
         {
             Debug.LogError("No confirm action to perform!");
+            return;
         }
         
         confirmAction?.Invoke();
+
+        if (closeOnConfirm)
+        {
+            _popupWindow.Close();
+        }
     }
 }

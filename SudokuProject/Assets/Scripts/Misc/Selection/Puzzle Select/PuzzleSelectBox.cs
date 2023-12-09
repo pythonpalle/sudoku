@@ -19,7 +19,12 @@ namespace PuzzleSelect
 
         public void OnButtonPressed()
         {
-            selectPort.SelectPuzzleBox(puzzle); 
+            selectPort.SelectPuzzleBox(this, puzzle); 
+        }
+
+        public bool HasPuzzle(PuzzleDataHolder other)
+        {
+            return other == puzzle;
         }
     }
 } 

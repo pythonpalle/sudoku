@@ -19,18 +19,27 @@ namespace PuzzleSelect
         private void OnEnable()
         {
             puzzleSelectPort.OnSelectPuzzleBox += OnSelectPuzzleBox;
+
+            SaveManager.OnPuzzleDeleted += OnPuzzleDeleted;
         }
         
         private void OnDisable()
         {
             puzzleSelectPort.OnSelectPuzzleBox -= OnSelectPuzzleBox;
+            
+            SaveManager.OnPuzzleDeleted -= OnPuzzleDeleted;
         }
 
-        private void OnSelectPuzzleBox(PuzzleDataHolder puzzleData)
+        private void OnSelectPuzzleBox()
         {
-            currentPuzzle = puzzleData;
+            currentPuzzle = puzzleSelectPort.selectedPuzzle;
             _popupWindow.PopUp();
             placeHolderText.text = currentPuzzle.name;
+        }
+
+        private void OnPuzzleDeleted(PuzzleDataHolder _)
+        {
+            _popupWindow.Close();
         }
 
         public void OnPlayButtonPressed()
@@ -57,4 +66,3 @@ namespace PuzzleSelect
     }
 
 }
-

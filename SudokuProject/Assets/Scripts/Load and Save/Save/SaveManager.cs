@@ -30,6 +30,7 @@ namespace Saving
         private static GridGenerationType generationType;
 
         public static UnityAction<SaveRequestLocation> OnRequestFirstSave;
+        public static UnityAction<PuzzleDataHolder> OnPuzzleDeleted;
 
         private static List<IHasPuzzleData> puzzleDatas = new List<IHasPuzzleData>();
         
@@ -317,10 +318,16 @@ namespace Saving
                 return false;
             }
             
+            DeletePuzzle(puzzleToRemove);
+            return true;
+        }
+
+        private static void DeletePuzzle(PuzzleDataHolder puzzleToRemove)
+        {
             currentUserData.puzzles.Remove(puzzleToRemove);
             string jsonString = currentUserData.ToJson();
             FileManager.WriteToFile(userSaveFileName, jsonString);
-            return true;
+            OnPuzzleDeleted?.Invoke(puzzleToRemove);
         }
     }
 

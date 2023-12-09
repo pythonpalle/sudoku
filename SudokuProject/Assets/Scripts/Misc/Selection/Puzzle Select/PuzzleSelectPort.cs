@@ -10,16 +10,22 @@ namespace PuzzleSelect
     public class PuzzleSelectPort : ScriptableObject
     {
         public UnityAction<UserSaveData> OnUserDataLoaded;
-        public UnityAction<PuzzleDataHolder> OnSelectPuzzleBox;
+        public UnityAction OnSelectPuzzleBox;
+
+        public PuzzleSelectBox selectedBox;
+        public PuzzleDataHolder selectedPuzzle;
 
         public void LoadUserData(UserSaveData saveData)
         {
             OnUserDataLoaded?.Invoke(saveData);
         }
 
-        public void SelectPuzzleBox(PuzzleDataHolder puzzle)
+        public void SelectPuzzleBox(PuzzleSelectBox box, PuzzleDataHolder data)
         {
-            OnSelectPuzzleBox?.Invoke(puzzle);
+            selectedBox = box;
+            selectedPuzzle = data;
+            
+            OnSelectPuzzleBox?.Invoke();
         }
     }
 
