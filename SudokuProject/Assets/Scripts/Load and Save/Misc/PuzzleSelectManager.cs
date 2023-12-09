@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class PuzzleSelectManager : MonoBehaviour
 {
+    [SerializeField] private Transform scrollContentParent;
+    [SerializeField] private PuzzleSelectBox selectBoxPrefab;
+
     private void Awake()
     {
         LoadAllPuzzles();
@@ -16,12 +19,10 @@ public class PuzzleSelectManager : MonoBehaviour
     {
         if (SaveManager.TryGetCurrentUserData(out UserSaveData data))
         {
-            int savedPuzzles = data.puzzles.Count;
-            Debug.Log($"Puzzles saved: {savedPuzzles}");
-            
-            foreach (PuzzleDifficulty difficulty in Enum.GetValues(typeof(PuzzleDifficulty)))
+            foreach (var puzzle in data.puzzles)
             {
-                Debug.Log($"difficulty: {difficulty}" + SaveManager.GetPuzzleCount(difficulty));
+                PuzzleSelectBox selectBoxInstance = Instantiate(selectBoxPrefab, scrollContentParent);
+                selectBoxInstance.SetData(puzzle);
             }
         }
     }
