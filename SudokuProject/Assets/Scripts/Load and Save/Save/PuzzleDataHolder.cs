@@ -18,7 +18,7 @@ namespace Saving
             
         // grid
         public int[] numbers;
-        public List<bool> permanent = new List<bool>();
+        public bool[] permanent;
         
         
         // status
@@ -27,13 +27,13 @@ namespace Saving
         public PuzzleDataHolder()
         {
             numbers = new int[81];
-            List<bool> permanent = new List<bool>();
+            permanent = new bool[81];
         }
             
         public PuzzleDataHolder(string seed) //: base()
         {
             numbers = new int[81];
-            permanent = new List<bool>();
+            permanent = new bool[81];
                 
             for (int i = 0; i < seed.Length; i++)
             {

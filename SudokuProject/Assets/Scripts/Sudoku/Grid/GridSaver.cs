@@ -29,23 +29,18 @@ public class GridSaver : MonoBehaviour, IHasPuzzleData
 
     public void PopulateSaveData(PuzzleDataHolder dataHolder, GridGenerationType gridGenerationType)
     {
-        bool allPermanent = gridGenerationType == GridGenerationType.empty;
+        bool selfCreated = dataHolder.selfCreated;
         
         int i = 0;
         for (int row = 0; row < 9; row++)
         {
             for (int col = 0; col < 9; col++)
             {
-                dataHolder.numbers[i] = _gridPort.tileBehaviours[row, col].number;
+                var tile = _gridPort.tileBehaviours[row, col];
+                
+                dataHolder.numbers[i] = tile.number;
+                dataHolder.permanent[i] = selfCreated || tile.Permanent;
 
-                if (!allPermanent)
-                {
-                    dataHolder.permanent.Add(_gridPort.tileBehaviours[row, col].Permanent);
-                }
-                
-                // // on a self created puzzle, every tile is considered permanent
-                // dataHolder.permanent[i] = allPermanent ? true : _gridPort.tileBehaviours[row, col].Permanent;
-                
                 i++;
             }
         }
@@ -57,9 +52,15 @@ public class GridSaver : MonoBehaviour, IHasPuzzleData
         SudokuGrid9x9 grid = new SudokuGrid9x9(false);
 
         var numbers = puzzleData.numbers;
+        var permanents = puzzleData.permanent;
 
         for (int i = 0; i < 81; i++)
         {
+            int number = numbers[i];
+            
+            if (!permanents[i] || number == 0)
+                continue;
+            
             int row = i / 9;
             int col = i % 9;
             TileIndex index = new TileIndex(row, col);
@@ -70,8 +71,7 @@ public class GridSaver : MonoBehaviour, IHasPuzzleData
         Debug.Log("Created grid:");
         grid.PrintGrid();
         
-
-        EventManager.GenerateGrid(grid);
+        EventManager.GenerateGrid(grid); 
 
         // Tell command manager to execute all commands in order
     }
