@@ -12,10 +12,14 @@ namespace Saving
         public string name;
         public int difficulty;
         public bool selfCreated;
+        
+        // // TODO: add creation time for sorting purposes
+        //public float creationTime;
             
         // grid
         public int[] numbers;
         public List<bool> permanent = new List<bool>();
+        
         
         // status
         public bool completed;
