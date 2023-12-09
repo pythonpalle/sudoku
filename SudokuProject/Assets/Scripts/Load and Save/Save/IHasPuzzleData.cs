@@ -8,4 +8,14 @@
         void AddListenerToSaveManager();
         void RemoveListenerFromSaveManager();
     }
+
+    public interface ISavePuzzleData
+    {
+        
+    }
+    
+    public interface ILoadPuzzleData
+    {
+        
+    }
 }
