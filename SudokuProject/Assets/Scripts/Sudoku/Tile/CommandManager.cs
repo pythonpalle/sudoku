@@ -14,7 +14,6 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     [SerializeField] private GridPort _gridPort;
     
     private List<SudokuEntry> entries = new List<SudokuEntry>();
-    public List<int> counters = new List<int>();
     
     [SerializeField] private int stateCounter;
     [SerializeField] private int entryCount;
@@ -40,12 +39,10 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
         while (entries.Count > stateCounter)
         {
             entries.RemoveAt(entries.Count-1);
-            counters.Remove(counters.Count - 1);
         }
 
         SudokuEntry newEntry = new SudokuEntry(entry);
         entries.Add(newEntry);
-        counters.Add(stateCounter);
         stateCounter++;
 
         entryCount = entries.Count;

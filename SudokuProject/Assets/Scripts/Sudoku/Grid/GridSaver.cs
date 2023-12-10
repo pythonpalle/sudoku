@@ -81,6 +81,8 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
     private IEnumerator PerformCommandsRoutine(PuzzleDataHolder puzzleData, float f)
     {
+        GameStateManager.SetActive(false);
+        
         // wait for grid to finish generating
         yield return new WaitForSeconds(f);
 
@@ -90,7 +92,9 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         int totalCommandCount = puzzleData.commands.Count;
         int savedCounter = puzzleData.commandCounter;
         
-        
+        bool showCommands = false;
+
+
         // execute all commands
         for (var index = 0; index < totalCommandCount; index++)
         {
@@ -98,10 +102,10 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
             SudokuEntry entry = ToEntry(commandData);
             
             
-            
             EventManager.GridEnterFromUser(entry);
-            yield return new WaitForEndOfFrame();
-            Debug.Log("Enter command");
+
+            if (showCommands)
+                yield return new WaitForEndOfFrame();
         }
 
         // temp solution, fix later
@@ -111,8 +115,12 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         for (int i = savedCounter - 1; i < totalCommandCount; i++)
         {
             manager.CallUndo();
-            Debug.Log("Undo!");
+            
+            if (showCommands)
+                yield return new WaitForEndOfFrame();
         }
+        
+        GameStateManager.SetActive(true);
     }
 
     private SudokuEntry ToEntry(SerializedCommandData commandData)

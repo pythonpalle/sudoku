@@ -42,19 +42,9 @@ public class GeneratorBehaviour : MonoBehaviour
                 StartCoroutine(AnimateGrid());
                 Invoke("GenerateFullGrid", 0.01f);
                 break;
-            
-            // case GridGenerationType.loaded:
-            //     Invoke("LoadCurrent", 0.01f);
-            //     break;
         }
     }
 
-    // private void LoadCurrent()
-    // {
-    //     SaveManager.LoadCurrentPuzzle();
-    //     Debug.Log("Load grid yo!");
-    // }
-    
     public void GenerateEmptyGrid()
     {
         generator.GenerateEmptyGrid();
@@ -69,6 +59,7 @@ public class GeneratorBehaviour : MonoBehaviour
     private IEnumerator AnimateGrid()
     {
         _generatorPort.isGenerating = true;
+        GameStateManager.SetActive(false);
         
         SudokuGrid9x9 grid = fakeGenerator.GetRandomCompleteGrid();
         
@@ -89,6 +80,7 @@ public class GeneratorBehaviour : MonoBehaviour
 
         loadGrid.gameObject.SetActive(false);
 
+        GameStateManager.SetActive(true);
         _generatorPort.isGenerating = false;
     }
 }
