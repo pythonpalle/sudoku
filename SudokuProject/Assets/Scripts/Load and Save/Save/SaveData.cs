@@ -10,7 +10,8 @@ namespace Saving
         /// </summary>
         public string ToJson()
         {
-            return JsonUtility.ToJson(this);
+            //return JsonUtility.ToJson(this);
+            return JsonUtility.ToJson(this, false);
         }
     
         /// <summary>

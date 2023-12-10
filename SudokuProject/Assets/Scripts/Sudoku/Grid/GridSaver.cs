@@ -92,7 +92,7 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         int totalCommandCount = puzzleData.commands.Count;
         int savedCounter = puzzleData.commandCounter;
         
-        bool showCommands = false;
+        bool showCommands = true;
 
 
         // execute all commands
