@@ -106,9 +106,6 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
 
     public void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate)
     {
-        Debug.Log("Populating save data...");
-        Debug.Log("new self create: " + newSelfCreate);
-        
         // don't save commands for a self created sudoku
         if (newSelfCreate)
             return;
@@ -116,13 +113,9 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
         _gridPort.RequestGrid();
         dataHolder.commands.Clear();
         
-        Debug.Log($"Entries: {entries.Count}");
-        
         foreach (var entry in entries)
         {
             if (entry == null || entry.tiles == null || entry.tiles.Count == 0) continue;
-            
-            Debug.Log($"Entry: {entry.tiles.Count} tiles, {entry.enterType}");
             
             SerializedCommandData command = EntryToCommand(entry);
             dataHolder.commands.Add(command);
