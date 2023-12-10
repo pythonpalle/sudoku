@@ -56,4 +56,41 @@ public static class FileManager
 
         return false;
     }
+    
+    public static bool WriteAllBytes(string fileName, byte[] bytes)
+    {
+        string fullFilePath = GetFullFilePathName(fileName);
+        Debug.Log($"File path: {fullFilePath}");
+
+        try
+        {
+            File.WriteAllBytes(fullFilePath, bytes);
+            Debug.Log("Successfully written to file!");
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(($"Failed to write to {fullFilePath} with exception {e}"));
+        }
+
+        return false;
+    }
+    
+    public static byte[] ReadAllBytes(string fileName)
+    {
+        string fullFilePath = GetFullFilePathName(fileName);
+        Debug.Log($"File path: {fullFilePath}");
+
+        try
+        {
+            Debug.Log("Successfully fetched bytes!");
+            return File.ReadAllBytes(fullFilePath);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(($"Failed to write to {fullFilePath} with exception {e}"));
+        }
+
+        return null;
+    }
 }
