@@ -32,6 +32,7 @@ namespace Saving
 
         public static UnityAction<SaveRequestLocation> OnRequestFirstSave;
         public static UnityAction<SaveRequestLocation> OnSuccessfulSave;
+        public static UnityAction OnPuzzleSaveCreated;
         public static UnityAction<PuzzleDataHolder> OnPuzzleDeleted;
 
         private static List<ILoadPuzzleData> loadDatas = new List<ILoadPuzzleData>();
@@ -336,6 +337,7 @@ namespace Saving
             if (WriteUserDataToFile(SaveRequestLocation.SaveButton))
             {
                 Debug.Log("Successfully created puzzle!");
+                OnPuzzleSaveCreated?.Invoke();
                 return true;
             }
             else

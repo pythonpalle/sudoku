@@ -18,18 +18,36 @@ public class SudokuGameSceneManager : MonoBehaviour
     public void OnEnable()
     {
         selectPort.OnSelectAndLoad += OnSelectAndLoad;
+
+        SaveManager.OnPuzzleSaveCreated += OnPuzzleSaveCreated;
     }
     
     public void OnDisable()
     {
         selectPort.OnSelectAndLoad -= OnSelectAndLoad;
+        
+        SaveManager.OnPuzzleSaveCreated -= OnPuzzleSaveCreated;
     }
 
+    private void OnPuzzleSaveCreated()
+    {
+        if (generatorPort.GenerationType == GridGenerationType.empty)
+        {
+            Debug.Log("Load created puzzle!");
+            OnLoadPuzzle();
+        }
+    }
+    
     private void OnSelectAndLoad(PuzzleDataHolder puzzle)
+    {
+        SaveManager.SetCurrentPuzzle(puzzle);
+        OnLoadPuzzle();
+    }
+
+    private void OnLoadPuzzle()
     {
         generatorPort.GenerationType = GridGenerationType.loaded;
         SaveManager.SetGenerationType(generatorPort.GenerationType);
-        SaveManager.SetCurrentPuzzle(puzzle);
         LoadPuzzleSelectScene();
         LoadGameScene();
     }
