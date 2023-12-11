@@ -42,7 +42,7 @@ public static class EventManager
     
     public static UnityAction<string, Vector3> OnDisplayFloatingPopupText;
     
-    public static UnityAction<Action> OnDisplayConfirmPopup;
+    public static UnityAction<PopupData> OnDisplayConfirmPopup;
 
 
     public static void GenerateGrid(SudokuGrid9x9 grid)
@@ -160,9 +160,8 @@ public static class EventManager
         OnDisplayFloatingPopupText?.Invoke(text, position);
     }
 
-    public static void DisplayConfirmPopup(Action action)
+    public static void DisplayConfirmPopup(PopupData data)
     {
-        OnDisplayConfirmPopup?.Invoke(action);
+        OnDisplayConfirmPopup?.Invoke(data);
     }
-
 }

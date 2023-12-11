@@ -16,9 +16,13 @@ namespace PuzzleSelect
 
         private PuzzleDataHolder currentPuzzle;
 
+        public PopupData popupData;
+
         private void OnEnable()
         {
             puzzleSelectPort.OnSelectPuzzleBox += OnSelectPuzzleBox;
+
+            popupData.confirmButtonData.action = DeletePuzzle;
 
             SaveManager.OnPuzzleDeleted += OnPuzzleDeleted;
         }
@@ -52,7 +56,7 @@ namespace PuzzleSelect
         
         public void OnDeleteButtonPressed()
         {
-            EventManager.DisplayConfirmPopup(DeletePuzzle);
+            EventManager.DisplayConfirmPopup(popupData);
         }
 
         void DeletePuzzle()

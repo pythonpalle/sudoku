@@ -2,14 +2,38 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+[System.Serializable]
+public struct PopupData
+{
+    public string header;
+    public string explanation;
+    public ConfirmButtonData cancelButtonData;
+    public ConfirmButtonData confirmButtonData;
+}
+
+[System.Serializable]
+public struct ConfirmButtonData
+{
+    public bool exists;
+    
+    public Action action;
+    public string text;
+}
 
 [RequireComponent(typeof(PopupWindow))]
 public class ConfirmPopupWindow : MonoBehaviour
 {
-    private Action confirmAction;
+    private PopupData _popupData;
 
     private PopupWindow _popupWindow;
     [SerializeField] private bool closeOnConfirm;
+    [SerializeField] private Button confirmButton;
+    [SerializeField] private Button cancelButton;
+    [SerializeField] private TextMeshProUGUI header;
+    [SerializeField] private TextMeshProUGUI explanation;
 
     private void Start()
     {
@@ -26,25 +50,38 @@ public class ConfirmPopupWindow : MonoBehaviour
         EventManager.OnDisplayConfirmPopup -= OnDisplayConfirmPopup;
     }
 
-    private void OnDisplayConfirmPopup(Action action)
+    private void OnDisplayConfirmPopup(PopupData data)
     {
         _popupWindow.PopUp();
-        confirmAction = action;
+        _popupData = data;
+
+        header.text = _popupData.header;
+        explanation.text = _popupData.explanation;
+
+        cancelButton.gameObject.SetActive(_popupData.cancelButtonData.exists);
+        confirmButton.gameObject.SetActive(_popupData.confirmButtonData.exists);
     }
 
     public void OnConfirmButtonPressed()
     {
-        if (confirmAction == null)
+        if (_popupData.confirmButtonData.action != null)
         {
-            Debug.LogError("No confirm action to perform!");
+            _popupData.confirmButtonData.action?.Invoke();
             return;
         }
         
-        confirmAction?.Invoke();
-
         if (closeOnConfirm)
         {
             _popupWindow.Close();
+        }
+    }
+
+    public void CancelButtonPressed()
+    {
+        if (_popupData.cancelButtonData.action != null)
+        {
+            _popupData.cancelButtonData.action?.Invoke();
+            return;
         }
     }
 }
