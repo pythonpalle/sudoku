@@ -14,6 +14,7 @@ namespace Saving
     {
         SaveButton,
         ExitGameButton, 
+        None
     }
     
     public static class SaveManager
@@ -30,6 +31,7 @@ namespace Saving
         private static GridGenerationType generationType;
 
         public static UnityAction<SaveRequestLocation> OnRequestFirstSave;
+        public static UnityAction<SaveRequestLocation> OnSuccessfulSave;
         public static UnityAction<PuzzleDataHolder> OnPuzzleDeleted;
 
         private static List<ILoadPuzzleData> loadDatas = new List<ILoadPuzzleData>();
@@ -139,9 +141,8 @@ namespace Saving
 
             // onvert data to json format
             string jsonString = currentUserData.ToJson();
-            
-            // Write data to file
-            if (FileManager.WriteToFile(userSaveFileName, jsonString))
+
+            if (WriteUserDataToFile(location))
             {
                 Debug.Log($"Successfully saved progress for {currentPuzzle.name}!");
                 return true;
@@ -151,7 +152,20 @@ namespace Saving
                 Debug.LogError("Failed to write to file, progress was not saved!");
                 return false;
             }
-            
+        }
+
+        private static bool WriteUserDataToFile(SaveRequestLocation location)
+        {
+            string jsonString = currentUserData.ToJson();
+            if (FileManager.WriteToFile(userSaveFileName, jsonString))
+            {
+                OnSuccessfulSave?.Invoke(location);
+                return true;
+            }
+            else 
+            {
+                return false; 
+            }
         }
 
         private static bool TryCreateFirstSaveForCurrentPuzzle(SaveRequestLocation location, bool forceSave = false)
@@ -209,14 +223,14 @@ namespace Saving
         private static bool TryCreateUserSaveFile()
         {
             currentUserData = new UserSaveData(userIdentifier);
-            string dataAsJson = currentUserData.ToJson();
 
-            if (FileManager.WriteToFile(userSaveFileName, dataAsJson))
+            if (WriteUserDataToFile(SaveRequestLocation.SaveButton))
             {
                 Debug.Log("Successfully created save file!");
                 return true;
             }
-
+            
+            Debug.LogWarning("First file could not be created!");
             return false;
         }
 
@@ -319,11 +333,7 @@ namespace Saving
             // Add puzzle data to user data
             currentUserData.puzzles.Add(currentPuzzle);
 
-            // onvert data to json format
-            string jsonString = currentUserData.ToJson();
-            
-            // Write data to file
-            if (FileManager.WriteToFile(userSaveFileName, jsonString))
+            if (WriteUserDataToFile(SaveRequestLocation.SaveButton))
             {
                 Debug.Log("Successfully created puzzle!");
                 return true;
@@ -355,8 +365,7 @@ namespace Saving
         private static void DeletePuzzle(PuzzleDataHolder puzzleToRemove)
         {
             currentUserData.puzzles.Remove(puzzleToRemove);
-            string jsonString = currentUserData.ToJson();
-            FileManager.WriteToFile(userSaveFileName, jsonString);
+            WriteUserDataToFile(SaveRequestLocation.None);
             OnPuzzleDeleted?.Invoke(puzzleToRemove);
         }
 
@@ -373,6 +382,4 @@ namespace Saving
             }
         }
     }
-
-    
 }
