@@ -25,11 +25,11 @@ public class SudokuGameSceneManager : MonoBehaviour
         selectPort.OnSelectAndLoad -= OnSelectAndLoad;
     }
 
-    private void OnSelectAndLoad(PuzzleDataHolder arg0)
+    private void OnSelectAndLoad(PuzzleDataHolder puzzle)
     {
         generatorPort.GenerationType = GridGenerationType.loaded;
         SaveManager.SetGenerationType(generatorPort.GenerationType);
-        SaveManager.SetCurrentPuzzle(arg0);
+        SaveManager.SetCurrentPuzzle(puzzle);
         LoadPuzzleSelectScene();
         LoadGameScene();
     }

@@ -74,10 +74,16 @@ public class WFCGridSolver
     /// <summary>
     ///   Looks for all solutions for a grid to see if it only has one solution.
     /// </summary>
-    public bool HasOneSolution(SudokuGrid9x9 originalGrid)
+    public bool HasOneSolution(SudokuGrid9x9 originalGrid, bool checkForContradiction = false)
     {
-        grid = new SudokuGrid9x9(originalGrid);
         solvedGrids = new List<SudokuGrid9x9>();
+
+        if (checkForContradiction && HasContradiction(originalGrid))
+        {
+            return false;
+        }
+        
+        grid = new SudokuGrid9x9(originalGrid);
         moves = new Stack<Move>();
         cancelSolve = false;
         
@@ -98,6 +104,82 @@ public class WFCGridSolver
         }
 
         return solvedGrids.Count == 1;
+    }
+
+    private bool HasContradiction(SudokuGrid9x9 checkGrid)
+    {
+        // check to see that each col has at most one of each digit
+        for (int row = 0; row < 9; row++)
+        {
+            HashSet<int> digitsInCol = new HashSet<int>();
+
+            for (int col = 0; col < 9; col++)
+            {
+                int digit = checkGrid[row, col].Number;
+                if (digit <= 0)
+                    continue;
+
+                if (digitsInCol.Contains(digit))
+                {
+                    Debug.Log($"Col {col} already contains a {digit}");
+                    return true;
+                }
+
+                digitsInCol.Add(digit);
+            }
+        }
+        
+        // check to see that each row has at most one of each digit
+        for (int col = 0; col < 9; col++)
+        {
+            HashSet<int> digitsInRow = new HashSet<int>();
+
+            for (int row = 0; row < 9; row++)
+            {
+                int digit = checkGrid[row, col].Number;
+                if (digit <= 0)
+                    continue;
+
+                if (digitsInRow.Contains(digit))
+                {
+                    Debug.Log($"Row {row} already contains a {digit}");
+                    return true;
+                }
+
+                digitsInRow.Add(digit);
+            }
+        }
+
+        // check to see that each box has at most one of each digit
+        for (int topLeftBoxRow = 0; topLeftBoxRow < 9; topLeftBoxRow += 3)
+        {
+            for (int topLeftBoxCol = 0; topLeftBoxCol < 9; topLeftBoxCol += 3)
+            {
+            
+                HashSet<int> digitsInBox = new HashSet<int>();
+
+                for (int deltaRow = 0; deltaRow < 3; deltaRow++)
+                {
+                    for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+                    {
+                        int row = topLeftBoxRow + deltaRow;
+                        int col = topLeftBoxCol + deltaCol;
+                        
+                        int digit = checkGrid[row, col].Number;
+                        if (digit <= 0)
+                            continue;
+
+                        if (digitsInBox.Contains(digit))
+                        {
+                            Debug.Log($"Box {topLeftBoxRow},{topLeftBoxCol} already contains a {digit}");
+                            return true;
+                        }
+                    } 
+                }
+            }
+        }
+
+        return false;
     }
 
     public int GetSolutionCount(SudokuGrid9x9 originalGrid)

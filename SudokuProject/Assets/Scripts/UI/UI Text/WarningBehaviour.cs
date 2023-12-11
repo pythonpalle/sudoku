@@ -49,9 +49,9 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
         {
             state = SolutionsState.None;
         }
-        else
+        else 
         {
-            _solver.HasOneSolution(_gridPort.grid);
+            _solver.HasOneSolution(_gridPort.grid, true);
             state = _solver.SolutionsState;
         }
 

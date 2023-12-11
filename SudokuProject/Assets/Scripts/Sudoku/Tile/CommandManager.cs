@@ -80,6 +80,7 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     private void OnSetupTiles()
     {
         EventManager.CallNewCommand(null);
+        Debug.Log("CM Tiles set up");
     }
 
     private void Update()

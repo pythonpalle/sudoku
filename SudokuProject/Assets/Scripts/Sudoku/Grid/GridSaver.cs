@@ -71,6 +71,8 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
             grid.SetNumberToIndex(index, numbers[i]);
         }
         
+        Debug.Log($"GEN TYPE {generatorPort.GenerationType}");
+        
         Debug.Log("Created grid:");
         grid.PrintGrid();
         
@@ -82,14 +84,14 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
     private IEnumerator PerformCommandsRoutine(PuzzleDataHolder puzzleData, float f)
     {
         GameStateManager.SetActive(false);
-        
+         
         // wait for grid to finish generating
         yield return new WaitForSeconds(f);
 
         _gridPort.RequestGrid();
         yield return new WaitUntil(() => _gridPort.tileBehaviours != null);
 
-        int totalCommandCount = puzzleData.commands.Count;
+        int totalCommandCount = puzzleData.commands.Count; 
         int savedCounter = puzzleData.commandCounter;
         
         bool showCommands = true;
