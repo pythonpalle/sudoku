@@ -190,7 +190,7 @@ MonoBehaviour:
   puzzleSelectPort: {fileID: 11400000, guid: 12e4ef2e78913584ea4cfd254336a2df, type: 2}
   _popupWindow: {fileID: 1666594}
   placeHolderText: {fileID: 813128407}
-  popupData:
+  deletePopupData:
     header: WARNING
     explanation: Are you sure you want to delete this puzzle?
     cancelButtonData:
@@ -199,6 +199,15 @@ MonoBehaviour:
     confirmButtonData:
       exists: 1
       text: Delete
+  restartPopupData:
+    header: RESTART PUZZLE?
+    explanation: All progress will be lost!
+    cancelButtonData:
+      exists: 1
+      text: Restart
+    confirmButtonData:
+      exists: 1
+      text: Cancel
 --- !u!1 &6079169
 GameObject:
   m_ObjectHideFlags: 0

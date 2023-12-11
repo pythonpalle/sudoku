@@ -34,7 +34,7 @@ namespace PuzzleSelect
     
         private void ResetCurrentPuzzle()
         {
-            SaveManager.ResetCurrentPuzzle();
+            SaveManager.SetCurrentPuzzleToNull();
         }
     }
 }

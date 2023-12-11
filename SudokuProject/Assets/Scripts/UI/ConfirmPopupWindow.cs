@@ -67,13 +67,9 @@ public class ConfirmPopupWindow : MonoBehaviour
         if (_popupData.confirmButtonData.action != null)
         {
             _popupData.confirmButtonData.action?.Invoke();
-            return;
         }
         
-        if (closeOnConfirm)
-        {
-            _popupWindow.Close();
-        }
+        _popupWindow.Close();
     }
 
     public void CancelButtonPressed()
@@ -81,7 +77,8 @@ public class ConfirmPopupWindow : MonoBehaviour
         if (_popupData.cancelButtonData.action != null)
         {
             _popupData.cancelButtonData.action?.Invoke();
-            return;
         }
+        
+        _popupWindow.Close();
     }
 }

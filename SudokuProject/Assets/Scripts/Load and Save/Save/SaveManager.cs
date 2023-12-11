@@ -34,6 +34,7 @@ namespace Saving
         public static UnityAction<SaveRequestLocation> OnSuccessfulSave;
         public static UnityAction OnPuzzleSaveCreated;
         public static UnityAction<PuzzleDataHolder> OnPuzzleDeleted;
+        public static UnityAction<PuzzleDataHolder> OnPuzzleReset;
 
         private static List<ILoadPuzzleData> loadDatas = new List<ILoadPuzzleData>();
         private static List<IPopulatePuzzleData> populateDatas = new List<IPopulatePuzzleData>();
@@ -370,7 +371,7 @@ namespace Saving
             }
         }
 
-        public static void ResetCurrentPuzzle()
+        public static void SetCurrentPuzzleToNull()
         {
             currentPuzzle = null;
         }
@@ -405,6 +406,13 @@ namespace Saving
             {
                 listener.LoadFromSaveData(currentPuzzle);
             }
+        }
+
+        public static void RestartPuzzle(PuzzleDataHolder puzzleDataHolder)
+        {
+            currentPuzzle = puzzleDataHolder;
+            currentPuzzle.Reset();
+            OnPuzzleReset?.Invoke(currentPuzzle);
         }
     }
 }

@@ -20,6 +20,7 @@ public class SudokuGameSceneManager : MonoBehaviour
         selectPort.OnSelectAndLoad += OnSelectAndLoad;
 
         SaveManager.OnPuzzleSaveCreated += OnPuzzleSaveCreated;
+        SaveManager.OnPuzzleReset += OnPuzzleReset;
     }
     
     public void OnDisable()
@@ -27,6 +28,12 @@ public class SudokuGameSceneManager : MonoBehaviour
         selectPort.OnSelectAndLoad -= OnSelectAndLoad;
         
         SaveManager.OnPuzzleSaveCreated -= OnPuzzleSaveCreated;
+        SaveManager.OnPuzzleReset -= OnPuzzleReset;
+    }
+
+    private void OnPuzzleReset(PuzzleDataHolder data)
+    {
+        OnLoadPuzzle();
     }
 
     private void OnPuzzleSaveCreated()

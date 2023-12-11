@@ -16,22 +16,31 @@ namespace PuzzleSelect
 
         private PuzzleDataHolder currentPuzzle;
 
-        public PopupData popupData;
+        public PopupData deletePopupData;
+        public PopupData restartPopupData;
 
         private void OnEnable()
         {
             puzzleSelectPort.OnSelectPuzzleBox += OnSelectPuzzleBox;
 
-            popupData.confirmButtonData.action = DeletePuzzle;
+            deletePopupData.confirmButtonData.action = DeletePuzzle;
+            restartPopupData.confirmButtonData.action = RestartPuzzle;
 
             SaveManager.OnPuzzleDeleted += OnPuzzleDeleted;
+            SaveManager.OnPuzzleReset += OnPuzzleReset;
         }
-        
+
         private void OnDisable()
         {
             puzzleSelectPort.OnSelectPuzzleBox -= OnSelectPuzzleBox;
             
             SaveManager.OnPuzzleDeleted -= OnPuzzleDeleted;
+            SaveManager.OnPuzzleReset -= OnPuzzleReset;
+        }
+
+        private void OnPuzzleReset(PuzzleDataHolder arg0)
+        {
+            _popupWindow.Close();
         }
 
         private void OnSelectPuzzleBox()
@@ -56,7 +65,12 @@ namespace PuzzleSelect
         
         public void OnDeleteButtonPressed()
         {
-            EventManager.DisplayConfirmPopup(popupData);
+            EventManager.DisplayConfirmPopup(deletePopupData);
+        }
+        
+        public void OnRestartButtonPressed()
+        {
+            EventManager.DisplayConfirmPopup(restartPopupData);
         }
 
         void DeletePuzzle()
@@ -64,10 +78,9 @@ namespace PuzzleSelect
             SaveManager.TryDeletePuzzle(currentPuzzle);
         } 
         
-        public void OnRestartButtonPressed()
+        private void RestartPuzzle()
         {
-            Debug.LogWarning($"Warn for restarting puzzle {currentPuzzle.name}!");
+            SaveManager.RestartPuzzle(currentPuzzle);
         }
     }
-
 }

@@ -44,11 +44,22 @@ namespace Saving
                 if (digitChar == '0' || digitChar == ' ')
                     continue;
                 
-                int row = i / 9;
-                int col = i % 9;
-    
                 int digitNumber = (int)Char.GetNumericValue(digitChar);
                 numbers[i] = digitNumber;
+            }
+        }
+
+        public void Reset()
+        {
+            commands.Clear();
+            commandCounter = 0;
+            
+            for (int i = 0; i < 81; i++)
+            {
+                if (permanent[i])
+                    continue;
+
+                numbers[i] = 0;
             }
         }
     }
