@@ -37,6 +37,8 @@ namespace Saving
 
         private static List<ILoadPuzzleData> loadDatas = new List<ILoadPuzzleData>();
         private static List<IPopulatePuzzleData> populateDatas = new List<IPopulatePuzzleData>();
+
+        private static bool compress = false;
         
         public static bool AddLoadDataListener(ILoadPuzzleData data)
         {
@@ -119,7 +121,7 @@ namespace Saving
                 return false;
             } 
 
-            // can't save progrees if there are no puzzles
+            // can't save progress if there are no puzzles
             Assert.IsFalse(currentUserData.puzzles == null);
             Assert.IsFalse(currentPuzzle == null);
 
@@ -157,6 +159,19 @@ namespace Saving
 
         private static bool WriteUserDataToFile(SaveRequestLocation location)
         {
+            var binary = currentUserData.ToBinary();
+
+            if (FileManager.WriteAllBytes(userSaveFileName, binary, compress))
+            {
+                OnSuccessfulSave?.Invoke(location);
+                return true;
+            }
+            else 
+            {
+                return false; 
+            }
+
+            
             string jsonString = currentUserData.ToJson();
             if (FileManager.WriteToFile(userSaveFileName, jsonString))
             {
@@ -167,6 +182,7 @@ namespace Saving
             {
                 return false; 
             }
+            
         }
 
         private static bool TryCreateFirstSaveForCurrentPuzzle(SaveRequestLocation location, bool forceSave = false)
@@ -237,12 +253,19 @@ namespace Saving
 
         private static bool TryLoadCurrentUserData()
         {
-            if (FileManager.LoadFromFile(userSaveFileName, out string dataAsJson))
+            if (FileManager.ReadAllBytes(userSaveFileName, out byte[] bytes, compress))
             {
                 currentUserData = new UserSaveData();
-                currentUserData.LoadFromJson(dataAsJson);
+                currentUserData.LoadFromBinary(bytes);
                 return true; 
             }
+            
+            // if (FileManager.LoadFromFile(userSaveFileName, out string dataAsJson))
+            // {
+            //     currentUserData = new UserSaveData();
+            //     currentUserData.LoadFromJson(dataAsJson);
+            //     return true; 
+            // }
 
             return false;
         }

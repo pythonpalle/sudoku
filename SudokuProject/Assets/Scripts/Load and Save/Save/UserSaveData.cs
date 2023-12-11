@@ -51,10 +51,8 @@ namespace Saving
             return serializedData;
         }
     
-        public void LoadFromBinary()
+        public void LoadFromBinary(byte[] bytes)
         {
-            byte[] bytes = FileManager.ReadAllBytes("byteTest");
-        
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream memoryStream = new MemoryStream(bytes);
         

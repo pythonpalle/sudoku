@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.IO.Compression;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -57,14 +58,28 @@ public static class FileManager
         return false;
     }
     
-    public static bool WriteAllBytes(string fileName, byte[] bytes)
+    public static bool WriteAllBytes(string fileName, byte[] bytes, bool compress)
     {
         string fullFilePath = GetFullFilePathName(fileName);
         Debug.Log($"File path: {fullFilePath}");
 
         try
         {
-            File.WriteAllBytes(fullFilePath, bytes);
+            if (compress)
+            {
+                using (FileStream fileStream = File.Create(fullFilePath))
+                {
+                    using (GZipStream compressionStream = new GZipStream(fileStream, System.IO.Compression.CompressionLevel.Optimal))
+                    {
+                        compressionStream.Write(bytes, 0, bytes.Length);
+                    }
+                }
+            }
+            else
+            {
+                File.WriteAllBytes(fullFilePath, bytes);
+            }
+            
             Debug.Log("Successfully written to file!");
             return true;
         }
@@ -73,6 +88,41 @@ public static class FileManager
             Debug.LogError(($"Failed to write to {fullFilePath} with exception {e}"));
         }
 
+        return false;
+    }
+
+    public static bool ReadAllBytes(string fileName, out byte[] bytes, bool compress)
+    {
+        string fullFilePath = GetFullFilePathName(fileName);
+        
+        try
+        {
+            if (compress)
+            {
+                using (FileStream fileStream = File.OpenRead(fullFilePath))
+                using (MemoryStream decompressedStream = new MemoryStream())
+                {
+                    using (GZipStream decompressionStream = new GZipStream(fileStream, CompressionMode.Decompress))
+                    {
+                        decompressionStream.CopyTo(decompressedStream);
+                    }
+                    bytes = decompressedStream.ToArray();
+                }
+            }
+            else
+            {
+                bytes = File.ReadAllBytes(fullFilePath);
+            }
+            
+            Debug.Log("Successfully loaded from file!");
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(($"Failed to load from {fullFilePath} with exception {e}"));
+        }
+
+        bytes = null;
         return false;
     }
     

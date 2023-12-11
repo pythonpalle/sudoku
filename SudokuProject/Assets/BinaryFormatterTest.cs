@@ -27,7 +27,7 @@ public class BoolListContainer
         // Get the serialized data as a byte array
         byte[] serializedData = memoryStream.ToArray();
         
-        FileManager.WriteAllBytes("byteTest", serializedData);
+        //FileManager.WriteAllBytes("byteTest", serializedData);
     }
     
     public void LoadFromBinary()
