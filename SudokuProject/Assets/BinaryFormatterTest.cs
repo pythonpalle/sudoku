@@ -9,9 +9,7 @@ using UnityEngine;
 public class BoolListContainer
 {
     public List<bool> bools = new List<bool>();
-
-    public int boolCount => bools.Count;
-
+    
     public BoolListContainer(List<bool> bools)
     {
         this.bools = bools;
@@ -30,10 +28,6 @@ public class BoolListContainer
         byte[] serializedData = memoryStream.ToArray();
         
         FileManager.WriteAllBytes("byteTest", serializedData);
-        
-        // To deserialize, you would do the reverse
-        // Deserialize from byte array to object
-        memoryStream = new MemoryStream(serializedData);
     }
     
     public void LoadFromBinary()
@@ -46,23 +40,23 @@ public class BoolListContainer
         // todo: fix this
         //this = (BoolListContainer)formatter.Deserialize(memoryStream);
         BoolListContainer deserializedObject = (BoolListContainer)formatter.Deserialize(memoryStream);
-
-        Debug.Log($"ints counts: {deserializedObject.boolCount}");
         
-
+        this.bools = deserializedObject.bools;
+        
+        Debug.Log($"bools counts: {bools.Count}");
     }
 }
 
 [System.Serializable]
 public class BinaryFormatterTest : MonoBehaviour
 {
-    private List<bool> bools = new List<bool>();
+    public List<bool> bools = new List<bool>();
     // Start is called before the first frame update
 
     private BoolListContainer boolList;
     void Start() 
     {
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 150; i++)
         {
             bools.Add(false);
         }
@@ -76,11 +70,13 @@ public class BinaryFormatterTest : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             SaveToBinary();
+            bools = new List<bool>();
         }
         
         if (Input.GetKeyDown(KeyCode.L))
         {
             LoadFromBinary();
+            bools = boolList.bools;
         }
     }
 
