@@ -204,10 +204,10 @@ MonoBehaviour:
     explanation: All progress will be lost!
     cancelButtonData:
       exists: 1
-      text: Restart
+      text: Cancel
     confirmButtonData:
       exists: 1
-      text: Cancel
+      text: Restart
 --- !u!1 &6079169
 GameObject:
   m_ObjectHideFlags: 0
@@ -721,6 +721,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   puzzleSelectPort: {fileID: 11400000, guid: 12e4ef2e78913584ea4cfd254336a2df, type: 2}
+--- !u!114 &628780029 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 846618050310951940, guid: c08f34537a00bd84494a337afb9ec6ac, type: 3}
+  m_PrefabInstance: {fileID: 846618051742616871}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &687058666 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1626252190182714263, guid: 6944ed171d010504cbe440313a5d1cc6, type: 3}
@@ -3910,6 +3921,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2140301343 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 846618050457451937, guid: c08f34537a00bd84494a337afb9ec6ac, type: 3}
+  m_PrefabInstance: {fileID: 846618051742616871}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &846618051742616871
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3921,6 +3943,14 @@ PrefabInstance:
       propertyPath: header
       value: 
       objectReference: {fileID: 1856027659}
+    - target: {fileID: 846618050279077353, guid: c08f34537a00bd84494a337afb9ec6ac, type: 3}
+      propertyPath: cancelText
+      value: 
+      objectReference: {fileID: 2140301343}
+    - target: {fileID: 846618050279077353, guid: c08f34537a00bd84494a337afb9ec6ac, type: 3}
+      propertyPath: confirmText
+      value: 
+      objectReference: {fileID: 628780029}
     - target: {fileID: 846618050279077353, guid: c08f34537a00bd84494a337afb9ec6ac, type: 3}
       propertyPath: explanation
       value: 

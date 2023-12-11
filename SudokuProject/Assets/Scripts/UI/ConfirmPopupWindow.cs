@@ -35,6 +35,9 @@ public class ConfirmPopupWindow : MonoBehaviour
     [SerializeField] private TextMeshProUGUI header;
     [SerializeField] private TextMeshProUGUI explanation;
 
+    [SerializeField] private TextMeshProUGUI confirmText;
+    [SerializeField] private TextMeshProUGUI cancelText;
+
     private void Start()
     {
         _popupWindow = GetComponent<PopupWindow>();
@@ -57,6 +60,9 @@ public class ConfirmPopupWindow : MonoBehaviour
 
         header.text = _popupData.header;
         explanation.text = _popupData.explanation;
+
+        confirmText.text = _popupData.confirmButtonData.text;
+        cancelText.text = _popupData.cancelButtonData.text;
 
         cancelButton.gameObject.SetActive(_popupData.cancelButtonData.exists);
         confirmButton.gameObject.SetActive(_popupData.confirmButtonData.exists);
