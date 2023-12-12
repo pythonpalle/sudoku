@@ -65,12 +65,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closeOnConfirm: 1
-  confirmButton: {fileID: 0}
-  cancelButton: {fileID: 0}
-  header: {fileID: 0}
-  explanation: {fileID: 0}
-  confirmText: {fileID: 0}
-  cancelText: {fileID: 0}
+  confirmButton: {fileID: 846618050439809956}
+  cancelButton: {fileID: 846618051317073760}
+  header: {fileID: 3634800742409456752}
+  explanation: {fileID: 846618051784059116}
+  confirmText: {fileID: 846618050310951940}
+  cancelText: {fileID: 846618050457451937}
 --- !u!1 &846618050310951942
 GameObject:
   m_ObjectHideFlags: 0
@@ -280,10 +280,10 @@ RectTransform:
   m_Father: {fileID: 846618050880147800}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 346.4792, y: -20}
-  m_SizeDelta: {x: 126.42, y: 41.9}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &846618050439809954
 CanvasRenderer:
@@ -746,10 +746,10 @@ RectTransform:
   m_Father: {fileID: 846618050880147800}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 162.0592, y: -20}
-  m_SizeDelta: {x: 126.42, y: 41.9}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &846618051317073774
 CanvasRenderer:
