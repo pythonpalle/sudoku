@@ -7,8 +7,9 @@ using UnityEngine.UI;
 
 public class DifficultySelector : MonoBehaviour
 {
-    [Header("Difficulty Object")]
+    [Header("SO")]
     [SerializeField] private DifficultyObject difficultyObject;
+    [SerializeField] private ScenePort scenePort;
 
     [Header("Buttons")] 
     [SerializeField] private Button simpleButton;
@@ -72,7 +73,9 @@ public class DifficultySelector : MonoBehaviour
 
     private void LoadPuzzleScene()
     {
-        var sceneManager = GameObject.FindObjectOfType<SudokuGameSceneManager>();
-        sceneManager.LoadRandom();
+        scenePort.CallLoadRandom();
+        
+        // var sceneManager = GameObject.FindObjectOfType<SudokuGameSceneManager>();
+        // sceneManager.LoadRandom();
     }
 }

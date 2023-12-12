@@ -10,6 +10,7 @@ public class SudokuGameSceneManager : MonoBehaviour
 {
     [SerializeField] private GeneratorPort generatorPort;
     [SerializeField] private PuzzleSelectPort selectPort;
+    [SerializeField] private ScenePort scenePort;
     
     private string startSceneName = "Scenes/Start Scene";
     private string puzzleSceneName = "Scenes/Puzzle Select Scene"; 
@@ -19,6 +20,9 @@ public class SudokuGameSceneManager : MonoBehaviour
     {
         selectPort.OnSelectAndLoad += OnSelectAndLoad;
 
+        scenePort.OnCallLoadPuzzleSelectScene += LoadPuzzleSelectScene;
+        scenePort.OnCallLoadRandom += LoadRandom;
+
         SaveManager.OnPuzzleSaveCreated += OnPuzzleSaveCreated;
         SaveManager.OnPuzzleReset += OnPuzzleReset;
     }
@@ -26,6 +30,9 @@ public class SudokuGameSceneManager : MonoBehaviour
     public void OnDisable()
     {
         selectPort.OnSelectAndLoad -= OnSelectAndLoad;
+        
+        scenePort.OnCallLoadPuzzleSelectScene -= LoadPuzzleSelectScene;
+        scenePort.OnCallLoadRandom -= LoadRandom;
         
         SaveManager.OnPuzzleSaveCreated -= OnPuzzleSaveCreated;
         SaveManager.OnPuzzleReset -= OnPuzzleReset;

@@ -6,10 +6,8 @@ using UnityEngine;
 
 public class InvalidHintActivator : MonoBehaviour
 {
-    [SerializeField] private PopupWindow _popupWindow;
     [SerializeField] private HintObject _hintObject;
-     
-    [SerializeField] private TextMeshProUGUI warningTextMesh;
+    [SerializeField] private PopupData _popupData;
 
     private void OnEnable()
     {
@@ -23,7 +21,8 @@ public class InvalidHintActivator : MonoBehaviour
 
     private void OnDisplayWarning(string warningText)
     {
-        warningTextMesh.text = warningText;
-        _popupWindow.PopUp();
+        _popupData.explanation = warningText;
+        
+        EventManager.DisplayConfirmPopup(_popupData);
     }
 }

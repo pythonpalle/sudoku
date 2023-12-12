@@ -12,12 +12,12 @@ namespace Saving
     public class SavePopupBehaviour : MonoBehaviour
 {
     [SerializeField] private PopupWindow popupWindow;
-    [SerializeField] private SudokuGameSceneManager gameSceneManager;
     [SerializeField] private ValidNameChecker _nameChecker;
 
     [Header("SO")]
     [SerializeField] private DifficultyObject _difficultyObject;
     [SerializeField] private GeneratorPort generatorPort;
+    [SerializeField] private ScenePort scenePort;
     
     private string placeHolderString = String.Empty;
     private SaveRequestLocation _location;
@@ -57,7 +57,7 @@ namespace Saving
         }
         else
         {
-            gameSceneManager.LoadPuzzleSelectScene();
+            scenePort.OnCallLoadPuzzleSelectScene();
         }
     }
 
@@ -95,7 +95,7 @@ namespace Saving
                 break;
             
             case SaveRequestLocation.ExitGameButton:
-                gameSceneManager.LoadPuzzleSelectScene();
+                scenePort.CallLoadPuzzleSelectScene();
                 break;
         }
     }

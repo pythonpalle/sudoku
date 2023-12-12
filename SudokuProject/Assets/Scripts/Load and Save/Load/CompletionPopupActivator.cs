@@ -6,12 +6,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public class CompletionListener : MonoBehaviour
+public class CompletionPopupActivator : MonoBehaviour
 {
     public UnityEvent OnComplete;
     private int completions = 0;
-
-    [SerializeField] private TextMeshProUGUI victoryText;
+    
+    [SerializeField] private PopupData _popupData;
+    [SerializeField] private ScenePort _scenePort;
 
     private void OnEnable()
     {
@@ -30,13 +31,15 @@ public class CompletionListener : MonoBehaviour
 
         if (completions > 1)
         {
-            victoryText.fontSize = 45;
-            victoryText.text = "wow, I guess you solved this one again...";
+            _popupData.explanation = "wow, I guess you solved this one again...";
         }
+
+        _popupData.cancelButtonData.action = GoBackToSelect;
+        EventManager.OnDisplayConfirmPopup(_popupData);
     }
 
-    public void ReloadScene()
+    private void GoBackToSelect()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        _scenePort.CallLoadPuzzleSelectScene();
     }
 }
