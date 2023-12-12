@@ -51,6 +51,8 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
     public void LoadFromSaveData(PuzzleDataHolder puzzleData)
     {
+        GameStateManager.SetActive(false);
+        
         // create grid, populate it with permanent numbers
         SudokuGrid9x9 grid = new SudokuGrid9x9(false);
 
@@ -83,8 +85,6 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
     private IEnumerator PerformCommandsRoutine(PuzzleDataHolder puzzleData, float f)
     {
-        GameStateManager.SetActive(false);
-         
         // wait for grid to finish generating
         yield return new WaitForSeconds(f);
 

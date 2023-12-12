@@ -142,6 +142,10 @@ PrefabInstance:
       propertyPath: _generatorPort
       value: 
       objectReference: {fileID: 11400000, guid: b00f77592638a0f4fa31cc807e02db32, type: 2}
+    - target: {fileID: 5790437363227731706, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
+      propertyPath: _saveRequestPort
+      value: 
+      objectReference: {fileID: 11400000, guid: 3e4b5e9f94a7dd1439c211d31a78f5f7, type: 2}
     - target: {fileID: 7126686737247987784, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
       propertyPath: m_Name
       value: Top Bar Without Popup
@@ -1688,6 +1692,10 @@ PrefabInstance:
     - target: {fileID: 4162996033991113427, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
       propertyPath: m_Name
       value: Load Grid
+      objectReference: {fileID: 0}
+    - target: {fileID: 4162996033991113427, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb440d16d23e6ea47b479e95979e630e, type: 3}
@@ -4875,6 +4883,7 @@ MonoBehaviour:
   _puzzleSelectPort: {fileID: 11400000, guid: 12e4ef2e78913584ea4cfd254336a2df, type: 2}
   generatorPort: {fileID: 11400000, guid: b00f77592638a0f4fa31cc807e02db32, type: 2}
   nameText: {fileID: 681408687}
+  _saveRequestPort: {fileID: 11400000, guid: 3e4b5e9f94a7dd1439c211d31a78f5f7, type: 2}
 --- !u!1 &1498087727
 GameObject:
   m_ObjectHideFlags: 0
@@ -7089,6 +7098,10 @@ PrefabInstance:
       propertyPath: _generatorPort
       value: 
       objectReference: {fileID: 11400000, guid: b00f77592638a0f4fa31cc807e02db32, type: 2}
+    - target: {fileID: 939624801380382849, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
+      propertyPath: _saveRequestPort
+      value: 
+      objectReference: {fileID: 11400000, guid: 3e4b5e9f94a7dd1439c211d31a78f5f7, type: 2}
     - target: {fileID: 2804435505978202239, guid: da4be04bc00a39b47a5b7852b5c3e0d1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

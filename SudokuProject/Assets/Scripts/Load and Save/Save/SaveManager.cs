@@ -171,19 +171,6 @@ namespace Saving
             {
                 return false; 
             }
-
-            
-            string jsonString = currentUserData.ToJson();
-            if (FileManager.WriteToFile(userSaveFileName, jsonString))
-            {
-                OnSuccessfulSave?.Invoke(location);
-                return true;
-            }
-            else 
-            {
-                return false; 
-            }
-            
         }
 
         private static bool TryCreateFirstSaveForCurrentPuzzle(SaveRequestLocation location, bool forceSave = false)
@@ -260,13 +247,6 @@ namespace Saving
                 currentUserData.LoadFromBinary(bytes);
                 return true; 
             }
-            
-            // if (FileManager.LoadFromFile(userSaveFileName, out string dataAsJson))
-            // {
-            //     currentUserData = new UserSaveData();
-            //     currentUserData.LoadFromJson(dataAsJson);
-            //     return true; 
-            // }
 
             return false;
         }

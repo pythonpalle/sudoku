@@ -8,6 +8,7 @@ public class SaveButton : MonoBehaviour
 {
     [SerializeField] private GridPort _gridPort;
     [SerializeField] private GeneratorPort _generatorPort;
+    [SerializeField] private SaveRequestPort _saveRequestPort;
 
     private string successfulSaveString = "Progress Saved!";
     private SaveRequestLocation location = SaveRequestLocation.SaveButton;
@@ -29,9 +30,12 @@ public class SaveButton : MonoBehaviour
         {
             return;
         }
+
+        // Don't display popup when exiting
+        if (_saveRequestPort.Location == SaveRequestLocation.ExitGameButton)
+            return;
         
-        if (this.location == location)
-            DisplaySavePopup();
+        DisplaySavePopup();
     }
 
     private void DisplaySavePopup()
@@ -41,6 +45,8 @@ public class SaveButton : MonoBehaviour
 
     public void OnSaveButtonPressed()
     {
+        _saveRequestPort.Location = location;
+        
         if (SaveManager.TrySave(location))
         {
             DisplaySavePopup();

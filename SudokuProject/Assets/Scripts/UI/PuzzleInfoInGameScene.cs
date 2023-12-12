@@ -11,10 +11,11 @@ public class PuzzleInfoInGameScene : MonoBehaviour
     [SerializeField] private PuzzleSelectPort _puzzleSelectPort;
     [SerializeField] private GeneratorPort generatorPort;
     [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private SaveRequestPort _saveRequestPort;
     
     private void OnEnable()
     {
-        SaveManager.OnSuccessfulSave += OnSuccessfulSave;
+        SaveManager.OnPuzzleSaveCreated += OnSuccessfulSave;
 
         switch (generatorPort.GenerationType)
         {
@@ -30,15 +31,15 @@ public class PuzzleInfoInGameScene : MonoBehaviour
 
     private void OnDisable()
     {
-        SaveManager.OnSuccessfulSave -= OnSuccessfulSave;
+        SaveManager.OnPuzzleSaveCreated -= OnSuccessfulSave;
     }
 
-    private void OnSuccessfulSave(SaveRequestLocation loc)
+    private void OnSuccessfulSave()
     {
-        if (generatorPort.GenerationType == GridGenerationType.random && loc != SaveRequestLocation.ExitGameButton)
+        if (_saveRequestPort.Location == SaveRequestLocation.SaveButton)
             SetNameText();
     }
-    
+
     private void SetEmptyName()
     {
         nameText.text = "";
