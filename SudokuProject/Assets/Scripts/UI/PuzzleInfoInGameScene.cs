@@ -35,7 +35,7 @@ public class PuzzleInfoInGameScene : MonoBehaviour
 
     private void OnSuccessfulSave(SaveRequestLocation loc)
     {
-        if (generatorPort.GenerationType == GridGenerationType.random)
+        if (generatorPort.GenerationType == GridGenerationType.random && loc != SaveRequestLocation.ExitGameButton)
             SetNameText();
     }
     
