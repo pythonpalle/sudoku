@@ -131,6 +131,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1157210451}
     m_Modifications:
     - target: {fileID: 5790437363227731706, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
+      propertyPath: scenePort
+      value: 
+      objectReference: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
+    - target: {fileID: 5790437363227731706, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
       propertyPath: _sceneManager
       value: 
       objectReference: {fileID: 1102141928}
@@ -4529,18 +4533,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68807398878ba9a4ea7ce9d7c7bbb100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnComplete:
-    m_PersistentCalls:
-      m_Calls: []
   _popupData:
-    header: 
-    explanation: 
+    header: Puzzle Complete!
+    explanation: Good Job!
     cancelButtonData:
-      exists: 0
-      text: 
+      exists: 1
+      text: More Puzzles
     confirmButtonData:
-      exists: 0
-      text: 
+      exists: 1
+      text: Admire
   _scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
 --- !u!1 &1412677027
 GameObject:

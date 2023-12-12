@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Saving;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,7 +9,6 @@ using UnityEngine.SceneManagement;
 
 public class CompletionPopupActivator : MonoBehaviour
 {
-    public UnityEvent OnComplete;
     private int completions = 0;
     
     [SerializeField] private PopupData _popupData;
@@ -26,7 +26,6 @@ public class CompletionPopupActivator : MonoBehaviour
 
     private void OnPuzzleComplete()
     {
-        OnComplete?.Invoke();
         completions++;
 
         if (completions > 1)
@@ -40,6 +39,9 @@ public class CompletionPopupActivator : MonoBehaviour
 
     private void GoBackToSelect()
     {
-        _scenePort.CallLoadPuzzleSelectScene();
+        if (SaveManager.TrySave(SaveRequestLocation.ExitGameButton, false))
+        {
+            _scenePort.OnCallLoadPuzzleSelectScene();
+        }
     }
 }

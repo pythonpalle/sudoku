@@ -1788,6 +1788,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   difficultyObject: {fileID: 11400000, guid: 6168c2ed25d594242ab75afc0a365596, type: 2}
+  scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
   simpleButton: {fileID: 34836829}
   easyButton: {fileID: 2128713242}
   mediumButton: {fileID: 687058666}
@@ -1801,6 +1802,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1893580196}
     m_Modifications:
+    - target: {fileID: 5790437363227731706, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
+      propertyPath: scenePort
+      value: 
+      objectReference: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
+    - target: {fileID: 5790437363227731706, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
+      propertyPath: _generatorPort
+      value: 
+      objectReference: {fileID: 11400000, guid: b00f77592638a0f4fa31cc807e02db32, type: 2}
     - target: {fileID: 7126686737247987784, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
       propertyPath: m_Name
       value: Top Menu
