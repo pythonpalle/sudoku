@@ -39,7 +39,7 @@ namespace Saving
         private static List<ILoadPuzzleData> loadDatas = new List<ILoadPuzzleData>();
         private static List<IPopulatePuzzleData> populateDatas = new List<IPopulatePuzzleData>();
 
-        private static bool compress = false;
+        private static bool compress = true;
         
         public static bool AddLoadDataListener(ILoadPuzzleData data)
         {
