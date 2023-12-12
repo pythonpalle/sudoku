@@ -111,8 +111,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         
         grid = importedGrid;
         
-        ////TODO: make import a valid command, or hard code work around for self created puzzles
-        // EventManager.CallNewCommand(null);
+        //TODO: make import a valid command, or hard code work around for self created puzzles
+         EventManager.CallNewCommand(null);
     }
 
     private void UpdateGridCandidates()
