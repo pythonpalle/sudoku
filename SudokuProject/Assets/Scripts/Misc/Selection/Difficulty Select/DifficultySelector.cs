@@ -18,10 +18,6 @@ public class DifficultySelector : MonoBehaviour
     [SerializeField] private Button hardButton;
     [SerializeField] private Button extremeButton;
 
-    [Header("Load Screen")] 
-    [SerializeField] private LoadGrid loadGrid;
-    
-
     private void OnEnable()
     {
         simpleButton.onClick.AddListener(OnSimpleButton);
@@ -74,8 +70,5 @@ public class DifficultySelector : MonoBehaviour
     private void LoadPuzzleScene()
     {
         scenePort.CallLoadRandom();
-        
-        // var sceneManager = GameObject.FindObjectOfType<SudokuGameSceneManager>();
-        // sceneManager.LoadRandom();
     }
 }
