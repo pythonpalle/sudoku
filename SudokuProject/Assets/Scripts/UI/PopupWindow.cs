@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PopupWindow : MonoBehaviour
 {
@@ -9,11 +10,15 @@ public class PopupWindow : MonoBehaviour
 
     private bool isPopped;
 
+    public UnityAction OnPopup;
+    public UnityAction OnClose;
+
     public void PopUp()
     {
         popupWindow.gameObject.SetActive(true);
         GameStateManager.OnPopup();
         isPopped = true;
+        OnPopup?.Invoke();
     }
 
     public void Close()
@@ -21,6 +26,7 @@ public class PopupWindow : MonoBehaviour
         popupWindow.gameObject.SetActive(false);
         GameStateManager.OnPopupClose();
         isPopped = false;
+        OnClose?.Invoke();
     }
 
     private void OnDestroy()

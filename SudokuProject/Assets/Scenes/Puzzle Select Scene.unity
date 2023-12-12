@@ -223,6 +223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   placeHolderText: {fileID: 813128407}
   userEnterText: {fileID: 690787951}
+  inputField: {fileID: 357306664}
 --- !u!1 &6079169
 GameObject:
   m_ObjectHideFlags: 0

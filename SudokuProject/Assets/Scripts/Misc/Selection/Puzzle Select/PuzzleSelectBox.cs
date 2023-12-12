@@ -14,7 +14,7 @@ namespace PuzzleSelect
         public void SetData(PuzzleDataHolder puzzleData)
         {
             puzzle = puzzleData;
-            nameText.text = puzzle.name; 
+            UpdateName();
         }
 
         public void OnButtonPressed()
@@ -25,6 +25,11 @@ namespace PuzzleSelect
         public bool HasPuzzle(PuzzleDataHolder other)
         {
             return other == puzzle;
+        }
+
+        public void UpdateName()
+        {
+            nameText.text = puzzle.name; 
         }
     }
 } 

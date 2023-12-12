@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 
 namespace Saving
@@ -8,6 +9,13 @@ namespace Saving
         [Header("User input")]
         [SerializeField] private TextMeshProUGUI placeHolderText;
         [SerializeField] private TextMeshProUGUI userEnterText;
+        [SerializeField] private TMP_InputField inputField;
+        private static int characterLimit = 14;
+
+        private void OnEnable()
+        {
+            inputField.characterLimit = characterLimit;
+        }
 
         public string GetPuzzleSaveName()
         {

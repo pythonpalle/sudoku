@@ -986,9 +986,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popupWindow: {fileID: 345772278}
   gameSceneManager: {fileID: 1102141928}
+  _nameChecker: {fileID: 345772281}
   _difficultyObject: {fileID: 11400000, guid: 6168c2ed25d594242ab75afc0a365596, type: 2}
   generatorPort: {fileID: 11400000, guid: b00f77592638a0f4fa31cc807e02db32, type: 2}
-  _nameChecker: {fileID: 345772281}
 --- !u!114 &345772281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1003,6 +1003,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   placeHolderText: {fileID: 313200359}
   userEnterText: {fileID: 1197265337}
+  inputField: {fileID: 1020649624}
 --- !u!1 &346461071
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,6 +27,8 @@ namespace PuzzleSelect
 
             SaveManager.OnPuzzleDeleted += OnPuzzleDeleted;
             SaveManager.OnPuzzleReset += OnPuzzleReset;
+
+            _popupWindow.OnClose += OnPopupWindowClose;
         }
 
         private void OnDisable()
@@ -35,6 +37,19 @@ namespace PuzzleSelect
             
             SaveManager.OnPuzzleDeleted -= OnPuzzleDeleted;
             SaveManager.OnPuzzleReset -= OnPuzzleReset;
+            
+            _popupWindow.OnClose -= OnPopupWindowClose;
+        }
+
+        private void OnPopupWindowClose()
+        {
+            UpdatePuzzleName();
+        }
+
+        private void UpdatePuzzleName()
+        {
+            currentPuzzle.name = _validNameChecker.GetPuzzleSaveName();
+            puzzleSelectPort.selectedBox.UpdateName();
         }
 
         private void OnPuzzleReset(PuzzleDataHolder arg0)
@@ -57,6 +72,7 @@ namespace PuzzleSelect
 
         public void OnPlayButtonPressed()
         {
+            UpdatePuzzleName();
             puzzleSelectPort.SelectAndLoad(currentPuzzle);
         }
         
