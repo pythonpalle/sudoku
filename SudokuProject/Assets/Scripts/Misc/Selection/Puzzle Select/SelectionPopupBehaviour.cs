@@ -11,9 +11,8 @@ namespace PuzzleSelect
     {
         [SerializeField] private PuzzleSelectPort puzzleSelectPort;
         [SerializeField] private PopupWindow _popupWindow;
-
-        [SerializeField] private TextMeshProUGUI placeHolderText;
-
+        [SerializeField] private ValidNameChecker _validNameChecker;
+        
         private PuzzleDataHolder currentPuzzle;
 
         public PopupData deletePopupData;
@@ -47,7 +46,8 @@ namespace PuzzleSelect
         {
             currentPuzzle = puzzleSelectPort.selectedPuzzle;
             _popupWindow.PopUp();
-            placeHolderText.text = currentPuzzle.name;
+            
+            _validNameChecker.SetPlaceHolder(currentPuzzle.name);
         }
 
         private void OnPuzzleDeleted(PuzzleDataHolder _)
@@ -57,9 +57,6 @@ namespace PuzzleSelect
 
         public void OnPlayButtonPressed()
         {
-            Debug.Log($"Update puzzle name... but then:");
-            Debug.Log($"Play puzzle {currentPuzzle.name}!");
-
             puzzleSelectPort.SelectAndLoad(currentPuzzle);
         }
         
