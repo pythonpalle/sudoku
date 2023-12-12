@@ -10,7 +10,6 @@ public class PopupAlphaCover : MonoBehaviour, IPointerDownHandler
     
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("Close popup!");
         popupWindow.Close();
     }
 }

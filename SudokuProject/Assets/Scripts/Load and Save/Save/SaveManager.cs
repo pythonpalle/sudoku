@@ -25,7 +25,7 @@ namespace Saving
         private static string userName = "user";
         private static UserIdentifier userIdentifier { get;  set; } = new UserIdentifier(userName, userID);
         private static UserSaveData currentUserData { get;  set; }
-        private static PuzzleDataHolder currentPuzzle;
+        public static PuzzleDataHolder currentPuzzle { get; private set; }
         private static bool HasCreatedPuzzleData => currentPuzzle != null;
         
         private static GridGenerationType generationType;
