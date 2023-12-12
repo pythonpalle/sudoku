@@ -916,6 +916,7 @@ GameObject:
   - component: {fileID: 345772278}
   - component: {fileID: 345772279}
   - component: {fileID: 345772280}
+  - component: {fileID: 345772281}
   m_Layer: 5
   m_Name: Save Popup Activator
   m_TagString: Untagged
@@ -985,10 +986,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popupWindow: {fileID: 345772278}
   gameSceneManager: {fileID: 1102141928}
-  placeHolderText: {fileID: 313200359}
-  userEnterText: {fileID: 1197265337}
   _difficultyObject: {fileID: 11400000, guid: 6168c2ed25d594242ab75afc0a365596, type: 2}
   generatorPort: {fileID: 11400000, guid: b00f77592638a0f4fa31cc807e02db32, type: 2}
+  _nameChecker: {fileID: 345772281}
+--- !u!114 &345772281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 345772276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299cf1bdb5f94c0ba6f05821fe9e4f25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeHolderText: {fileID: 313200359}
+  userEnterText: {fileID: 1197265337}
 --- !u!1 &346461071
 GameObject:
   m_ObjectHideFlags: 0

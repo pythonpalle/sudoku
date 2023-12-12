@@ -13,15 +13,12 @@ namespace Saving
 {
     [SerializeField] private PopupWindow popupWindow;
     [SerializeField] private SudokuGameSceneManager gameSceneManager;
-    
-    [Header("User input")]
-    [SerializeField] private TextMeshProUGUI placeHolderText;
-    [SerializeField] private TextMeshProUGUI userEnterText;
-    
+    [SerializeField] private ValidNameChecker _nameChecker;
+
     [Header("SO")]
     [SerializeField] private DifficultyObject _difficultyObject;
     [SerializeField] private GeneratorPort generatorPort;
-
+    
     private string placeHolderString = String.Empty;
     private SaveRequestLocation _location;
 
@@ -47,13 +44,8 @@ namespace Saving
     
     public void OnYesButtonPressed()
     {
-        string puzzleSaveName = placeHolderString;
+        string puzzleSaveName = _nameChecker.GetPuzzleSaveName();
 
-        if (ValidEnteredName())
-        {
-            puzzleSaveName = userEnterText.text;
-        }
-        
         // TODO: avgör svårighetsgrad genom att låta gridsolver lösa. Om ingen lösning, sätt extreme (Impossible?)
 
         PuzzleDifficulty difficulty = GetDifficulty();
@@ -74,28 +66,6 @@ namespace Saving
         return _difficultyObject.Difficulty;
     }
 
-    private bool ValidEnteredName()
-    {
-        string enteredString = userEnterText.text;
-        
-        // only 1 character and is invisible empty char
-        if (enteredString.Length == 1 && (int) enteredString[0] == 8203)
-        {
-            return false;
-        }
-        
-        if (!string.IsNullOrEmpty(enteredString) && enteredString.Trim().Length > 0)
-        {
-            // String is not empty, doesn't contain only spaces
-            return true;
-        }
-        else
-        {
-            // String is empty or contains only spaces or has zero-width space
-            return false;
-        }
-    }
-
     private void SetPlaceHolderText()
     {
         int puzzleCount = 0;
@@ -112,8 +82,8 @@ namespace Saving
                 placeHolderString = $"{_difficultyObject.Difficulty} {puzzleCount}";
                 break;
         } 
-
-        placeHolderText.text = placeHolderString;
+        
+        _nameChecker.SetPlaceHolder(placeHolderString);
     }
 
     public void OnNoButtonPressed()
