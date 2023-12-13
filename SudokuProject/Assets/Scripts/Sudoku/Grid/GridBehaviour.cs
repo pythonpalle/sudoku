@@ -232,7 +232,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         var number = entry.number;
         var enterType = entry.enterType;
         
-        HandleEnterNumberToSelectedTiles(tiles, number, enterType);
+        if (!TryEnterNumberToSelectedTiles(tiles, number, enterType))
+            return;
         
         switch (enterType)
         {
@@ -484,7 +485,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
     }
 
-    private void HandleEnterNumberToSelectedTiles(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
+    private bool TryEnterNumberToSelectedTiles(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
     {
         selectedTiles = selectedTiles.FindAll(t => !TrySkipPermanent(t, enterType));
         
@@ -495,12 +496,17 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         
         Debug.Log("Effected: " + selectedTiles.Count);
 
+        if (selectedTiles.Count == 0)
+        {
+            return false;
+        }
+
         foreach (var tileBehaviour in selectedTiles)
         {
-            //if (SkipTile(tileBehaviour, enterType)) continue;
-
             EnterTileNumber(tileBehaviour, number, enterType, remove);
-        } 
+        }
+
+        return true;
     }
 
     /// <summary>
