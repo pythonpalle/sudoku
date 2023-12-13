@@ -5,6 +5,13 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
+public enum RemovalType
+{
+    None,
+    Number,
+    All
+}
+
 public class GridBehaviour : MonoBehaviour, IHasCommand
 {
     private SudokuGrid9x9 grid;
@@ -86,7 +93,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     private void OnGridEnterFromUser(SudokuEntry entry)
     {
         if (entry.removal)
-            OnRemoveEntryEvent(entry);
+            OnRemoveEntry(entry);
         else
             OnNumberEnter(entry);
     }
@@ -280,17 +287,24 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         return false;
     }
 
-    private void OnRemoveEntryEvent(SudokuEntry entry)
+    private void OnRemoveEntry(SudokuEntry entry)
     {
         var tiles = entry.tiles;
         var enterType = entry.enterType;
         var colorRemoval = entry.colorRemoval;
+
+        RemovalType removeAll = RemovalType.All;
         
         // special case for color removal, since it can't remove anything else
         if (enterType == EnterType.ColorMark && colorRemoval)
         {
-            if (CheckIfTilesContainType(tiles, EnterType.ColorMark))
+            tiles = FilterEffectedOnly(tiles, removeAll, 0, EnterType.ColorMark);
+            
+            //if (CheckIfTilesContainType(tiles, EnterType.ColorMark))
+            if (tiles.Count > 0)
             {
+                Debug.Log($"Effected count: {tiles.Count}");
+
                 // only seen as new command if some tiles where effected
                 if (RemoveAllOfEntryType(tiles, EnterType.ColorMark))
                 {
@@ -316,8 +330,14 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
         foreach (var type in enterTypes)
         {
-            if (CheckIfTilesContainType(tiles, type))
+            List<TileBehaviour> effected = FilterEffectedOnly(tiles, removeAll, 0, type);
+
+            if (effected.Count > 0)
+            //if (CheckIfTilesContainType(tiles, type))
             {
+                tiles = effected;
+                Debug.Log($"Effected count: {tiles.Count}");
+
                 // special case needed to update board
                 if (type == EnterType.DigitMark)
                 {
@@ -491,8 +511,11 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         
         // if all selected tiles have the same number, remove the number 
         bool remove = selectedTiles.All(t => t.HasSameNumber(number, enterType));
+
+        RemovalType removalType = remove ? RemovalType.Number : RemovalType.None;
         
-        selectedTiles = FilterEffectedOnly(selectedTiles, remove, number, enterType);
+        
+        selectedTiles = FilterEffectedOnly(selectedTiles, removalType, number, enterType);
         
         Debug.Log("Effected: " + selectedTiles.Count);
 
@@ -517,7 +540,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     /// <param name="number"></param>
     /// <param name="enterType"></param>
     /// <exception cref="NotImplementedException"></exception>
-    private List<TileBehaviour> FilterEffectedOnly(List<TileBehaviour> selectedTiles, bool remove, int number, EnterType enterType)
+    private List<TileBehaviour> FilterEffectedOnly(List<TileBehaviour> selectedTiles, RemovalType remove, int number, EnterType enterType)
     {
         List<TileBehaviour> effected = new List<TileBehaviour>();
 

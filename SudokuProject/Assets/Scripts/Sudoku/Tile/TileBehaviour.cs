@@ -640,7 +640,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     }
 
 
-    public bool IsEffectedByEntry(int number, EnterType enterType, bool remove)
+    public bool IsEffectedByEntry(int number, EnterType enterType, RemovalType remove)
     {
         // maybe can be skipped
         if (Permanent && enterType != EnterType.ColorMark) return false;
@@ -663,52 +663,50 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         return false;
     }
     
-    private bool IsEffectedByColor(int nbr, bool remove)
+    private bool IsEffectedByColor(int nbr, RemovalType remove)
     {
-        Debug.Log("Remove color");
-        
-        if (remove)
-        {
-            return ColorMarks.Contains(nbr);
-        }
-
-        return !ColorMarks.Contains(nbr);
+        return IsEffectedByListType(nbr, remove, ColorMarks);
     }
 
-    private bool IsEffectedByCorner(int nbr, bool remove)
+    private bool IsEffectedByCorner(int nbr, RemovalType remove)
     {
         if (HasDigit)
             return false;
 
-        if (remove)
-        {
-            return CornerMarks.Contains(nbr);
-        }
-
-        return !CornerMarks.Contains(nbr);
+        return IsEffectedByListType(nbr, remove, CornerMarks);
     }
     
-    private bool IsEffectedByCenter(int nbr, bool remove)
+    private bool IsEffectedByCenter(int nbr, RemovalType remove)
     {
         if (HasDigit)
             return false;
 
-        if (remove)
-        {
-            return CenterMarks.Contains(nbr);
-        }
-
-        return !CenterMarks.Contains(nbr);
+        return IsEffectedByListType(nbr, remove, CenterMarks);
     }
 
-    private bool IsEffectedByDigit(int nbr, bool remove)
+    private bool IsEffectedByListType(int nbr, RemovalType remove, List<int> list)
+    {
+        switch (remove)
+        {
+            case RemovalType.All:
+                return list.Count > 0;
+            case RemovalType.Number:
+                return list.Contains(nbr);;
+        }
+
+        return !list.Contains(nbr);
+    }
+
+    private bool IsEffectedByDigit(int nbr, RemovalType remove)
     {
         if (Permanent)
             return false;
 
-        if (remove)
+        switch (remove)
         {
-            return HasDigit;
+            case RemovalType.All:
+            case RemovalType.Number:
+                return HasDigit;
         }
 
         return nbr != number;
