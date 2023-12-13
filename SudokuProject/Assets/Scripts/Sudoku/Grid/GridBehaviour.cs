@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GridBehaviour : MonoBehaviour, IHasCommand
@@ -197,7 +199,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }    
     }
 
-    private bool SkipTile(TileBehaviour tile, EnterType enterType)
+    private bool TrySkipPermanent(TileBehaviour tile, EnterType enterType)
     {
         return tile.Permanent && enterType != EnterType.ColorMark;
     }
@@ -349,7 +351,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         foreach (var tile in selectedTiles)
         {
             // skip given clues
-            if (SkipTile(tile, enterType)) continue;
+            if (TrySkipPermanent(tile, enterType)) continue;
 
             switch (enterType)
             {
@@ -484,38 +486,49 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
     private void HandleEnterNumberToSelectedTiles(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
     {
-        // if all selected tiles have the same number, remove the number (change to zero)
-        bool allTilesHaveSameDigit = CheckIfAllTilesHaveNumber(selectedTiles, number, enterType);
+        selectedTiles = selectedTiles.FindAll(t => !TrySkipPermanent(t, enterType));
+        
+        // if all selected tiles have the same number, remove the number 
+        bool remove = selectedTiles.All(t => t.HasSameNumber(number, enterType));
+        
+        selectedTiles = FilterEffectedOnly(selectedTiles, remove, number, enterType);
+        
+        Debug.Log("Effected: " + selectedTiles.Count);
 
         foreach (var tileBehaviour in selectedTiles)
         {
-            if (SkipTile(tileBehaviour, enterType)) continue;
+            //if (SkipTile(tileBehaviour, enterType)) continue;
 
-            EnterTileNumber(tileBehaviour, number, enterType, allTilesHaveSameDigit);
-        }
+            EnterTileNumber(tileBehaviour, number, enterType, remove);
+        } 
     }
 
-    private bool CheckIfAllTilesHaveNumber(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
+    /// <summary>
+    /// Filters out tiles in list _selectedTiles_ to only include tiles that were effected by a move. For instance,
+    /// a permanent tile can never by effected by anything other than colors.
+    /// </summary>
+    /// <param name="selectedTiles"></param>
+    /// <param name="number"></param>
+    /// <param name="enterType"></param>
+    /// <exception cref="NotImplementedException"></exception>
+    private List<TileBehaviour> FilterEffectedOnly(List<TileBehaviour> selectedTiles, bool remove, int number, EnterType enterType)
     {
-        foreach (var tile in selectedTiles)
+        List<TileBehaviour> effected = new List<TileBehaviour>();
+
+        foreach (var selectedTile in selectedTiles)
         {
-            // skip given clues
-            if (SkipTile(tile, enterType)) continue;
-            
-            // if not digit entry, skip tiles that already has digit
-            if (enterType != EnterType.DigitMark && tile.HasDigit) continue;
-
-            if (!tile.HasSameNumber(number, enterType))
-                return false;
+            if (selectedTile.IsEffectedByEntry(number, enterType, remove))
+                effected.Add(selectedTile);
         }
-
-        return true;
+        
+        return effected;
     }
     
+
     private void EnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType, bool sameNumber)
     {
-        if (SkipTile(tileBehaviour, enterType))
-            return;
+        // if (TrySkipPermanent(tileBehaviour, enterType))
+        //     return;
         
         tileBehaviour.TryUpdateNumber(number, enterType, sameNumber);
 

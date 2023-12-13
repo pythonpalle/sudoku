@@ -639,5 +639,78 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         tileAnimationParent = animationParent;
     }
 
+
+    public bool IsEffectedByEntry(int number, EnterType enterType, bool remove)
+    {
+        // maybe can be skipped
+        if (Permanent && enterType != EnterType.ColorMark) return false;
+
+        switch (enterType)
+        {
+            case EnterType.DigitMark:
+                return IsEffectedByDigit(number, remove);
+            
+            case EnterType.CornerMark:
+                return IsEffectedByCorner(number, remove);
+            
+            case EnterType.CenterMark:
+                return IsEffectedByCenter(number, remove);
+            
+            case EnterType.ColorMark:
+                return IsEffectedByColor(number, remove);
+        }
+
+        return false;
+    }
     
+    private bool IsEffectedByColor(int nbr, bool remove)
+    {
+        Debug.Log("Remove color");
+        
+        if (remove)
+        {
+            return ColorMarks.Contains(nbr);
+        }
+
+        return !ColorMarks.Contains(nbr);
+    }
+
+    private bool IsEffectedByCorner(int nbr, bool remove)
+    {
+        if (HasDigit)
+            return false;
+
+        if (remove)
+        {
+            return CornerMarks.Contains(nbr);
+        }
+
+        return !CornerMarks.Contains(nbr);
+    }
+    
+    private bool IsEffectedByCenter(int nbr, bool remove)
+    {
+        if (HasDigit)
+            return false;
+
+        if (remove)
+        {
+            return CenterMarks.Contains(nbr);
+        }
+
+        return !CenterMarks.Contains(nbr);
+    }
+
+    private bool IsEffectedByDigit(int nbr, bool remove)
+    {
+        if (Permanent)
+            return false;
+
+        if (remove)
+        {
+            return HasDigit;
+        }
+
+        return nbr != number;
+    }
 }
