@@ -711,4 +711,18 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
         return nbr != number;
     }
+
+    private int indexInt = -1;
+    public int IndexInt
+    {
+        get
+        {
+            if (indexInt < 0)
+            {
+                indexInt = row * 9 + col;
+            }
+
+            return indexInt;
+        }
+    }
 }

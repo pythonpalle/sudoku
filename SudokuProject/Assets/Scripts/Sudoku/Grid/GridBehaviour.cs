@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Command;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public enum RemovalType
 {
@@ -39,6 +41,10 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     private void Start()
     {
         SetupBoxes();
+        
+        CommandManager.instance.OnAddOneDigit += OnAddOneDigit;
+        CommandManager.instance.OnAddMultipleDigits += OnAddMultipleDigits;
+        CommandManager.instance.OnRemoveDigits += OnRemoveDigits;
     }
 
     private void OnEnable()
@@ -83,6 +89,56 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         gridPort.OnRequestGrid -= OnRequestGrid;
         gridPort.OnRequestTiles -= OnRequestTiles;
         hintObject.OnHintFound -= OnHintFound;
+
+        CommandManager.instance.OnAddOneDigit -= OnAddOneDigit;
+        CommandManager.instance.OnAddMultipleDigits -= OnAddMultipleDigits;
+        CommandManager.instance.OnRemoveDigits -= OnRemoveDigits;
+    }
+
+    private void OnRemoveDigits(List<int> indices)
+    {
+        List<TileBehaviour> tiles = IntsToTiles(indices);
+        
+        HandleRemoveNormalNumbers(tiles);
+    }
+
+    private void OnAddOneDigit(List<int> indexes, int digit)
+    {
+        List<TileBehaviour> tiles = IntsToTiles(indexes);
+
+        for (var index = 0; index < tiles.Count; index++)
+        {
+            var tile = tiles[index];
+            EnterTileNumber(tile, digit, EnterType.DigitMark, false);
+        }
+    }
+    
+    private void OnAddMultipleDigits(List<int> indexes, List<int> newDigits)
+    {
+        List<TileBehaviour> tiles = IntsToTiles(indexes);
+
+        for (var index = 0; index < tiles.Count; index++)
+        {
+            var tile = tiles[index];
+            EnterTileNumber(tile, newDigits[index], EnterType.DigitMark, false);
+        }
+    }
+
+    private List<TileBehaviour> IntsToTiles(List<int> indexes)
+    {
+        List<TileBehaviour> tiles = new List<TileBehaviour>();
+        
+        for (int i = 0; i < indexes.Count; i++)
+        {
+            int index = indexes[i];
+            int row = index / 9;
+            int col = index % 9;
+
+            var tile = tileBehaviours[row, col];
+            tiles.Add(tile);
+        }
+
+        return tiles;
     }
 
     private void OnRequestTiles()
@@ -361,6 +417,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             if (tile.TryRemoveAllOfType(type))
                 somethingWasRemoved = true;
         }
+        
+        Assert.IsTrue(somethingWasRemoved);
 
         return somethingWasRemoved;
     }
@@ -514,19 +572,72 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         
         selectedTiles = FilterEffectedOnly(selectedTiles, removalType, number, enterType);
         
-        Debug.Log("Effected: " + selectedTiles.Count);
-
-        if (selectedTiles.Count == 0)
+        if (selectedTiles.Count == 0) 
         {
             return false;
         }
+        
+        Debug.Log("Effected: " + selectedTiles.Count);
+        
+        List<int> tilesToInt = TilesToInt(selectedTiles);
+        List<int> previousDigits = GetPreviousDigits(selectedTiles);
 
-        foreach (var tileBehaviour in selectedTiles)
+        if (remove)
         {
-            EnterTileNumber(tileBehaviour, number, enterType, remove);
+            RemoveDigitCommand removeDigitCommand = new RemoveDigitCommand
+            {
+                effectedIndexes = tilesToInt,
+                previousGridDigits = previousDigits
+            };
+        
+            CommandManager.instance.ExecuteNewCommand(removeDigitCommand);
         }
+        else
+        {
+            AddDigitCommand addDigitCommand = new AddDigitCommand
+            {
+                addedDigit = number,
+                effectedIndexes = tilesToInt,
+                previousGridDigits = previousDigits
+            };
+        
+            CommandManager.instance.ExecuteNewCommand(addDigitCommand);
+        }
+        
+
+        
+
+
+        // foreach (var tileBehaviour in selectedTiles)
+        // {
+        //     EnterTileNumber(tileBehaviour, number, enterType, remove);
+        // }
 
         return true;
+    }
+
+    private List<int> GetPreviousDigits(List<TileBehaviour> selectedTiles)
+    {
+        List<int> previous = new List<int>();
+
+        foreach (var tile in selectedTiles)
+        {
+            previous.Add(tile.number);
+        }
+
+        return previous;
+    }
+
+    private static List<int> TilesToInt(List<TileBehaviour> tiles)
+    {
+        List<int> ints = new List<int>();
+
+        foreach (var tile in tiles)
+        {
+            ints.Add(tile.IndexInt);
+        }
+
+        return ints;
     }
 
     /// <summary>
@@ -683,6 +794,8 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     
     private void HandleRemoveNormalNumbers(List<TileBehaviour> selectedTiles)
     {
+        Debug.Log($"Remove {selectedTiles.Count} entires.");
+        
         foreach (var tile in selectedTiles)
         {
             AddDigitToGrid(tile, 0, true);
