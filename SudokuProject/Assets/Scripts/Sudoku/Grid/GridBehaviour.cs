@@ -129,6 +129,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             foreach (int mark in markNumbers[i])
             {
                 EnterTileNumber(tile, mark, type, false);
+                Debug.Log($"Add mark {mark} to tile {i}!");
             }
         }
     }
@@ -741,15 +742,15 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             switch (enterType)
             {
                 case EnterType.CenterMark:
-                    marksForTile.Add(tile.CenterMarks);
+                    marksForTile.Add(new List<int>(tile.CenterMarks));
                     break;
                 
                 case EnterType.CornerMark:
-                    marksForTile.Add(tile.CornerMarks);
+                    marksForTile.Add(new List<int>(tile.CornerMarks));
                     break;
                 
                 case EnterType.ColorMark:
-                    marksForTile.Add(tile.ColorMarks);
+                    marksForTile.Add(new List<int>(tile.ColorMarks));
                     break;
             }
         }
