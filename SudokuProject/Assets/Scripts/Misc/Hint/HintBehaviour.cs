@@ -17,76 +17,87 @@ public class HintBehaviour : MonoBehaviour
 
     [Header("Color")] 
     [SerializeField] private ColorObject selectColor;
-    [SerializeField] private ColorObject invalidHintColor;
+    [SerializeField] private ColorObject noSolveColor;
+    [SerializeField] private ColorObject multipleSolutionColor;
+    [SerializeField] private ColorObject completeColor;
     
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
     private bool hintButtonIsFlashing;
 
+    private GridStatus _status;
+
     private void OnEnable()
     {
         hintButton.onClick.AddListener(OnHintButtonClicked);
-
-        gridPort.OnContradictionStatusUpdate += OnContradictionStatusUpdate;
+        gridPort.OnStatusChange += OnStatusChange;
     }
     
 
     private void OnDisable()
     {
         hintButton.onClick.RemoveListener(OnHintButtonClicked);
-        
-        gridPort.OnContradictionStatusUpdate -= OnContradictionStatusUpdate;
+        gridPort.OnStatusChange -= OnStatusChange;
     }
 
-    private void OnContradictionStatusUpdate(bool contradiction)
+    private void OnStatusChange(GridStatus status)
     {
-        hintButton.image.color = contradiction ? invalidHintColor.Color : selectColor.Color;
+        this._status = status;
+
+        switch (status)
+        {
+            case GridStatus.Solved:
+                SetColor(completeColor.Color);
+                break;
+            
+            case GridStatus.OneSolution:
+                SetColor(selectColor.Color);
+                break;
+            
+            case GridStatus.MultipleSolutions:
+                SetColor(multipleSolutionColor.Color);
+                break;
+            
+            case GridStatus.Unsolvable:
+                SetColor(noSolveColor.Color);
+                break;
+        }
+    }
+
+    private void SetColor(Color color)
+    {
+        hintButton.image.color = color;
     }
 
     private void OnHintButtonClicked()
     {
         gridPort.RequestGrid();
         
-        // don't give hints if the grid is contradicted
-        if (gridPort.gridContradicted)
+        switch (_status)
         {
-            OnHintButtonClickedWithContradiction();
-            return;
-        }
-
-        // check if valid grid (only one solution)
-        if (_solver.HasOneSolution(gridPort.grid))
-        {
-            // check to see if progression can be made with human methods
-            if (TryFindProgression(gridPort.grid, out TileIndex hintIndex))
-            {
-                hintObject.HintFound(hintIndex);
-            }
-            else
-            {
-                DisplayWarning("Solver could only progress using brute force.");
-            }
-        }
-        else
-        {
-            switch (_solver.SolutionsState)
-            {
-                case SolutionsState.Multiple:
-                    DisplayWarning("The puzzle has multiple solutions.");
-                    return;
+            case GridStatus.Solved:
+                Debug.Log("Grid solved already!");
+                return;
             
-                case SolutionsState.None:
-                    DisplayWarning("The puzzle is not solveable from this state.");
-                    return;
-            }
+            case GridStatus.OneSolution:
+                // check to see if progression can be made with human methods
+                if (TryFindProgression(gridPort.grid, out TileIndex hintIndex))
+                {
+                    hintObject.HintFound(hintIndex);
+                }
+                else
+                {
+                    DisplayWarning("Solver could only progress using brute force.");
+                }
+                break;
+            
+            case GridStatus.MultipleSolutions:
+                DisplayWarning("The puzzle has multiple solutions.");
+                return;
+            
+            case GridStatus.Unsolvable:
+                DisplayWarning("The puzzle is not solvable from this state.");
+                return;
         }
-    }
-
-    private void OnHintButtonClickedWithContradiction()
-    {
-        if (!hintButtonIsFlashing)
-            StartCoroutine(FlashHintButton());
-        
-        Debug.Log("Can't give hint if grid has contradiction");
     }
 
     private IEnumerator FlashHintButton()
@@ -101,7 +112,7 @@ public class HintBehaviour : MonoBehaviour
             yield return new WaitForSeconds(timeBetweenFlashes);
             hintButton.image.color = Color.black;
             yield return new WaitForSeconds(timeBetweenFlashes);
-            hintButton.image.color = invalidHintColor.Color; 
+            hintButton.image.color = noSolveColor.Color; 
         }
         
         if (!gridPort.gridContradicted)

@@ -11,108 +11,50 @@ public class WarningBehaviour : MonoBehaviour
     
     [Header("Colors")]
     [SerializeField] private Image warningTriangle;
-    [SerializeField] private Color noSolutionColor;
-    [SerializeField] private Color multiSolutionColor;
+    [SerializeField] private ColorObject noSolveColor;
+    [SerializeField] private ColorObject multipleSolutionColor;
+    [SerializeField] private ColorObject completeColor;
 
-    private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
-    
-    private int stateCounter;
-    private List<SolutionsState> solveableHistory = new List<SolutionsState>();
-    
     private void OnEnable()
     {
-        // EventManager.OnNewCommand += OnNewCommand;
-        //
-        // EventManager.OnRedo += OnRedo;
-        // EventManager.OnUndo += OnUndo;
+        _gridPort.OnStatusChange += OnStatusChange;
     }
     
     private void OnDisable()
     {
-        // EventManager.OnNewCommand -= OnNewCommand;
-        //
-        // EventManager.OnRedo -= OnRedo;
-        // EventManager.OnUndo -= OnUndo;
+        _gridPort.OnStatusChange -= OnStatusChange;
     }
 
-    // public void OnNewCommand(SudokuEntry entry)
-    // {
-    //     while (solveableHistory.Count > stateCounter)
-    //     {
-    //         solveableHistory.RemoveAt(solveableHistory.Count-1);
-    //     }
-    //     
-    //     _gridPort.RequestGrid();
-    //
-    //     SolutionsState state = SolutionsState.Single;
-    //     if (_gridPort.gridContradicted)
-    //     {
-    //         state = SolutionsState.None;
-    //     }
-    //     else 
-    //     {
-    //         _solver.HasOneSolution(_gridPort.grid, true);
-    //         state = _solver.SolutionsState;
-    //     }
-    //
-    //     solveableHistory.Add(state);
-    //     stateCounter++;
-    //     
-    //     UpdateSolvable(state);
-    // }
+    private void OnStatusChange(GridStatus status)
+    {
+        UpdateSolvable(status);
+    }
 
-    void UpdateSolvable(SolutionsState state)
+    void UpdateSolvable(GridStatus status)
     {
         warningText.gameObject.SetActive(true);
 
-        switch (state)
+        switch (status)
         {
-            case SolutionsState.Single:
+            case GridStatus.OneSolution:
                 warningText.gameObject.SetActive(false);
                 warningText.SetText("Grid can be solved!");
                 break;
             
-            case SolutionsState.None:
+            case GridStatus.Unsolvable:
                 warningText.SetText("Grid has no solutions!");
-                warningTriangle.color = noSolutionColor;
+                warningTriangle.color = noSolveColor.Color;
                 break;
             
-            case SolutionsState.Multiple:
+            case GridStatus.MultipleSolutions:
                 warningText.SetText("Grid has several solutions!");
-                warningTriangle.color = multiSolutionColor;
+                warningTriangle.color = multipleSolutionColor.Color;
+                break;
+            
+            case GridStatus.Solved:
+                warningText.SetText("Grid complete!");
+                warningTriangle.color = completeColor.Color;
                 break;
         }
     }
-    
-    // private void OnUndo()
-    // {
-    //     ChangeState(true);
-    // }
-    //
-    // private void OnRedo()
-    // {
-    //     ChangeState(false);
-    // }
-
-    // private void ChangeState(bool undo)
-    // {
-    //     if (undo)
-    //         stateCounter--;
-    //     else
-    //         stateCounter++;
-    //     
-    //     if (undo && stateCounter <= 0)
-    //     {
-    //         stateCounter = 1;
-    //         return;
-    //     }
-    //     
-    //     if (!undo && stateCounter > solveableHistory.Count)
-    //     {
-    //         stateCounter --;
-    //         return;
-    //     }
-    //     
-    //     UpdateSolvable(solveableHistory[stateCounter-1]);
-    // }
 }

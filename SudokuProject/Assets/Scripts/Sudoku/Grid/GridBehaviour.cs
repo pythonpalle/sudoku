@@ -14,10 +14,19 @@ public enum RemovalType
     All
 }
 
+public enum GridStatus
+{
+    OneSolution,
+    Solved,
+    Unsolvable,
+    MultipleSolutions,
+}
+
 public class GridBehaviour : MonoBehaviour
 {
     private SudokuGrid9x9 grid;
     private GridSaver gridSaver;
+    private WFCGridSolver gridSolver = new WFCGridSolver(PuzzleDifficulty.Extreme);
 
     private TileBehaviour[,] tileBehaviours = new TileBehaviour[9,9];
 
@@ -31,6 +40,8 @@ public class GridBehaviour : MonoBehaviour
     
     [Header("Grid Boxes")]
     [SerializeField] private List<GridBoxBehaviour> boxes;
+
+    private GridStatus _status;
 
     private void Awake()
     {
@@ -122,18 +133,25 @@ public class GridBehaviour : MonoBehaviour
 
     private void OnAddOneDigit(List<int> indexes, int digit)
     {
-        HandleRemoveContradictions();
         
         OnAddSingle(indexes, digit, EnterType.DigitMark);
         
+        HandleRemoveContradictions();
+
+        
         HandleAddContradictionsInList(IntsToTiles(indexes), digit);
-        gridPort.UpdateContradictionStatus(GridHasContradiction());
-        HandleCompletion();
+
+        UpdateGridStatus();
+    }
+
+    private void SetStatus(GridStatus status)
+    {
+        _status = status;
+        gridPort.GridStatus = status;
     }
 
     private void OnAddMultipleDigits(List<int> indexes, List<int> newDigits)
     {
-        HandleRemoveContradictions(); 
 
         List<TileBehaviour> tiles = IntsToTiles(indexes);
 
@@ -145,8 +163,10 @@ public class GridBehaviour : MonoBehaviour
             HandleContradictionForTile(digit, tile);
         }
         
-        gridPort.UpdateContradictionStatus(GridHasContradiction());
-        HandleCompletion();
+        HandleRemoveContradictions(); 
+
+        
+        UpdateGridStatus();
     }
     
     private void OnAddMark(List<int> indices, int number, int enterType)
@@ -173,7 +193,6 @@ public class GridBehaviour : MonoBehaviour
     private void OnRemoveDigits(List<int> indices)
     {
         List<TileBehaviour> tiles = IntsToTiles(indices);
-        
         HandleRemoveNormalNumbers(tiles);
     }
     
@@ -208,6 +227,44 @@ public class GridBehaviour : MonoBehaviour
         }
 
         return tiles;
+    }
+    
+    private void UpdateGridStatus()
+    {
+        UpdateGridCandidates();
+
+        bool contradicted = GridHasContradiction();
+        if (contradicted)
+        {
+            SetStatus(GridStatus.Unsolvable);
+            return;
+        }
+
+        bool complete = CheckComplete();
+        if (complete)
+        {
+            EventManager.PuzzleComplete();
+            SetStatus(GridStatus.Solved);
+            return;
+        }
+        
+        gridSolver.HasOneSolution(grid, true);
+        switch (gridSolver.SolutionsState)
+        {
+            case SolutionsState.Multiple:
+                SetStatus(GridStatus.MultipleSolutions);
+                return;
+            
+            case SolutionsState.None:
+                SetStatus(GridStatus.Unsolvable);
+                return;
+            
+            case SolutionsState.Single:
+                SetStatus(GridStatus.OneSolution);
+                return;
+        }
+        
+        gridPort.SendGridCopy(grid, tileBehaviours);
     }
 
     private void OnRequestTiles()
@@ -323,7 +380,7 @@ public class GridBehaviour : MonoBehaviour
             boxes[i].Setup(i, tileAnimationParent);
         }
         
-        OnRequestTiles();
+        //OnRequestTiles();
     }
     
     private void OnGridGenerated(SudokuGrid9x9 generatedGrid)
@@ -331,6 +388,7 @@ public class GridBehaviour : MonoBehaviour
         grid = generatedGrid;
         
         SetupTileNumbers();
+        UpdateGridStatus();
         EventManager.TilesSetup();
     }
     
@@ -345,18 +403,8 @@ public class GridBehaviour : MonoBehaviour
         var number = entry.number;
         var enterType = entry.enterType;
         
-        if (!TryEnterNumberToSelectedTiles(tiles, number, enterType))
+        if (!TryFindEnterCommand(tiles, number, enterType))
             return;
-    }
-    
-    private void HandleCompletion()
-    {
-        bool complete = CheckComplete();
-        if (complete)
-        {
-            Debug.Log("You solved it, hurray!");
-            EventManager.PuzzleComplete();
-        }
     }
 
     private bool CheckComplete()
@@ -557,7 +605,7 @@ public class GridBehaviour : MonoBehaviour
         }
     }
 
-    private bool TryEnterNumberToSelectedTiles(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
+    private bool TryFindEnterCommand(List<TileBehaviour> selectedTiles, int number, EnterType enterType)
     {
         selectedTiles = selectedTiles.FindAll(t => !TrySkipPermanent(t, enterType));
         
@@ -902,5 +950,6 @@ public class GridBehaviour : MonoBehaviour
         }
         
         HandleRemoveContradictions();
+        UpdateGridStatus();
     }
 }

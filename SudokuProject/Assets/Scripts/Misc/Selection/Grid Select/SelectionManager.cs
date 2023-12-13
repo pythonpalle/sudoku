@@ -216,8 +216,6 @@ public class SelectionManager : MonoBehaviour
     {
         if (selectionObject.SelectionKeyPressed && !pointerOverGrid)
         {
-           Debug.Log("Deselecte"); 
-            
             DeselectAllTiles();
             selectionObject.SetSelectionMode(SelectionMode.Selecting);
         }

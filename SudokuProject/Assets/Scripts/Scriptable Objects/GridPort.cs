@@ -10,9 +10,21 @@ public class GridPort : ScriptableObject
 
     public TileBehaviour[,] tileBehaviours { get; set; }
 
+    private GridStatus status;
+    public GridStatus GridStatus
+    {
+        get { return status; }
+        set
+        {
+            status = value;
+            OnStatusChange?.Invoke(status);
+        }
+    }
+
     public UnityAction<bool> OnContradictionStatusUpdate;
     public UnityAction OnRequestGrid;
     public UnityAction OnRequestTiles;
+    public UnityAction<GridStatus> OnStatusChange;
 
     public void RequestGrid()
     {

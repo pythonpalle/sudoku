@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98bf86004ba94ec6a6c6443ceaa05f0e, type: 3}
-  m_Name: Contradiction Color
+  m_Name: No Solution Color
   m_EditorClassIdentifier: 
   _color: {r: 1, g: 0, b: 0, a: 1}
