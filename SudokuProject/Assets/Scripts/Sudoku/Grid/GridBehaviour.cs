@@ -136,18 +136,31 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
     private void OnAddOneDigit(List<int> indexes, int digit)
     {
+        HandleRemoveContradictions();
+        
         OnAddSingle(indexes, digit, EnterType.DigitMark);
+        
+        HandleAddContradictionsInList(IntsToTiles(indexes), digit);
+        gridPort.UpdateContradictionStatus(GridHasContradiction());
+        HandleCompletion();
     }
-    
+
     private void OnAddMultipleDigits(List<int> indexes, List<int> newDigits)
     {
+        HandleRemoveContradictions();
+
         List<TileBehaviour> tiles = IntsToTiles(indexes);
 
         for (var index = 0; index < tiles.Count; index++)
         {
             var tile = tiles[index];
+            int digit = newDigits[index];
             EnterTileNumber(tile, newDigits[index], EnterType.DigitMark, false);
+            HandleContradictionForTile(digit, tile);
         }
+        
+        gridPort.UpdateContradictionStatus(GridHasContradiction());
+        HandleCompletion();
     }
     
     private void OnAddMark(List<int> indices, int number, int enterType)
@@ -368,17 +381,17 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         if (!TryEnterNumberToSelectedTiles(tiles, number, enterType))
             return;
         
-        switch (enterType)
-        {
-            case EnterType.DigitMark:
-                HandleRemoveContradictions();
-                HandleAddContradictionsInList(tiles, number);
-                HandleCompletion();
-                gridPort.UpdateContradictionStatus(GridHasContradiction());
-                break;
-        }
-        
-        EventManager.CallNewCommand(entry);
+        // switch (enterType)
+        // {
+        //     case EnterType.DigitMark:
+        //         HandleRemoveContradictions();
+        //         HandleAddContradictionsInList(tiles, number);
+        //         HandleCompletion();
+        //         gridPort.UpdateContradictionStatus(GridHasContradiction());
+        //         break;
+        // }
+        //
+        // EventManager.CallNewCommand(entry);
     }
     
     private void HandleCompletion()
@@ -433,12 +446,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                 var tileAsInt = TilesToInt(tiles);
 
                 CreateRemoveAllMarksCommand(tiles, tileAsInt, EnterType.ColorMark);
-                
-                // // only seen as new command if some tiles where effected
-                // if (RemoveAllOfEntryType(tiles, EnterType.ColorMark))
-                // {
-                //     EventManager.CallNewCommand(entry);
-                // }
             }
         
             return;
@@ -470,18 +477,12 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                 if (type == EnterType.DigitMark)
                 {
                     CreateRemoveDigitCommand(TilesToInt(tiles), GetPreviousDigits(tiles));
-                    
-                    // HandleRemoveNormalNumbers(tiles);
-                    // gridPort.UpdateContradictionStatus(GridHasContradiction());
                 }
                 else
                 {
                     CreateRemoveAllMarksCommand(tiles, TilesToInt(tiles), type);
-                    
-                    //RemoveAllOfEntryType(tiles, type);
                 }
                 
-                //EventManager.CallNewCommand(entry);
                 return;
             }
         }
@@ -897,25 +898,29 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     {
         foreach (var tile in selectedTiles)
         {
-            if (tile.Permanent || tile.number == 0) continue;
-            
-            List<TileBehaviour> effectedTiles = GetEffectedTiles(tile);
-            bool someTileContradicted = false;
+            HandleContradictionForTile(number, tile);
+        }
+    }
 
-            foreach (var effected in effectedTiles)
+    private void HandleContradictionForTile(int number, TileBehaviour tile)
+    {
+        if (tile.Permanent || tile.number == 0) return;
+
+        List<TileBehaviour> effectedTiles = GetEffectedTiles(tile);
+        bool someTileContradicted = false;
+
+        foreach (var effected in effectedTiles)
+        {
+            if (HandleTileContradiction(effected, number))
             {
-                if (HandleTileContradiction(effected, number))
-                {
-                    someTileContradicted = true;
-                }
-            }
-            
-            if (someTileContradicted)
-            {
-                tile.SetContradiction();
+                someTileContradicted = true;
             }
         }
-        
+
+        if (someTileContradicted)
+        {
+            tile.SetContradiction();
+        }
     }
 
     private List<TileBehaviour> GetEffectedTiles(TileBehaviour tile)

@@ -18,6 +18,7 @@ namespace Command
     
         public override void Undo()
         {
+            CommandManager.instance.RemoveDigits(effectedIndexes);
             CommandManager.instance.AddDigits(effectedIndexes, previousGridDigits);
         }
     }
