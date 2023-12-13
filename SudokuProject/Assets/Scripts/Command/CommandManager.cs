@@ -36,7 +36,9 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     public UnityAction<List<int>, int> OnRemoveAllMarks;
 
     public UnityAction<SudokuCommand> OnCommandRedo;
-    public UnityAction<SudokuCommand> OnCommanUndo;
+    public UnityAction<SudokuCommand> OnCommandUndo;
+    public UnityAction OnUndoFail;
+    
 
     private void Awake()
     {
@@ -63,11 +65,13 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     public void UndoCommand()
     {
         if (undoStack.Count <= 0)
+        {
+            OnUndoFail?.Invoke();
             return;
-
+        }
         var command = undoStack.Pop();
         command.Undo();
-        OnCommanUndo?.Invoke(command);
+        OnCommandUndo?.Invoke(command);
         redoStack.Push(command);
     }
 

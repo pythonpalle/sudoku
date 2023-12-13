@@ -25,7 +25,8 @@ public class SelectionManager : MonoBehaviour
     private void Start()
     {
         CommandManager.instance.OnCommandRedo += OnCommandRedo;
-        CommandManager.instance.OnCommanUndo += OnCommandUndo;
+        CommandManager.instance.OnCommandUndo += OnCommandUndo;
+        CommandManager.instance.OnUndoFail += OnUndoFail;
     }
 
     private void OnEnable()
@@ -61,12 +62,19 @@ public class SelectionManager : MonoBehaviour
         EventManager.OnUIElementExit -= OnUIElementExit;
         
         CommandManager.instance.OnCommandRedo -= OnCommandRedo;
-        CommandManager.instance.OnCommanUndo -= OnCommandUndo;
+        CommandManager.instance.OnCommandUndo -= OnCommandUndo;
+        
+        CommandManager.instance.OnUndoFail += OnUndoFail;
+    }
+
+    private void OnUndoFail()
+    {
+        DeselectAllTiles();
     }
 
     private void OnCommandUndo(SudokuCommand command)
     {
-        SelectFromCommand(command);
+        SelectFromCommand(command); 
     }
 
     private void OnCommandRedo(SudokuCommand command)
