@@ -300,7 +300,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         {
             tiles = FilterEffectedOnly(tiles, removeAll, 0, EnterType.ColorMark);
             
-            //if (CheckIfTilesContainType(tiles, EnterType.ColorMark))
             if (tiles.Count > 0)
             {
                 Debug.Log($"Effected count: {tiles.Count}");
@@ -333,7 +332,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             List<TileBehaviour> effected = FilterEffectedOnly(tiles, removeAll, 0, type);
 
             if (effected.Count > 0)
-            //if (CheckIfTilesContainType(tiles, type))
             {
                 tiles = effected;
                 Debug.Log($"Effected count: {tiles.Count}");
