@@ -116,7 +116,7 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         // if saved counter is less then total command count, it means we have to go back a few command by undoing
         for (int i = savedCounter - 1; i < totalCommandCount; i++)
         {
-            manager.CallUndo();
+            //manager.CallUndo();
             
             if (showCommands)
                 yield return new WaitForEndOfFrame();

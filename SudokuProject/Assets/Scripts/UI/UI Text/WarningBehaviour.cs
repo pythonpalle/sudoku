@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WarningBehaviour : MonoBehaviour, IHasCommand
+public class WarningBehaviour : MonoBehaviour
 {
     [SerializeField] private ExplanationText warningText;
     [SerializeField] private GridPort _gridPort;
@@ -21,45 +21,45 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
     
     private void OnEnable()
     {
-        EventManager.OnNewCommand += OnNewCommand;
-
-        EventManager.OnRedo += OnRedo;
-        EventManager.OnUndo += OnUndo;
+        // EventManager.OnNewCommand += OnNewCommand;
+        //
+        // EventManager.OnRedo += OnRedo;
+        // EventManager.OnUndo += OnUndo;
     }
     
     private void OnDisable()
     {
-        EventManager.OnNewCommand -= OnNewCommand;
-        
-        EventManager.OnRedo -= OnRedo;
-        EventManager.OnUndo -= OnUndo;
+        // EventManager.OnNewCommand -= OnNewCommand;
+        //
+        // EventManager.OnRedo -= OnRedo;
+        // EventManager.OnUndo -= OnUndo;
     }
 
-    public void OnNewCommand(SudokuEntry entry)
-    {
-        while (solveableHistory.Count > stateCounter)
-        {
-            solveableHistory.RemoveAt(solveableHistory.Count-1);
-        }
-        
-        _gridPort.RequestGrid();
-
-        SolutionsState state = SolutionsState.Single;
-        if (_gridPort.gridContradicted)
-        {
-            state = SolutionsState.None;
-        }
-        else 
-        {
-            _solver.HasOneSolution(_gridPort.grid, true);
-            state = _solver.SolutionsState;
-        }
-
-        solveableHistory.Add(state);
-        stateCounter++;
-        
-        UpdateSolvable(state);
-    }
+    // public void OnNewCommand(SudokuEntry entry)
+    // {
+    //     while (solveableHistory.Count > stateCounter)
+    //     {
+    //         solveableHistory.RemoveAt(solveableHistory.Count-1);
+    //     }
+    //     
+    //     _gridPort.RequestGrid();
+    //
+    //     SolutionsState state = SolutionsState.Single;
+    //     if (_gridPort.gridContradicted)
+    //     {
+    //         state = SolutionsState.None;
+    //     }
+    //     else 
+    //     {
+    //         _solver.HasOneSolution(_gridPort.grid, true);
+    //         state = _solver.SolutionsState;
+    //     }
+    //
+    //     solveableHistory.Add(state);
+    //     stateCounter++;
+    //     
+    //     UpdateSolvable(state);
+    // }
 
     void UpdateSolvable(SolutionsState state)
     {
@@ -84,35 +84,35 @@ public class WarningBehaviour : MonoBehaviour, IHasCommand
         }
     }
     
-    private void OnUndo()
-    {
-        ChangeState(true);
-    }
-    
-    private void OnRedo()
-    {
-        ChangeState(false);
-    }
+    // private void OnUndo()
+    // {
+    //     ChangeState(true);
+    // }
+    //
+    // private void OnRedo()
+    // {
+    //     ChangeState(false);
+    // }
 
-    private void ChangeState(bool undo)
-    {
-        if (undo)
-            stateCounter--;
-        else
-            stateCounter++;
-        
-        if (undo && stateCounter <= 0)
-        {
-            stateCounter = 1;
-            return;
-        }
-        
-        if (!undo && stateCounter > solveableHistory.Count)
-        {
-            stateCounter --;
-            return;
-        }
-        
-        UpdateSolvable(solveableHistory[stateCounter-1]);
-    }
+    // private void ChangeState(bool undo)
+    // {
+    //     if (undo)
+    //         stateCounter--;
+    //     else
+    //         stateCounter++;
+    //     
+    //     if (undo && stateCounter <= 0)
+    //     {
+    //         stateCounter = 1;
+    //         return;
+    //     }
+    //     
+    //     if (!undo && stateCounter > solveableHistory.Count)
+    //     {
+    //         stateCounter --;
+    //         return;
+    //     }
+    //     
+    //     UpdateSolvable(solveableHistory[stateCounter-1]);
+    // }
 }

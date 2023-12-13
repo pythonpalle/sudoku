@@ -19,7 +19,7 @@ public struct TileState
     public bool contradicted;
 }
 
-public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler, IHasCommand
+public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler
 {
     // serialize fields
     [Header("Background")]
@@ -100,116 +100,108 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private void OnEnable()
     {
         selectionObject.OnDeselectAllTiles += OnDeselectAllTiles;
-
-        EventManager.OnNewCommand += OnNewCommand;
-        EventManager.OnUndo += OnUndo;
-        EventManager.OnRedo += OnRedo;
     }
     
     private void OnDisable()
     {
         selectionObject.OnDeselectAllTiles -= OnDeselectAllTiles;
-        
-        EventManager.OnNewCommand -= OnNewCommand;
-        EventManager.OnUndo -= OnUndo;
-        EventManager.OnRedo -= OnRedo;
     }
 
     
-    public void OnNewCommand(SudokuEntry entry)
-    {
-        TileState state = new TileState
-        {
-            Centers = new List<int>(CenterMarks),
-            Corners = new List<int>(CornerMarks),
-            Colors = new List<int>(ColorMarks),
-            Digit = number,
-            contradicted = Contradicted
-        };
+    // public void OnNewCommand(SudokuEntry entry)
+    // {
+    //     TileState state = new TileState
+    //     {
+    //         Centers = new List<int>(CenterMarks),
+    //         Corners = new List<int>(CornerMarks),
+    //         Colors = new List<int>(ColorMarks),
+    //         Digit = number,
+    //         contradicted = Contradicted
+    //     };
+    //
+    //     while (TileStates.Count > stateCounter)
+    //     {
+    //         TileStates.RemoveAt(TileStates.Count-1);
+    //     }
+    //     
+    //     TileStates.Add(state);
+    //     stateCounter++;
+    // }
 
-        while (TileStates.Count > stateCounter)
-        {
-            TileStates.RemoveAt(TileStates.Count-1);
-        }
-        
-        TileStates.Add(state);
-        stateCounter++;
-    }
-
-    private void ChangeState(bool undo)
-    {
-        if (undo)
-            stateCounter--;
-        else
-            stateCounter++;
-        
-
-        if (undo && stateCounter <= 0)
-        {
-            stateCounter = 1;
-            return;
-        }
-        
-        if (!undo && stateCounter > TileStates.Count)
-        {
-            stateCounter --;
-            return;
-        }
-        
-        TileState lastState = TileStates[stateCounter-1];
-
-        Contradicted = lastState.contradicted;
-        if (Contradicted)
-        {
-            SetContradiction();
-        }
-        else
-        {
-            RemoveContradiction();
-        }
-
-        if (lastState.Digit != number)
-        {
-            TryUpdateDigit(lastState.Digit, false);
-        }
-        else if (CenterMarks.Count != lastState.Centers.Count)
-        {
-            TryRemoveAllCenterMarks();
-
-            foreach (var center in lastState.Centers)
-            {
-                TryUpdateCenter(center, false);
-            }
-        }
-        else if (CornerMarks.Count != lastState.Corners.Count)
-        {
-            TryRemoveAllCornerMarks();
-
-            foreach (var corner in lastState.Corners)
-            {
-                TryUpdateCorner(corner, false);
-            }
-        }
-        else if (ColorMarks.Count != lastState.Colors.Count)
-        {
-            TryRemoveAllColorMarks();
-
-            foreach (var color in lastState.Colors)
-            {
-                TryUpdateColor(color, false);
-            }
-        }
-    }
-
-    private void OnUndo()
-    {
-        ChangeState(true);
-    }
-    
-    private void OnRedo()
-    {
-        ChangeState(false);
-    }
+    // private void ChangeState(bool undo)
+    // {
+    //     if (undo)
+    //         stateCounter--;
+    //     else
+    //         stateCounter++;
+    //     
+    //
+    //     if (undo && stateCounter <= 0)
+    //     {
+    //         stateCounter = 1;
+    //         return;
+    //     }
+    //     
+    //     if (!undo && stateCounter > TileStates.Count)
+    //     {
+    //         stateCounter --;
+    //         return;
+    //     }
+    //     
+    //     TileState lastState = TileStates[stateCounter-1];
+    //
+    //     Contradicted = lastState.contradicted;
+    //     if (Contradicted)
+    //     {
+    //         SetContradiction();
+    //     }
+    //     else
+    //     {
+    //         RemoveContradiction();
+    //     }
+    //
+    //     if (lastState.Digit != number)
+    //     {
+    //         TryUpdateDigit(lastState.Digit, false);
+    //     }
+    //     else if (CenterMarks.Count != lastState.Centers.Count)
+    //     {
+    //         TryRemoveAllCenterMarks();
+    //
+    //         foreach (var center in lastState.Centers)
+    //         {
+    //             TryUpdateCenter(center, false);
+    //         }
+    //     }
+    //     else if (CornerMarks.Count != lastState.Corners.Count)
+    //     {
+    //         TryRemoveAllCornerMarks();
+    //
+    //         foreach (var corner in lastState.Corners)
+    //         {
+    //             TryUpdateCorner(corner, false);
+    //         }
+    //     }
+    //     else if (ColorMarks.Count != lastState.Colors.Count)
+    //     {
+    //         TryRemoveAllColorMarks();
+    //
+    //         foreach (var color in lastState.Colors)
+    //         {
+    //             TryUpdateColor(color, false);
+    //         }
+    //     }
+    // }
+    //
+    // private void OnUndo()
+    // {
+    //     ChangeState(true);
+    // }
+    //
+    // private void OnRedo()
+    // {
+    //     ChangeState(false);
+    // }
     
 
     

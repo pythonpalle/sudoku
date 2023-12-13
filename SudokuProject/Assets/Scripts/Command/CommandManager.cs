@@ -35,6 +35,9 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     public UnityAction<List<int>, List<List<int>>, int> OnAddMarks;
     public UnityAction<List<int>, int> OnRemoveAllMarks;
 
+    public UnityAction<SudokuCommand> OnCommandRedo;
+    public UnityAction<SudokuCommand> OnCommanUndo;
+
     private void Awake()
     {
         instance = this;
@@ -42,17 +45,11 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
 
     private void OnEnable()
     {
-        EventManager.OnSetupTiles += OnSetupTiles;
-        EventManager.OnNewCommand += OnNewCommand;
-        
         SaveManager.AddPopulateDataListener(this);
     }
     
     private void OnDisable()
     {
-        EventManager.OnSetupTiles -= OnSetupTiles;
-        EventManager.OnNewCommand -= OnNewCommand;
-        
         SaveManager.RemovePopulateDataListener(this);
     }
     
@@ -70,6 +67,7 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
 
         var command = undoStack.Pop();
         command.Undo();
+        OnCommanUndo?.Invoke(command);
         redoStack.Push(command);
     }
 
@@ -81,55 +79,7 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
         var command = redoStack.Pop();
         command.Execute();
         undoStack.Push(command);
-    }
-
-    private void OnNewCommand(SudokuEntry entry)
-    {
-        while (entries.Count > stateCounter)
-        {
-            entries.RemoveAt(entries.Count-1);
-        }
-
-        SudokuEntry newEntry = new SudokuEntry(entry);
-        entries.Add(newEntry);
-        stateCounter++;
-
-        entryCount = entries.Count;
-    }
-
-    private bool TryChangeState(bool undo)
-    {
-        if (undo)
-            stateCounter--;
-        else
-            stateCounter++;
-        
-        if (undo && stateCounter <= 0)
-        {
-            stateCounter = 1;
-            return false;
-        }
-        
-        if (!undo && stateCounter > entries.Count)
-        {
-            stateCounter --;
-            return false;
-        }
-        
-        if (undo)
-            EventManager.Undo();
-        else
-            EventManager.Redo();
-
-        entryCount = entries.Count;
-
-        return true;
-    }
-
-    private void OnSetupTiles()
-    {
-        EventManager.CallNewCommand(null);
-        Debug.Log("CM Tiles set up");
+        OnCommandRedo?.Invoke(command);
     }
 
     private void Update()
@@ -137,21 +87,10 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
         {
             if (Input.GetKeyDown(KeyCode.Z))
-                CallUndo();
+                UndoCommand();
             else if (Input.GetKeyDown(KeyCode.Y))
-                CallRedo();
+                RedoCommand();
         }
-    }
-
-    // puplic för att ska kunna kallas på från undo/redo-knapparna
-    public void CallUndo()
-    {
-        TryChangeState(true);
-    }
-
-    public void CallRedo()
-    {
-        TryChangeState(false);
     }
 
     public void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate)

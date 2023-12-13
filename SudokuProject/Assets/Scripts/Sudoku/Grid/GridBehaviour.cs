@@ -14,7 +14,7 @@ public enum RemovalType
     All
 }
 
-public class GridBehaviour : MonoBehaviour, IHasCommand
+public class GridBehaviour : MonoBehaviour
 {
     private SudokuGrid9x9 grid;
     private List<SudokuGrid9x9> gridHistory;
@@ -61,10 +61,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         
         EventManager.OnGridEnterFromUser += OnGridEnterFromUser;
         
-        EventManager.OnNewCommand += OnNewCommand;
-        EventManager.OnUndo += OnUndo;
-        EventManager.OnRedo += OnRedo;
-
         EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
         EventManager.OnSelectAllTiles += OnSelectAllTiles;
 
@@ -82,10 +78,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         
         EventManager.OnGridEnterFromUser -= OnGridEnterFromUser; 
-
-        EventManager.OnNewCommand -= OnNewCommand;
-        EventManager.OnUndo -= OnUndo;
-        EventManager.OnRedo -= OnRedo;
         
         EventManager.OnSelectAllTilesWithNumber -= OnSelectAllTilesWithNumber;
         EventManager.OnSelectAllTiles -= OnSelectAllTiles;
@@ -258,9 +250,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
         
         grid = importedGrid;
-        
         //TODO: make import a valid command, or hard code work around for self created puzzles
-         EventManager.CallNewCommand(null);
     }
 
     private void UpdateGridCandidates()
@@ -380,18 +370,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         
         if (!TryEnterNumberToSelectedTiles(tiles, number, enterType))
             return;
-        
-        // switch (enterType)
-        // {
-        //     case EnterType.DigitMark:
-        //         HandleRemoveContradictions();
-        //         HandleAddContradictionsInList(tiles, number);
-        //         HandleCompletion();
-        //         gridPort.UpdateContradictionStatus(GridHasContradiction());
-        //         break;
-        // }
-        //
-        // EventManager.CallNewCommand(entry);
     }
     
     private void HandleCompletion()
@@ -988,53 +966,5 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
         
         HandleRemoveContradictions();
-    }
-
-    private int stateCounter = 0;
-
-    public void OnNewCommand(SudokuEntry entry)
-    {
-        SudokuGrid9x9 newGrid = new SudokuGrid9x9(grid);
-        
-        while (gridHistory.Count > stateCounter)
-        {
-            gridHistory.RemoveAt(gridHistory.Count-1);
-        }
-        
-        gridHistory.Add(newGrid);
-        stateCounter++;
-    }
-
-    private void ChangeState(bool undo)
-    {
-        if (undo)
-            stateCounter--;
-        else
-            stateCounter++;
-        
-        if (undo && stateCounter <= 0)
-        {
-            stateCounter = 1;
-            return;
-        }
-        
-        if (!undo && stateCounter > gridHistory.Count)
-        {
-            stateCounter --;
-            return;
-        }
-        
-        grid = new SudokuGrid9x9(gridHistory[stateCounter - 1]);
-        gridPort.UpdateContradictionStatus(GridHasContradiction());
-    }
-
-    private void OnUndo()
-    {
-        ChangeState(true);
-    }
-    
-    private void OnRedo()
-    {
-        ChangeState(false);
     }
 }

@@ -24,9 +24,7 @@ public static class EventManager
     public static UnityAction OnSelectAllTiles;
     
     public static UnityAction<SudokuEntry> OnGridEnterFromUser;
-
-    public static UnityAction<SudokuEntry> OnNewCommand;
-
+    
     public static UnityAction OnUIElementHover;
     public static UnityAction OnUIElementExit;
     public static UnityAction<EnterType> OnSelectButtonClicked;
@@ -69,16 +67,6 @@ public static class EventManager
     public static void GridEnterFromUser(SudokuEntry entry)
     {
         OnGridEnterFromUser?.Invoke(entry);
-    }
-
-    public static void CallNewCommand(SudokuEntry entry)
-    {
-        if (entry == null || entry.tiles == null || entry.tiles.Count == 0)
-        {
-            Debug.Log("new command with 0 tiles");
-            //return;
-        }
-        OnNewCommand?.Invoke(entry);
     }
 
     public static void UIElementHover()

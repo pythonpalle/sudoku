@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Command;
 using UnityEngine;
 
-public class SelectionManager : MonoBehaviour, IHasCommand
+public class SelectionManager : MonoBehaviour
 {
     [SerializeField] private SelectionObject selectionObject;
+    [SerializeField] private GridPort gridPort;
     [SerializeField] private bool pointerOverGrid = false;
     
     private TileBehaviour lastTileReference;
@@ -20,6 +22,12 @@ public class SelectionManager : MonoBehaviour, IHasCommand
     private List<TileBehaviour> lastSelectedInBeforeUndo;
 
 
+    private void Start()
+    {
+        CommandManager.instance.OnCommandRedo += OnCommandRedo;
+        CommandManager.instance.OnCommanUndo += OnCommandUndo;
+    }
+
     private void OnEnable()
     {
         EventManager.OnTileSelect += OnTileSelect;
@@ -33,10 +41,6 @@ public class SelectionManager : MonoBehaviour, IHasCommand
         
         EventManager.OnUIElementHover += OnUIElementHover;
         EventManager.OnUIElementExit += OnUIElementExit;
-
-        EventManager.OnNewCommand += OnNewCommand;
-        EventManager.OnUndo += OnUndo;
-        EventManager.OnRedo += OnRedo;
         
         selectionObject.ClearSelectedTiles(); 
         selectionObject.SetSelectionMode(SelectionMode.None); 
@@ -53,12 +57,35 @@ public class SelectionManager : MonoBehaviour, IHasCommand
         
         selectionObject.OnSendTileReference -= OnSendTileReference;
         
-        EventManager.OnNewCommand -= OnNewCommand;
-        EventManager.OnUndo -= OnUndo;
-        EventManager.OnRedo -= OnRedo;
-
         EventManager.OnUIElementHover -= OnUIElementHover;
         EventManager.OnUIElementExit -= OnUIElementExit;
+        
+        CommandManager.instance.OnCommandRedo -= OnCommandRedo;
+        CommandManager.instance.OnCommanUndo -= OnCommandUndo;
+    }
+
+    private void OnCommandUndo(SudokuCommand command)
+    {
+        SelectFromCommand(command);
+    }
+
+    private void OnCommandRedo(SudokuCommand command)
+    {
+        SelectFromCommand(command);
+    }
+
+    private void SelectFromCommand(SudokuCommand command)
+    {
+        if (command is EffectedTilesCommand effectedTilesCommand)
+        {
+            DeselectAllTiles();
+            
+            var tiles = gridPort.GetTilesFromInts(effectedTilesCommand.effectedIndexes);
+            foreach (var tile in tiles)
+            {
+                tile.Select();
+            }
+        }
     }
 
     private void OnUIElementHover()
@@ -318,80 +345,5 @@ public class SelectionManager : MonoBehaviour, IHasCommand
 
             lastSelectionWasDoubleClick = false;
         }
-    }
-
-    public void OnNewCommand(SudokuEntry entry)
-    {
-        var selectedTiles = new List<TileBehaviour>(selectionObject.SelectedTiles);
-        
-        while (selectionHistory.Count > stateCounter)
-        {
-            selectionHistory.RemoveAt(selectionHistory.Count-1);
-        }
-        
-        selectionHistory.Add(selectedTiles);
-        stateCounter++;
-    }
-
-    private void ChangeState(bool undo)
-    {
-        int prevCounter = stateCounter;
-        
-        if (undo)
-            stateCounter--; 
-        else
-            stateCounter++;
-        
-        // at the first undo, save current selection
-        if (undo && stateCounter == selectionHistory.Count - 1)
-        {
-            lastSelectedInBeforeUndo = new List<TileBehaviour>(selectionObject.SelectedTiles);
-        }
-        // at last redo, select the saved selection
-        else if (!undo && stateCounter == selectionHistory.Count + 1)
-        {
-            if (lastSelectedInBeforeUndo != null)
-            {
-                DeselectAllTiles();
-                foreach (var tile in lastSelectedInBeforeUndo)
-                {
-                    tile.Select();
-                }
-            }
-        }
-        
-        // undo when has no states
-        if (undo && stateCounter <= 0)
-        {
-            DeselectAllTiles();
-            stateCounter = 1;
-            return;
-        }
-        
-        // redo at the end of the commands
-        if (!undo && stateCounter > selectionHistory.Count)
-        {
-            stateCounter --;
-            return;
-        }
-        
-        // select the tiles that was affected by the last undo/redo
-        DeselectAllTiles();
-        int chosenCounter = undo ? prevCounter : stateCounter;
-        var selectedTiles = selectionHistory[chosenCounter - 1];
-        foreach (var tile in selectedTiles)
-        {
-            tile.Select();
-        }
-    }
-
-    private void OnUndo()
-    {
-        ChangeState(true);
-    }
-    
-    private void OnRedo()
-    {
-        ChangeState(false);
     }
 }

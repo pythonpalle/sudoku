@@ -69,4 +69,20 @@ public class GridPort : ScriptableObject
 
         return tiles;
     }
+
+    public List<TileBehaviour> GetTilesFromInts(List<int> indices)
+    {
+        RequestTiles();
+
+        List<TileBehaviour> tiles = new List<TileBehaviour>();
+        foreach (var index in indices)
+        {
+            int row = index / 9;
+            int col = index % 9;
+
+            tiles.Add(tileBehaviours[row, col]);
+        }
+
+        return tiles;
+    }
 }
