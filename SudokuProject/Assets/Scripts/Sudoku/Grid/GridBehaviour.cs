@@ -10,7 +10,7 @@ using UnityEngine.Assertions;
 public enum RemovalType
 {
     None,
-    Number,
+    Single,
     All
 }
 
@@ -45,6 +45,12 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         CommandManager.instance.OnAddOneDigit += OnAddOneDigit;
         CommandManager.instance.OnAddMultipleDigits += OnAddMultipleDigits;
         CommandManager.instance.OnRemoveDigits += OnRemoveDigits;
+        
+        CommandManager.instance.OnAddMark += OnAddMark;
+        CommandManager.instance.OnRemoveSingleMark += OnRemoveMark;
+
+        CommandManager.instance.OnAddMarks += OnAddMarks;
+        CommandManager.instance.OnRemoveAllMarks += OnRemoveAllMarks;
     }
 
     private void OnEnable()
@@ -93,24 +99,43 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         CommandManager.instance.OnAddOneDigit -= OnAddOneDigit;
         CommandManager.instance.OnAddMultipleDigits -= OnAddMultipleDigits;
         CommandManager.instance.OnRemoveDigits -= OnRemoveDigits;
+        
+        CommandManager.instance.OnAddMark -= OnAddMark;
+        CommandManager.instance.OnRemoveSingleMark -= OnRemoveMark;
+        
+        CommandManager.instance.OnAddMarks -= OnAddMarks;
+        CommandManager.instance.OnRemoveAllMarks -= OnRemoveAllMarks;
     }
 
-    private void OnRemoveDigits(List<int> indices)
+    private void OnRemoveAllMarks(List<int> indexes, int enterType)
     {
-        List<TileBehaviour> tiles = IntsToTiles(indices);
+        List<TileBehaviour> tiles = IntsToTiles(indexes);
+        EnterType type = IntToEnterType(enterType);
+
+        RemoveAllOfEntryType(tiles, type);
+    }
+
+    private void OnAddMarks(List<int> indexes, List<List<int>> markNumbers, int enterType)
+    {
+        Debug.Log($"Add {enterType} mark to {indexes.Count} indices!");
         
-        HandleRemoveNormalNumbers(tiles);
+        List<TileBehaviour> tiles = IntsToTiles(indexes);
+        EnterType type = IntToEnterType(enterType);
+
+        for (int i = 0; i < indexes.Count; i++)
+        {
+            var tile = tiles[i];
+
+            foreach (int mark in markNumbers[i])
+            {
+                EnterTileNumber(tile, mark, type, false);
+            }
+        }
     }
 
     private void OnAddOneDigit(List<int> indexes, int digit)
     {
-        List<TileBehaviour> tiles = IntsToTiles(indexes);
-
-        for (var index = 0; index < tiles.Count; index++)
-        {
-            var tile = tiles[index];
-            EnterTileNumber(tile, digit, EnterType.DigitMark, false);
-        }
+        OnAddSingle(indexes, digit, EnterType.DigitMark);
     }
     
     private void OnAddMultipleDigits(List<int> indexes, List<int> newDigits)
@@ -122,6 +147,50 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             var tile = tiles[index];
             EnterTileNumber(tile, newDigits[index], EnterType.DigitMark, false);
         }
+    }
+    
+    private void OnAddMark(List<int> indices, int number, int enterType)
+    {
+        OnAddSingle(indices, number, enterType);
+    }
+
+    private void OnAddSingle(List<int> indices, int number, int type)
+    {
+        OnAddSingle(indices, number, IntToEnterType(type));
+    }
+    
+    private void OnAddSingle(List<int> indices, int number, EnterType type)
+    {
+        List<TileBehaviour> tiles = IntsToTiles(indices);
+        
+        for (var index = 0; index < tiles.Count; index++)
+        {
+            var tile = tiles[index];
+            EnterTileNumber(tile, number, type, false);
+        }
+    }
+    
+    private void OnRemoveDigits(List<int> indices)
+    {
+        List<TileBehaviour> tiles = IntsToTiles(indices);
+        
+        HandleRemoveNormalNumbers(tiles);
+    }
+    
+    private void OnRemoveMark(List<int> indeces, int number, int enterType)
+    {
+        List<TileBehaviour> tiles = IntsToTiles(indeces);
+        EnterType type = IntToEnterType(enterType);
+
+        foreach (var tile in tiles)
+        {
+            EnterTileNumber(tile, number, type, true);
+        }
+    }
+
+    private EnterType IntToEnterType(int i)
+    {
+        return (EnterType) Enum.ToObject(typeof(EnterType), i);
     }
 
     private List<TileBehaviour> IntsToTiles(List<int> indexes)
@@ -360,11 +429,15 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
             {
                 Debug.Log($"Effected count: {tiles.Count}");
 
-                // only seen as new command if some tiles where effected
-                if (RemoveAllOfEntryType(tiles, EnterType.ColorMark))
-                {
-                    EventManager.CallNewCommand(entry);
-                }
+                var tileAsInt = TilesToInt(tiles);
+
+                CreateRemoveAllMarksCommand(tiles, tileAsInt, EnterType.ColorMark);
+                
+                // // only seen as new command if some tiles where effected
+                // if (RemoveAllOfEntryType(tiles, EnterType.ColorMark))
+                // {
+                //     EventManager.CallNewCommand(entry);
+                // }
             }
         
             return;
@@ -395,15 +468,19 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
                 // special case needed to update board
                 if (type == EnterType.DigitMark)
                 {
-                    HandleRemoveNormalNumbers(tiles);
-                    gridPort.UpdateContradictionStatus(GridHasContradiction());
+                    CreateRemoveDigitCommand(TilesToInt(tiles), GetPreviousDigits(tiles));
+                    
+                    // HandleRemoveNormalNumbers(tiles);
+                    // gridPort.UpdateContradictionStatus(GridHasContradiction());
                 }
                 else
                 {
-                    RemoveAllOfEntryType(tiles, type);
+                    CreateRemoveAllMarksCommand(tiles, TilesToInt(tiles), type);
+                    
+                    //RemoveAllOfEntryType(tiles, type);
                 }
                 
-                EventManager.CallNewCommand(entry);
+                //EventManager.CallNewCommand(entry);
                 return;
             }
         }
@@ -568,7 +645,7 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         // if all selected tiles have the same number, remove the number 
         bool remove = selectedTiles.All(t => t.HasSameNumber(number, enterType));
 
-        RemovalType removalType = remove ? RemovalType.Number : RemovalType.None;
+        RemovalType removalType = remove ? RemovalType.Single : RemovalType.None;
         
         selectedTiles = FilterEffectedOnly(selectedTiles, removalType, number, enterType);
         
@@ -578,42 +655,144 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
         }
         
         Debug.Log("Effected: " + selectedTiles.Count);
+        CreateCommand(selectedTiles, enterType, removalType, number);
+        return true;
+    }
+
+    private void CreateCommand(List<TileBehaviour> selectedTiles, EnterType enterType, RemovalType removalType, int number)
+    {
+        switch (enterType)
+        {
+            case EnterType.DigitMark:
+                CreateDigitCommand(selectedTiles, number, removalType);
+                return;
+            
+            case EnterType.CornerMark:
+            case EnterType.ColorMark:
+            case EnterType.CenterMark:
+                CreateMarkCommand(selectedTiles, number, enterType, removalType);
+                return;
+        }
+    }
+
+    private void CreateMarkCommand(List<TileBehaviour> tiles, int number, EnterType enterType, RemovalType removalType)
+    {
+        List<int> tilesAsIndices = TilesToInt(tiles);
         
+        switch (removalType)
+        {
+            case RemovalType.None:
+                CreateAddMarkCommand(number, tilesAsIndices, enterType);
+                break;
+            
+            case RemovalType.Single:
+                CreateRemoveSingleMarkCommand(number, tilesAsIndices, enterType);
+                break;
+            
+            case RemovalType.All:
+                CreateRemoveAllMarksCommand(tiles, tilesAsIndices, enterType);
+                break;
+        }
+        
+    }
+
+    private void CreateRemoveAllMarksCommand(List<TileBehaviour> tiles, List<int> tilesAsIndices, EnterType enterType)
+    {
+        var removeAllMarksCommand = new RemoveAllMarksCommand()
+        {
+            effectedIndexes = tilesAsIndices,
+            enterType = (int) enterType,
+            previousMarks = GetPreviousMarks(tiles, enterType)
+        };
+
+        CommandManager.instance.ExecuteNewCommand(removeAllMarksCommand);
+    }
+
+    private static void CreateRemoveSingleMarkCommand(int number, List<int> tilesAsIndices, EnterType enterType)
+    {
+        var removeSingleMarkCommand = new RemoveSingleMarkCommand()
+        {
+            effectedIndexes = tilesAsIndices,
+            enterType = (int) enterType,
+            number = number
+        };
+
+        CommandManager.instance.ExecuteNewCommand(removeSingleMarkCommand);
+    }
+
+    private static void CreateAddMarkCommand(int number, List<int> tilesAsIndices, EnterType enterType)
+    {
+        var addMarkCommand = new AddMarkCommand
+        {
+            effectedIndexes = tilesAsIndices,
+            enterType = (int) enterType,
+            number = number,
+        };
+
+        CommandManager.instance.ExecuteNewCommand(addMarkCommand);
+    }
+
+    private List<List<int>> GetPreviousMarks(List<TileBehaviour> tiles, EnterType enterType)
+    {
+        List<List<int>> marksForTile = new List<List<int>>();
+        
+        foreach (var tile in tiles)
+        {
+            switch (enterType)
+            {
+                case EnterType.CenterMark:
+                    marksForTile.Add(tile.CenterMarks);
+                    break;
+                
+                case EnterType.CornerMark:
+                    marksForTile.Add(tile.CornerMarks);
+                    break;
+                
+                case EnterType.ColorMark:
+                    marksForTile.Add(tile.ColorMarks);
+                    break;
+            }
+        }
+
+        return marksForTile;
+    }
+
+    private void CreateDigitCommand(List<TileBehaviour> selectedTiles, int number, RemovalType removalType)
+    {
         List<int> tilesToInt = TilesToInt(selectedTiles);
         List<int> previousDigits = GetPreviousDigits(selectedTiles);
 
-        if (remove)
+        if (removalType == RemovalType.None)
         {
-            RemoveDigitCommand removeDigitCommand = new RemoveDigitCommand
-            {
-                effectedIndexes = tilesToInt,
-                previousGridDigits = previousDigits
-            };
-        
-            CommandManager.instance.ExecuteNewCommand(removeDigitCommand);
+            CreateAddDigitCommand(tilesToInt, previousDigits, number);
         }
         else
         {
-            AddDigitCommand addDigitCommand = new AddDigitCommand
-            {
-                addedDigit = number,
-                effectedIndexes = tilesToInt,
-                previousGridDigits = previousDigits
-            };
-        
-            CommandManager.instance.ExecuteNewCommand(addDigitCommand);
+            CreateRemoveDigitCommand(tilesToInt, previousDigits);
         }
+    }
+
+    private void CreateAddDigitCommand(List<int> tilesToInt, List<int> previousDigits, int number)
+    {
+        AddDigitCommand addDigitCommand = new AddDigitCommand
+        {
+            addedDigit = number,
+            effectedIndexes = tilesToInt,
+            previousGridDigits = previousDigits
+        };
         
+        CommandManager.instance.ExecuteNewCommand(addDigitCommand);
+    }
 
+    private void CreateRemoveDigitCommand(List<int> tilesToInt, List<int> previousDigits)
+    {
+        RemoveDigitCommand removeDigitCommand = new RemoveDigitCommand
+        {
+            effectedIndexes = tilesToInt,
+            previousGridDigits = previousDigits
+        };
         
-
-
-        // foreach (var tileBehaviour in selectedTiles)
-        // {
-        //     EnterTileNumber(tileBehaviour, number, enterType, remove);
-        // }
-
-        return true;
+        CommandManager.instance.ExecuteNewCommand(removeDigitCommand);
     }
 
     private List<int> GetPreviousDigits(List<TileBehaviour> selectedTiles)
@@ -654,13 +833,13 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     }
     
 
-    private void EnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType, bool sameNumber)
+    private void EnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType, bool remove)
     {
-        tileBehaviour.TryUpdateNumber(number, enterType, sameNumber);
+        tileBehaviour.TryUpdateNumber(number, enterType, remove);
 
         if (enterType == EnterType.DigitMark)
         {
-            AddDigitToGrid(tileBehaviour, number, sameNumber);
+            AddDigitToGrid(tileBehaviour, number, remove);
         }
     }
 

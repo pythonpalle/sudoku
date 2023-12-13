@@ -27,8 +27,13 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
 
     public UnityAction<List<int> , int > OnAddOneDigit;
     public UnityAction<List<int> , List<int> > OnAddMultipleDigits;
-
     public UnityAction<List<int>> OnRemoveDigits;
+    
+    public UnityAction<List<int> , int , int > OnAddMark;
+    public UnityAction<List<int> , int , int > OnRemoveSingleMark;
+    
+    public UnityAction<List<int>, List<List<int>>, int> OnAddMarks;
+    public UnityAction<List<int>, int> OnRemoveAllMarks;
 
     private void Awake()
     {
@@ -183,7 +188,7 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
         return data;
     }
     
-    public void AddDigits(List<int> effectedIndexes, int addedDigit)
+    public void AddDigit(List<int> effectedIndexes, int addedDigit)
     {
         OnAddOneDigit?.Invoke(effectedIndexes, addedDigit);
     }
@@ -196,5 +201,25 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     public void RemoveDigits(List<int> effectedIndexes)
     {
         OnRemoveDigits?.Invoke(effectedIndexes);
+    }
+
+    public void AddMark(List<int> effectedIndexes, int number, int enterType)
+    {
+        OnAddMark?.Invoke(effectedIndexes, number, enterType);
+    }
+
+    public void RemoveSingleMark(List<int> effectedIndexes, int number, int enterType)
+    {
+        OnRemoveSingleMark?.Invoke(effectedIndexes, number, enterType);
+    }
+
+    public void RemoveAllMarks(List<int> effectedIndexes, int enterType)
+    {
+        OnRemoveAllMarks?.Invoke(effectedIndexes, enterType);
+    }
+
+    public void AddMarks(List<int> effectedIndexes, List<List<int>> previousMarks, int enterType)
+    {
+        OnAddMarks?.Invoke(effectedIndexes, previousMarks, enterType);
     }
 }

@@ -690,7 +690,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         {
             case RemovalType.All:
                 return list.Count > 0;
-            case RemovalType.Number:
+            case RemovalType.Single:
                 return list.Contains(nbr);;
         }
 
@@ -705,7 +705,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         switch (remove)
         {
             case RemovalType.All:
-            case RemovalType.Number:
+            case RemovalType.Single:
                 return HasDigit;
         }
 

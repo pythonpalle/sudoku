@@ -31,38 +31,6 @@ namespace Command
             //EventManager.Import(previousGridDigits);
         }
     }
-    
-    public class AddDigitCommand : EffectedTilesCommand
-    {
-        public List<int> previousGridDigits;
-        public int addedDigit;
-    
-        public override void Execute()
-        {
-            CommandManager.instance.AddDigits(effectedIndexes, addedDigit);
-        }
-    
-        public override void Undo()
-        {
-            CommandManager.instance.AddDigits(effectedIndexes, previousGridDigits);
-        }
-    }
-    
-    public class RemoveDigitCommand : EffectedTilesCommand
-    {
-        public List<int> previousGridDigits;
-    
-        public override void Execute()
-        {
-            CommandManager.instance.RemoveDigits(effectedIndexes);
-        }
-    
-        public override void Undo()
-        {
-            CommandManager.instance.AddDigits(effectedIndexes, previousGridDigits);
-        }
-    }
-
 }
 
 
