@@ -512,7 +512,6 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
 
         RemovalType removalType = remove ? RemovalType.Number : RemovalType.None;
         
-        
         selectedTiles = FilterEffectedOnly(selectedTiles, removalType, number, enterType);
         
         Debug.Log("Effected: " + selectedTiles.Count);
@@ -538,25 +537,14 @@ public class GridBehaviour : MonoBehaviour, IHasCommand
     /// <param name="number"></param>
     /// <param name="enterType"></param>
     /// <exception cref="NotImplementedException"></exception>
-    private List<TileBehaviour> FilterEffectedOnly(List<TileBehaviour> selectedTiles, RemovalType remove, int number, EnterType enterType)
+    private List<TileBehaviour> FilterEffectedOnly(List<TileBehaviour> selectedTiles, RemovalType removeType, int number, EnterType enterType)
     {
-        List<TileBehaviour> effected = new List<TileBehaviour>();
-
-        foreach (var selectedTile in selectedTiles)
-        {
-            if (selectedTile.IsEffectedByEntry(number, enterType, remove))
-                effected.Add(selectedTile);
-        }
-        
-        return effected;
+        return selectedTiles.FindAll(t => t.IsEffectedByEntry(number, enterType, removeType));
     }
     
 
     private void EnterTileNumber(TileBehaviour tileBehaviour, int number, EnterType enterType, bool sameNumber)
     {
-        // if (TrySkipPermanent(tileBehaviour, enterType))
-        //     return;
-        
         tileBehaviour.TryUpdateNumber(number, enterType, sameNumber);
 
         if (enterType == EnterType.DigitMark)
