@@ -64,7 +64,7 @@ public class SelectionManager : MonoBehaviour
         CommandManager.instance.OnCommandRedo -= OnCommandRedo;
         CommandManager.instance.OnCommandUndo -= OnCommandUndo;
         
-        CommandManager.instance.OnUndoFail += OnUndoFail;
+        CommandManager.instance.OnUndoFail -= OnUndoFail;
     }
 
     private void OnUndoFail()

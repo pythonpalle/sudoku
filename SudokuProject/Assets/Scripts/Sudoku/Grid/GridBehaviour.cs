@@ -36,6 +36,7 @@ public class GridBehaviour : MonoBehaviour
     private void Awake()
     {
         gridPort.Reset();
+        
     }
 
     private void Start()
@@ -56,7 +57,7 @@ public class GridBehaviour : MonoBehaviour
     private void OnEnable()
     {
         EventManager.OnGridGenerated += OnGridGenerated;
-        EventManager.OnImportGrid += OnImportGrid;
+        //EventManager.OnImportGrid += OnImportGrid;
         EventManager.OnTileIndexSet += OnTileIndexSet;
         
         EventManager.OnGridEnterFromUser += OnGridEnterFromUser;
@@ -74,7 +75,7 @@ public class GridBehaviour : MonoBehaviour
     private void OnDisable()
     {
         EventManager.OnGridGenerated -= OnGridGenerated;
-        EventManager.OnImportGrid -= OnImportGrid;
+        //EventManager.OnImportGrid -= OnImportGrid;
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         
         EventManager.OnGridEnterFromUser -= OnGridEnterFromUser; 
@@ -235,23 +236,23 @@ public class GridBehaviour : MonoBehaviour
         gridPort.SendGridCopy(grid, tileBehaviours);
     }
     
-    private void OnImportGrid(SudokuGrid9x9 importedGrid)
-    {
-        foreach (var tile in importedGrid.Tiles)
-        {
-            var tileBehaviour = tileBehaviours[tile.index.row, tile.index.col];
-            tileBehaviour.TryUpdateNumber(tile.Number, EnterType.DigitMark, false);
-        }
-
-        foreach (var tileBehaviour in tileBehaviours)
-        {
-            if (CheckForContradiction(tileBehaviour))
-                tileBehaviour.SetContradiction();
-        }
-        
-        grid = importedGrid;
-        //TODO: make import a valid command, or hard code work around for self created puzzles
-    }
+    // private void OnImportGrid(SudokuGrid9x9 importedGrid)
+    // {
+    //     foreach (var tile in importedGrid.Tiles)
+    //     {
+    //         var tileBehaviour = tileBehaviours[tile.index.row, tile.index.col];
+    //         tileBehaviour.TryUpdateNumber(tile.Number, EnterType.DigitMark, false);
+    //     }
+    //
+    //     foreach (var tileBehaviour in tileBehaviours)
+    //     {
+    //         if (CheckForContradiction(tileBehaviour))
+    //             tileBehaviour.SetContradiction();
+    //     }
+    //     
+    //     grid = importedGrid;
+    //     //TODO: make import a valid command, or hard code work around for self created puzzles
+    // }
 
     private void UpdateGridCandidates()
     {
@@ -345,7 +346,9 @@ public class GridBehaviour : MonoBehaviour
         for (int i = 0; i < boxes.Count; i++)
         {
             boxes[i].Setup(i, tileAnimationParent);
-        }    
+        }
+        
+        OnRequestTiles();
     }
     
     private void OnGridGenerated(SudokuGrid9x9 generatedGrid)

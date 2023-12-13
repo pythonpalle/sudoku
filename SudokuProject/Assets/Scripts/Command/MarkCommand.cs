@@ -51,6 +51,4 @@ namespace Command
             CommandManager.instance.AddMarks(effectedIndexes, previousMarks, enterType);
         }
     }
-    
-    
 }

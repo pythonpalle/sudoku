@@ -1,14 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Command;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 public class ImportBehaviour : MonoBehaviour
 {
-    [SerializeField] private ImportObject importObject;
     [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private GridPort gridPort;
 
     private string seedString = string.Empty;
 
@@ -36,8 +38,36 @@ public class ImportBehaviour : MonoBehaviour
         {
             SudokuGrid9x9 grid = ConvertSeedToGrid();
             grid.PrintGrid();
+
+
+            List<int> allIndices = new List<int>();
+            List<int> previous = new List<int>();
+            List<int> imported = SeedToIntList(seedString);
+
+            // TileBehaviour[,] tiles = new TileBehaviour[9, 9];
+            // Array.Copy(gridPort.tileBehaviours, tiles, 81);
+
+            TileBehaviour[,] tiles = gridPort.tileBehaviours;
             
-            EventManager.ImportGrid(grid);
+            for (int i = 0; i < 81; i++)
+            {
+                allIndices.Add(i);
+
+                int row = i / 9;
+                int col = i % 9;
+                
+                previous.Add(tiles[row,col].number);
+            }
+            
+            ImportCommand importCommand = new ImportCommand
+            {
+                effectedIndexes = allIndices,
+                importedGridDigits = imported,
+                previousGridDigits = previous
+            };
+
+            importCommand.Execute();
+            //EventManager.ImportGrid(grid);
             
             gameObject.SetActive(false);
         }
@@ -45,6 +75,32 @@ public class ImportBehaviour : MonoBehaviour
         {
             Debug.LogWarning(error);
         }
+    }
+
+    private List<int> SeedToIntList(string seedString)
+    {
+        List<int> seedList = new List<int>();
+        for (var index = 0; index < 81; index++)
+        {
+            int digit = 0;
+            
+            if (seedString.Length < 81)
+            {
+                seedList.Add(digit);
+                continue;
+            }
+            
+            var character = seedString[index];
+
+            if (character != ' ')
+                digit = (int) Char.GetNumericValue(character);
+
+            Assert.IsTrue(digit <= 9 && digit >= 0);
+
+            seedList.Add(digit);
+        }
+
+        return seedList;
     }
 
     public void PasteSeed()
