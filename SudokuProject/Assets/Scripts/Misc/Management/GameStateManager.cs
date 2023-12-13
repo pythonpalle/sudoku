@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class GameStateManager
 {
-    private static int activePopupCount;
+    public static int activePopupCount { get; private set; }
 
     public static bool gameIsActive { get; private set; } = true;
 

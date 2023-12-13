@@ -29,7 +29,7 @@ public class PopupWindow : MonoBehaviour
         OnClose?.Invoke();
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (isPopped)
         {

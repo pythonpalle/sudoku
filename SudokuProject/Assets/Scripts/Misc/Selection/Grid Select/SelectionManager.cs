@@ -17,8 +17,6 @@ public class SelectionManager : MonoBehaviour
     private float timeOfLastClick;
     private float maxTimeForDoubleClick = 0.5f;
 
-    private int stateCounter = 0;
-    private List<List<TileBehaviour>> selectionHistory = new List<List<TileBehaviour>>();
     private List<TileBehaviour> lastSelectedInBeforeUndo;
 
 
@@ -218,6 +216,8 @@ public class SelectionManager : MonoBehaviour
     {
         if (selectionObject.SelectionKeyPressed && !pointerOverGrid)
         {
+           Debug.Log("Deselecte"); 
+            
             DeselectAllTiles();
             selectionObject.SetSelectionMode(SelectionMode.Selecting);
         }

@@ -17,10 +17,9 @@ public enum RemovalType
 public class GridBehaviour : MonoBehaviour
 {
     private SudokuGrid9x9 grid;
-    private List<SudokuGrid9x9> gridHistory;
     private GridSaver gridSaver;
 
-    public TileBehaviour[,] tileBehaviours { get; private set; }= new TileBehaviour[9,9];
+    private TileBehaviour[,] tileBehaviours = new TileBehaviour[9,9];
 
     [Header("Scriptable Objects")]
     [SerializeField] private SelectionObject selectionObject;
@@ -36,7 +35,6 @@ public class GridBehaviour : MonoBehaviour
     private void Awake()
     {
         gridPort.Reset();
-        
     }
 
     private void Start()
@@ -57,7 +55,6 @@ public class GridBehaviour : MonoBehaviour
     private void OnEnable()
     {
         EventManager.OnGridGenerated += OnGridGenerated;
-        //EventManager.OnImportGrid += OnImportGrid;
         EventManager.OnTileIndexSet += OnTileIndexSet;
         
         EventManager.OnGridEnterFromUser += OnGridEnterFromUser;
@@ -75,7 +72,6 @@ public class GridBehaviour : MonoBehaviour
     private void OnDisable()
     {
         EventManager.OnGridGenerated -= OnGridGenerated;
-        //EventManager.OnImportGrid -= OnImportGrid;
         EventManager.OnTileIndexSet -= OnTileIndexSet;
         
         EventManager.OnGridEnterFromUser -= OnGridEnterFromUser; 
@@ -110,8 +106,6 @@ public class GridBehaviour : MonoBehaviour
 
     private void OnAddMarks(List<int> indexes, List<List<int>> markNumbers, int enterType)
     {
-        Debug.Log($"Add {enterType} mark to {indexes.Count} indices!");
-        
         List<TileBehaviour> tiles = IntsToTiles(indexes);
         EnterType type = IntToEnterType(enterType);
 
@@ -122,7 +116,6 @@ public class GridBehaviour : MonoBehaviour
             foreach (int mark in markNumbers[i])
             {
                 EnterTileNumber(tile, mark, type, false);
-                Debug.Log($"Add mark {mark} to tile {i}!");
             }
         }
     }
@@ -140,7 +133,7 @@ public class GridBehaviour : MonoBehaviour
 
     private void OnAddMultipleDigits(List<int> indexes, List<int> newDigits)
     {
-        HandleRemoveContradictions();
+        HandleRemoveContradictions(); 
 
         List<TileBehaviour> tiles = IntsToTiles(indexes);
 
@@ -235,24 +228,6 @@ public class GridBehaviour : MonoBehaviour
         UpdateGridCandidates();
         gridPort.SendGridCopy(grid, tileBehaviours);
     }
-    
-    // private void OnImportGrid(SudokuGrid9x9 importedGrid)
-    // {
-    //     foreach (var tile in importedGrid.Tiles)
-    //     {
-    //         var tileBehaviour = tileBehaviours[tile.index.row, tile.index.col];
-    //         tileBehaviour.TryUpdateNumber(tile.Number, EnterType.DigitMark, false);
-    //     }
-    //
-    //     foreach (var tileBehaviour in tileBehaviours)
-    //     {
-    //         if (CheckForContradiction(tileBehaviour))
-    //             tileBehaviour.SetContradiction();
-    //     }
-    //     
-    //     grid = importedGrid;
-    //     //TODO: make import a valid command, or hard code work around for self created puzzles
-    // }
 
     private void UpdateGridCandidates()
     {
@@ -354,7 +329,6 @@ public class GridBehaviour : MonoBehaviour
     private void OnGridGenerated(SudokuGrid9x9 generatedGrid)
     {
         grid = generatedGrid;
-        gridHistory = new List<SudokuGrid9x9>();
         
         SetupTileNumbers();
         EventManager.TilesSetup();
@@ -422,10 +396,7 @@ public class GridBehaviour : MonoBehaviour
             
             if (tiles.Count > 0)
             {
-                Debug.Log($"Effected count: {tiles.Count}");
-
                 var tileAsInt = TilesToInt(tiles);
-
                 CreateRemoveAllMarksCommand(tiles, tileAsInt, EnterType.ColorMark);
             }
         
@@ -452,7 +423,6 @@ public class GridBehaviour : MonoBehaviour
             if (effected.Count > 0)
             {
                 tiles = effected;
-                Debug.Log($"Effected count: {tiles.Count}");
 
                 // special case needed to update board
                 if (type == EnterType.DigitMark)
@@ -481,40 +451,6 @@ public class GridBehaviour : MonoBehaviour
         Assert.IsTrue(somethingWasRemoved);
 
         return somethingWasRemoved;
-    }
-
-    private bool CheckIfTilesContainType(List<TileBehaviour> selectedTiles, EnterType enterType)
-    {
-        foreach (var tile in selectedTiles)
-        {
-            // skip given clues
-            if (TrySkipPermanent(tile, enterType)) continue;
-
-            switch (enterType)
-            {
-                case EnterType.DigitMark:
-                    if (tile.HasDigit)
-                        return true;
-                    break;
-                
-                case EnterType.CenterMark:
-                    if (!tile.HasDigit && tile.CenterMarks.Count > 0)
-                        return true;
-                    break;
-                
-                case EnterType.CornerMark:
-                    if (!tile.HasDigit && tile.CornerMarks.Count > 0)
-                        return true;
-                    break;
-                
-                case EnterType.ColorMark:
-                    if (tile.ColorMarks.Count > 0)
-                        return true;
-                    break;
-            }
-        }
-        
-        return false;
     }
 
     private void OnSelectAllTilesWithNumber(TileBehaviour doubleClickTile)
@@ -637,7 +573,6 @@ public class GridBehaviour : MonoBehaviour
             return false;
         }
         
-        Debug.Log("Effected: " + selectedTiles.Count);
         CreateCommand(selectedTiles, enterType, removalType, number);
         return true;
     }
@@ -960,8 +895,6 @@ public class GridBehaviour : MonoBehaviour
     
     private void HandleRemoveNormalNumbers(List<TileBehaviour> selectedTiles)
     {
-        Debug.Log($"Remove {selectedTiles.Count} entires.");
-        
         foreach (var tile in selectedTiles)
         {
             AddDigitToGrid(tile, 0, true);

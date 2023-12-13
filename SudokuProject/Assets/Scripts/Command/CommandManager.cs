@@ -6,11 +6,6 @@ using Saving;
 using UnityEngine;
 using UnityEngine.Events;
 
-public interface IHasCommand
-{
-    public abstract void OnNewCommand(SudokuEntry entry);
-}
-
 public class CommandManager : MonoBehaviour, IPopulatePuzzleData
 {
     public static CommandManager instance { get; private set; }
@@ -21,10 +16,7 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
 
     private Stack<SudokuCommand> redoStack = new Stack<SudokuCommand>();
     private Stack<SudokuCommand> undoStack = new Stack<SudokuCommand>();
-
-    [SerializeField] private int stateCounter;
-    [SerializeField] private int entryCount;
-
+    
     public UnityAction<List<int> , int > OnAddOneDigit;
     public UnityAction<List<int> , List<int> > OnAddMultipleDigits;
     public UnityAction<List<int>> OnRemoveDigits;
@@ -36,10 +28,9 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     public UnityAction<List<int>, int> OnRemoveAllMarks;
 
     public UnityAction<SudokuCommand> OnCommandRedo;
-    public UnityAction<SudokuCommand> OnCommandUndo;
+    public UnityAction<SudokuCommand> OnCommandUndo; 
     public UnityAction OnUndoFail;
     
-
     private void Awake()
     {
         instance = this;
@@ -61,7 +52,7 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
         undoStack.Push(command);
         redoStack.Clear();
     }
-
+    
     public void UndoCommand()
     {
         if (undoStack.Count <= 0)
@@ -114,7 +105,7 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
             dataHolder.commands.Add(command);
         }
 
-        dataHolder.commandCounter = stateCounter;
+        dataHolder.commandCounter = undoStack.Count;
     }
 
     private SerializedCommandData EntryToCommand(SudokuEntry entry)

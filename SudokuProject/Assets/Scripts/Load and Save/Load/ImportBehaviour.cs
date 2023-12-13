@@ -39,14 +39,10 @@ public class ImportBehaviour : MonoBehaviour
             SudokuGrid9x9 grid = ConvertSeedToGrid();
             grid.PrintGrid();
 
-
             List<int> allIndices = new List<int>();
             List<int> previous = new List<int>();
             List<int> imported = SeedToIntList(seedString);
-
-            // TileBehaviour[,] tiles = new TileBehaviour[9, 9];
-            // Array.Copy(gridPort.tileBehaviours, tiles, 81);
-
+            
             TileBehaviour[,] tiles = gridPort.tileBehaviours;
             
             for (int i = 0; i < 81; i++)
@@ -55,8 +51,9 @@ public class ImportBehaviour : MonoBehaviour
 
                 int row = i / 9;
                 int col = i % 9;
-                
-                previous.Add(tiles[row,col].number);
+
+                int number = tiles[row, col].number;
+                previous.Add(number);
             }
             
             ImportCommand importCommand = new ImportCommand
@@ -65,11 +62,8 @@ public class ImportBehaviour : MonoBehaviour
                 importedGridDigits = imported,
                 previousGridDigits = previous
             };
-
-            importCommand.Execute();
-            //EventManager.ImportGrid(grid);
             
-            gameObject.SetActive(false);
+            CommandManager.instance.ExecuteNewCommand(importCommand);
         }
         else
         {
@@ -84,7 +78,7 @@ public class ImportBehaviour : MonoBehaviour
         {
             int digit = 0;
             
-            if (seedString.Length < 81)
+            if (index >= seedString.Length)
             {
                 seedList.Add(digit);
                 continue;
@@ -95,8 +89,7 @@ public class ImportBehaviour : MonoBehaviour
             if (character != ' ')
                 digit = (int) Char.GetNumericValue(character);
 
-            Assert.IsTrue(digit <= 9 && digit >= 0);
-
+            seedList.Add(digit);
             seedList.Add(digit);
         }
 
@@ -138,7 +131,7 @@ public class ImportBehaviour : MonoBehaviour
         if (seedString.Length > 81)
         {
             seedString = seedString.Substring(0, 81);
-            Debug.Log("Seed was too long, capped it at 81.");
+            Debug.LogWarning("Seed was too long, capped it at 81.");
         }
         
         foreach (var digit in seedString)
