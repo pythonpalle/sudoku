@@ -5,6 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
+[CreateAssetMenu(menuName = "Sudoku/Color/Color List Container")]
+public class ColorListContainer : ScriptableObject
+{
+    public List<Color> Colors;
+}
+
 public class TileColoring : MonoBehaviour
 {
     public SpriteRenderer tileSprite; // Reference to the SpriteRenderer component of your tile
@@ -12,6 +18,8 @@ public class TileColoring : MonoBehaviour
     private Texture2D currentTexture; // The texture currently being displayed
 
     private int sectionCount = 1; // Keeps track of the number of sections
+    
+    [SerializeField] private ColorListContainer markColors;
 
     void Start()
     {

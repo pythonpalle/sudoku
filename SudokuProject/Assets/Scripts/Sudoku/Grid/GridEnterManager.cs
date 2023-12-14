@@ -11,11 +11,9 @@ public enum EnterType
     ColorMark
 }
 
-public class GridEnterManager : MonoBehaviour
+public static class InputManager
 {
-    [SerializeField] private SelectionObject selectionObject;
-    
-    private KeyCode[] NumberKeys = {
+    static KeyCode[] NumberKeys = {
         KeyCode.Alpha0,
         KeyCode.Alpha1,
         KeyCode.Alpha2,
@@ -28,7 +26,7 @@ public class GridEnterManager : MonoBehaviour
         KeyCode.Alpha9,
     };
     
-    private KeyCode[] NumberKeypadKeys = {
+    static KeyCode[] NumberKeypadKeys = {
         KeyCode.Keypad0,
         KeyCode.Keypad1,
         KeyCode.Keypad2,
@@ -40,13 +38,22 @@ public class GridEnterManager : MonoBehaviour
         KeyCode.Keypad8,
         KeyCode.Keypad9
     };
-
-    [SerializeField] private EnterType enterType = EnterType.DigitMark;
-
-    private bool removeButtonIsPressed => Input.GetKeyDown(KeyCode.Delete)
+    
+    public static bool RemoveButtonIsPressed => Input.GetKeyDown(KeyCode.Delete)
                                           || Input.GetKeyDown(KeyCode.Backspace)
                                           || Input.GetKeyDown(KeyCode.Alpha0)
                                           || Input.GetKeyDown(KeyCode.Keypad0);
+
+    public static bool NumberKeyDown(int number)
+    {
+        return Input.GetKeyDown(NumberKeys[number]) || Input.GetKeyDown(NumberKeypadKeys[number]);
+    }
+}
+
+public class GridEnterManager : MonoBehaviour
+{
+    [SerializeField] private SelectionObject selectionObject;
+    [SerializeField] private EnterType enterType = EnterType.DigitMark;
 
     private void OnEnable()
     {
@@ -79,7 +86,7 @@ public class GridEnterManager : MonoBehaviour
         
         for (int number = 1; number <= 9; number++)
         {
-            if (Input.GetKeyDown(NumberKeys[number]) || Input.GetKeyDown(NumberKeypadKeys[number]))
+            if (InputManager.NumberKeyDown(number))
             {
                 TryEnterNumber(number);
             }
@@ -88,7 +95,7 @@ public class GridEnterManager : MonoBehaviour
     
     private void HandleNumberRemove()
     {
-        if (removeButtonIsPressed)
+        if (InputManager.RemoveButtonIsPressed)
             TryRemoveNumbers();
     }
 

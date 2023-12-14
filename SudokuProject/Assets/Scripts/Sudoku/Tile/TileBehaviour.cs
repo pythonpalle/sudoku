@@ -1,23 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-
-public struct TileState
-{
-    public int Digit;
-    public List<int> Corners;
-    public List<int> Centers;
-    public List<int> Colors;
-    public bool contradicted;
-}
 
 public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler
 {
