@@ -8,33 +8,36 @@ using Random = UnityEngine.Random;
 
 public class TileColoring : MonoBehaviour 
 {
-    public RawImage colorWheelImage; // Reference to the RawImage component representing the color wheel
-    private Texture2D colorWheelTexture; // The texture representing the color wheel
-    public TileColors tileColors;
-    public ColorObject contradictionColor;
+    public RawImage tileImage; // Reference to the RawImage component representing the color wheel
+    [SerializeField] TileColors tileColors;
+    [SerializeField] ColorObject contradictionColor;
+    [SerializeField] ColorObject baseColor;
 
-    public int sectionCount; // Keeps track of the number of sections
-
-    public List<int> currentColorNumbers;
-    public bool isContradicted;
-
+    private Texture2D texture; // The texture representing the color wheel
+    private Color[] pixelsBeforeRed;
+    private List<int> currentColorNumbers = new List<int>();
+    private bool isContradicted;
+    
     void Start() 
     {
-        // Initialize color wheel texture with a single color (you can set this to any desired color)
-        colorWheelTexture = new Texture2D(256, 256);
-        Color baseColor = Color.white; // Default color for the wheel
-        FillTextureWithColor(colorWheelTexture, baseColor);
+        texture = new Texture2D(128, 128);
+        FillTextureWithColor(texture, baseColor.Color);
+        tileImage.texture = texture;
+        pixelsBeforeRed = texture.GetPixels(); // Store the original pixel data
+    }
 
-        // Apply the texture to the RawImage component
-        colorWheelImage.texture = colorWheelTexture;
+    private void RemoveAllColors()
+    {
+        currentColorNumbers.Clear();
+        RestoreOriginalTexture();
     }
 
     // Method to split the texture into sections based on the number of colors added (like a color wheel)
     public void SplitColorWheel(int number, bool removeAll)
     {
         // Create a new texture to hold the updated sections
-        Texture2D newTexture = new Texture2D(colorWheelTexture.width, colorWheelTexture.height);
-        newTexture.SetPixels(colorWheelTexture.GetPixels());
+        Texture2D newTexture = new Texture2D(texture.width, texture.height);
+        newTexture.SetPixels(texture.GetPixels());
 
 
         if (!removeAll)
@@ -52,10 +55,10 @@ public class TileColoring : MonoBehaviour
 
         int indexNumber = number - 1;
         
-        sectionCount = currentColorNumbers.Count;
+        int sectionCount = currentColorNumbers.Count;
         if (sectionCount == 0)
         {
-            colorWheelImage.color = isContradicted ? contradictionColor.Color : Color.white;
+            tileImage.color = isContradicted ? contradictionColor.Color : Color.white;
         } 
 
         currentColorNumbers.Sort();
@@ -97,10 +100,15 @@ public class TileColoring : MonoBehaviour
         }
 
         newTexture.Apply(); // Apply changes
-        colorWheelTexture = newTexture; // Update the current texture
+        texture = newTexture; // Update the current texture
 
         // Apply the updated texture to the RawImage component
-        colorWheelImage.texture = colorWheelTexture;
+        tileImage.texture = texture;
+        
+        pixelsBeforeRed = texture.GetPixels(); // Store the original pixel data
+
+        if (isContradicted)
+            SetRedTone();
     }
 
     // Helper method to fill a texture with a specific color
@@ -115,19 +123,70 @@ public class TileColoring : MonoBehaviour
         texture.Apply();
     }
 
-    // Helper method to get color for a specific section of the color wheel
     private Color GetColorForSection(int sectionIndex)
     {
-        //Debug.Log($"Section index: {sectionIndex}");
         int tileIndex = currentColorNumbers[sectionIndex] - 1;
-        //Debug.Log($"Tile index: {tileIndex}");
-
         return tileColors.Colors[tileIndex];
-        
-        float hue = (sectionIndex * 1.0f) / sectionCount; // Divide by sectionCount for even distribution
-        return Color.HSVToRGB(hue, 1f, 1f);
     }
 
+    private void RemoveContradiction()
+    {
+        if (!isContradicted) return;
+
+        isContradicted = false;
+        RestoreOriginalTexture();
+    }
+    
+    private void RestoreOriginalTexture()
+    {
+        if (currentColorNumbers.Count == 0)
+        {
+            Color restoreColor = isContradicted ? contradictionColor.Color : baseColor.Color;
+            FillTextureWithColor(texture, restoreColor); 
+            return;
+        }
+        
+        texture.SetPixels(pixelsBeforeRed);
+        texture.Apply();
+    }
+
+    private void SetContradiction()
+    {
+        if (isContradicted) return;
+
+        isContradicted = true;
+        SetRedTone();
+    }
+
+    private void SetRedTone()
+    {
+        if (currentColorNumbers.Count == 0)
+        {
+            RestoreOriginalTexture();
+            return;
+        }
+        
+        Color[] pixels = texture.GetPixels();
+
+        float darknessModifier = 0.7f;
+        float rednessModifier = 3f;
+
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            // Decrease brightness by reducing each color component
+            pixels[i] *= darknessModifier; 
+            
+            float redComponent = pixels[i].r;
+            redComponent *= rednessModifier; 
+            redComponent = Mathf.Clamp01(redComponent);
+            
+            pixels[i] = new Color(redComponent, pixels[i].g, pixels[i].b, pixels[i].a);
+        }
+        
+        texture.SetPixels(pixels);
+        texture.Apply();
+    }
+    
     private void Update() 
     {
         for (int i = 1; i <= 9; i++)
@@ -138,44 +197,17 @@ public class TileColoring : MonoBehaviour
 
         if (InputManager.RemoveButtonIsPressed)
         {
-            currentColorNumbers.Clear();
-            SplitColorWheel(-1, true);
+            RemoveAllColors();
         }
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            isContradicted = !isContradicted;
-            UpdateContradictionTone();
+            SetContradiction();
         }
         
-    }
-
-    private void UpdateContradictionTone()
-    {
-        Color[] pixels = colorWheelTexture.GetPixels();
-
-        float darknessModifier = 0.7f;
-        float oneOverDarknessModifier = 1 / darknessModifier;
-
-        float rednessModifier = 1.5f;
-        float oneOverRednessModifier = 1 / rednessModifier;
-
-        float darkness = isContradicted ? darknessModifier : oneOverDarknessModifier;
-        float redness = isContradicted ? rednessModifier : oneOverRednessModifier;
-
-        for (int i = 0; i < pixels.Length; i++)
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            // Decrease brightness by reducing each color component
-            pixels[i] *= darkness; 
-            
-            float redComponent = pixels[i].r;
-            redComponent *= redness; 
-            redComponent = Mathf.Clamp01(redComponent);
-            
-            pixels[i] = new Color(redComponent, pixels[i].g, pixels[i].b, pixels[i].a);
+            RemoveContradiction();
         }
-        
-        colorWheelTexture.SetPixels(pixels);
-        colorWheelTexture.Apply();
     }
 }

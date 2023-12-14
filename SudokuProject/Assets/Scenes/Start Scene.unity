@@ -1087,9 +1087,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc4b1ab992d5aa242a8259a72a3918dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorWheelImage: {fileID: 1467845036}
+  tileImage: {fileID: 1467845036}
   tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
-  currentColorNumbers: 
+  contradictionColor: {fileID: 11400000, guid: 90506eac03aaf8d409aaf7e41cf7787a, type: 2}
+  baseColor: {fileID: 11400000, guid: e543c52345e384d41b13698039f93bc3, type: 2}
 --- !u!222 &1467845038
 CanvasRenderer:
   m_ObjectHideFlags: 0

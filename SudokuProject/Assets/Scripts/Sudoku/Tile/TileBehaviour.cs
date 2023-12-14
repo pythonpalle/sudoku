@@ -65,9 +65,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private RectTransform tileAnimationParent;
 
     int centerMarkFontSize = 30;
-
-    private int stateCounter = 0;
-
+    
     private void Start()
     {
         whitePartStartScale = whitePart.transform.localScale;
@@ -354,28 +352,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
         
         UpdateWhitePartColor();
-        return;
-
-        // bool activateWhitePart = ColorMarks.Count <= 0;
-        // whitePart.gameObject.SetActive(activateWhitePart);
-        
-        bool hasColorMarks = ColorMarks.Count > 0;
-        Debug.Log($"Has Color: {hasColorMarks}, contradicted: {Contradicted}");
-        if (hasColorMarks)
-        {
-            if (Contradicted)
-            {
-                whitePart.color = SetAlpha(whitePart.color, 0.8f);
-            }
-            else
-            {
-                whitePart.color = SetAlpha(whitePart.color, 0f);
-            }
-        }
-        else
-        {
-            whitePart.color = SetAlpha(whitePart.color, 1f);
-        }
     }
 
     private Color SetAlpha(Color color, float a)
@@ -403,12 +379,22 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     public void SetContradiction()
     {
+        if (Contradicted)
+        {
+            return;
+        }
+        
         Contradicted = true;
         UpdateWhitePartColor();
     }
 
     public void RemoveContradiction()
     {
+        if (!Contradicted)
+        {
+            return;
+        }
+        
         Contradicted = false;
         UpdateWhitePartColor();
     }
