@@ -129,8 +129,9 @@ MonoBehaviour:
   warningText: {fileID: 325439769259136188}
   _gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
   warningTriangle: {fileID: 325439768978502811}
-  noSolutionColor: {r: 1, g: 0, b: 0, a: 1}
-  multiSolutionColor: {r: 1, g: 0.49450058, b: 0, a: 1}
+  noSolveColor: {fileID: 11400000, guid: 90506eac03aaf8d409aaf7e41cf7787a, type: 2}
+  multipleSolutionColor: {fileID: 11400000, guid: b0b7cf6fb18c6304dbee30401f2679c7, type: 2}
+  completeColor: {fileID: 11400000, guid: 536a7bdc4a9ebd14e931d4011962f616, type: 2}
 --- !u!1 &325439768978502809
 GameObject:
   m_ObjectHideFlags: 0

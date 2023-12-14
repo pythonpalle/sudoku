@@ -127,6 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2ab7bac8fc818b4a9a9a1f1bd9e423e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  number: 0
   tiles:
   - {fileID: 7298051568108615231}
   - {fileID: 2159727946224011172}
@@ -1066,6 +1067,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2400492079632488013, guid: 94813a7198f2a1745803c5aaa89ddb8b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4920944448393148568, guid: 94813a7198f2a1745803c5aaa89ddb8b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7241611543531613793, guid: 94813a7198f2a1745803c5aaa89ddb8b, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
