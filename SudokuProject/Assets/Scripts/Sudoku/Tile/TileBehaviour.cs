@@ -63,6 +63,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     public List<int> CornerMarks  { get; private set; } = new List<int>();
     public List<int> ColorMarks { get; private set; } = new List<int>();
 
+    private bool HasColors => ColorMarks.Count > 0;
+
 
     // private fields
     public bool isSelected { get; private set; } = false;
@@ -361,9 +363,35 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
             bool setActive = i == colorHolderIndex;
             colorMarkHolders[i].gameObject.SetActive(setActive);
         }
+        
+        UpdateWhitePartColor();
+        return;
 
-        bool activateWhitePart = ColorMarks.Count <= 0;
-        whitePart.gameObject.SetActive(activateWhitePart);
+        // bool activateWhitePart = ColorMarks.Count <= 0;
+        // whitePart.gameObject.SetActive(activateWhitePart);
+        
+        bool hasColorMarks = ColorMarks.Count > 0;
+        Debug.Log($"Has Color: {hasColorMarks}, contradicted: {Contradicted}");
+        if (hasColorMarks)
+        {
+            if (Contradicted)
+            {
+                whitePart.color = SetAlpha(whitePart.color, 0.8f);
+            }
+            else
+            {
+                whitePart.color = SetAlpha(whitePart.color, 0f);
+            }
+        }
+        else
+        {
+            whitePart.color = SetAlpha(whitePart.color, 1f);
+        }
+    }
+
+    private Color SetAlpha(Color color, float a)
+    {
+        return new Color(color.r, color.g, color.b, a);
     }
 
     public void Select()
@@ -387,13 +415,41 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     public void SetContradiction()
     {
         Contradicted = true;
-        whitePart.color = contradictionColor.Color;
+        UpdateWhitePartColor();
     }
 
     public void RemoveContradiction()
     {
         Contradicted = false;
-        whitePart.color = Color.white;
+        UpdateWhitePartColor();
+    }
+
+    void UpdateWhitePartColor()
+    {
+        Debug.Log("Update white part");
+        
+        if (Contradicted)
+        {
+            whitePart.color = contradictionColor.Color;
+
+            if (HasColors)
+            {
+                whitePart.color = SetAlpha(whitePart.color, 0.75f);
+            }
+        }
+        else
+        {
+            whitePart.color = Color.white;
+            
+            if (HasColors)
+            {
+                whitePart.color = SetAlpha(whitePart.color, 0f);
+            }
+            else
+            {
+                whitePart.color = SetAlpha(whitePart.color, 1f);
+            }
+        }
     }
 
     public bool HasSameNumber(int number, EnterType enterType)
