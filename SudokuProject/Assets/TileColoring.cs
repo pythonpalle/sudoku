@@ -10,11 +10,13 @@ public class TileColoring : MonoBehaviour
 {
     public RawImage colorWheelImage; // Reference to the RawImage component representing the color wheel
     private Texture2D colorWheelTexture; // The texture representing the color wheel
-    public TileColors tileColors; // The texture representing the color wheel
+    public TileColors tileColors;
+    public ColorObject contradictionColor;
 
     public int sectionCount; // Keeps track of the number of sections
 
     public List<int> currentColorNumbers;
+    public bool isContradicted;
 
     void Start() 
     {
@@ -53,7 +55,7 @@ public class TileColoring : MonoBehaviour
         sectionCount = currentColorNumbers.Count;
         if (sectionCount == 0)
         {
-            colorWheelImage.color = Color.white;
+            colorWheelImage.color = isContradicted ? contradictionColor.Color : Color.white;
         } 
 
         currentColorNumbers.Sort();
@@ -139,6 +141,41 @@ public class TileColoring : MonoBehaviour
             currentColorNumbers.Clear();
             SplitColorWheel(-1, true);
         }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            isContradicted = !isContradicted;
+            UpdateContradictionTone();
+        }
         
+    }
+
+    private void UpdateContradictionTone()
+    {
+        Color[] pixels = colorWheelTexture.GetPixels();
+
+        float darknessModifier = 0.7f;
+        float oneOverDarknessModifier = 1 / darknessModifier;
+
+        float rednessModifier = 1.5f;
+        float oneOverRednessModifier = 1 / rednessModifier;
+
+        float darkness = isContradicted ? darknessModifier : oneOverDarknessModifier;
+        float redness = isContradicted ? rednessModifier : oneOverRednessModifier;
+
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            // Decrease brightness by reducing each color component
+            pixels[i] *= darkness; 
+            
+            float redComponent = pixels[i].r;
+            redComponent *= redness; 
+            redComponent = Mathf.Clamp01(redComponent);
+            
+            pixels[i] = new Color(redComponent, pixels[i].g, pixels[i].b, pixels[i].a);
+        }
+        
+        colorWheelTexture.SetPixels(pixels);
+        colorWheelTexture.Apply();
     }
 }
