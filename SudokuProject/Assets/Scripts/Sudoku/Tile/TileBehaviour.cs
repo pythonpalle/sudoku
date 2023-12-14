@@ -426,8 +426,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     void UpdateWhitePartColor()
     {
-        Debug.Log("Update white part");
-        
         if (Contradicted)
         {
             whitePart.color = contradictionColor.Color;
