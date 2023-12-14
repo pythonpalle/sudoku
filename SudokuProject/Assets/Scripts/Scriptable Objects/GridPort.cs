@@ -23,6 +23,7 @@ public class GridPort : ScriptableObject
 
     public UnityAction<bool> OnContradictionStatusUpdate;
     public UnityAction OnRequestGrid;
+    public UnityAction OnRequestStatusUpdate;
     public UnityAction OnRequestTiles;
     public UnityAction<GridStatus> OnStatusChange;
 
@@ -36,16 +37,15 @@ public class GridPort : ScriptableObject
         OnRequestTiles?.Invoke();
     }
 
+    public void RequestStatusUpdate()
+    {
+        OnRequestStatusUpdate?.Invoke();
+    }
+
     public void SendGridCopy(SudokuGrid9x9 gridCopy, TileBehaviour[,] tileBehaviours)
     {
         grid = gridCopy;
         this.tileBehaviours = tileBehaviours;
-    }
-    
-    public void UpdateContradictionStatus(bool gridHasContradiction)
-    {
-        OnContradictionStatusUpdate?.Invoke(gridHasContradiction);
-        gridContradicted = gridHasContradiction;
     }
 
     public string GetGridAsSeed()

@@ -2,6 +2,7 @@
 
 namespace Command
 {
+    [System.Serializable]
     public class ImportCommand : EffectedTilesCommand
     {
         public List<int> previousGridDigits;

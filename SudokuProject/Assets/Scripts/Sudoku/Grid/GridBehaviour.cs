@@ -79,6 +79,7 @@ public class GridBehaviour : MonoBehaviour
 
         gridPort.OnRequestGrid += OnRequestGrid;
         gridPort.OnRequestTiles += OnRequestTiles;
+        gridPort.OnRequestStatusUpdate += OnRequestStatusUpdate;
         hintObject.OnHintFound += OnHintFound;
     }
 
@@ -96,6 +97,8 @@ public class GridBehaviour : MonoBehaviour
         
         gridPort.OnRequestGrid -= OnRequestGrid;
         gridPort.OnRequestTiles -= OnRequestTiles;
+        gridPort.OnRequestStatusUpdate -= OnRequestStatusUpdate;
+
         hintObject.OnHintFound -= OnHintFound;
 
         CommandManager.instance.OnAddOneDigit -= OnAddOneDigit;
@@ -319,6 +322,11 @@ public class GridBehaviour : MonoBehaviour
     {
         UpdateGridCandidates();
         gridPort.SendGridCopy(grid, tileBehaviours);
+    }
+    
+    private void OnRequestStatusUpdate()
+    {
+        UpdateGridStatus();
     }
 
     private void UpdateGridCandidates()

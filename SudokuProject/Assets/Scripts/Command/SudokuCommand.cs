@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Command
 {
+    [System.Serializable]
     public abstract class SudokuCommand
     {
         public abstract void Execute();
@@ -11,6 +12,7 @@ namespace Command
         public abstract void Undo();
     }
     
+    [System.Serializable]
     public abstract class EffectedTilesCommand : SudokuCommand
     {
         public List<int> effectedIndexes;

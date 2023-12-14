@@ -2,11 +2,13 @@
 
 namespace Command
 {
+    [System.Serializable]
     public abstract class DigitCommand : EffectedTilesCommand
     {
         public List<int> previousGridDigits;
     }
     
+    [System.Serializable]
     public class AddDigitCommand : DigitCommand
     {
         public int addedDigit;
@@ -23,6 +25,7 @@ namespace Command
         }
     }
     
+    [System.Serializable]
     public class RemoveDigitCommand : EffectedTilesCommand
     {
         public List<int> previousGridDigits;

@@ -2,11 +2,13 @@
 
 namespace Command
 {
+    [System.Serializable]
     public abstract class MarkCommand : EffectedTilesCommand
     {
         public int enterType;
     }
     
+    [System.Serializable]
     public class AddMarkCommand : MarkCommand
     {
         public int number;
@@ -22,6 +24,7 @@ namespace Command
         }
     }
     
+    [System.Serializable]
     public class RemoveSingleMarkCommand : MarkCommand
     {
         public int number;
@@ -37,6 +40,7 @@ namespace Command
         }
     }
     
+    [System.Serializable]
     public class RemoveAllMarksCommand : MarkCommand
     {
         public List<List<int>> previousMarks;

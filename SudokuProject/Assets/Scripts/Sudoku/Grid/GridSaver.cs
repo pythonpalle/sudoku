@@ -76,12 +76,7 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
             grid.SetNumberToIndex(index, numbers[i]);
         }
-        
-        // Debug.Log($"GEN TYPE {generatorPort.GenerationType}");
-        //
-        // Debug.Log("Created grid:");
-        // grid.PrintGrid();
-        
+
         EventManager.GenerateGrid(grid);
         
         // Populate grid with non permanent digits and color, center and corner marks
@@ -99,7 +94,8 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
             CommandManager.instance.AddAllMarksToTile(i, marksForTile);
         }
 
-        //StartCoroutine(PerformCommandsRoutine(puzzleData, 0.02f));
+        _gridPort.RequestStatusUpdate();
+        GameStateManager.SetActive(true);
     }
 
     private Dictionary<EnterType, List<int>> GetAllMarksForTile(PuzzleDataHolder puzzleData, int i)
@@ -111,48 +107,6 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         marks.Add(EnterType.ColorMark, puzzleData.colorMarks[i]);
 
         return marks;
-    }
-
-    private IEnumerator PerformCommandsRoutine(PuzzleDataHolder puzzleData, float f)
-    {
-        // wait for grid to finish generating
-        yield return new WaitForSeconds(f);
-
-        _gridPort.RequestGrid();
-        yield return new WaitUntil(() => _gridPort.tileBehaviours != null);
-
-        int totalCommandCount = puzzleData.commands.Count; 
-        int savedCounter = puzzleData.commandCounter;
-        
-        bool showCommands = true;
-
-
-        // execute all commands
-        for (var index = 0; index < totalCommandCount; index++)
-        {
-            var commandData = puzzleData.commands[index];
-            SudokuEntry entry = ToEntry(commandData);
-            
-            
-            EventManager.GridEnterFromUser(entry);
-
-            if (showCommands)
-                yield return new WaitForEndOfFrame();
-        }
-
-        // temp solution, fix later
-        CommandManager manager = FindObjectOfType<CommandManager>();
-        
-        // if saved counter is less then total command count, it means we have to go back a few command by undoing
-        for (int i = savedCounter - 1; i < totalCommandCount; i++)
-        {
-            //manager.CallUndo();
-            
-            if (showCommands)
-                yield return new WaitForEndOfFrame();
-        }
-        
-        GameStateManager.SetActive(true);
     }
 
     private SudokuEntry ToEntry(SerializedCommandData commandData)

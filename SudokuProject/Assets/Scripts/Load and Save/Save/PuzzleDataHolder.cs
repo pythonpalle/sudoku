@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Command;
 
 namespace Saving
 {
@@ -25,8 +26,14 @@ namespace Saving
         public List<int>[] centerMarks;
         public List<int>[] colorMarks;
 
-        public List<SerializedCommandData> commands = new List<SerializedCommandData>();
-        public int commandCounter;
+        // public List<SerializedCommandData> commands = new List<SerializedCommandData>();
+        // public int commandCounter;
+
+        // commands
+        public List<SudokuCommand> undoCommands = new List<SudokuCommand>();
+        public List<SudokuCommand> redoCommands = new List<SudokuCommand>();
+        //public int commandCounter;
+
 
         // status
         public bool completed;
@@ -64,8 +71,14 @@ namespace Saving
 
         public void Reset()
         {
-            commands.Clear();
-            commandCounter = 0;
+            undoCommands.Clear();
+            redoCommands.Clear();
+            //commandCounter = 0;
+
+            foreach (var mark in colorMarks)
+            {
+                mark.Clear();
+            }
             
             for (int i = 0; i < 81; i++)
             {

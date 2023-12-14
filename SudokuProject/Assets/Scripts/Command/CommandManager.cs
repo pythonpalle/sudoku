@@ -1,12 +1,13 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Command;
 using Saving;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class CommandManager : MonoBehaviour, IPopulatePuzzleData
+public class CommandManager : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 {
     public static CommandManager instance { get; private set; }
     
@@ -41,10 +42,12 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     private void OnEnable()
     {
         SaveManager.AddPopulateDataListener(this);
+        SaveManager.AddLoadDataListener(this);
     }
     
     private void OnDisable()
     {
+        SaveManager.RemovePopulateDataListener(this);
         SaveManager.RemovePopulateDataListener(this);
     }
     
@@ -92,23 +95,37 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
 
     public void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate)
     {
-        // // don't save commands for a self created sudoku
-        // if (newSelfCreate)
-        //     return;
-        //
-        // _gridPort.RequestGrid();
-        // dataHolder.commands.Clear();
-        //
-        // foreach (var entry in entries)
-        // {
-        //     if (entry == null || entry.tiles == null || entry.tiles.Count == 0) continue;
-        //     
-        //     SerializedCommandData command = EntryToCommand(entry);
-        //     dataHolder.commands.Add(command);
-        // }
-        //
-        // dataHolder.commandCounter = undoStack.Count;
+        // don't save commands for a self created sudoku
+        if (newSelfCreate)
+            return;
+        
+        //_gridPort.RequestGrid();
+        dataHolder.undoCommands = StackToList(undoStack);
+        dataHolder.redoCommands = StackToList(redoStack);
+
+        //dataHolder.commandCounter = undoStack.Count;
     }
+
+    private List<SudokuCommand> StackToList(Stack<SudokuCommand> sudokuCommands)
+    {
+        Stack<SudokuCommand> stackCopy = new Stack<SudokuCommand>(sudokuCommands);
+        int stackCount = stackCopy.Count;
+        SudokuCommand[] commandList = new SudokuCommand[stackCount];
+
+        for (int i = 0; i < stackCount; i++)
+        {
+            commandList[i] = stackCopy.Pop();
+        }
+
+        return commandList.ToList();
+    }
+
+    public void LoadFromSaveData(PuzzleDataHolder dataHolder)
+    {
+        redoStack = new Stack<SudokuCommand>(dataHolder.redoCommands);
+        undoStack = new Stack<SudokuCommand>(dataHolder.undoCommands);
+    }
+
 
     private SerializedCommandData EntryToCommand(SudokuEntry entry)
     {
