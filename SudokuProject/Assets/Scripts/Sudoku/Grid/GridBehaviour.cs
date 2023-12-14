@@ -53,10 +53,12 @@ public class GridBehaviour : MonoBehaviour
         SetupBoxes();
         
         CommandManager.instance.OnAddOneDigit += OnAddOneDigit;
+        CommandManager.instance.OnAddDigitToTile += OnAddDigitToTile;
         CommandManager.instance.OnAddMultipleDigits += OnAddMultipleDigits;
         CommandManager.instance.OnRemoveDigits += OnRemoveDigits;
         
         CommandManager.instance.OnAddMark += OnAddMark;
+        CommandManager.instance.OnAddAllMarksToTile += OnAddAllMarksToTile;
         CommandManager.instance.OnRemoveSingleMark += OnRemoveMark;
 
         CommandManager.instance.OnAddMarks += OnAddMarks;
@@ -97,14 +99,29 @@ public class GridBehaviour : MonoBehaviour
         hintObject.OnHintFound -= OnHintFound;
 
         CommandManager.instance.OnAddOneDigit -= OnAddOneDigit;
+        CommandManager.instance.OnAddDigitToTile -= OnAddDigitToTile;
         CommandManager.instance.OnAddMultipleDigits -= OnAddMultipleDigits;
         CommandManager.instance.OnRemoveDigits -= OnRemoveDigits;
         
         CommandManager.instance.OnAddMark -= OnAddMark;
         CommandManager.instance.OnRemoveSingleMark -= OnRemoveMark;
-        
+        CommandManager.instance.OnAddAllMarksToTile -= OnAddAllMarksToTile;
+
         CommandManager.instance.OnAddMarks -= OnAddMarks;
         CommandManager.instance.OnRemoveAllMarks -= OnRemoveAllMarks;
+    }
+
+    private void OnAddAllMarksToTile(int index, Dictionary<EnterType, List<int>> allMarks)
+    {
+        var tile = IntToTile(index);
+
+        foreach (EnterType enterType in allMarks.Keys)
+        {
+            foreach (var number in allMarks[enterType])
+            {
+                EnterTileNumber(tile, number, enterType, false);
+            } 
+        }
     }
 
     private void OnRemoveAllMarks(List<int> indexes, int enterType)
@@ -133,7 +150,6 @@ public class GridBehaviour : MonoBehaviour
 
     private void OnAddOneDigit(List<int> indexes, int digit)
     {
-        
         OnAddSingle(indexes, digit, EnterType.DigitMark);
         
         HandleRemoveContradictions();
@@ -142,6 +158,15 @@ public class GridBehaviour : MonoBehaviour
         HandleAddContradictionsInList(IntsToTiles(indexes), digit);
 
         UpdateGridStatus();
+    }
+    
+    private void OnAddDigitToTile(int index, int number)
+    {
+        HandleRemoveContradictions();
+
+        var tile = IntToTile(index);
+        EnterTileNumber(IntToTile(index), number, EnterType.DigitMark, false);
+        HandleContradictionForTile(number, tile);
     }
 
     private void SetStatus(GridStatus status)
@@ -216,6 +241,8 @@ public class GridBehaviour : MonoBehaviour
     {
         List<TileBehaviour> tiles = new List<TileBehaviour>();
         
+        // TODO: IntToTile för iterationen
+        
         for (int i = 0; i < indexes.Count; i++)
         {
             int index = indexes[i];
@@ -227,6 +254,14 @@ public class GridBehaviour : MonoBehaviour
         }
 
         return tiles;
+    }
+
+    private TileBehaviour IntToTile(int index)
+    {
+        int row = index / 9;
+        int col = index % 9;
+
+        return tileBehaviours[row, col];
     }
     
     private void UpdateGridStatus()

@@ -18,6 +18,7 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     private Stack<SudokuCommand> undoStack = new Stack<SudokuCommand>();
     
     public UnityAction<List<int> , int > OnAddOneDigit;
+    public UnityAction<int, int> OnAddDigitToTile;
     public UnityAction<List<int> , List<int> > OnAddMultipleDigits;
     public UnityAction<List<int>> OnRemoveDigits;
     
@@ -25,6 +26,7 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     public UnityAction<List<int> , int , int > OnRemoveSingleMark;
     
     public UnityAction<List<int>, List<List<int>>, int> OnAddMarks;
+    public UnityAction<int, Dictionary<EnterType, List<int>>> OnAddAllMarksToTile;
     public UnityAction<List<int>, int> OnRemoveAllMarks;
 
     public UnityAction<SudokuCommand> OnCommandRedo;
@@ -90,22 +92,22 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
 
     public void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate)
     {
-        // don't save commands for a self created sudoku
-        if (newSelfCreate)
-            return;
-        
-        _gridPort.RequestGrid();
-        dataHolder.commands.Clear();
-        
-        foreach (var entry in entries)
-        {
-            if (entry == null || entry.tiles == null || entry.tiles.Count == 0) continue;
-            
-            SerializedCommandData command = EntryToCommand(entry);
-            dataHolder.commands.Add(command);
-        }
-
-        dataHolder.commandCounter = undoStack.Count;
+        // // don't save commands for a self created sudoku
+        // if (newSelfCreate)
+        //     return;
+        //
+        // _gridPort.RequestGrid();
+        // dataHolder.commands.Clear();
+        //
+        // foreach (var entry in entries)
+        // {
+        //     if (entry == null || entry.tiles == null || entry.tiles.Count == 0) continue;
+        //     
+        //     SerializedCommandData command = EntryToCommand(entry);
+        //     dataHolder.commands.Add(command);
+        // }
+        //
+        // dataHolder.commandCounter = undoStack.Count;
     }
 
     private SerializedCommandData EntryToCommand(SudokuEntry entry)
@@ -131,6 +133,11 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     {
         OnAddMultipleDigits?.Invoke(effectedIndexes, addedDigits);
     }
+    
+    public void AddDigitToTile(int index, int number)
+    {
+        OnAddDigitToTile?.Invoke(index, number);
+    }
 
     public void RemoveDigits(List<int> effectedIndexes)
     {
@@ -155,5 +162,10 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData
     public void AddMarks(List<int> effectedIndexes, List<List<int>> previousMarks, int enterType)
     {
         OnAddMarks?.Invoke(effectedIndexes, previousMarks, enterType);
+    }
+    
+    public void AddAllMarksToTile(int index, Dictionary<EnterType, List<int>> allMarks)
+    {
+        OnAddAllMarksToTile?.Invoke(index, allMarks);
     }
 }

@@ -19,6 +19,11 @@ namespace Saving
         // grid
         public int[] numbers;
         public bool[] permanent;
+        
+        // marks
+        public List<int>[] cornerMarks;
+        public List<int>[] centerMarks;
+        public List<int>[] colorMarks;
 
         public List<SerializedCommandData> commands = new List<SerializedCommandData>();
         public int commandCounter;
@@ -28,15 +33,23 @@ namespace Saving
 
         public PuzzleDataHolder()
         {
-            numbers = new int[81];
-            permanent = new bool[81];
+            InstantiateArrays();
         }
-            
-        public PuzzleDataHolder(string seed) //: base()
+
+        private void InstantiateArrays()
         {
             numbers = new int[81];
             permanent = new bool[81];
-            
+
+            cornerMarks = new List<int>[81];
+            centerMarks = new List<int>[81];
+            colorMarks = new List<int>[81];
+        }
+
+        public PuzzleDataHolder(string seed) //: base()
+        {
+            InstantiateArrays();
+
             for (int i = 0; i < seed.Length; i++)
             {
                 var digitChar = seed[i];

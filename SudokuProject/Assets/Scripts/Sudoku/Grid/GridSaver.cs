@@ -33,7 +33,7 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
     {
         _gridPort.RequestGrid();
         
-        // set all permanent tiles
+        // set tile numbers and permanents
         int i = 0;
         for (int row = 0; row < 9; row++)
         {
@@ -43,6 +43,10 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
                 
                 dataHolder.numbers[i] = tile.number;
                 dataHolder.permanent[i] = newSelfCreate || tile.Permanent;
+
+                dataHolder.cornerMarks[i] = tile.CornerMarks;
+                dataHolder.centerMarks[i] = tile.CenterMarks;
+                dataHolder.colorMarks[i] = tile.ColorMarks;
 
                 i++;
             } 
@@ -73,14 +77,40 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
             grid.SetNumberToIndex(index, numbers[i]);
         }
         
-        Debug.Log($"GEN TYPE {generatorPort.GenerationType}");
-        
-        Debug.Log("Created grid:");
-        grid.PrintGrid();
+        // Debug.Log($"GEN TYPE {generatorPort.GenerationType}");
+        //
+        // Debug.Log("Created grid:");
+        // grid.PrintGrid();
         
         EventManager.GenerateGrid(grid);
+        
+        // Populate grid with non permanent digits and color, center and corner marks
+        for (int i = 0; i < 81; i++)
+        {
+            // if digit for tile is not permanent, add it to grid
+            int number = numbers[i];
+            if (!permanents[i] || number == 0)
+            {
+                CommandManager.instance.AddDigitToTile(i, number);
+            }
+            
+            // Get all marks for the tile, add them to grid
+            Dictionary<EnterType, List<int>> marksForTile = GetAllMarksForTile(puzzleData, i);
+            CommandManager.instance.AddAllMarksToTile(i, marksForTile);
+        }
 
-        StartCoroutine(PerformCommandsRoutine(puzzleData, 0.02f));
+        //StartCoroutine(PerformCommandsRoutine(puzzleData, 0.02f));
+    }
+
+    private Dictionary<EnterType, List<int>> GetAllMarksForTile(PuzzleDataHolder puzzleData, int i)
+    {
+        Dictionary<EnterType, List<int>> marks = new Dictionary<EnterType, List<int>>();
+        
+        marks.Add(EnterType.CenterMark, puzzleData.centerMarks[i]);
+        marks.Add(EnterType.CornerMark, puzzleData.cornerMarks[i]);
+        marks.Add(EnterType.ColorMark, puzzleData.colorMarks[i]);
+
+        return marks;
     }
 
     private IEnumerator PerformCommandsRoutine(PuzzleDataHolder puzzleData, float f)
