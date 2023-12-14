@@ -2,47 +2,61 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-[CreateAssetMenu(menuName = "Sudoku/Color/Color List Container")]
-public class ColorListContainer : ScriptableObject
+public class TileColoring : MonoBehaviour 
 {
-    public List<Color> Colors;
-}
+    public RawImage colorWheelImage; // Reference to the RawImage component representing the color wheel
+    private Texture2D colorWheelTexture; // The texture representing the color wheel
+    public TileColors tileColors; // The texture representing the color wheel
 
-public class TileColoring : MonoBehaviour
-{
-    public SpriteRenderer tileSprite; // Reference to the SpriteRenderer component of your tile
-    private Texture2D baseTexture; // The original base texture of the tile
-    private Texture2D currentTexture; // The texture currently being displayed
+    public int sectionCount; // Keeps track of the number of sections
 
-    private int sectionCount = 1; // Keeps track of the number of sections
-    
-    [SerializeField] private ColorListContainer markColors;
+    public List<int> currentColorNumbers;
 
-    void Start()
+    void Start() 
     {
-        // Initialize base texture with a single color (you can set this to any desired color)
-        baseTexture = new Texture2D(256, 256);
-        Color baseColor = Color.white; // Default color for the tile
-        FillTextureWithColor(baseTexture, baseColor);
+        // Initialize color wheel texture with a single color (you can set this to any desired color)
+        colorWheelTexture = new Texture2D(256, 256);
+        Color baseColor = Color.white; // Default color for the wheel
+        FillTextureWithColor(colorWheelTexture, baseColor);
 
-        // Set the base texture to the sprite renderer
-        Sprite baseSprite = Sprite.Create(baseTexture, new Rect(0, 0, baseTexture.width, baseTexture.height), Vector2.zero);
-        tileSprite.sprite = baseSprite;
-        currentTexture = baseTexture;
+        // Apply the texture to the RawImage component
+        colorWheelImage.texture = colorWheelTexture;
     }
 
     // Method to split the texture into sections based on the number of colors added (like a color wheel)
-    public void SplitTileColorWheel()
+    public void SplitColorWheel(int number, bool removeAll)
     {
-        sectionCount++; // Increase the number of sections
-
         // Create a new texture to hold the updated sections
-        Texture2D newTexture = new Texture2D(currentTexture.width, currentTexture.height);
-        newTexture.SetPixels(currentTexture.GetPixels());
+        Texture2D newTexture = new Texture2D(colorWheelTexture.width, colorWheelTexture.height);
+        newTexture.SetPixels(colorWheelTexture.GetPixels());
 
+
+        if (!removeAll)
+        {
+            if (currentColorNumbers.Contains(number))
+            {
+                currentColorNumbers.Remove(number);
+            }
+            else
+            {
+                currentColorNumbers.Add((number));
+            }
+        }
+        
+
+        int indexNumber = number - 1;
+        
+        sectionCount = currentColorNumbers.Count;
+        if (sectionCount == 0)
+        {
+            colorWheelImage.color = Color.white;
+        } 
+
+        currentColorNumbers.Sort();
         float angleBetweenSections = 360f / sectionCount;
 
         // Center point of the texture
@@ -53,28 +67,38 @@ public class TileColoring : MonoBehaviour
         {
             for (int x = 0; x < newTexture.width; x++)
             {
-                Vector2 currentPoint = new Vector2(x, y);
-                Vector2 vectorToPixel = currentPoint - centerPoint;
-
-                float angleToPixel = Mathf.Atan2(vectorToPixel.y, vectorToPixel.x) * Mathf.Rad2Deg;
-                if (angleToPixel < 0)
+                if (sectionCount == 0)
                 {
-                    angleToPixel += 360;
+                    newTexture.SetPixel(x, y, Color.white);
+                    continue;
                 }
+                
+                int sectionIndex = 0;
+                
+                if (sectionCount > 1)
+                {
+                    Vector2 currentPoint = new Vector2(x, y);
+                    Vector2 vectorToPixel = currentPoint - centerPoint;
 
-                int sectionIndex = Mathf.FloorToInt(angleToPixel / angleBetweenSections);
+                    float angleToPixel = Mathf.Atan2(vectorToPixel.y, vectorToPixel.x) * Mathf.Rad2Deg;
+                    if (angleToPixel < 0)
+                    {
+                        angleToPixel += 360;
+                    }
+                    
+                    sectionIndex = Mathf.FloorToInt(angleToPixel / angleBetweenSections);
+                }
+                
                 Color sectionColor = GetColorForSection(sectionIndex);
-
                 newTexture.SetPixel(x, y, sectionColor);
             }
         }
 
         newTexture.Apply(); // Apply changes
-        currentTexture = newTexture; // Update the current texture
+        colorWheelTexture = newTexture; // Update the current texture
 
-        // Apply the updated texture to the sprite renderer
-        Sprite updatedSprite = Sprite.Create(currentTexture, new Rect(0, 0, currentTexture.width, currentTexture.height), Vector2.zero);
-        tileSprite.sprite = updatedSprite;
+        // Apply the updated texture to the RawImage component
+        colorWheelImage.texture = colorWheelTexture;
     }
 
     // Helper method to fill a texture with a specific color
@@ -83,7 +107,7 @@ public class TileColoring : MonoBehaviour
         Color[] colors = new Color[texture.width * texture.height];
         for (int i = 0; i < colors.Length; i++)
         {
-            colors[i] = color;
+            colors[i] = color; 
         }
         texture.SetPixels(colors);
         texture.Apply();
@@ -92,13 +116,29 @@ public class TileColoring : MonoBehaviour
     // Helper method to get color for a specific section of the color wheel
     private Color GetColorForSection(int sectionIndex)
     {
+        //Debug.Log($"Section index: {sectionIndex}");
+        int tileIndex = currentColorNumbers[sectionIndex] - 1;
+        //Debug.Log($"Tile index: {tileIndex}");
+
+        return tileColors.Colors[tileIndex];
+        
         float hue = (sectionIndex * 1.0f) / sectionCount; // Divide by sectionCount for even distribution
         return Color.HSVToRGB(hue, 1f, 1f);
     }
 
     private void Update() 
     {
-        if (Input.GetKeyDown((KeyCode.Q)))
-            SplitTileColorWheel();
+        for (int i = 1; i <= 9; i++)
+        {
+            if (InputManager.NumberKeyDown(i))
+                SplitColorWheel(i, false);
+        }
+
+        if (InputManager.RemoveButtonIsPressed)
+        {
+            currentColorNumbers.Clear();
+            SplitColorWheel(-1, true);
+        }
+        
     }
 }
