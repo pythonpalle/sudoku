@@ -32,6 +32,8 @@ public class ImportBehaviour : MonoBehaviour
     public void TryImportSeed()
     {
         Debug.Log("Try import seed: " + seedString);
+        
+        gridPort.RequestTiles();
 
         bool validSeed = SeedIsValid(out string error);
         if (validSeed)

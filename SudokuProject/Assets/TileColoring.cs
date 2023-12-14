@@ -15,14 +15,19 @@ public class TileColoring : MonoBehaviour
 
     private Texture2D texture; // The texture representing the color wheel
     private Color[] pixelsBeforeRed;
-    private List<int> currentColorNumbers = new List<int>();
-    private bool isContradicted;
+    public List<int> currentColorNumbers = new List<int>();
+    public bool isContradicted;
     
     void Start() 
     {
         texture = new Texture2D(128, 128);
         FillTextureWithColor(texture, baseColor.Color);
         tileImage.texture = texture;
+    }
+
+    void SetPixelsBeforeRed()
+    {
+        Debug.Log("Set pixels before red");
         pixelsBeforeRed = texture.GetPixels(); // Store the original pixel data
     }
 
@@ -33,33 +38,41 @@ public class TileColoring : MonoBehaviour
     }
 
     // Method to split the texture into sections based on the number of colors added (like a color wheel)
-    public void SplitColorWheel(int number, bool removeAll)
+    public void SplitColorWheel(int number)
     {
-        // Create a new texture to hold the updated sections
-        Texture2D newTexture = new Texture2D(texture.width, texture.height);
-        newTexture.SetPixels(texture.GetPixels());
-
-
-        if (!removeAll)
+        if (currentColorNumbers.Contains(number))
         {
-            if (currentColorNumbers.Contains(number))
+            currentColorNumbers.Remove(number);
+            
+            if (currentColorNumbers.Count == 0)
             {
-                currentColorNumbers.Remove(number);
+                RestoreOriginalTexture();
+                return;
             }
-            else
+        }
+        else
+        {
+            currentColorNumbers.Add((number));
+            
+            if (currentColorNumbers.Count == 1)
             {
-                currentColorNumbers.Add((number));
+                int colorIndex = currentColorNumbers[0] - 1;
+                Color color = tileColors.Colors[colorIndex];
+        
+                FillTextureWithColor(texture, color);
+
+                if (isContradicted)
+                    SetRedTone();
+                
+                return;
             }
         }
         
-
-        int indexNumber = number - 1;
-        
         int sectionCount = currentColorNumbers.Count;
-        if (sectionCount == 0)
-        {
-            tileImage.color = isContradicted ? contradictionColor.Color : Color.white;
-        } 
+
+        // Create a new texture to hold the updated sections
+        Texture2D newTexture = new Texture2D(texture.width, texture.height);
+        newTexture.SetPixels(texture.GetPixels());
 
         currentColorNumbers.Sort();
         float angleBetweenSections = 360f / sectionCount;
@@ -72,27 +85,19 @@ public class TileColoring : MonoBehaviour
         {
             for (int x = 0; x < newTexture.width; x++)
             {
-                if (sectionCount == 0)
-                {
-                    newTexture.SetPixel(x, y, Color.white);
-                    continue;
-                }
-                
                 int sectionIndex = 0;
                 
-                if (sectionCount > 1)
+                
+                Vector2 currentPoint = new Vector2(x, y);
+                Vector2 vectorToPixel = currentPoint - centerPoint;
+                
+                float angleToPixel = Mathf.Atan2(vectorToPixel.y, vectorToPixel.x) * Mathf.Rad2Deg;
+                if (angleToPixel < 0)
                 {
-                    Vector2 currentPoint = new Vector2(x, y);
-                    Vector2 vectorToPixel = currentPoint - centerPoint;
-
-                    float angleToPixel = Mathf.Atan2(vectorToPixel.y, vectorToPixel.x) * Mathf.Rad2Deg;
-                    if (angleToPixel < 0)
-                    {
-                        angleToPixel += 360;
-                    }
-                    
-                    sectionIndex = Mathf.FloorToInt(angleToPixel / angleBetweenSections);
+                    angleToPixel += 360;
                 }
+                
+                sectionIndex = Mathf.FloorToInt(angleToPixel / angleBetweenSections);
                 
                 Color sectionColor = GetColorForSection(sectionIndex);
                 newTexture.SetPixel(x, y, sectionColor);
@@ -105,7 +110,7 @@ public class TileColoring : MonoBehaviour
         // Apply the updated texture to the RawImage component
         tileImage.texture = texture;
         
-        pixelsBeforeRed = texture.GetPixels(); // Store the original pixel data
+        // SetPixelsBeforeRed();
 
         if (isContradicted)
             SetRedTone();
@@ -121,6 +126,7 @@ public class TileColoring : MonoBehaviour
         }
         texture.SetPixels(colors);
         texture.Apply();
+        //SetPixelsBeforeRed();
     }
 
     private Color GetColorForSection(int sectionIndex)
@@ -160,6 +166,8 @@ public class TileColoring : MonoBehaviour
 
     private void SetRedTone()
     {
+        SetPixelsBeforeRed();
+
         if (currentColorNumbers.Count == 0)
         {
             RestoreOriginalTexture();
@@ -192,7 +200,7 @@ public class TileColoring : MonoBehaviour
         for (int i = 1; i <= 9; i++)
         {
             if (InputManager.NumberKeyDown(i))
-                SplitColorWheel(i, false);
+                SplitColorWheel(i);
         }
 
         if (InputManager.RemoveButtonIsPressed)

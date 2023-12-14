@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -152,6 +153,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     public bool TryUpdateNumber(int number, EnterType enterType, bool remove)
     {
+        Assert.IsFalse(Permanent && enterType != EnterType.ColorMark);
         if (Permanent && enterType != EnterType.ColorMark) return false;
 
         switch (enterType)
@@ -174,17 +176,18 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     private bool TryUpdateDigit(int number, bool remove)
     {
-        if (Permanent) return false;
+        Assert.IsFalse(Permanent);
+        
+        //if (Permanent) return false;
 
         if (remove) number = 0;
         SetDigit(number);
-        // numberText.color = Color.blue;
         return true;
     }
 
     private bool TryUpdateCorner(int addedNumber, bool remove)
     {
-        if (Permanent || HasDigit) return false;
+        Assert.IsFalse((Permanent || HasDigit) );
         
         if (remove && CornerMarks.Contains(addedNumber))
         {
@@ -192,9 +195,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
         else
         {
-            if (CornerMarks.Contains(addedNumber))
-                return false;
-            
+            Assert.IsFalse(CornerMarks.Contains(addedNumber));
             CornerMarks.Add(addedNumber);
         }
 
@@ -204,7 +205,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     
     private bool TryUpdateCenter(int addedNumber, bool remove)
     {
-        if (Permanent || HasDigit) return false;
+        Assert.IsFalse((Permanent || HasDigit) );
         
         if (remove && CenterMarks.Contains(addedNumber))
         {
@@ -212,9 +213,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
         else
         {
-            if (CenterMarks.Contains(addedNumber))
-                return false;
-            
+            Assert.IsFalse(CenterMarks.Contains(addedNumber));
             CenterMarks.Add(addedNumber);
         }
 
@@ -233,9 +232,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
         else
         {
-            if (ColorMarks.Contains(colorNumber))
-                return false;
-            
+            Assert.IsFalse(ColorMarks.Contains(colorNumber));
             ColorMarks.Add(colorNumber);
         }
 
