@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 2449261740428475457}
   - component: {fileID: 2449261740428475463}
   - component: {fileID: 2356923713486996992}
+  - component: {fileID: 2903648157190855232}
   m_Layer: 5
   m_Name: Select Box Tile
   m_TagString: Untagged
@@ -210,6 +211,19 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &2903648157190855232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2449261740428475456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a3f2e2a424340559ca94c41e4fa460c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  digitText: {fileID: 1034977633288529956}
 --- !u!1 &6775310215573223233
 GameObject:
   m_ObjectHideFlags: 0

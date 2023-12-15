@@ -6,11 +6,6 @@ using UnityEngine;
 
 namespace PuzzleSelect
 {
-    public class SelectTile : MonoBehaviour
-    {
-        public TextMesh digitText;
-    }
-    
     public class PuzzleSelectBox : MonoBehaviour
     {
         [SerializeField] private PuzzleSelectPort selectPort;
@@ -18,8 +13,10 @@ namespace PuzzleSelect
         private PuzzleDataHolder puzzle;
 
         [SerializeField] private List<SelectTile> tiles;
-
-        public void SetData(PuzzleDataHolder puzzleData)
+        [SerializeField] private ColorObject permanentTileTextColor;
+        [SerializeField] private ColorObject normalTileTextColor;
+        
+        public void SetData(PuzzleDataHolder puzzleData) 
         {
             puzzle = puzzleData;
             UpdateContents();
@@ -38,10 +35,17 @@ namespace PuzzleSelect
         public void UpdateContents()
         {
             nameText.text = puzzle.name;
+            var numbers = puzzle.numbers;
+            var permanents = puzzle.permanent;
 
             for (int i = 0; i < 81; i++)
             {
-                tiles[i].digitText.text = puzzle.numbers[i].ToString();
+                int number = numbers[i];
+                if (number == 0)
+                    continue;
+                
+                tiles[i].digitText.text = number.ToString();
+                tiles[i].digitText.color = permanents[i] ? permanentTileTextColor.Color : normalTileTextColor.Color;
             }
         }
     }
