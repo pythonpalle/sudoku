@@ -64,8 +64,6 @@ namespace PuzzleSelect
         {
             currentPuzzle = puzzleSelectPort.selectedPuzzle;
             _validNameChecker.SetPlaceHolder(currentPuzzle.name);
-            //_validNameChecker.SetUserEnter(currentPuzzle.name);
-            //_validNameChecker.ResetUserEntered();
 
             if (lastSelectedPuzzleID == "" || currentPuzzle.id != lastSelectedPuzzleID)
             {
@@ -75,9 +73,6 @@ namespace PuzzleSelect
             
             _popupWindow.PopUp();
             lastSelectedPuzzleID = currentPuzzle.id;
-
-
-            //popupBox.SetData(currentPuzzle);
         }
 
         private void OnPuzzleDeleted(PuzzleDataHolder _)
