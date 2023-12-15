@@ -14,7 +14,7 @@ namespace PuzzleSelect
 
         [SerializeField] private List<SelectTile> tiles;
         [SerializeField] private ColorObject permanentTileTextColor;
-        [SerializeField] private ColorObject normalTileTextColor;
+        [SerializeField] private ColorObject tileEnterColor;
         
         public void SetData(PuzzleDataHolder puzzleData) 
         {
@@ -37,7 +37,7 @@ namespace PuzzleSelect
             nameText.text = puzzle.name;
         }
 
-        public void UpdateContents()
+        void UpdateContents() 
         {
             UpdateName();
             
@@ -46,12 +46,26 @@ namespace PuzzleSelect
 
             for (int i = 0; i < 81; i++)
             {
-                int number = numbers[i];
-                if (number == 0)
-                    continue;
+                var tile = tiles[i];
                 
-                tiles[i].digitText.text = number.ToString();
-                tiles[i].digitText.color = permanents[i] ? permanentTileTextColor.Color : normalTileTextColor.Color;
+                // apply all tile colors
+                tile.SetColors(puzzle.colorMarks[i]);
+                
+                int number = numbers[i];
+                
+                // has no digit, apply corner marks and center marks
+                if (number == 0)
+                {
+                    tile.SetTextColor(tileEnterColor.Color);
+                    
+                    tile.SetCenters(puzzle.centerMarks[i]);
+                    tile.SetCorners(puzzle.cornerMarks[i]);
+                    continue;
+                }
+                
+                // otherwise, set digit
+                Color digitColor = permanents[i] ? permanentTileTextColor.Color : tileEnterColor.Color;
+                tile.SetDigit(number, digitColor);
             }
         }
 
@@ -59,7 +73,7 @@ namespace PuzzleSelect
         {
             for (int i = 0; i < 81; i++)
             {
-                tiles[i].digitText.text = "";
+                tiles[i].Reset();
             }
         }
     }

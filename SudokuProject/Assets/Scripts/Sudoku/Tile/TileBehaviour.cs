@@ -300,28 +300,30 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private void SortCenterMarks()
     {
         CenterMarks.Sort();
-
-        int centerMarkCount = CenterMarks.Count;
-        float centerStringSize = centerMarkFontSize;
-        int maximumMarksForDefaultSize = 5;
-
-        // decreasing font size to make all numbers fit in size
-        if (centerMarkCount > maximumMarksForDefaultSize)
-        {
-            int difference = centerMarkCount - maximumMarksForDefaultSize;
-            float powBase = 0.87f;
-
-            centerStringSize *= Mathf.Pow(powBase, difference);
-        }
-
-        string centerMarkString = string.Empty;
-        foreach (var mark in CenterMarks)
-        {
-            centerMarkString += mark.ToString();
-        }
-
-        centerText.text = centerMarkString;
-        centerText.fontSize = centerStringSize;
+        
+        CenterMark.UpdateCenterString(CenterMarks, centerMarkFontSize, centerText);
+        //
+        // int centerMarkCount = CenterMarks.Count;
+        // float centerStringSize = centerMarkFontSize;
+        // int maximumMarksForDefaultSize = 5;
+        //
+        // // decreasing font size to make sure all numbers fit in size
+        // if (centerMarkCount > maximumMarksForDefaultSize)
+        // {
+        //     int difference = centerMarkCount - maximumMarksForDefaultSize;
+        //     float powBase = 0.87f;
+        //
+        //     centerStringSize *= Mathf.Pow(powBase, difference);
+        // }
+        //
+        // string centerMarkString = string.Empty;
+        // foreach (var mark in CenterMarks)
+        // {
+        //     centerMarkString += mark.ToString();
+        // }
+        //
+        // centerText.text = centerMarkString;
+        // centerText.fontSize = centerStringSize;
     }
     
     private void SortColorMarks()

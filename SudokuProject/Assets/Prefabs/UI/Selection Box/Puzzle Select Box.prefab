@@ -420,7 +420,7 @@ MonoBehaviour:
   - {fileID: 1343831795986780549}
   - {fileID: 8127920521915079342}
   permanentTileTextColor: {fileID: 11400000, guid: 7c1c863694833f743afab4e90c3d73c6, type: 2}
-  normalTileTextColor: {fileID: 11400000, guid: 5644fc9c05b3c2d48acebef0a4d623b6, type: 2}
+  tileEnterColor: {fileID: 11400000, guid: 5644fc9c05b3c2d48acebef0a4d623b6, type: 2}
 --- !u!1001 &3113009856502757242
 PrefabInstance:
   m_ObjectHideFlags: 0
