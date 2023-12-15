@@ -49,23 +49,21 @@ namespace PuzzleSelect
                 var tile = tiles[i];
                 
                 // apply all tile colors
-                tile.SetColors(puzzle.colorMarks[i]);
+                tile.SetColorMarks(puzzle.colorMarks[i]);
                 
                 int number = numbers[i];
-                
+
                 // has no digit, apply corner marks and center marks
                 if (number == 0)
                 {
-                    tile.SetTextColor(tileEnterColor.Color);
-                    
                     tile.SetCenters(puzzle.centerMarks[i]);
                     tile.SetCorners(puzzle.cornerMarks[i]);
+                    tile.SetTextColor(false);
                     continue;
                 }
                 
                 // otherwise, set digit
-                Color digitColor = permanents[i] ? permanentTileTextColor.Color : tileEnterColor.Color;
-                tile.SetDigit(number, digitColor);
+                tile.SetDigit(number, permanents[i]);
             }
         }
 

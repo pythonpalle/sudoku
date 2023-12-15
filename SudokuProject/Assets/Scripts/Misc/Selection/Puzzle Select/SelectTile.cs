@@ -7,71 +7,59 @@ namespace PuzzleSelect
     public class SelectTile : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI digitText;
+        [SerializeField] private TextMeshProUGUI cornerText;
+        
+        [SerializeField] private ColorObject permanentColor;
+        [SerializeField] private ColorObject markColor;
 
         private LoadTile _loadTile;
 
         private static float defaultCenterSize = 4.2f; 
+        private static float defaultDigitSize = 10f; 
 
-        public void SetDigit(int number, Color color)
+        public void SetDigit(int number, bool permanent)
         {
             digitText.text = number.ToString();
-            digitText.color = color;
-        }
+            digitText.color = permanent ? permanentColor.Color : markColor.Color;
+        } 
 
         public void SetCenters(List<int> centerMarks)
         {
-            CenterMark.UpdateCenterString(centerMarks, defaultCenterSize, digitText);
+            if (centerMarks.Count == 0)
+                return;
+            
+            MarkClass.UpdateCenterString(centerMarks, defaultCenterSize, digitText);
         } 
         
         public void SetCorners(List<int> cornerMarks)
         {
-            
+            if (cornerMarks.Count == 0)
+                return;
+
+            cornerText.text = MarkClass.GetCornersAsString(cornerMarks);
         } 
         
-        public void SetColors(List<int> colorMarks)
+        public void SetColorMarks(List<int> colorMarks)
         {
             
         } 
 
         public void Reset()
         {
-            digitText.text = "";
+            digitText.text = cornerText.text = "";
+            digitText.fontSize = defaultDigitSize;
         }
 
-        public void SetTextColor(Color color)
+        public void SetTextColor(bool permanent)
         {
-            digitText.color = color;
+            if (permanent)
+            {
+                digitText.color =  permanentColor.Color;
+            }
+            else
+            {
+                digitText.color = cornerText.color = markColor.Color;
+            }
         }
-    }
-}
-
-public class CenterMark
-{
-    private static int maximumMarksForDefaultSize = 5;
-    
-    public  static void UpdateCenterString(List<int> centerMarks, float defaultSize, TextMeshProUGUI centerText)
-    {
-        centerMarks.Sort();
-
-        int centerMarkCount = centerMarks.Count;
-        float centerStringSize = defaultSize;
-
-        // decreasing font size to make sure all numbers fit in size
-        if (centerMarkCount > maximumMarksForDefaultSize)
-        {
-            int difference = centerMarkCount - maximumMarksForDefaultSize;
-            float powBase = 0.87f;
-
-            centerStringSize *= Mathf.Pow(powBase, difference);
-        }
-
-        string centerMarkString = string.Empty;
-        foreach (var mark in centerMarks)
-        {
-            centerMarkString += mark.ToString();
-        }
-
-        centerText.text = centerMarkString;
-        centerText.fontSize = centerStringSize;
     }
 }

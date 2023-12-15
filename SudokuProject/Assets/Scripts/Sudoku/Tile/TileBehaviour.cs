@@ -244,7 +244,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private void SortCornerMarks()
     {
         int numbersInCorner = CornerMarks.Count;
-        List<int> indexOrder = GetCornerIndexOrder(numbersInCorner);
+        List<int> indexOrder = MarkClass.GetCornerIndexOrder(numbersInCorner);
 
         CornerMarks.Sort();
         
@@ -261,47 +261,47 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
     }
 
-    private List<int> GetCornerIndexOrder(int numbersInCorner)
-    {
-        List<int> indexes = new List<int>();
-
-        // indexes have different positions depending on how many numbers are in corners
-        switch (numbersInCorner)
-        {
-            case < 5:
-                for (int i = 0; i < numbersInCorner; i++)
-                    indexes.Add(i);
-                break;
-            
-            case 5:
-                indexes = new List<int> { 0, 4, 1, 2, 3 };
-                break;
-            
-            case 6:
-                indexes = new List<int> { 0, 4, 5, 1, 2, 3 };
-                break;
-            
-            case 7:
-                indexes = new List<int> { 0, 4, 5, 1, 2, 6, 3 };
-                break;
-            
-            case 8:
-                indexes = new List<int> { 0, 4, 5, 1, 2, 6, 7, 3 };
-                break;
-            
-            case 9:
-                indexes = new List<int> { 0, 4, 8, 5, 1, 2, 6, 7, 3 };
-                break;
-        }
-
-        return indexes;
-    }
+    // private List<int> GetCornerIndexOrder(int numbersInCorner)
+    // {
+    //     List<int> indexes = new List<int>();
+    //
+    //     // indexes have different positions depending on how many numbers are in corners
+    //     switch (numbersInCorner)
+    //     {
+    //         case < 5:
+    //             for (int i = 0; i < numbersInCorner; i++)
+    //                 indexes.Add(i);
+    //             break;
+    //         
+    //         case 5:
+    //             indexes = new List<int> { 0, 4, 1, 2, 3 };
+    //             break;
+    //         
+    //         case 6:
+    //             indexes = new List<int> { 0, 4, 5, 1, 2, 3 };
+    //             break;
+    //         
+    //         case 7:
+    //             indexes = new List<int> { 0, 4, 5, 1, 2, 6, 3 };
+    //             break;
+    //         
+    //         case 8:
+    //             indexes = new List<int> { 0, 4, 5, 1, 2, 6, 7, 3 };
+    //             break;
+    //         
+    //         case 9:
+    //             indexes = new List<int> { 0, 4, 8, 5, 1, 2, 6, 7, 3 };
+    //             break;
+    //     }
+    //
+    //     return indexes;
+    // }
     
     private void SortCenterMarks()
     {
         CenterMarks.Sort();
         
-        CenterMark.UpdateCenterString(CenterMarks, centerMarkFontSize, centerText);
+        MarkClass.UpdateCenterString(CenterMarks, centerMarkFontSize, centerText);
         //
         // int centerMarkCount = CenterMarks.Count;
         // float centerStringSize = centerMarkFontSize;
