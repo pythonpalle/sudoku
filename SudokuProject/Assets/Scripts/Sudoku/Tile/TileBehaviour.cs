@@ -261,69 +261,11 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
     }
 
-    // private List<int> GetCornerIndexOrder(int numbersInCorner)
-    // {
-    //     List<int> indexes = new List<int>();
-    //
-    //     // indexes have different positions depending on how many numbers are in corners
-    //     switch (numbersInCorner)
-    //     {
-    //         case < 5:
-    //             for (int i = 0; i < numbersInCorner; i++)
-    //                 indexes.Add(i);
-    //             break;
-    //         
-    //         case 5:
-    //             indexes = new List<int> { 0, 4, 1, 2, 3 };
-    //             break;
-    //         
-    //         case 6:
-    //             indexes = new List<int> { 0, 4, 5, 1, 2, 3 };
-    //             break;
-    //         
-    //         case 7:
-    //             indexes = new List<int> { 0, 4, 5, 1, 2, 6, 3 };
-    //             break;
-    //         
-    //         case 8:
-    //             indexes = new List<int> { 0, 4, 5, 1, 2, 6, 7, 3 };
-    //             break;
-    //         
-    //         case 9:
-    //             indexes = new List<int> { 0, 4, 8, 5, 1, 2, 6, 7, 3 };
-    //             break;
-    //     }
-    //
-    //     return indexes;
-    // }
-    
     private void SortCenterMarks()
     {
         CenterMarks.Sort();
         
         MarkClass.UpdateCenterString(CenterMarks, centerMarkFontSize, centerText);
-        //
-        // int centerMarkCount = CenterMarks.Count;
-        // float centerStringSize = centerMarkFontSize;
-        // int maximumMarksForDefaultSize = 5;
-        //
-        // // decreasing font size to make sure all numbers fit in size
-        // if (centerMarkCount > maximumMarksForDefaultSize)
-        // {
-        //     int difference = centerMarkCount - maximumMarksForDefaultSize;
-        //     float powBase = 0.87f;
-        //
-        //     centerStringSize *= Mathf.Pow(powBase, difference);
-        // }
-        //
-        // string centerMarkString = string.Empty;
-        // foreach (var mark in CenterMarks)
-        // {
-        //     centerMarkString += mark.ToString();
-        // }
-        //
-        // centerText.text = centerMarkString;
-        // centerText.fontSize = centerStringSize;
     }
     
     private void SortColorMarks()
@@ -424,21 +366,21 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         }
     }
 
-    public bool HasSameNumber(int number, EnterType enterType)
+    public bool HasSameNumber(int otherNumber, EnterType enterType)
     {
         switch (enterType)
         {
             case EnterType.DigitMark:
-                return this.number == number;
+                return this.number == otherNumber;
             
             case EnterType.CenterMark:
-                return !HasDigit && CenterMarks.Contains(number);
+                return !HasDigit && CenterMarks.Contains(otherNumber);
             
             case EnterType.CornerMark:
-                return !HasDigit && CornerMarks.Contains(number);
+                return !HasDigit && CornerMarks.Contains(otherNumber);
             
             case EnterType.ColorMark:
-                return ColorMarks.Contains(number);
+                return ColorMarks.Contains(otherNumber);
         }
 
         return false;
