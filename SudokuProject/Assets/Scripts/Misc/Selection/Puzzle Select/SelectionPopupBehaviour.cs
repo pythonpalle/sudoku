@@ -49,7 +49,7 @@ namespace PuzzleSelect
         private void UpdatePuzzleName()
         {
             currentPuzzle.name = _validNameChecker.GetPuzzleSaveName();
-            puzzleSelectPort.selectedBox.UpdateName();
+            puzzleSelectPort.selectedBox.UpdateContents();
         }
 
         private void OnPuzzleReset(PuzzleDataHolder arg0)
