@@ -12,8 +12,10 @@ namespace PuzzleSelect
         [SerializeField] private PuzzleSelectPort puzzleSelectPort;
         [SerializeField] private PopupWindow _popupWindow;
         [SerializeField] private ValidNameChecker _validNameChecker;
+        [SerializeField] private PuzzleSelectBox popupBox;
         
         private PuzzleDataHolder currentPuzzle;
+        private string lastSelectedPuzzleID = "";
 
         public PopupData deletePopupData;
         public PopupData restartPopupData;
@@ -49,7 +51,8 @@ namespace PuzzleSelect
         private void UpdatePuzzleName()
         {
             currentPuzzle.name = _validNameChecker.GetPuzzleSaveName();
-            puzzleSelectPort.selectedBox.UpdateContents();
+            puzzleSelectPort.selectedBox.UpdateName();
+            _validNameChecker.ResetUserEntered();
         }
 
         private void OnPuzzleReset(PuzzleDataHolder arg0)
@@ -60,9 +63,21 @@ namespace PuzzleSelect
         private void OnSelectPuzzleBox()
         {
             currentPuzzle = puzzleSelectPort.selectedPuzzle;
-            _popupWindow.PopUp();
-            
             _validNameChecker.SetPlaceHolder(currentPuzzle.name);
+            //_validNameChecker.SetUserEnter(currentPuzzle.name);
+            //_validNameChecker.ResetUserEntered();
+
+            if (lastSelectedPuzzleID == "" || currentPuzzle.id != lastSelectedPuzzleID)
+            {
+                popupBox.Clear();
+                popupBox.SetData(currentPuzzle);
+            }
+            
+            _popupWindow.PopUp();
+            lastSelectedPuzzleID = currentPuzzle.id;
+
+
+            //popupBox.SetData(currentPuzzle);
         }
 
         private void OnPuzzleDeleted(PuzzleDataHolder _)

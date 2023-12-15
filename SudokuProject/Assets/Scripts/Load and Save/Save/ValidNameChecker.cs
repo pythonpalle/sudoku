@@ -11,8 +11,8 @@ namespace Saving
         [SerializeField] private TextMeshProUGUI userEnterText;
         [SerializeField] private TMP_InputField inputField;
         private static int characterLimit = 14;
-
-        private void OnEnable()
+        
+        private void Awake()
         {
             inputField.characterLimit = characterLimit;
         }
@@ -47,6 +47,16 @@ namespace Saving
         public void SetPlaceHolder(string placeHolderString)
         {
             placeHolderText.text = placeHolderString;
+        }
+
+        public void ResetUserEntered()
+        {
+            inputField.text = "";
+        }
+
+        public void SetUserEnter(string currentPuzzleName)
+        {
+            userEnterText.text = currentPuzzleName;
         }
     }
 }

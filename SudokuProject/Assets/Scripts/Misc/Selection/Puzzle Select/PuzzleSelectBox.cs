@@ -32,9 +32,15 @@ namespace PuzzleSelect
             return other == puzzle;
         }
 
-        public void UpdateContents()
+        public void UpdateName()
         {
             nameText.text = puzzle.name;
+        }
+
+        public void UpdateContents()
+        {
+            UpdateName();
+            
             var numbers = puzzle.numbers;
             var permanents = puzzle.permanent;
 
@@ -46,6 +52,14 @@ namespace PuzzleSelect
                 
                 tiles[i].digitText.text = number.ToString();
                 tiles[i].digitText.color = permanents[i] ? permanentTileTextColor.Color : normalTileTextColor.Color;
+            }
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < 81; i++)
+            {
+                tiles[i].digitText.text = "";
             }
         }
     }
