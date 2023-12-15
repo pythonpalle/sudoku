@@ -11,9 +11,7 @@ namespace PuzzleSelect
         
         [SerializeField] private ColorObject permanentColor;
         [SerializeField] private ColorObject markColor;
-
-        private LoadTile _loadTile;
-
+        
         private static float defaultCenterSize = 4.2f; 
         private static float defaultDigitSize = 10f; 
 

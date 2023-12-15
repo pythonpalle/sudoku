@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27f3cf4119eb4e16954b193a95659598, type: 3}
+  m_Name: Color Split Holder
+  m_EditorClassIdentifier: 
+  ColorSplits:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 2800000, guid: d995a14d4be26454996f2eb7b86f7e6a, type: 3}
+  - {fileID: 2800000, guid: 22d16b9bfbb4ec9449ed5196dc1baf57, type: 3}
+  - {fileID: 2800000, guid: 6527ffdc127d6e141ba4aa82c99e6d23, type: 3}
+  - {fileID: 2800000, guid: 064c19aa8f57da047abbbfdd50f8803d, type: 3}
+  - {fileID: 2800000, guid: b9c150f2ab3679e41938d60e808fc798, type: 3}
+  - {fileID: 2800000, guid: 9d41713b47fc89446a6de9c2d669a6a6, type: 3}
+  - {fileID: 2800000, guid: d0f21e430b30a6d41b9a193823d4bf9f, type: 3}
