@@ -68,15 +68,15 @@ public class TileColorFiller : MonoBehaviour
 
     }
 
-    private List<Texture2D> GetTexturesFromSections()
+    private List<FillTileSection> GetActiveSections()
     {
-        List<Texture2D> textures = new List<Texture2D>();
+        List<FillTileSection> activeSections = new List<FillTileSection>();
         for (int i = 0; i < currentColorNumbers.Count; i++)
         {
-            textures.Add(sections[i].Texture);
+            activeSections.Add(sections[i]);
         }
 
-        return textures;
+        return activeSections;
     }
 
     private void HandleOneColorFill(int colorCount)
@@ -158,7 +158,7 @@ public class TileColorFiller : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.M))
         {
             SetTileColors();
-            merger.Merge(GetTexturesFromSections());
+            merger.Merge(GetActiveSections());
         }
     }
 }

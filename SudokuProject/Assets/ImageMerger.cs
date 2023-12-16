@@ -6,16 +6,17 @@ public class ImageMerger : MonoBehaviour
 {
     public RawImage targetImage; // Reference to the RawImage where the merged texture will be displayed
 
-    public void Merge(List<Texture2D> textures)
+    public void Merge(List<FillTileSection> sections)
     {
         int totalWidth = 0;
         int maxHeight = 0;
         
         // Calculate total width and maximum height of source textures
-        foreach (var texture in textures)
+        foreach (var section in sections)
         {
-            totalWidth += texture.width;
-            maxHeight = Mathf.Max(maxHeight, texture.height);
+            var rect = section.image.rectTransform.rect;
+            totalWidth += (int)rect.width;
+            maxHeight = Mathf.Max(maxHeight, (int)rect.height);
         }
         
         // Create a new texture to hold the merged images
@@ -23,16 +24,22 @@ public class ImageMerger : MonoBehaviour
         
         int xOffset = 0;
         
-        // Merge textures into the new texture
-        foreach (Texture2D texture in textures)
+        foreach (var section in sections)
         {
-            Color[] pixels = texture.GetPixels();
-            mergedTexture.SetPixels(xOffset, 0, texture.width, texture.height, pixels);
-            xOffset += texture.width;
+            // Get the current slice's texture
+            Texture2D sliceTexture = section.image.sprite.texture;
+
+            // Ensure the slice has a valid texture
+            if (sliceTexture != null)
+            {
+                Color32[] pixels = sliceTexture.GetPixels32();
+                mergedTexture.SetPixels32(xOffset, 0, sliceTexture.width, sliceTexture.height, pixels);
+                xOffset += sliceTexture.width;
+            }
         }
-        
+
         mergedTexture.Apply(); // Apply changes to the merged texture
-        
+
         // Display the merged texture in the target RawImage
         targetImage.texture = mergedTexture;
     }
