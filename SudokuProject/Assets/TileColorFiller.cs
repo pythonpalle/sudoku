@@ -37,7 +37,6 @@ public class TileColorFiller : MonoBehaviour
     public void SetTileColors(List<int> colorMarks, bool contradicted)
     {
         int colorCount = colorMarks.Count;
-        Debug.Log($"Colors: {colorCount}");
         
         if (colorCount <= 1)
         {
@@ -46,8 +45,6 @@ public class TileColorFiller : MonoBehaviour
         }
         else
         {
-            //currentColorNumbers.Sort();
-
             float deltaFill = 1.0f / colorCount;
             float sectionFill = deltaFill;
 
@@ -81,12 +78,8 @@ public class TileColorFiller : MonoBehaviour
 
     private void HandleOneColorFill(List<int> colorNumbers, int colorCount, bool isContradicted)
     {
-        Debug.Log($"Color count: {colorCount}");
-        
         if (colorCount == 0)
         {
-            //sections[0].gameObject.SetActive(true);
-
             Color color = isContradicted ? contradictionColor.Color : baseColor.Color;
             sections[0].SetFill(color, 1f);
         }
@@ -100,12 +93,8 @@ public class TileColorFiller : MonoBehaviour
 
     private Color GetColorForSection(List<int> currentColorNumbers, int sectionIndex, bool isContradicted)
     {
-        Debug.Log($"Section index: {sectionIndex}");
-        
         int tileIndex = currentColorNumbers[sectionIndex] - 1;
-        Debug.Log($"Tile Index: {tileIndex}");
-
-
+        
         Color color = tileColors.Colors[tileIndex];
         if (isContradicted)
         {
