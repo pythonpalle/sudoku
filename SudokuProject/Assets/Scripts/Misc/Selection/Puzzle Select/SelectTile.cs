@@ -60,5 +60,10 @@ namespace PuzzleSelect
                 digitText.color = cornerText.color = markColor.Color;
             }
         }
+
+        public void RemoveUnusedColors(int colorMarksLength)
+        {
+            colorFiller.RemoveUnusedSections(colorMarksLength);
+        }
     }
 }

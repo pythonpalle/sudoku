@@ -13,13 +13,11 @@ namespace PuzzleSelect
         private PuzzleDataHolder puzzle;
 
         [SerializeField] private List<SelectTile> tiles;
-        [SerializeField] private ColorObject permanentTileTextColor;
-        [SerializeField] private ColorObject tileEnterColor;
-        
-        public void SetData(PuzzleDataHolder puzzleData) 
+
+        public void SetData(PuzzleDataHolder puzzleData, bool removeUnused = false) 
         {
             puzzle = puzzleData;
-            UpdateContents();
+            UpdateContents(removeUnused);
         }
 
         public void OnButtonPressed()
@@ -37,7 +35,7 @@ namespace PuzzleSelect
             nameText.text = puzzle.name;
         }
 
-        void UpdateContents() 
+        void UpdateContents(bool removeUnusedColors = false) 
         {
             UpdateName();
             
@@ -48,9 +46,14 @@ namespace PuzzleSelect
             for (int i = 0; i < 81; i++)
             {
                 var tile = tiles[i];
+                var colorMarks = puzzle.colorMarks[i];
                 
                 // apply all tile colors
-                tile.SetColorMarks(puzzle.colorMarks[i], contradicted[i]);
+                if (removeUnusedColors)
+                {
+                    tile.RemoveUnusedColors(colorMarks.Count);
+                }
+                tile.SetColorMarks(colorMarks, contradicted[i]);
                 
                 int number = numbers[i];
 
