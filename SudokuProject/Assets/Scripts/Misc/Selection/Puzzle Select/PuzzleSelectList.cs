@@ -16,14 +16,12 @@ namespace PuzzleSelect
         private void OnEnable()
         {
             _selectPort.OnUserDataLoaded += OnUserDataLoaded;
-
             SaveManager.OnPuzzleDeleted += OnPuzzleDeleted;
         }
         
         private void OnDisable()
         {
             _selectPort.OnUserDataLoaded -= OnUserDataLoaded;
-            
             SaveManager.OnPuzzleDeleted -= OnPuzzleDeleted;
         }
 
@@ -51,6 +49,5 @@ namespace PuzzleSelect
             }
         }
     }
-
 }
 

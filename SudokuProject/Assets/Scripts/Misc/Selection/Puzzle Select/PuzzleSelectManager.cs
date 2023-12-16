@@ -1,17 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Saving;
 using UnityEngine;
+using UnityEngine.Profiling;
+using Debug = UnityEngine.Debug;
 
 namespace PuzzleSelect
 {
     public class PuzzleSelectManager : MonoBehaviour
     {
-        // [SerializeField] private Transform scrollContentParent;
-        // [SerializeField] private PuzzleSelectBox selectBoxPrefab;
         [SerializeField] private PuzzleSelectPort puzzleSelectPort;
-
+        
         private void Start()
         {
             LoadAllPuzzles();
@@ -23,12 +24,6 @@ namespace PuzzleSelect
             if (SaveManager.TryGetCurrentUserData(out UserSaveData data))
             {
                 puzzleSelectPort.LoadUserData(data);
-            
-                // foreach (var puzzle in data.puzzles)
-                // {
-                //     PuzzleSelectBox selectBoxInstance = Instantiate(selectBoxPrefab, scrollContentParent);
-                //     selectBoxInstance.SetData(puzzle);
-                // }
             }
         }
     
