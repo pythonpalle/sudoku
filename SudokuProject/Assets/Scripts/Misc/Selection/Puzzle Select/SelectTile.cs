@@ -8,6 +8,7 @@ namespace PuzzleSelect
     {
         [SerializeField] private TextMeshProUGUI digitText;
         [SerializeField] private TextMeshProUGUI cornerText;
+        [SerializeField] private TileColorFiller colorFiller;
         
         [SerializeField] private ColorObject permanentColor;
         [SerializeField] private ColorObject markColor;
@@ -37,9 +38,9 @@ namespace PuzzleSelect
             cornerText.text = MarkClass.GetCornersAsString(cornerMarks);
         } 
         
-        public void SetColorMarks(List<int> colorMarks)
+        public void SetColorMarks(List<int> colorMarks, bool contradicted)
         {
-            
+            colorFiller.SetTileColors(colorMarks, contradicted);
         } 
 
         public void Reset()

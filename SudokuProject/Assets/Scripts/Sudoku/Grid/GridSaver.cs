@@ -48,6 +48,8 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
                 dataHolder.centerMarks[i] = tile.CenterMarks;
                 dataHolder.colorMarks[i] = tile.ColorMarks;
 
+                dataHolder.contradicted[i] = tile.Contradicted;
+
                 i++;
             } 
         }
@@ -62,6 +64,7 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
         var numbers = puzzleData.numbers;
         var permanents = puzzleData.permanent;
+        var contradictions = puzzleData.contradicted;
 
         for (int i = 0; i < 81; i++)
         {
@@ -92,6 +95,11 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
             // Get all marks for the tile, add them to grid
             Dictionary<EnterType, List<int>> marksForTile = GetAllMarksForTile(puzzleData, i);
             CommandManager.instance.AddAllMarksToTile(i, marksForTile);
+
+            if (contradictions[i])
+            {
+                CommandManager.instance.AddContradictionToTile(i);
+            }
         }
 
         _gridPort.RequestStatusUpdate();
@@ -109,14 +117,14 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         return marks;
     }
 
-    private SudokuEntry ToEntry(SerializedCommandData commandData)
-    {
-        List<TileBehaviour> tiles = _gridPort.GetTiles(commandData.tiles);
-        EnterType enterType = (EnterType)Enum.ToObject(typeof(EnterType), commandData.enterType);
-        
-        SudokuEntry entry = new SudokuEntry(tiles, enterType, commandData.number, commandData.removal, commandData.colorRemoval);
-        return entry;
-    }
+    // private SudokuEntry ToEntry(SerializedCommandData commandData)
+    // {
+    //     List<TileBehaviour> tiles = _gridPort.GetTiles(commandData.tiles);
+    //     EnterType enterType = (EnterType)Enum.ToObject(typeof(EnterType), commandData.enterType);
+    //     
+    //     SudokuEntry entry = new SudokuEntry(tiles, enterType, commandData.number, commandData.removal, commandData.colorRemoval);
+    //     return entry;
+    // }
 
     void AddListenersToSaveManager()
     {

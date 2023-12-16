@@ -30,6 +30,8 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleDat
     public UnityAction<int, Dictionary<EnterType, List<int>>> OnAddAllMarksToTile;
     public UnityAction<List<int>, int> OnRemoveAllMarks;
 
+    public UnityAction<int> OnAddContradiction;
+
     public UnityAction<SudokuCommand> OnCommandRedo;
     public UnityAction<SudokuCommand> OnCommandUndo; 
     public UnityAction OnUndoFail;
@@ -184,5 +186,10 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleDat
     public void AddAllMarksToTile(int index, Dictionary<EnterType, List<int>> allMarks)
     {
         OnAddAllMarksToTile?.Invoke(index, allMarks);
+    }
+
+    public void AddContradictionToTile(int index)
+    {
+        OnAddContradiction?.Invoke(index);
     }
 }

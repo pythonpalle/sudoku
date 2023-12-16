@@ -12,7 +12,7 @@ using UnityEngine.UI;
 public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler
 {
     // serialize fields
-    [Header("Border")]
+    [Header("Border")] 
     [SerializeField] private Image border;
 
     [Header("Digit")]

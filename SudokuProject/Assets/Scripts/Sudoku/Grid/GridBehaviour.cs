@@ -63,6 +63,7 @@ public class GridBehaviour : MonoBehaviour
 
         CommandManager.instance.OnAddMarks += OnAddMarks;
         CommandManager.instance.OnRemoveAllMarks += OnRemoveAllMarks;
+        CommandManager.instance.OnAddContradiction += OnAddContradiction;
     }
 
     private void OnEnable()
@@ -112,6 +113,13 @@ public class GridBehaviour : MonoBehaviour
 
         CommandManager.instance.OnAddMarks -= OnAddMarks;
         CommandManager.instance.OnRemoveAllMarks -= OnRemoveAllMarks;
+        CommandManager.instance.OnAddContradiction -= OnAddContradiction;
+    }
+
+    private void OnAddContradiction(int index)
+    {
+        var tile = IntToTile(index);
+        tile.SetContradiction();
     }
 
     private void OnAddAllMarksToTile(int index, Dictionary<EnterType, List<int>> allMarks)

@@ -43,13 +43,14 @@ namespace PuzzleSelect
             
             var numbers = puzzle.numbers;
             var permanents = puzzle.permanent;
+            bool[] contradicted = puzzle.contradicted;
 
             for (int i = 0; i < 81; i++)
             {
                 var tile = tiles[i];
                 
                 // apply all tile colors
-                tile.SetColorMarks(puzzle.colorMarks[i]);
+                tile.SetColorMarks(puzzle.colorMarks[i], contradicted[i]);
                 
                 int number = numbers[i];
 

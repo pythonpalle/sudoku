@@ -37,6 +37,7 @@ namespace Saving
 
         // status
         public bool completed;
+        public bool[] contradicted;
 
         public PuzzleDataHolder()
         {
@@ -47,6 +48,7 @@ namespace Saving
         {
             numbers = new int[81];
             permanent = new bool[81];
+            contradicted = new bool[81];
 
             cornerMarks = new List<int>[81];
             centerMarks = new List<int>[81];
@@ -73,7 +75,6 @@ namespace Saving
         {
             undoCommands.Clear();
             redoCommands.Clear();
-            //commandCounter = 0;
 
             foreach (var mark in colorMarks)
             {
@@ -96,6 +97,7 @@ namespace Saving
                     continue;
 
                 numbers[i] = 0;
+                contradicted[i] = false;
             }
         }
     }
