@@ -21,8 +21,6 @@ public class GeneratorBehaviour : MonoBehaviour
     [SerializeField] private DifficultyObject _difficultyObject;
     [SerializeField] private LoadGrid loadGrid;
     
-    //[Header("Grid Generation Settings")] 
-    //[SerializeField] private bool createEmptyGrid;
 
     void Awake()
     {
