@@ -33,6 +33,7 @@ namespace PuzzleSelect
             if (_selectPort.selectedBox.HasPuzzle(puzzle))
             {
                 Debug.Log("Has same puzzle, remove the box!");
+                selectBoxes.Remove(_selectPort.selectedBox);
                 Destroy(_selectPort.selectedBox.gameObject);
                 _selectPort.selectedBox = null;
             } 

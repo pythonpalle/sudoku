@@ -8848,6 +8848,7 @@ MonoBehaviour:
   - {fileID: 1434790567}
   - {fileID: 603139207}
   - {fileID: 1211582465}
+  removeUnusedColors: 1
 --- !u!1 &1379217969
 GameObject:
   m_ObjectHideFlags: 0
