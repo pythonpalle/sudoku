@@ -80,6 +80,16 @@ namespace Saving
                 mark.Clear();
             }
             
+            foreach (var mark in cornerMarks)
+            {
+                mark.Clear();
+            }
+            
+            foreach (var mark in centerMarks)
+            {
+                mark.Clear();
+            }
+            
             for (int i = 0; i < 81; i++)
             {
                 if (permanent[i])
