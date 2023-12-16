@@ -17,6 +17,8 @@ public class TileColorFiller : MonoBehaviour
     
     public bool isContradicted;
 
+    public ImageMerger merger;
+
     private void RemoveAllColors()
     {
         currentColorNumbers.Clear();
@@ -63,6 +65,18 @@ public class TileColorFiller : MonoBehaviour
         {
             sections[i].gameObject.SetActive(false);
         }
+
+    }
+
+    private List<Texture2D> GetTexturesFromSections()
+    {
+        List<Texture2D> textures = new List<Texture2D>();
+        for (int i = 0; i < currentColorNumbers.Count; i++)
+        {
+            textures.Add(sections[i].Texture);
+        }
+
+        return textures;
     }
 
     private void HandleOneColorFill(int colorCount)
@@ -140,6 +154,11 @@ public class TileColorFiller : MonoBehaviour
             currentColorNumbers = new List<int>(testColors);
             SetTileColors();
         }
+        
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            SetTileColors();
+            merger.Merge(GetTexturesFromSections());
+        }
     }
-
 }

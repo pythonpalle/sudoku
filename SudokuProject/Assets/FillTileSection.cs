@@ -7,6 +7,7 @@ using UnityEngine.WSA;
 public class FillTileSection : MonoBehaviour
 {
     public Image image;
+    public Texture2D Texture => image.sprite.texture;
     
     public void SetFill(Color color, float amount)
     {
