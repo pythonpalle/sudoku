@@ -11,11 +11,11 @@ public class SudokuGameSceneManager : MonoBehaviour
     [SerializeField] private GeneratorPort generatorPort;
     [SerializeField] private PuzzleSelectPort selectPort;
     [SerializeField] private ScenePort scenePort;
-    
-    private string startSceneName = "Scenes/Start Scene";
-    private string puzzleSceneName = "Scenes/Puzzle Select Scene"; 
-    private string gameSceneName = "Scenes/Game Scene"; 
 
+    private static string startSceneName = "Start Scene";
+    public static string puzzleSelectSceneName = "Puzzle Select Scene"; 
+    private static string gameSceneName = "Game Scene";
+    
     public void OnEnable()
     {
         selectPort.OnSelectAndLoad += OnSelectAndLoad;
@@ -47,7 +47,6 @@ public class SudokuGameSceneManager : MonoBehaviour
     {
         if (generatorPort.GenerationType == GridGenerationType.empty)
         {
-            Debug.Log("Load created puzzle!");
             OnLoadPuzzle();
         }
     }
@@ -62,23 +61,27 @@ public class SudokuGameSceneManager : MonoBehaviour
     {
         generatorPort.GenerationType = GridGenerationType.loaded;
         SaveManager.SetGenerationType(generatorPort.GenerationType);
-        LoadPuzzleSelectScene();
         LoadGameScene();
     }
 
     private void LoadGameScene()
     {
-        SceneManager.LoadScene(gameSceneName);
+        LoadScene(gameSceneName);
+    }
+
+    private void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 
     public void LoadStartScene()
     {
-        SceneManager.LoadScene(startSceneName);
+        LoadScene(startSceneName);
     }
 
     public void LoadPuzzleSelectScene()
     {
-        SceneManager.LoadScene(puzzleSceneName);
+        LoadScene(puzzleSelectSceneName);
     }
     
     public void LoadRandom()
