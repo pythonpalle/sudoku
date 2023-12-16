@@ -12,9 +12,8 @@ using UnityEngine.UI;
 public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler
 {
     // serialize fields
-    [Header("Background")]
+    [Header("Border")]
     [SerializeField] private Image border;
-    //[SerializeField] private Image whitePart;
 
     [Header("Digit")]
     [SerializeField] private TextMeshProUGUI numberText;
@@ -27,8 +26,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     [SerializeField] private TextMeshProUGUI centerText;
     
     [Header("Color")]
-    [SerializeField] private List<ColorMarkHolder> colorMarkHolders;
-    [SerializeField] private RectTransform spriteMask;
     [SerializeField] private TileColorFiller _colorFiller;
     
     [Header("Selection")]
@@ -37,7 +34,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     [Header("Selection")]
     [SerializeField] private ColorObject selectColor;
     [SerializeField] private ColorObject pencilMarkColor;
-    [SerializeField] private ColorObject contradictionColor;
     
 
     // public fields
@@ -60,8 +56,8 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     // private fields
     public bool isSelected { get; private set; } = false;
 
-    private static float whitePartSelectScale = 0.8f;
-    private Vector3 whitePartSelectScaleVector = Vector3.one * whitePartSelectScale;
+    private static float colorFillerSelectScale = 0.8f;
+    private Vector3 whitePartSelectScaleVector = Vector3.one * colorFillerSelectScale;
     private Vector3 whitePartStartScale;
     
     private RectTransform tileAnimationParent;
@@ -271,44 +267,15 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     
     private void SortColorMarks()
     {
-        // // find how many colors the tile has
-        // int colorCount = ColorMarks.Count;
-        // int colorHolderIndex = colorCount - 1;
-        //
-        // SetColorHolderObjectsActive(colorHolderIndex);
-        //
-        // if (colorCount <= 0)
-        //     return;
-        
         ColorMarks.Sort();
         _colorFiller.SetTileColors(ColorMarks, Contradicted);
-        
-        // ColorMarkHolder colorMarkHolder = colorMarkHolders[colorHolderIndex];
-        // colorMarkHolder.SetColors(ColorMarks);
     }
-
-    // private void SetColorHolderObjectsActive(int colorHolderIndex)
-    // {
-    //     for (int i = 0; i < colorMarkHolders.Count; i++)
-    //     {
-    //         bool setActive = i == colorHolderIndex;
-    //         colorMarkHolders[i].gameObject.SetActive(setActive);
-    //     }
-    //     
-    //     UpdateWhitePartColor();
-    // }
-
-    private Color SetAlpha(Color color, float a)
-    {
-        return new Color(color.r, color.g, color.b, a);
-    }
-
+    
     public void Select()
     {
         isSelected = true;
         border.color = selectColor.Color;
         _colorFiller.transform.localScale = whitePartSelectScaleVector;
-        //spriteMask.transform.localScale = whitePartSelectScaleVector;
         EventManager.SelectTile(this);
     }
 
@@ -317,7 +284,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         isSelected = false;
         border.color = Color.black;
         _colorFiller.transform.localScale = whitePartStartScale;
-        //spriteMask.transform.localScale = whitePartStartScale;
         EventManager.DeselectTile(this);
     }
 
@@ -346,30 +312,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     void UpdateWhitePartColor()
     {
         _colorFiller.SetTileColors(ColorMarks, Contradicted);
-        return; 
-        
-        // if (Contradicted)
-        // {
-        //     whitePart.color = contradictionColor.Color;
-        //
-        //     if (HasColors)
-        //     {
-        //         whitePart.color = SetAlpha(whitePart.color, 0.75f);
-        //     }
-        // }
-        // else
-        // {
-        //     whitePart.color = Color.white;
-        //     
-        //     if (HasColors)
-        //     {
-        //         whitePart.color = SetAlpha(whitePart.color, 0f);
-        //     }
-        //     else
-        //     {
-        //         whitePart.color = SetAlpha(whitePart.color, 1f);
-        //     }
-        // }
     }
 
     public bool HasSameNumber(int otherNumber, EnterType enterType)
@@ -447,10 +389,6 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
         bool hadColors = ColorMarks.Count > 0;
         
         ColorMarks.Clear();
-        
-        // // passing in -1 to inactivate all color holder
-        // SetColorHolderObjectsActive(-1);
-        
         _colorFiller.SetTileColors(ColorMarks, Contradicted);
 
         return hadColors;
