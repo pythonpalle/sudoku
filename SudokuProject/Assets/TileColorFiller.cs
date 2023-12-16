@@ -50,6 +50,9 @@ public class TileColorFiller : MonoBehaviour
             {
                 sections[i].gameObject.SetActive(true);
                 var color = GetColorForSection(i);
+
+                
+                
                 sections[i].SetFill(color, sectionFill);
 
                 sectionFill += deltaFill;
@@ -80,7 +83,13 @@ public class TileColorFiller : MonoBehaviour
     private Color GetColorForSection(int sectionIndex)
     {
         int tileIndex = currentColorNumbers[sectionIndex] - 1;
-        return tileColors.Colors[tileIndex];
+
+        Color color = tileColors.Colors[tileIndex];
+        if (isContradicted)
+        {
+            color = new Color(color.r * 3, color.g, color.b) * 0.75f;
+        }
+        return color;
     }
 
     private void RemoveContradiction()
