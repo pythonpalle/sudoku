@@ -22,8 +22,10 @@ public class TileColoring : MonoBehaviour
     
     private int textureSize = 64;
     
-    void Start() 
+    void Start()
     {
+        tileImage.material = null;
+        
         texture = new Texture2D(textureSize, textureSize);
         FillTextureWithColor(texture, baseColor.Color);
         tileImage.texture = texture;
