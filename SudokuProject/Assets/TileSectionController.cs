@@ -10,7 +10,7 @@ public class TileSectionController : MonoBehaviour
     public Material tileMaterialAsset; // Reference to the material of the tile
     public Material tileMaterialInstance; // Reference to the material of the tile
     public int sections => currentColorNumbers.Count;
-
+    
     public List<int> currentColorNumbers = new List<int>();
 
     [SerializeField] TileColors tileColors;
