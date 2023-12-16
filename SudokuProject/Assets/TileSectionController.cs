@@ -53,7 +53,7 @@ public class TileSectionController : MonoBehaviour
             selectedColors[index] = (tileColors.Colors[number]);
         }
 
-        Texture2D colorTexture = new Texture2D(selectedColors.Length, 1);
+        Texture2D colorTexture = new Texture2D(currentColorsCount, 1);
         colorTexture.SetPixels(selectedColors);
         colorTexture.Apply();
 
@@ -119,7 +119,6 @@ public class TileSectionController : MonoBehaviour
     {
         currentColorNumbers.Sort();
         tileMaterialInstance.SetInt("_Sections", sections); // Set the number of sections for this tile's material    }
- 
         SetTextures(); 
     }
 

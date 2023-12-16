@@ -48,26 +48,19 @@ Shader "Custom/ColorSplit"
                     angle += 3.14159 * 2; 
                 }
 
-                float2 sectionUV;
-                if (_Sections == 2)
-                {
-                     float section = uv.y > uv.x ? 0 : 1; // (angle < 3.14159) ? 0 : 1; // Determine section based on angle for two-color scenario
-
-                    sectionUV = float2(section, 0.5); // Assign each section a unique color based on a split
-                }
-                else
-                {
-                    float section = floor((angle / (3.14159 * 2)) * _Sections);
-                    float sectionAngle = section / _Sections * 3.14159 * 2;
-                    sectionUV = float2(cos(sectionAngle), sin(sectionAngle)) * 0.5 + 0.5;
-                }
+                float section = floor((angle / (3.14159 * 2)) * _Sections);
+                // if (_Sections == 2)
+                // {
+                //     section = uv.y > uv.x ? 0 : 1; // Split into two sections based on UV comparison
+                // }
+                // else
+                // {
+                //     section = floor((angle / (3.14159 * 2)) * _Sections);
+                // }
                 
+                float sectionAngle = section / _Sections * 3.14159 * 2;
+                float2 sectionUV = float2(cos(sectionAngle), sin(sectionAngle)) * 0.5 + 0.5;
                 
-                // float section = _Sections == 2 ? uv.y > uv.x ? 0 : 1 
-                //                     : floor((angle / (3.14159 * 2)) * _Sections);
-                
-                
-
                 fixed4 col = tex2D(_Colors, sectionUV);
                 
                 return col;
