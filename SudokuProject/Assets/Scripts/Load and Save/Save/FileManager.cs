@@ -126,21 +126,21 @@ public static class FileManager
         return false;
     }
     
-    public static byte[] ReadAllBytes(string fileName)
-    {
-        string fullFilePath = GetFullFilePathName(fileName);
-        Debug.Log($"File path: {fullFilePath}");
-
-        try
-        {
-            Debug.Log("Successfully fetched bytes!");
-            return File.ReadAllBytes(fullFilePath);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(($"Failed to write to {fullFilePath} with exception {e}"));
-        }
-
-        return null;
-    }
+    // public static byte[] ReadAllBytes(string fileName)
+    // {
+    //     string fullFilePath = GetFullFilePathName(fileName);
+    //     Debug.Log($"File path: {fullFilePath}");
+    //
+    //     try
+    //     {
+    //         Debug.Log("Successfully fetched bytes!");
+    //         return File.ReadAllBytes(fullFilePath);
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Debug.LogError(($"Failed to write to {fullFilePath} with exception {e}"));
+    //     }
+    //
+    //     return null;
+    // }
 }

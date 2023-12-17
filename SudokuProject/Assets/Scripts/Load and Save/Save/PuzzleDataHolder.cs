@@ -21,7 +21,7 @@ namespace Saving
         public int[] numbers;
         public bool[] permanent;
         
-        // marks
+        // marks (NOT SERIALIZABLE WITH JSON)
         public List<int>[] cornerMarks;
         public List<int>[] centerMarks;
         public List<int>[] colorMarks;
@@ -29,7 +29,7 @@ namespace Saving
         // public List<SerializedCommandData> commands = new List<SerializedCommandData>();
         // public int commandCounter;
 
-        // commands
+        // commands (NOT SERIALIZABLE WITH JSON)
         public List<SudokuCommand> undoCommands = new List<SudokuCommand>();
         public List<SudokuCommand> redoCommands = new List<SudokuCommand>();
         //public int commandCounter;

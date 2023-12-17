@@ -41,6 +41,10 @@ namespace Saving
 
         private static bool compress = true;
         
+        // NOTE: the data can at the moment not be loaded and saved correctly with JSON format because of serialization issues.
+        private static bool loadFromBinary = true;
+        private static bool writeToBinary = true; 
+        
         public static bool AddLoadDataListener(ILoadPuzzleData data)
         {
             if (!loadDatas.Contains(data))
@@ -160,16 +164,29 @@ namespace Saving
 
         private static bool WriteUserDataToFile(SaveRequestLocation location)
         {
-            var binary = currentUserData.ToBinary();
+            if (writeToBinary)
+            {
+                var binary = currentUserData.ToBinary();
+            
+                if (FileManager.WriteAllBytes(userSaveFileName, binary, compress))
+                {
+                    OnSuccessfulSave?.Invoke(location);
+                    return true;
+                }
 
-            if (FileManager.WriteAllBytes(userSaveFileName, binary, compress))
-            {
-                OnSuccessfulSave?.Invoke(location);
-                return true;
+                return false;
             }
-            else 
+            else
             {
-                return false; 
+                string json = currentUserData.ToJson();
+
+                if (FileManager.WriteToFile(userSaveFileName, json))
+                {
+                    OnSuccessfulSave?.Invoke(location);
+                    return true;
+                }
+
+                return false;
             }
         }
 
@@ -241,12 +258,26 @@ namespace Saving
 
         private static bool TryLoadCurrentUserData()
         {
-            if (FileManager.ReadAllBytes(userSaveFileName, out byte[] bytes, compress))
+            if (loadFromBinary)
             {
-                currentUserData = new UserSaveData();
-                currentUserData.LoadFromBinary(bytes);
-                return true; 
+                if (FileManager.ReadAllBytes(userSaveFileName, out byte[] bytes, compress))
+                {
+                    currentUserData = new UserSaveData();
+                    currentUserData.LoadFromBinary(bytes);
+                    return true; 
+                }
             }
+            else
+            {
+                if (FileManager.LoadFromFile(userSaveFileName, out string json))
+                {
+                    currentUserData = new UserSaveData();
+                    currentUserData.LoadFromJson(json);
+                    return true;
+                }
+            }
+            
+            
 
             return false;
         }
