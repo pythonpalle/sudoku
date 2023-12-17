@@ -92,7 +92,6 @@ public class ImportBehaviour : MonoBehaviour
                 digit = (int) Char.GetNumericValue(character);
 
             seedList.Add(digit);
-            seedList.Add(digit);
         }
 
         return seedList;
