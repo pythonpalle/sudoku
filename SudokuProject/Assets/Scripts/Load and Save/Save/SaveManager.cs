@@ -275,8 +275,6 @@ namespace Saving
                 }
             }
             
-            
-
             return false;
         }
 
@@ -340,12 +338,13 @@ namespace Saving
             }
 
             // NOTE: might cause reference problems
-            currentPuzzle = new PuzzleDataHolder();
-
-            // assign identifier values
-            currentPuzzle.name = puzzleSaveName;
-            currentPuzzle.id = id;
-            currentPuzzle.difficulty = (int)difficulty;
+            currentPuzzle = new PuzzleDataHolder
+            {
+                // assign identifier values
+                name = puzzleSaveName,
+                id = id,
+                difficulty = (int)difficulty
+            };
 
             bool selfCreated = gridGenType == GridGenerationType.empty;
             if (selfCreated)
