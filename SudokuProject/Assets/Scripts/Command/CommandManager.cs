@@ -11,10 +11,6 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleDat
 {
     public static CommandManager instance { get; private set; }
     
-    [SerializeField] private GridPort _gridPort;
-    
-    private List<SudokuEntry> entries = new List<SudokuEntry>();
-
     private Stack<SudokuCommand> redoStack = new Stack<SudokuCommand>();
     private Stack<SudokuCommand> undoStack = new Stack<SudokuCommand>();
     
@@ -101,11 +97,8 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleDat
         if (newSelfCreate)
             return;
         
-        //_gridPort.RequestGrid();
         dataHolder.undoCommands = StackToList(undoStack);
         dataHolder.redoCommands = StackToList(redoStack);
-
-        //dataHolder.commandCounter = undoStack.Count;
     }
 
     private List<SudokuCommand> StackToList(Stack<SudokuCommand> sudokuCommands)
@@ -128,21 +121,6 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleDat
         undoStack = new Stack<SudokuCommand>(dataHolder.undoCommands);
     }
 
-
-    private SerializedCommandData EntryToCommand(SudokuEntry entry)
-    {
-        List<int> tiles = new List<int>();
-        
-        foreach (var tile in entry.tiles)
-        {
-            int i = tile.row * 9 + tile.col;
-            tiles.Add(i);
-        }
-        
-        SerializedCommandData data = new SerializedCommandData(tiles, (int)entry.enterType, entry.number, entry.removal, entry.colorRemoval);
-        return data;
-    }
-    
     public void AddDigit(List<int> effectedIndexes, int addedDigit)
     {
         OnAddOneDigit?.Invoke(effectedIndexes, addedDigit);

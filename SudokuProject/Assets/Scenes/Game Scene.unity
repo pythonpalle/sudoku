@@ -849,7 +849,6 @@ GameObject:
   - component: {fileID: 345772279}
   - component: {fileID: 345772280}
   - component: {fileID: 345772281}
-  - component: {fileID: 345772282}
   m_Layer: 5
   m_Name: Save Popup Activator
   m_TagString: Untagged
@@ -919,9 +918,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popupWindow: {fileID: 345772278}
   _nameChecker: {fileID: 345772281}
-  puzzleSaveInfo: {fileID: 345772282}
   generatorPort: {fileID: 11400000, guid: b00f77592638a0f4fa31cc807e02db32, type: 2}
   scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
+  difficultyObject: {fileID: 11400000, guid: 6168c2ed25d594242ab75afc0a365596, type: 2}
+  _gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
 --- !u!114 &345772281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -937,20 +937,6 @@ MonoBehaviour:
   placeHolderText: {fileID: 313200359}
   userEnterText: {fileID: 1197265337}
   inputField: {fileID: 1020649624}
---- !u!114 &345772282
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 345772276}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 381ed1a619ff4b3f882fcecf10dedd78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _generatorPort: {fileID: 11400000, guid: b00f77592638a0f4fa31cc807e02db32, type: 2}
-  difficultyObject: {fileID: 11400000, guid: 6168c2ed25d594242ab75afc0a365596, type: 2}
 --- !u!1 &346461071
 GameObject:
   m_ObjectHideFlags: 0
@@ -6419,7 +6405,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c58def9bfecc4f59ad81b26f248cbc29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
 --- !u!1 &2043448233
 GameObject:
   m_ObjectHideFlags: 0
@@ -6810,6 +6795,10 @@ PrefabInstance:
       propertyPath: requestPort
       value: 
       objectReference: {fileID: 11400000, guid: 3e4b5e9f94a7dd1439c211d31a78f5f7, type: 2}
+    - target: {fileID: 1902678256, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: _difficultyObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 6168c2ed25d594242ab75afc0a365596, type: 2}
     - target: {fileID: 355342017054498299, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -6916,25 +6905,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
---- !u!1 &355342017938154860 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 355342018133128780, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
-  m_PrefabInstance: {fileID: 355342017938154859}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &355342017938154861
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 355342017938154860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 381ed1a619ff4b3f882fcecf10dedd78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _generatorPort: {fileID: 0}
-  difficultyObject: {fileID: 0}
 --- !u!1001 &447108211696665871
 PrefabInstance:
   m_ObjectHideFlags: 0

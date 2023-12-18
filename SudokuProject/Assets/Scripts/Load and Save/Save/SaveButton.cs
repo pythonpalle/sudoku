@@ -12,7 +12,7 @@ public class SaveButton : MonoBehaviour
 
     private string successfulSaveString = "Progress Saved!";
     private SaveRequestLocation location = SaveRequestLocation.SaveButton;
-    
+
     private void OnEnable()
     {
         SaveManager.OnSuccessfulSave += OnSuccessfulSave;

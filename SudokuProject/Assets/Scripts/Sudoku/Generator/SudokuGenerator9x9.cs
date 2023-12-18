@@ -11,7 +11,8 @@ public enum PuzzleDifficulty
     Easy,
     Medium,
     Hard,
-    Extreme
+    Extreme,
+    Impossible
 }
 
 public class SudokuGenerator9x9

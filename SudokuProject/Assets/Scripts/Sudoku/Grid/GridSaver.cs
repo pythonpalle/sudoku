@@ -9,6 +9,9 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
     [SerializeField] private GridPort _gridPort;
     [SerializeField] private GeneratorPort generatorPort;
     [SerializeField] private SaveRequestPort requestPort;
+    [SerializeField] private DifficultyObject _difficultyObject;
+
+    private PuzzleSaveInfo puzzleSaveInfo = new PuzzleSaveInfo();
 
     private void OnEnable()
     {
@@ -36,7 +39,22 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
         Debug.Log("App loses focus, save data!");
         requestPort.Location = SaveRequestLocation.ExitGameButton;
-        SaveManager.TrySave(SaveRequestLocation.ExitGameButton,  generatorPort.GenerationType, true);
+
+        var generationType = generatorPort.GenerationType;
+
+        if (SaveManager.HasCreatedPuzzleData)
+        {
+            SaveManager.TrySave(requestPort.Location,  generationType, true);
+        }
+        else
+        {
+            _gridPort.RequestGrid();
+            
+            PuzzleDifficulty difficulty = puzzleSaveInfo.GetDifficultySuggestion(generationType, _gridPort.grid, _difficultyObject.Difficulty);
+            string name = puzzleSaveInfo.GetNameSuggestion(generationType, difficulty);
+            SaveManager.TryCreateNewPuzzleSave(name, requestPort.Location, difficulty, GridGenerationType.loaded);
+        }
+        
     }
 
     public void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate)

@@ -13,14 +13,17 @@ namespace Saving
 {
     [SerializeField] private PopupWindow popupWindow;
     [SerializeField] private ValidNameChecker _nameChecker;
-    [SerializeField] private PuzzleSaveInfo puzzleSaveInfo;
 
     [Header("SO")]
     [SerializeField] private GeneratorPort generatorPort;
     [SerializeField] private ScenePort scenePort;
+    [SerializeField] private DifficultyObject difficultyObject;
+    [SerializeField] private GridPort _gridPort;
     
     private string placeHolderString = String.Empty;
     private SaveRequestLocation _location;
+    private PuzzleSaveInfo puzzleSaveInfo = new PuzzleSaveInfo();
+
 
     private void OnEnable()
     {
@@ -48,7 +51,8 @@ namespace Saving
 
         // TODO: avgör svårighetsgrad genom att låta gridsolver lösa. Om ingen lösning, sätt extreme (Impossible?)
 
-        PuzzleDifficulty difficulty = puzzleSaveInfo.GetDifficulty();
+        _gridPort.RequestGrid();
+        PuzzleDifficulty difficulty = puzzleSaveInfo.GetDifficultySuggestion(generatorPort.GenerationType, _gridPort.grid, difficultyObject.Difficulty);
         SaveManager.TryCreateNewPuzzleSave(puzzleSaveName, _location, difficulty, generatorPort.GenerationType);
 
         if (_location == SaveRequestLocation.SaveButton)
@@ -63,7 +67,7 @@ namespace Saving
 
     private void SetPlaceHolderText()
     {
-        placeHolderString = puzzleSaveInfo.GetNameSuggestion();
+        placeHolderString = puzzleSaveInfo.GetNameSuggestion(generatorPort.GenerationType, difficultyObject.Difficulty);
         _nameChecker.SetPlaceHolder(placeHolderString);
     }
 

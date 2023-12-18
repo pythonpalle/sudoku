@@ -16,6 +16,13 @@ namespace Saving
         ExitGameButton, 
         None
     }
+
+    // [CreateAssetMenu(menuName = "Sudoku/Ports/Save Port")]
+    // public class SavePort : ScriptableObject
+    // {
+    //     private string currentSudokuName;
+    //     private PuzzleDifficulty currentDifficulty;
+    // }
     
     public static class SaveManager
     {
@@ -24,12 +31,10 @@ namespace Saving
         private static string userID = "1";
         private static string userName = "user";
         private static UserIdentifier userIdentifier { get;  set; } = new UserIdentifier(userName, userID);
-        private static UserSaveData currentUserData { get;  set; }
+        private static UserSaveData currentUserData { get; set; }
         public static PuzzleDataHolder currentPuzzle { get; private set; }
-        private static bool HasCreatedPuzzleData => currentPuzzle != null;
+        public static bool HasCreatedPuzzleData => currentPuzzle != null;
         
-        // private static GridGenerationType generationType;
-
         public static UnityAction<SaveRequestLocation> OnRequestFirstSave;
         public static UnityAction<SaveRequestLocation> OnSuccessfulSave;
         public static UnityAction OnPuzzleSaveCreated;
@@ -311,6 +316,8 @@ namespace Saving
 
         public static bool TryCreateNewPuzzleSave(string puzzleSaveName, SaveRequestLocation location, PuzzleDifficulty difficulty, GridGenerationType gridGenType)
         {
+            Debug.Log($"Try to create new puzzle with difficulty {difficulty}");
+            
             string id = Guid.NewGuid().ToString(); 
             
             // check to see if user data exists or can be created

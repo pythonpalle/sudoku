@@ -40,12 +40,11 @@ public class GridBehaviour : MonoBehaviour
     
     [Header("Grid Boxes")]
     [SerializeField] private List<GridBoxBehaviour> boxes;
-
-    private GridStatus _status;
-
+    
     private void Awake()
     {
         gridPort.Reset();
+        //gridPort.SendGridCopy(grid, tileBehaviours);
     }
 
     private void Start()
@@ -182,7 +181,6 @@ public class GridBehaviour : MonoBehaviour
 
     private void SetStatus(GridStatus status)
     {
-        _status = status;
         gridPort.GridStatus = status;
     }
 
