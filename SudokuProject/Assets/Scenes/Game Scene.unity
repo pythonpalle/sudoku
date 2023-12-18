@@ -4564,6 +4564,7 @@ MonoBehaviour:
       exists: 1
       text: Admire
   _scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
+  generatorPort: {fileID: 0}
 --- !u!1 &1412677027
 GameObject:
   m_ObjectHideFlags: 0
@@ -6880,6 +6881,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1157210451}
     m_Modifications:
+    - target: {fileID: 1902678256, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
+      propertyPath: requestPort
+      value: 
+      objectReference: {fileID: 11400000, guid: 3e4b5e9f94a7dd1439c211d31a78f5f7, type: 2}
     - target: {fileID: 355342017054498299, guid: ff4f917db2cdf0247938e57f9b295b2e, type: 3}
       propertyPath: m_IsActive
       value: 1

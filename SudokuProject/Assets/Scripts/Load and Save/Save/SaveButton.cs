@@ -25,6 +25,8 @@ public class SaveButton : MonoBehaviour
 
     private void OnSuccessfulSave(SaveRequestLocation location)
     {
+        Debug.Log($"Save button OnSuccSave, location: {location}");
+        
         // Don't display popup after a puzzle has just been created
         if (_generatorPort.GenerationType == GridGenerationType.empty)
         {
@@ -32,7 +34,7 @@ public class SaveButton : MonoBehaviour
         }
 
         // Don't display popup when exiting
-        if (_saveRequestPort.Location == SaveRequestLocation.ExitGameButton)
+        if (location == SaveRequestLocation.ExitGameButton)
             return;
         
         DisplaySavePopup();
@@ -40,11 +42,13 @@ public class SaveButton : MonoBehaviour
 
     private void DisplaySavePopup()
     {
+        Debug.Log("Display Save popup!");
         EventManager.DisplayFloatingPopupText(successfulSaveString, transform.position);
     }
 
     public void OnSaveButtonPressed()
     {
+        Debug.Log("OnSaveButtonPress");
         _saveRequestPort.Location = location;
         
         if (SaveManager.TrySave(location, _generatorPort.GenerationType))
