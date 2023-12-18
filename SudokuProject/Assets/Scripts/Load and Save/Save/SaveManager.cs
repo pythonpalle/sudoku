@@ -194,9 +194,6 @@ namespace Saving
 
         private static bool TryCreateFirstSaveForCurrentPuzzle(SaveRequestLocation location, GridGenerationType type, bool forceSave = false)
         {
-            // // if saving a puzzle that is loaded, it should have already been created
-            // Assert.IsTrue(generationType != GridGenerationType.loaded);
-
             // if forceSave, save the data without asking the user
             if (forceSave)
             {
@@ -283,11 +280,6 @@ namespace Saving
             return false;
         }
 
-        // public static void SetGenerationType(GridGenerationType generationType)
-        // {
-        //     SaveManager.generationType = generationType;
-        // }
-
         public static int GetTotalPuzzleCount()
         {
             TryGetCurrentUserData(out _);
@@ -296,7 +288,7 @@ namespace Saving
             {
                 return 0;
             }
-
+        
             return currentUserData.puzzles.Count;
         }
 

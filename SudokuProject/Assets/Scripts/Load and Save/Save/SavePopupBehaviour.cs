@@ -13,9 +13,9 @@ namespace Saving
 {
     [SerializeField] private PopupWindow popupWindow;
     [SerializeField] private ValidNameChecker _nameChecker;
+    [SerializeField] private PuzzleSaveInfo puzzleSaveInfo;
 
     [Header("SO")]
-    [SerializeField] private DifficultyObject _difficultyObject;
     [SerializeField] private GeneratorPort generatorPort;
     [SerializeField] private ScenePort scenePort;
     
@@ -48,7 +48,7 @@ namespace Saving
 
         // TODO: avgör svårighetsgrad genom att låta gridsolver lösa. Om ingen lösning, sätt extreme (Impossible?)
 
-        PuzzleDifficulty difficulty = GetDifficulty();
+        PuzzleDifficulty difficulty = puzzleSaveInfo.GetDifficulty();
         SaveManager.TryCreateNewPuzzleSave(puzzleSaveName, _location, difficulty, generatorPort.GenerationType);
 
         if (_location == SaveRequestLocation.SaveButton)
@@ -61,28 +61,9 @@ namespace Saving
         }
     }
 
-    private PuzzleDifficulty GetDifficulty()
-    {
-        return _difficultyObject.Difficulty;
-    }
-
     private void SetPlaceHolderText()
     {
-        int puzzleCount = 0;
-        
-        switch (generatorPort.GenerationType)
-        {
-            case GridGenerationType.empty:
-                puzzleCount = SaveManager.GetTotalPuzzleCount() + 1;
-                placeHolderString = $"Puzzle {puzzleCount}";
-                break;
-            
-            case GridGenerationType.random:
-                puzzleCount = SaveManager.GetPuzzleCount(_difficultyObject.Difficulty) + 1;
-                placeHolderString = $"{_difficultyObject.Difficulty} {puzzleCount}";
-                break;
-        } 
-        
+        placeHolderString = puzzleSaveInfo.GetNameSuggestion();
         _nameChecker.SetPlaceHolder(placeHolderString);
     }
 
