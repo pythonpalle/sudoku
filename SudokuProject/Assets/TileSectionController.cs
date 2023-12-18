@@ -175,7 +175,7 @@ public class TileSectionController : MonoBehaviour
         
         return;
         
-        SetPixelsBeforeRed();
+        SetPixelsBeforeRed(); 
 
         if (currentColorNumbers.Count == 0)
         {

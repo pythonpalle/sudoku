@@ -60,7 +60,7 @@ public class SudokuGameSceneManager : MonoBehaviour
     private void OnLoadPuzzle()
     {
         generatorPort.GenerationType = GridGenerationType.loaded;
-        SaveManager.SetGenerationType(generatorPort.GenerationType);
+        //SaveManager.SetGenerationType(generatorPort.GenerationType);
         LoadGameScene();
     }
 
@@ -87,7 +87,7 @@ public class SudokuGameSceneManager : MonoBehaviour
     public void LoadRandom()
     {
         generatorPort.GenerationType = GridGenerationType.random;
-        SaveManager.SetGenerationType(generatorPort.GenerationType);
+        //SaveManager.SetGenerationType(generatorPort.GenerationType);
         LoadGameScene();
     }
     

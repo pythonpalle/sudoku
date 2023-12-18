@@ -22,7 +22,6 @@ public class HintBehaviour : MonoBehaviour
     [SerializeField] private ColorObject completeColor;
     
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
-    private bool hintButtonIsFlashing;
 
     private GridStatus _status;
 
@@ -98,27 +97,6 @@ public class HintBehaviour : MonoBehaviour
                 DisplayWarning("The puzzle is not solvable from this state.");
                 return;
         }
-    }
-
-    private IEnumerator FlashHintButton()
-    {
-        hintButtonIsFlashing = true;
-
-        int totalNumberOfFlashes = 2;
-        float timeBetweenFlashes = 0.1f;
-
-        for (int flashCounter = 0; flashCounter < totalNumberOfFlashes; flashCounter++)
-        {
-            yield return new WaitForSeconds(timeBetweenFlashes);
-            hintButton.image.color = Color.black;
-            yield return new WaitForSeconds(timeBetweenFlashes);
-            hintButton.image.color = noSolveColor.Color; 
-        }
-        
-        if (!gridPort.gridContradicted)
-            hintButton.image.color = selectColor.Color;
-
-        hintButtonIsFlashing = false;
     }
 
     private void DisplayWarning(string warningMessage)

@@ -13,6 +13,7 @@ public class CompletionPopupActivator : MonoBehaviour
     
     [SerializeField] private PopupData _popupData;
     [SerializeField] private ScenePort _scenePort;
+    [SerializeField] private GeneratorPort generatorPort;
 
     private void OnEnable()
     {
@@ -39,7 +40,7 @@ public class CompletionPopupActivator : MonoBehaviour
 
     private void GoBackToSelect()
     {
-        if (SaveManager.TrySave(SaveRequestLocation.ExitGameButton, false))
+        if (SaveManager.TrySave(SaveRequestLocation.ExitGameButton, generatorPort.GenerationType))
         {
             _scenePort.OnCallLoadPuzzleSelectScene();
         }

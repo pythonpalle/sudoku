@@ -47,7 +47,7 @@ public class SaveButton : MonoBehaviour
     {
         _saveRequestPort.Location = location;
         
-        if (SaveManager.TrySave(location))
+        if (SaveManager.TrySave(location, _generatorPort.GenerationType))
         {
             DisplaySavePopup();
         }

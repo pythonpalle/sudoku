@@ -21,7 +21,7 @@ public class GoBackToSelectBehaviour : MonoBehaviour
         }
         else
         {
-            if (SaveManager.TrySave(_location, false))
+            if (SaveManager.TrySave(_location, _generatorPort.GenerationType, false))
             {
                 scenePort.OnCallLoadPuzzleSelectScene();
             }

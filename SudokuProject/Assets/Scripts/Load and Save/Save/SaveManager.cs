@@ -28,7 +28,7 @@ namespace Saving
         public static PuzzleDataHolder currentPuzzle { get; private set; }
         private static bool HasCreatedPuzzleData => currentPuzzle != null;
         
-        private static GridGenerationType generationType;
+        // private static GridGenerationType generationType;
 
         public static UnityAction<SaveRequestLocation> OnRequestFirstSave;
         public static UnityAction<SaveRequestLocation> OnSuccessfulSave;
@@ -72,7 +72,7 @@ namespace Saving
                 return false;
             }
         }
-        
+
         public static bool RemoveLoadDataListener(ILoadPuzzleData data)
         {
             if (loadDatas.Contains(data))
@@ -101,24 +101,29 @@ namespace Saving
             }
         }
 
-        public static bool TrySave(SaveRequestLocation location, bool forceSave = false)
+        public static bool TrySave(SaveRequestLocation location, GridGenerationType generationType, bool forceSave = false)
         {
-            generationType = GenereratorTypeHolder.instance.GetType();
+            // generationType = GenereratorTypeHolder.instance.GetType();
+            
+            // TODO: kolla varför pusselnamnet dyker upp vid forcesave
             
             Debug.Log($"Generation type: {generationType}");
             
             if (HasCreatedPuzzleData)
             {
-                return TrySaveProgressForCurrentPuzzle(location, forceSave);
+                return TrySaveProgressForCurrentPuzzle(location, generationType, forceSave);
             }
-            else
+            else 
             {
-                return TryCreateFirstSaveForCurrentPuzzle(location, forceSave);
+                return TryCreateFirstSaveForCurrentPuzzle(location, generationType, forceSave);
             }
         }
 
-        private static bool TrySaveProgressForCurrentPuzzle(SaveRequestLocation location, bool forceSave)
+        private static bool TrySaveProgressForCurrentPuzzle(SaveRequestLocation location, GridGenerationType type, bool forceSave)
         {
+            // if saving current progress, it must have been a loaded grid
+            Assert.IsTrue(type == GridGenerationType.loaded);
+            
             // check to see if user data exists or can be created
             if (!TryGetCurrentUserData(out _))
             {
@@ -146,10 +151,7 @@ namespace Saving
                     break;
                 }
             }
-
-            // onvert data to json format
-            string jsonString = currentUserData.ToJson();
-
+            
             if (WriteUserDataToFile(location))
             {
                 Debug.Log($"Successfully saved progress for {currentPuzzle.name}!");
@@ -190,15 +192,16 @@ namespace Saving
             }
         }
 
-        private static bool TryCreateFirstSaveForCurrentPuzzle(SaveRequestLocation location, bool forceSave = false)
+        private static bool TryCreateFirstSaveForCurrentPuzzle(SaveRequestLocation location, GridGenerationType type, bool forceSave = false)
         {
-            // if saving a puzzle that is loaded, it should have already been created
-            Assert.IsTrue(generationType != GridGenerationType.loaded);
+            // // if saving a puzzle that is loaded, it should have already been created
+            // Assert.IsTrue(generationType != GridGenerationType.loaded);
 
             // if forceSave, save the data without asking the user
             if (forceSave)
             {
                 Debug.Log("Trying to force save the game...");
+                return TryCreateNewPuzzleSave("ForceSave", location, PuzzleDifficulty.Simple, type);
             }
             // else, ask user if they want to save
             else
@@ -206,8 +209,6 @@ namespace Saving
                 OnRequestFirstSave?.Invoke(location);
                 return false;
             }
-
-            return true;
         }
 
         public static bool TryGetCurrentUserData(out UserSaveData saveData)
@@ -246,7 +247,7 @@ namespace Saving
         {
             currentUserData = new UserSaveData(userIdentifier);
 
-            if (WriteUserDataToFile(SaveRequestLocation.SaveButton))
+            if (WriteUserDataToFile(SaveRequestLocation.None))
             {
                 Debug.Log("Successfully created save file!");
                 return true;
@@ -282,10 +283,10 @@ namespace Saving
             return false;
         }
 
-        public static void SetGenerationType(GridGenerationType generationType)
-        {
-            SaveManager.generationType = generationType;
-        }
+        // public static void SetGenerationType(GridGenerationType generationType)
+        // {
+        //     SaveManager.generationType = generationType;
+        // }
 
         public static int GetTotalPuzzleCount()
         {
@@ -318,9 +319,8 @@ namespace Saving
             return count;
         }
 
-        public static bool TryCreateNewPuzzleSave(string puzzleSaveName, PuzzleDifficulty difficulty, GridGenerationType generationType)
+        public static bool TryCreateNewPuzzleSave(string puzzleSaveName, SaveRequestLocation location, PuzzleDifficulty difficulty, GridGenerationType gridGenType)
         {
-            Debug.Log($"Save and create puzzle with name {puzzleSaveName} and difficulty {difficulty} and type {generationType}!");
             string id = Guid.NewGuid().ToString(); 
             
             // check to see if user data exists or can be created
@@ -355,7 +355,7 @@ namespace Saving
             currentPuzzle.id = id;
             currentPuzzle.difficulty = (int)difficulty;
 
-            bool selfCreated = generationType == GridGenerationType.empty;
+            bool selfCreated = gridGenType == GridGenerationType.empty;
             if (selfCreated)
                 currentPuzzle.selfCreated = true;
 
@@ -369,7 +369,7 @@ namespace Saving
             // Add puzzle data to user data
             currentUserData.puzzles.Add(currentPuzzle);
 
-            if (WriteUserDataToFile(SaveRequestLocation.SaveButton))
+            if (WriteUserDataToFile(location))
             {
                 Debug.Log("Successfully created puzzle!");
                 OnPuzzleSaveCreated?.Invoke();

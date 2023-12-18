@@ -49,7 +49,7 @@ namespace Saving
         // TODO: avgör svårighetsgrad genom att låta gridsolver lösa. Om ingen lösning, sätt extreme (Impossible?)
 
         PuzzleDifficulty difficulty = GetDifficulty();
-        SaveManager.TryCreateNewPuzzleSave(puzzleSaveName, difficulty, generatorPort.GenerationType);
+        SaveManager.TryCreateNewPuzzleSave(puzzleSaveName, _location, difficulty, generatorPort.GenerationType);
 
         if (_location == SaveRequestLocation.SaveButton)
         {

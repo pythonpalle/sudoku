@@ -121,7 +121,6 @@ public class WFCGridSolver
 
                 if (digitsInCol.Contains(digit))
                 {
-                    Debug.Log($"Col {col} already contains a {digit}");
                     return true;
                 }
 
@@ -142,7 +141,6 @@ public class WFCGridSolver
 
                 if (digitsInRow.Contains(digit))
                 {
-                    Debug.Log($"Row {row} already contains a {digit}");
                     return true;
                 }
 
@@ -171,7 +169,6 @@ public class WFCGridSolver
 
                         if (digitsInBox.Contains(digit))
                         {
-                            Debug.Log($"Box {topLeftBoxRow},{topLeftBoxCol} already contains a {digit}");
                             return true;
                         }
                     } 

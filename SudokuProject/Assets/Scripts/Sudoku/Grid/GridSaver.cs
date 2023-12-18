@@ -29,6 +29,14 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         SaveManager.LoadCurrentPuzzle();
     }
 
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus) return;
+
+        Debug.Log("App loses focus, save data!");
+        SaveManager.TrySave(SaveRequestLocation.ExitGameButton,  generatorPort.GenerationType, true);
+    }
+
     public void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate)
     {
         _gridPort.RequestGrid();
@@ -116,15 +124,6 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
         return marks;
     }
-
-    // private SudokuEntry ToEntry(SerializedCommandData commandData)
-    // {
-    //     List<TileBehaviour> tiles = _gridPort.GetTiles(commandData.tiles);
-    //     EnterType enterType = (EnterType)Enum.ToObject(typeof(EnterType), commandData.enterType);
-    //     
-    //     SudokuEntry entry = new SudokuEntry(tiles, enterType, commandData.number, commandData.removal, commandData.colorRemoval);
-    //     return entry;
-    // }
 
     void AddListenersToSaveManager()
     {
