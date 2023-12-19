@@ -17,13 +17,6 @@ namespace Saving
         None
     }
 
-    // [CreateAssetMenu(menuName = "Sudoku/Ports/Save Port")]
-    // public class SavePort : ScriptableObject
-    // {
-    //     private string currentSudokuName;
-    //     private PuzzleDifficulty currentDifficulty;
-    // }
-    
     public static class SaveManager
     {
         private static string userSaveFileName = "data";
@@ -108,12 +101,6 @@ namespace Saving
 
         public static bool TrySave(SaveRequestLocation location, GridGenerationType generationType, bool forceSave = false)
         {
-            // generationType = GenereratorTypeHolder.instance.GetType();
-            
-            // TODO: kolla varför pusselnamnet dyker upp vid forcesave
-            
-            Debug.Log($"Generation type: {generationType}");
-            
             if (HasCreatedPuzzleData)
             {
                 return TrySaveProgressForCurrentPuzzle(location, generationType, forceSave);

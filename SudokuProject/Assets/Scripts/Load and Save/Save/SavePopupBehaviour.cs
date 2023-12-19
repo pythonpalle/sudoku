@@ -48,9 +48,7 @@ namespace Saving
     public void OnYesButtonPressed()
     {
         string puzzleSaveName = _nameChecker.GetPuzzleSaveName();
-
-        // TODO: avgör svårighetsgrad genom att låta gridsolver lösa. Om ingen lösning, sätt extreme (Impossible?)
-
+        
         _gridPort.RequestGrid();
         PuzzleDifficulty difficulty = puzzleSaveInfo.GetDifficultySuggestion(generatorPort.GenerationType, _gridPort.grid, difficultyObject.Difficulty);
         SaveManager.TryCreateNewPuzzleSave(puzzleSaveName, _location, difficulty, generatorPort.GenerationType);
