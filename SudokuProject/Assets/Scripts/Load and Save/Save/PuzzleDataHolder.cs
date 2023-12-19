@@ -38,6 +38,7 @@ namespace Saving
         // status
         public bool completed;
         public bool[] contradicted;
+        public float progression;
 
         public PuzzleDataHolder()
         {
@@ -75,6 +76,8 @@ namespace Saving
         {
             undoCommands.Clear();
             redoCommands.Clear();
+
+            progression = 0;
 
             foreach (var mark in colorMarks)
             {

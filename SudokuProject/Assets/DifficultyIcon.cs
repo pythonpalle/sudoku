@@ -1,87 +1,46 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public static class EnumUtility
-{
-    public static T GetEnumValue<T>(int value) where T : Enum
-    {
-        return (T)Enum.ToObject(typeof(T), value);
-    }
-}
-
 public class DifficultyIcon : MonoBehaviour
 {
-    [SerializeField] TileColors difficultyColors;
-    [SerializeField] ExplanationText _explanationText;
-    
-    [SerializeField] Image circleFillSlider;
-    [SerializeField] Image circleFillGap;
-    [SerializeField] Transform pointerRotator;
+    [SerializeField] private List<StarIcon> stars;
+    [SerializeField] private ExplanationText _explanationText;
+    [SerializeField] private TileColors difficultyColors;
+    [SerializeField] private ColorObject backgroundColor;
+    [SerializeField] private ColorObject impossibleColor;
 
-    private Color currentColor = Color.white;
-    
-    public void SetDifficulty(int difficultyInt)
+    public void SetDifficulty(int difficulty)
     {
-        var difficulty = EnumUtility.GetEnumValue<PuzzleDifficulty>(difficultyInt);
-        SetDifficulty(difficulty);
-    }
-    
-    public void SetDifficulty(PuzzleDifficulty difficulty)
-    {
-        string difficultyAsText = difficulty.ToString() ;
-        _explanationText.SetText(difficultyAsText);
-
-        StartCoroutine(PlayDifficultyBarAnimation(difficulty));
-    }
-
-    private IEnumerator PlayDifficultyBarAnimation(PuzzleDifficulty difficulty)
-    {
-        // ratio setup
-        int maxDifficulty = (int) PuzzleDifficulty.Extreme;
-        int currentDifficulty = (int) difficulty;
-        float ratioToMax = (float) currentDifficulty / maxDifficulty;
+        string explanationText = $"Difficulty: {EnumUtility.GetEnumValue<PuzzleDifficulty>(difficulty)}";
+        _explanationText.SetText(explanationText);
         
-        // slider setup
-        float fillStart = circleFillSlider.fillAmount;
-        float fillEnd = ratioToMax * 0.5f;
-        
-        // color setup
-        Color colorStart = currentColor;
-        Color colorEnd = difficultyColors.Colors[currentDifficulty];
-        
-        // rotation setup
-        float rotationDegrees = -180f * ratioToMax + 90;
-        Quaternion rotStart = pointerRotator.rotation;
-        Quaternion rotEnd = Quaternion.AngleAxis(rotationDegrees, Vector3.forward);
-        
-        float speed = 1f;
-
-        float t = 0;
-        while (t < 1)
+        int maxDifficulty = 4;
+        if (difficulty > maxDifficulty)
         {
-            float deltaTime = Time.deltaTime;
+            foreach (var star in stars)
+            {
+                star.SetColor(impossibleColor.Color);
+            }
 
-            Color lerpColor = Color.Lerp(colorStart, colorEnd, t);
-            circleFillSlider.color = lerpColor;
-            circleFillGap.color = circleFillSlider.color;
-            //pointerImage.color = lerpColor;
-
-            circleFillSlider.fillAmount = Mathf.Lerp(fillStart, fillEnd, t);
-            pointerRotator.rotation = Quaternion.Slerp(rotStart, rotEnd, t);
-
-            t += deltaTime;
-            yield return new WaitForEndOfFrame();
+            return;
         }
-
-        currentColor = colorEnd;
-        circleFillSlider.color = colorEnd;
-        circleFillGap.color = circleFillSlider.color;
-        //pointerImage.color = colorEnd;
         
-        circleFillSlider.fillAmount = fillEnd;
-        pointerRotator.rotation = rotEnd;
+        for (int i = 0; i < stars.Count; i++)
+        {
+            bool activate = difficulty >= i;
+            var star = stars[i];
+
+            if (activate)
+            {
+                star.SetColor(difficultyColors.Colors[difficulty]);
+            }
+            else
+            {
+                star.SetColor(backgroundColor.Color);
+            }
+        }
     }
 }

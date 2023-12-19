@@ -13,6 +13,7 @@ namespace PuzzleSelect
         [SerializeField] private PopupWindow _popupWindow;
         [SerializeField] private ValidNameChecker _validNameChecker;
         [SerializeField] private PuzzleSelectBox popupBox;
+        [SerializeField] private ProgressionIcon progressionIcon;
         [SerializeField] private DifficultyIcon difficultyIcon;
         
         private PuzzleDataHolder currentPuzzle;
@@ -73,7 +74,14 @@ namespace PuzzleSelect
             }
             
             _popupWindow.PopUp();
+
+            float progression = currentPuzzle.difficulty >= (int) PuzzleDifficulty.Impossible
+                ? 0
+                : currentPuzzle.progression;
+            progressionIcon.SetProgression(progression);
+            
             difficultyIcon.SetDifficulty(currentPuzzle.difficulty);
+            
             lastSelectedPuzzleID = currentPuzzle.id;
         }
 

@@ -52,7 +52,7 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
             
             PuzzleDifficulty difficulty = puzzleSaveInfo.GetDifficultySuggestion(generationType, _gridPort.grid, _difficultyObject.Difficulty);
             string name = puzzleSaveInfo.GetNameSuggestion(generationType, difficulty);
-            SaveManager.TryCreateNewPuzzleSave(name, requestPort.Location, difficulty, GridGenerationType.loaded);
+            SaveManager.TryCreateNewPuzzleSave(name, requestPort.Location, difficulty, generationType);
         }
         
     }
@@ -60,8 +60,8 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
     public void PopulateSaveData(PuzzleDataHolder dataHolder, bool newSelfCreate)
     {
         _gridPort.RequestGrid();
-        
-        // set tile numbers and permanents
+
+        // set tile numbers, marks, permanents and contradictions
         int i = 0;
         for (int row = 0; row < 9; row++)
         {
@@ -80,6 +80,39 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
                 i++;
             } 
+        }
+        
+        // set progress
+        float progression = 0;
+
+        int totalTiles = 81;
+        int permanents = 0;
+        int correctlyFilled = 0;
+        
+        for (i = 0; i < totalTiles; i++)
+        {
+            if (dataHolder.permanent[i])
+            {
+               permanents++;
+            }
+            else
+            {
+                if (dataHolder.numbers[i] != 0 && !dataHolder.contradicted[i])
+                {
+                    correctlyFilled++;
+                }
+            }
+        }
+
+        int totalUnpermanents = totalTiles - permanents;
+        if (totalUnpermanents == 0)
+        {
+            dataHolder.progression = 0;
+        }
+        else
+        {
+            progression = correctlyFilled / (float)(totalTiles - permanents);
+            dataHolder.progression = progression;
         }
     }
 
