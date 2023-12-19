@@ -124,7 +124,7 @@ public class GridBehaviour : MonoBehaviour
     private void OnAddAllMarksToTile(int index, Dictionary<EnterType, List<int>> allMarks)
     {
         var tile = IntToTile(index);
-
+        
         foreach (EnterType enterType in allMarks.Keys)
         {
             foreach (var number in allMarks[enterType])

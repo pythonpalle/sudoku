@@ -4565,7 +4565,7 @@ MonoBehaviour:
       exists: 1
       text: Admire
   _scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
-  generatorPort: {fileID: 0}
+  generatorPort: {fileID: 11400000, guid: b00f77592638a0f4fa31cc807e02db32, type: 2}
 --- !u!1 &1412677027
 GameObject:
   m_ObjectHideFlags: 0

@@ -146,16 +146,16 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         // Populate grid with non permanent digits and color, center and corner marks
         for (int i = 0; i < 81; i++)
         {
+            // Get all marks for the tile, add them to grid
+            Dictionary<EnterType, List<int>> marksForTile = GetAllMarksForTile(puzzleData, i);
+            CommandManager.instance.AddAllMarksToTile(i, marksForTile);
+            
             // if digit for tile is not permanent, add it to grid
             int number = numbers[i];
             if (!permanents[i] || number == 0)
             {
                 CommandManager.instance.AddDigitToTile(i, number);
             }
-            
-            // Get all marks for the tile, add them to grid
-            Dictionary<EnterType, List<int>> marksForTile = GetAllMarksForTile(puzzleData, i);
-            CommandManager.instance.AddAllMarksToTile(i, marksForTile);
 
             if (contradictions[i])
             {

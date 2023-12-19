@@ -185,6 +185,11 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private bool TryUpdateCorner(int addedNumber, bool remove)
     {
         Assert.IsFalse((Permanent || HasDigit) );
+        if ((Permanent || HasDigit))
+        {
+            Debug.LogWarning($"Couldn't add/remove corner {addedNumber} to tile {row},{col}");
+            return false;
+        }
         
         if (remove && CornerMarks.Contains(addedNumber))
         {
@@ -203,6 +208,12 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private bool TryUpdateCenter(int addedNumber, bool remove)
     {
         Assert.IsFalse((Permanent || HasDigit) );
+        
+        if ((Permanent || HasDigit))
+        {
+            Debug.LogWarning($"Couldn't add/remove center {addedNumber} to tile {row},{col}");
+            return false;
+        }
         
         if (remove && CenterMarks.Contains(addedNumber))
         {
