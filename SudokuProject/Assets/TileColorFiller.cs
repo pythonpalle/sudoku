@@ -5,19 +5,29 @@ using UnityEngine;
 
 public class TileColorFiller : MonoBehaviour
 {
-    public List<FillTileSection> sections;
-    public TileColors tileColors;
+    [SerializeField] private FillTileSection fillSectionPrefab;
+    [SerializeField] List<FillTileSection> sections;
+    [SerializeField] RectTransform rectTransform;
     
+    [SerializeField] TileColors tileColors;
     [SerializeField] ColorObject contradictionColor;
     [SerializeField] ColorObject baseColor;
-    
-    
+
+    private int BaseIndex => sections.Count - 1;
 
     // Method to split the texture into sections based on the number of colors added (like a color wheel)
     public void SetTileColors(List<int> colorMarks, bool contradicted)
     {
         int colorCount = colorMarks.Count;
         
+        // for (int i = 0; i < colorCount; i++)
+        for (int i = colorCount; i < sections.Count - 1; i++) 
+        {
+            //if (i == BaseIndex) continue;
+            
+            sections[i].gameObject.SetActive(false);
+        }
+
         if (colorCount <= 1)
         {
             HandleOneColorFill(colorMarks, colorCount, contradicted);
@@ -28,20 +38,29 @@ public class TileColorFiller : MonoBehaviour
             float deltaFill = 1.0f / colorCount;
             float sectionFill = deltaFill;
 
+            while (sections.Count < colorCount)
+            {
+                var section = Instantiate(fillSectionPrefab, transform);
+                section.RectTransform.sizeDelta = rectTransform.sizeDelta;
+                sections.Add(section);
+            }
+
             for (int i = 0; i < colorCount; i++)
             {
-                sections[i].gameObject.SetActive(true);
-                var color = GetColorForSection(colorMarks, i, contradicted);
+                int index = sections.Count - i - 1;
                 
-                sections[i].SetFill(color, sectionFill);
+                sections[index].gameObject.SetActive(true);
+                var color = GetColorForSection(colorMarks, i, contradicted);
+                sections[index].SetFill(color, sectionFill);
                 sectionFill += deltaFill;
             }
         }
         
-        for (int i = colorCount + 1; i < sections.Count; i++) 
-        {
-            sections[i].gameObject.SetActive(false);
-        }
+        // // for (int i = 0; i < colorCount; i++)
+        // for (int i = colorCount + 1; i < sections.Count; i++) 
+        // {
+        //     sections[i].gameObject.SetActive(false);
+        // }
     } 
 
     public void RemoveUnusedSections(int colorCount)
@@ -61,14 +80,15 @@ public class TileColorFiller : MonoBehaviour
         if (colorCount == 0)
         {
             Color color = isContradicted ? contradictionColor.Color : baseColor.Color;
-            sections[0].SetFill(color, 1f);
+            sections[BaseIndex].SetFill(color, 1f);
         }
         else if (colorCount == 1)
         {
             Color color = GetColorForSection(colorNumbers, 0, isContradicted);
-            sections[0].SetFill(color, 1f);
+            sections[BaseIndex].SetFill(color, 1f);
         }
     }
+    
 
 
     private Color GetColorForSection(List<int> currentColorNumbers, int sectionIndex, bool isContradicted)
