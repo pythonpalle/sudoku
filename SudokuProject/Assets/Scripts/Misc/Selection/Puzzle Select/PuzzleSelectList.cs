@@ -70,7 +70,7 @@ namespace PuzzleSelect
                 }
 
                 selectBox.SetData(puzzle, removeUnusedColors);
-                yield return new WaitForEndOfFrame(); 
+                yield return null; 
             }
 
             if (lessPuzzlesThanBoxes)
