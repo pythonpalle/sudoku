@@ -70,10 +70,10 @@ namespace PuzzleSelect
             {
                 popupBox.Clear();
                 popupBox.SetData(currentPuzzle);
-                difficultyIcon.SetDifficulty(currentPuzzle.difficulty);
             }
             
             _popupWindow.PopUp();
+            difficultyIcon.SetDifficulty(currentPuzzle.difficulty);
             lastSelectedPuzzleID = currentPuzzle.id;
         }
 
