@@ -37,6 +37,8 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
     {
         if (hasFocus) return;
 
+        if (generatorPort.isGenerating) return;
+
         Debug.Log("App loses focus, save data!");
         requestPort.Location = SaveRequestLocation.ExitGameButton;
 

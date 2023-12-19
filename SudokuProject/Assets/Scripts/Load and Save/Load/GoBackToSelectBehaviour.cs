@@ -17,13 +17,13 @@ public class GoBackToSelectBehaviour : MonoBehaviour
         
         if (_generatorPort.isGenerating)
         {
-            scenePort.OnCallLoadPuzzleSelectScene();
+            scenePort.CallLoadPuzzleSelectScene();
         }
         else
         {
             if (SaveManager.TrySave(_location, _generatorPort.GenerationType, false))
             {
-                scenePort.OnCallLoadPuzzleSelectScene();
+                scenePort.CallLoadPuzzleSelectScene();
             }
         }
     }

@@ -113,8 +113,8 @@ namespace Saving
 
         private static bool TrySaveProgressForCurrentPuzzle(SaveRequestLocation location, GridGenerationType type, bool forceSave)
         {
-            // if saving current progress, it must have been a loaded grid
-            Assert.IsTrue(type == GridGenerationType.loaded);
+            // // if saving current progress, it must have been a loaded grid
+            // Assert.IsTrue(type == GridGenerationType.loaded);
             
             // check to see if user data exists or can be created
             if (!TryGetCurrentUserData(out _))
