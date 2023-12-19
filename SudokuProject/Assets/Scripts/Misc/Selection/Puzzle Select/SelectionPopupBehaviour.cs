@@ -13,6 +13,7 @@ namespace PuzzleSelect
         [SerializeField] private PopupWindow _popupWindow;
         [SerializeField] private ValidNameChecker _validNameChecker;
         [SerializeField] private PuzzleSelectBox popupBox;
+        [SerializeField] private DifficultyIcon difficultyIcon;
         
         private PuzzleDataHolder currentPuzzle;
         private string lastSelectedPuzzleID = "";
@@ -69,6 +70,7 @@ namespace PuzzleSelect
             {
                 popupBox.Clear();
                 popupBox.SetData(currentPuzzle);
+                difficultyIcon.SetDifficulty(currentPuzzle.difficulty);
             }
             
             _popupWindow.PopUp();
