@@ -13,7 +13,7 @@ public class SaveLoader : MonoBehaviour
 
     private void OnEnable()
     {
-        if (SaveManager.TryGetUser(saveNumber, out UserSaveData user))
+        if (SaveManager.TryGetUser(saveNumber, out UserSaveData user, true))
         {
             text.text = $"Save {saveNumber + 1} - {user.GetTotalPuzzleCount()} puzzles.";
         }
@@ -21,7 +21,7 @@ public class SaveLoader : MonoBehaviour
 
     public void LoadSave()
     {
-        if (SaveManager.TrySetUser(saveNumber))
+        if (SaveManager.TryGetUser(saveNumber, out UserSaveData _, false))
         {
             _scenePort.CallLoadPuzzleSelectScene();
         }

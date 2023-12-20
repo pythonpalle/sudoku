@@ -74,6 +74,12 @@ namespace Saving
 
             return puzzles.Count;
         }
+
+        public void SetDataFrom(UserSaveData currentUserData)
+        {
+            this.identifier = currentUserData.identifier;
+            puzzles = new List<PuzzleDataHolder>(currentUserData.puzzles);
+        }
     }
 }
 

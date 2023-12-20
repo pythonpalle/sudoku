@@ -28,10 +28,10 @@ namespace Saving
         {
             get
             {
-                if (currentUserData == null)
-                    currentUserData = user1;
+                // if (currentUserData == null)
+                //     currentUserData = user1;
             
-                return currentUserData.identifier.name;
+                return $"User{currentSaveNumber+1}";
             }
         }
 
@@ -52,7 +52,7 @@ namespace Saving
         //private static UserIdentifier userIdentifier { get;  set; } = new UserIdentifier(userName, userID);
         //private static UserIdentifier currentUser = UserIdentifiers[0];
 
-        private static UserSaveData currentUserData { get; set; } 
+        private static UserSaveData currentUserData { get; set; } = user1;
         public static PuzzleDataHolder currentPuzzle { get; private set; }
         public static bool HasCreatedPuzzleData => currentPuzzle != null;
         
@@ -228,56 +228,40 @@ namespace Saving
             }
         }
 
-        public static bool TryGetUser(int userNumber, out UserSaveData saveData)
+        public static bool TryGetUser(int userNumber, out UserSaveData saveData, bool get)
         {
-            saveData = null;
+            saveData = new UserSaveData();
 
             if (userNumber >= userSaveDatas.Length)
             {
                 Debug.LogError($"There only exists {userSaveDatas.Length} users, you tried to access number {userNumber}");
                 return false;
             }
-            
-            // if (loadedDatas[userNumber])
-            // {
-            //     saveData = userSaveDatas[userNumber];
-            //     Debug.Log($"Data {userNumber} already loaded, return it."); 
-            //     return true;
-            // }
-            
-            UserSaveData temp = currentUserData;
-            currentUserData = userSaveDatas[userNumber];
-            bool canGetUserData = TrySetCurrentUserData(out saveData, true);
-            saveData = currentUserData;
-            currentUserData = temp;
-            return canGetUserData;
-        }
-        
-        public static bool TrySetUser(int saveNumber)
-        {
-            if (saveNumber >= userSaveDatas.Length)
-            {
-                Debug.LogError($"There only exists {userSaveDatas.Length} users, you tried to access number {saveNumber}");
-                return false;
-            }
-            
-            currentUserData = userSaveDatas[saveNumber];
-            // if (loadedDatas[saveNumber])
-            // {
-            //     return true;
-            // }
 
-            if (TrySetCurrentUserData(out _, true))
+            int tempNumber = currentSaveNumber;
+            currentSaveNumber = userNumber;
+
+            UserSaveData tempData = new UserSaveData();
+            if (get)
             {
-                currentSaveNumber = saveNumber;
-                loadedDatas[saveNumber] = true;
-                return true;
+                tempData.SetDataFrom(currentUserData);
             }
 
-            return false;
+            currentUserData.SetDataFrom(userSaveDatas[userNumber]);
+            TrySetCurrentUserData(out _);
+
+            saveData.SetDataFrom(currentUserData);
+
+            if (get)
+            {
+                currentSaveNumber = tempNumber;
+                currentUserData.SetDataFrom(tempData);
+            }
+            
+            return true;
         }
 
-        public static bool TrySetCurrentUserData(out UserSaveData saveData, bool forcePopulateFromFile = false)
+        public static bool TrySetCurrentUserData(out UserSaveData saveData)
         {
             saveData = null;  
 
@@ -286,10 +270,12 @@ namespace Saving
             {
                 saveData = currentUserData; 
                 
-                if (!forcePopulateFromFile)
-                    return true;
-            } 
+                // if (!forcePopulateFromFile)
+                //     return true;
+            }
 
+            currentUserData = new UserSaveData();
+            
             // if the file exists, try to load the data from the file
             if (FileManager.FileExists(userSaveFileName))
             {
