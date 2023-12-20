@@ -19,12 +19,40 @@ namespace Saving
 
     public static class SaveManager
     {
-        private static string userSaveFileName = "data";
+        //private static string userSaveFileName => currentUserData.identifier.name;
         
-        private static string userID = "1";
-        private static string userName = "user";
-        private static UserIdentifier userIdentifier { get;  set; } = new UserIdentifier(userName, userID);
-        private static UserSaveData currentUserData { get; set; }
+        // private static string userID = "1";
+        // private static string userName = "user";
+
+        public static string userSaveFileName
+        {
+            get
+            {
+                if (currentUserData == null)
+                    currentUserData = user1;
+            
+                return currentUserData.identifier.name;
+            }
+        }
+
+        private static UserSaveData user1 { get; set; } = new UserSaveData(new UserIdentifier("User1", "1"));
+        private static UserSaveData user2 { get; set; } = new UserSaveData(new UserIdentifier("User2", "2"));
+        private static UserSaveData user3 { get; set; } = new UserSaveData(new UserIdentifier("User3", "3"));
+        
+        private static UserSaveData[] userSaveDatas = 
+        {
+            user1, user2, user3
+        };
+
+        private static int currentSaveNumber;
+
+        public static bool[] loadedDatas = new bool[userSaveDatas.Length];
+
+      
+        //private static UserIdentifier userIdentifier { get;  set; } = new UserIdentifier(userName, userID);
+        //private static UserIdentifier currentUser = UserIdentifiers[0];
+
+        private static UserSaveData currentUserData { get; set; } 
         public static PuzzleDataHolder currentPuzzle { get; private set; }
         public static bool HasCreatedPuzzleData => currentPuzzle != null;
         
@@ -117,7 +145,7 @@ namespace Saving
             // Assert.IsTrue(type == GridGenerationType.loaded);
             
             // check to see if user data exists or can be created
-            if (!TryGetCurrentUserData(out _))
+            if (!TrySetCurrentUserData(out _))
             {
                 Debug.LogError("User data not found, puzzle can't be created!");
                 return false;
@@ -200,16 +228,67 @@ namespace Saving
             }
         }
 
-        public static bool TryGetCurrentUserData(out UserSaveData saveData)
+        public static bool TryGetUser(int userNumber, out UserSaveData saveData)
         {
             saveData = null;
+
+            if (userNumber >= userSaveDatas.Length)
+            {
+                Debug.LogError($"There only exists {userSaveDatas.Length} users, you tried to access number {userNumber}");
+                return false;
+            }
+            
+            // if (loadedDatas[userNumber])
+            // {
+            //     saveData = userSaveDatas[userNumber];
+            //     Debug.Log($"Data {userNumber} already loaded, return it."); 
+            //     return true;
+            // }
+            
+            UserSaveData temp = currentUserData;
+            currentUserData = userSaveDatas[userNumber];
+            bool canGetUserData = TrySetCurrentUserData(out saveData, true);
+            saveData = currentUserData;
+            currentUserData = temp;
+            return canGetUserData;
+        }
+        
+        public static bool TrySetUser(int saveNumber)
+        {
+            if (saveNumber >= userSaveDatas.Length)
+            {
+                Debug.LogError($"There only exists {userSaveDatas.Length} users, you tried to access number {saveNumber}");
+                return false;
+            }
+            
+            currentUserData = userSaveDatas[saveNumber];
+            // if (loadedDatas[saveNumber])
+            // {
+            //     return true;
+            // }
+
+            if (TrySetCurrentUserData(out _, true))
+            {
+                currentSaveNumber = saveNumber;
+                loadedDatas[saveNumber] = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool TrySetCurrentUserData(out UserSaveData saveData, bool forcePopulateFromFile = false)
+        {
+            saveData = null;  
 
             // user data is already stored, return it
             if (currentUserData != null)
             {
                 saveData = currentUserData; 
-                return true;
-            }
+                
+                if (!forcePopulateFromFile)
+                    return true;
+            } 
 
             // if the file exists, try to load the data from the file
             if (FileManager.FileExists(userSaveFileName))
@@ -234,7 +313,7 @@ namespace Saving
 
         private static bool TryCreateUserSaveFile()
         {
-            currentUserData = new UserSaveData(userIdentifier);
+            //currentUserData = new UserSaveData(currentUser);
 
             if (WriteUserDataToFile(SaveRequestLocation.None))
             {
@@ -272,7 +351,7 @@ namespace Saving
 
         public static int GetTotalPuzzleCount()
         {
-            TryGetCurrentUserData(out _);
+            TrySetCurrentUserData(out _);
             
             if (currentUserData == null || currentUserData.puzzles == null)
             {
@@ -284,7 +363,7 @@ namespace Saving
 
         public static int GetPuzzleCount(PuzzleDifficulty difficulty)
         {
-            TryGetCurrentUserData(out _);
+            TrySetCurrentUserData(out _);
 
             if (currentUserData == null || currentUserData.puzzles == null)
             {
@@ -308,7 +387,7 @@ namespace Saving
             string id = Guid.NewGuid().ToString(); 
             
             // check to see if user data exists or can be created
-            if (!TryGetCurrentUserData(out _))
+            if (!TrySetCurrentUserData(out _))
             {
                 Debug.LogError("User data not found, puzzle can't be created!");
                 return false;
@@ -409,6 +488,12 @@ namespace Saving
             currentPuzzle = puzzleDataHolder;
             currentPuzzle.Reset();
             OnPuzzleReset?.Invoke(currentPuzzle);
+        }
+
+
+        public static int GetSaveFile()
+        {
+            return currentSaveNumber;
         }
     }
 }

@@ -66,6 +66,14 @@ namespace Saving
             puzzles = deserialized.puzzles;
             identifier = deserialized.identifier;
         }
+
+        public int GetTotalPuzzleCount()
+        {
+            if (puzzles == null)
+                return 0;
+
+            return puzzles.Count;
+        }
     }
 }
 

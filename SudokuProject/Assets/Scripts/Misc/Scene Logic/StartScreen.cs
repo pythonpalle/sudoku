@@ -9,7 +9,7 @@ public class StartScreen : MonoBehaviour
 {
     public void Awake()
     {
-        SaveManager.TryGetCurrentUserData(out _);
+        SaveManager.TrySetCurrentUserData(out _);
     }
 
 

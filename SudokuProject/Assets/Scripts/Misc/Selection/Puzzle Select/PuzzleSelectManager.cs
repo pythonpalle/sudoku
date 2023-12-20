@@ -21,7 +21,7 @@ namespace PuzzleSelect
 
         void LoadAllPuzzles()
         {
-            if (SaveManager.TryGetCurrentUserData(out UserSaveData data))
+            if (SaveManager.TrySetCurrentUserData(out UserSaveData data))
             {
                 puzzleSelectPort.LoadUserData(data);
             }
