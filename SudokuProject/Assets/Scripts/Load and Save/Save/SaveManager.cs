@@ -19,40 +19,32 @@ namespace Saving
 
     public static class SaveManager
     {
-        //private static string userSaveFileName => currentUserData.identifier.name;
-        
-        // private static string userID = "1";
-        // private static string userName = "user";
-
         public static string userSaveFileName
         {
             get
             {
-                // if (currentUserData == null)
-                //     currentUserData = user1;
-            
                 return $"User{currentSaveNumber+1}";
             }
         }
-
-        private static UserSaveData user1 { get; set; } = new UserSaveData(new UserIdentifier("User1", "1"));
-        private static UserSaveData user2 { get; set; } = new UserSaveData(new UserIdentifier("User2", "2"));
-        private static UserSaveData user3 { get; set; } = new UserSaveData(new UserIdentifier("User3", "3"));
         
-        private static UserSaveData[] userSaveDatas = 
-        {
-            user1, user2, user3
-        };
-
+        private static int MAX_USER_SAVES = 3;
+        private static UserSaveData[] userSaveDatas = new UserSaveData[MAX_USER_SAVES];
+       
         private static int currentSaveNumber;
 
-        public static bool[] loadedDatas = new bool[userSaveDatas.Length];
 
-      
-        //private static UserIdentifier userIdentifier { get;  set; } = new UserIdentifier(userName, userID);
-        //private static UserIdentifier currentUser = UserIdentifiers[0];
+        private static UserSaveData currentUserData
+        {
+            get
+            {
+                return userSaveDatas[currentSaveNumber];
+            }
+            set
+            {
+                userSaveDatas[currentSaveNumber] = value;
+            }
+        }
 
-        private static UserSaveData currentUserData { get; set; } = user1;
         public static PuzzleDataHolder currentPuzzle { get; private set; }
         public static bool HasCreatedPuzzleData => currentPuzzle != null;
         
@@ -230,34 +222,15 @@ namespace Saving
 
         public static bool TryGetUser(int userNumber, out UserSaveData saveData, bool get)
         {
-            saveData = new UserSaveData();
-
-            if (userNumber >= userSaveDatas.Length)
-            {
-                Debug.LogError($"There only exists {userSaveDatas.Length} users, you tried to access number {userNumber}");
-                return false;
-            }
-
-            int tempNumber = currentSaveNumber;
+            int temp = currentSaveNumber;
             currentSaveNumber = userNumber;
-
-            UserSaveData tempData = new UserSaveData();
-            if (get)
-            {
-                tempData.SetDataFrom(currentUserData);
-            }
-
-            currentUserData.SetDataFrom(userSaveDatas[userNumber]);
             TrySetCurrentUserData(out _);
-
-            saveData.SetDataFrom(currentUserData);
-
+            saveData = currentUserData;
             if (get)
             {
-                currentSaveNumber = tempNumber;
-                currentUserData.SetDataFrom(tempData);
+                currentSaveNumber = temp;
             }
-            
+
             return true;
         }
 
@@ -268,10 +241,8 @@ namespace Saving
             // user data is already stored, return it
             if (currentUserData != null)
             {
-                saveData = currentUserData; 
-                
-                // if (!forcePopulateFromFile)
-                //     return true;
+                saveData = currentUserData;
+                return true;
             }
 
             currentUserData = new UserSaveData();

@@ -92,7 +92,8 @@ namespace PuzzleSelect
 
         public void OnPlayButtonPressed()
         {
-            UpdatePuzzleName();
+            //UpdatePuzzleName();
+            _popupWindow.Close();
             puzzleSelectPort.SelectAndLoad(currentPuzzle);
         }
         
