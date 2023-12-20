@@ -30,7 +30,7 @@ namespace Saving
         private static int MAX_USER_SAVES = 3;
         private static UserSaveData[] userSaveDatas = new UserSaveData[MAX_USER_SAVES];
        
-        private static int currentSaveNumber;
+        public static int currentSaveNumber { get; private set; }
 
 
         private static UserSaveData currentUserData

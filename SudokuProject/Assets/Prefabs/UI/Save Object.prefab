@@ -665,7 +665,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.4784314, b: 0.8078432, a: 1}
+  m_Color: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -804,7 +804,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveNumber: 0
   text: {fileID: 3881861713864496284}
+  background: {fileID: 6293045475975254777}
   _scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
+  deselectColor: {fileID: 11400000, guid: 0a9ac037b908cee47b3c4c71bac9eb37, type: 2}
+  selectColor: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
 --- !u!1 &7247037513503060506
 GameObject:
   m_ObjectHideFlags: 0
