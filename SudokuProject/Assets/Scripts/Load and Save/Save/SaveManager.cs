@@ -220,19 +220,60 @@ namespace Saving
             }
         }
 
-        public static bool TryGetUser(int userNumber, out UserSaveData saveData, bool get)
+        public static bool TryGetUser(int userNumber, out UserSaveData saveData)
         {
             int temp = currentSaveNumber;
             currentSaveNumber = userNumber;
-            TrySetCurrentUserData(out _);
-            saveData = currentUserData;
-            if (get)
+            saveData = null;
+
+            bool successFullRetrieval = false;
+            if (FileManager.FileExists(userSaveFileName))
+            {
+                successFullRetrieval = TrySetCurrentUserData(out saveData);
+            }
+            else
+            {
+                return false;
+            }
+            
+            currentSaveNumber = temp;
+            return successFullRetrieval;
+            
+            // saveData = currentUserData;
+            // return saveData != null;
+            //
+            // if (currentUserData == null)
+            // {
+            //     return false;
+            // }
+            //
+            // TrySetCurrentUserData(out _);
+            // saveData = currentUserData;
+            // if (get)
+            // {
+            //     currentSaveNumber = temp;
+            // }
+            //
+            // return true;
+        }
+        
+        public static bool TrySetUser(int userNumber)
+        {
+            int temp = currentSaveNumber;
+            currentSaveNumber = userNumber;
+            
+            bool setDataSuccessful = TrySetCurrentUserData(out _);
+            if (setDataSuccessful)
+            {
+                return true;
+            }
+            else
             {
                 currentSaveNumber = temp;
+                return false;
             }
-
-            return true;
         }
+        
 
         public static bool TrySetCurrentUserData(out UserSaveData saveData)
         {
