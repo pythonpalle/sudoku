@@ -66,7 +66,7 @@ public class SaveFileLoader : MonoBehaviour
         
         if (SaveManager.TryGetUser(saveNumber, out UserSaveData user))
         {
-            text.text = savePrefixText + $"{user.GetTotalPuzzleCount()} puzzles.";
+            text.text = savePrefixText + $"{user.GetTotalPuzzleCount()} puzzles";
         }
         else
         {
