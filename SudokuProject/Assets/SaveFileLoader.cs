@@ -12,6 +12,10 @@ public class SaveFileLoader : MonoBehaviour
     [SerializeField] private int saveNumber;
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private Image background;
+
+    [Header("Colors")] 
+    [SerializeField] private ColorObject selectColor;
+    [SerializeField] private ColorObject deselectColor;
     
     [Header("Ports")]
     [SerializeField] ScenePort _scenePort;
@@ -26,20 +30,22 @@ public class SaveFileLoader : MonoBehaviour
         removeButton.gameObject.SetActive(displayRemoval);
         
         string savePrefixText = $"Save {saveNumber + 1} - ";
+
+        bool isCurrentSaveNumber = SaveManager.currentSaveNumber == saveNumber;
+        background.color = isCurrentSaveNumber ? selectColor.Color : deselectColor.Color;
         
         if (SaveManager.TryGetUser(saveNumber, out UserSaveData user))
         {
             text.text = savePrefixText + $"{user.GetTotalPuzzleCount()} puzzles.";
 
-            bool isCurrentSaveNumber = SaveManager.currentSaveNumber == saveNumber;
 
-            float alpha = isCurrentSaveNumber ? 1f : 0.5f;
-            background.color = new Color(background.color.r, background.color.g, background.color.b, alpha);
-
-            if (displayRemoval)
-            {
-                removeImage.color = new Color(removeImage.color.r, removeImage.color.g, removeImage.color.b, alpha);
-            }
+            // float alpha = isCurrentSaveNumber ? 1f : 0.8f;
+            // background.color = new Color(background.color.r, background.color.g, background.color.b, alpha);
+            //
+            // if (displayRemoval)
+            // {
+            //     removeImage.color = new Color(removeImage.color.r, removeImage.color.g, removeImage.color.b, alpha);
+            // }
         }
         else
         {

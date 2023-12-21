@@ -338,6 +338,8 @@ MonoBehaviour:
   saveNumber: 0
   text: {fileID: 3881861713864496284}
   background: {fileID: 6293045475975254777}
+  selectColor: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
+  deselectColor: {fileID: 11400000, guid: 0a9ac037b908cee47b3c4c71bac9eb37, type: 2}
   _scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
   removeButton: {fileID: 3014483707859234264}
   removeImage: {fileID: 3014483706461493960}
