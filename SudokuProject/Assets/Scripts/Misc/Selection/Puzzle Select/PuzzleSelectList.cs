@@ -14,7 +14,6 @@ namespace PuzzleSelect
         [SerializeField] private PuzzleSelectBox selectBoxPrefab;
 
         [SerializeField] List<PuzzleSelectBox> selectBoxes;
-        [SerializeField] bool removeUnusedColors;
 
         private void OnEnable()
         {
@@ -69,7 +68,7 @@ namespace PuzzleSelect
                     lessPuzzlesThanBoxes = false;
                 }
 
-                selectBox.SetData(puzzle, removeUnusedColors);
+                selectBox.SetData(puzzle);
                 yield return null; 
             }
 

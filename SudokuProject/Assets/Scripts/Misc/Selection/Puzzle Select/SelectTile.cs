@@ -41,7 +41,9 @@ namespace PuzzleSelect
         public void SetCorners(List<int> cornerMarks)
         {
             if (cornerMarks.Count == 0)
+            {
                 return;
+            }
 
             cornerTextInstance = Instantiate(cornerTextPrefab, transform);
             cornerTextInstance.RectTransform.sizeDelta = rectTransform.sizeDelta;
@@ -59,7 +61,8 @@ namespace PuzzleSelect
             {
                 cornerTextInstance.TextMesh.text = "";
             }
-            
+
+            digitText.text = "";
             digitText.fontSize = defaultDigitSize;
         }
 

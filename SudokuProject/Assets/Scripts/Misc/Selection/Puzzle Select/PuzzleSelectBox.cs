@@ -14,10 +14,10 @@ namespace PuzzleSelect
 
         [SerializeField] private List<SelectTile> tiles;
 
-        public void SetData(PuzzleDataHolder puzzleData, bool removeUnused = false) 
+        public void SetData(PuzzleDataHolder puzzleData) 
         {
             puzzle = puzzleData;
-            UpdateContents(removeUnused);
+            UpdateContents();
         }
 
         public void OnButtonPressed()
@@ -35,7 +35,7 @@ namespace PuzzleSelect
             nameText.text = puzzle.name;
         }
 
-        void UpdateContents(bool removeUnusedColors = false) 
+        void UpdateContents() 
         {
             UpdateName();
             
@@ -48,11 +48,6 @@ namespace PuzzleSelect
                 var tile = tiles[i];
                 var colorMarks = puzzle.colorMarks[i];
                 
-                // apply all tile colors
-                if (removeUnusedColors)
-                {
-                    tile.RemoveUnusedColors(colorMarks.Count);
-                }
                 tile.SetColorMarks(colorMarks, contradicted[i]);
                 
                 int number = numbers[i];
