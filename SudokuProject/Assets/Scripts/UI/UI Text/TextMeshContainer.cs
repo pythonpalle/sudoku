@@ -6,4 +6,5 @@ using UnityEngine;
 public class TextMeshContainer : MonoBehaviour
 {
     public TextMeshProUGUI TextMesh;
+    public RectTransform RectTransform;
 }

@@ -6,13 +6,24 @@ namespace PuzzleSelect
 {
     public class SelectTile : MonoBehaviour
     {
+        [Header("Prefabs")]
+        [SerializeField] private TextMeshContainer cornerTextPrefab;
+        private TextMeshContainer cornerTextInstance;
+
+        [Header("Marks")]
         [SerializeField] private TextMeshProUGUI digitText;
-        [SerializeField] private TextMeshProUGUI cornerText;
+        //[SerializeField] private TextMeshProUGUI cornerText;
         [SerializeField] private TileColorFiller colorFiller;
         
+        [Header("Colors")]
         [SerializeField] private ColorObject permanentColor;
         [SerializeField] private ColorObject markColor;
+
+        [Header("Misc")] 
+        [SerializeField] private RectTransform rectTransform;
         
+        //private TextMeshProUGUI cornerText;
+        private static float cornerSize = 2.9f; 
         private static float defaultCenterSize = 4.2f; 
         private static float defaultDigitSize = 10f; 
 
@@ -35,7 +46,9 @@ namespace PuzzleSelect
             if (cornerMarks.Count == 0)
                 return;
 
-            cornerText.text = MarkClass.GetCornersAsString(cornerMarks);
+            cornerTextInstance = Instantiate(cornerTextPrefab, transform);
+            cornerTextInstance.RectTransform.sizeDelta = rectTransform.sizeDelta;
+            cornerTextInstance.TextMesh.text = MarkClass.GetCornersAsString(cornerMarks);
         } 
         
         public void SetColorMarks(List<int> colorMarks, bool contradicted)
@@ -45,7 +58,12 @@ namespace PuzzleSelect
 
         public void Reset()
         {
-            digitText.text = cornerText.text = "";
+            if (cornerTextInstance)
+            {
+                cornerTextInstance.TextMesh.text = "";
+            }
+            
+            //digitText.text = cornerText.text = "";
             digitText.fontSize = defaultDigitSize;
         }
 
@@ -57,7 +75,8 @@ namespace PuzzleSelect
             }
             else
             {
-                digitText.color = cornerText.color = markColor.Color;
+                digitText.color = markColor.Color;
+                if (cornerTextInstance) cornerTextInstance.TextMesh.color = markColor.Color;
             }
         }
 
