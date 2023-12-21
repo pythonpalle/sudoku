@@ -12,7 +12,6 @@ namespace PuzzleSelect
 
         [Header("Marks")]
         [SerializeField] private TextMeshProUGUI digitText;
-        //[SerializeField] private TextMeshProUGUI cornerText;
         [SerializeField] private TileColorFiller colorFiller;
         
         [Header("Colors")]
@@ -22,8 +21,6 @@ namespace PuzzleSelect
         [Header("Misc")] 
         [SerializeField] private RectTransform rectTransform;
         
-        //private TextMeshProUGUI cornerText;
-        private static float cornerSize = 2.9f; 
         private static float defaultCenterSize = 4.2f; 
         private static float defaultDigitSize = 10f; 
 
@@ -63,7 +60,6 @@ namespace PuzzleSelect
                 cornerTextInstance.TextMesh.text = "";
             }
             
-            //digitText.text = cornerText.text = "";
             digitText.fontSize = defaultDigitSize;
         }
 

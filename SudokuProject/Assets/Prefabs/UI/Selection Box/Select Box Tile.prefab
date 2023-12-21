@@ -61,6 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cornerTextPrefab: {fileID: 3654506797689704536, guid: 95c5a446de67b3f41b7213943256e058, type: 3}
+  digitAndCenterTextPrefab: {fileID: 0}
   digitText: {fileID: 2234487584120811987}
   colorFiller: {fileID: 3233006970377887696}
   permanentColor: {fileID: 11400000, guid: 7c1c863694833f743afab4e90c3d73c6, type: 2}
