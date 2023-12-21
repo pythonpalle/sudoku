@@ -231,30 +231,9 @@ namespace Saving
             {
                 successFullRetrieval = TrySetCurrentUserData(out saveData);
             }
-            else
-            {
-                return false;
-            }
-            
+
             currentSaveNumber = temp;
             return successFullRetrieval;
-            
-            // saveData = currentUserData;
-            // return saveData != null;
-            //
-            // if (currentUserData == null)
-            // {
-            //     return false;
-            // }
-            //
-            // TrySetCurrentUserData(out _);
-            // saveData = currentUserData;
-            // if (get)
-            // {
-            //     currentSaveNumber = temp;
-            // }
-            //
-            // return true;
         }
         
         public static bool TrySetUser(int userNumber)
@@ -492,6 +471,43 @@ namespace Saving
         public static int GetSaveFile()
         {
             return currentSaveNumber;
+        }
+
+        public static bool TryDeleteUserSave(int saveNumber)
+        {
+            int temp = currentSaveNumber;
+            currentSaveNumber = saveNumber;
+
+            bool success = false;
+            
+            if (FileManager.FileExists(userSaveFileName))
+            {
+                success = FileManager.RemoveFile(userSaveFileName);
+                currentUserData = null;
+
+                SetFirstAvailabeSaveData();
+                
+            }
+            else
+            {
+                currentSaveNumber = temp;
+            }
+            
+            return success;
+        }
+
+        private static void SetFirstAvailabeSaveData()
+        {
+            // default to 0 if cant find any other
+            currentSaveNumber = 0;
+            for (int i = 0; i < userSaveDatas.Length; i++)
+            {
+                if (userSaveDatas[i] != null)
+                {
+                    currentSaveNumber = i;
+                    break;
+                }
+            }
         }
     }
 }

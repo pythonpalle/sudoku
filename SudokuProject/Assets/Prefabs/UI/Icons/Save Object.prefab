@@ -342,8 +342,26 @@ MonoBehaviour:
   deselectColor: {fileID: 11400000, guid: 0a9ac037b908cee47b3c4c71bac9eb37, type: 2}
   _scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
   removeButton: {fileID: 3014483707859234264}
-  removeImage: {fileID: 3014483706461493960}
+  removeImage: {fileID: 3014483707859234247}
   displayRemoval: 0
+  firstPopupData:
+    header: Delete Save?
+    explanation: Are you sure? This action cannot be undone!
+    cancelButtonData:
+      exists: 1
+      text: Cancel
+    confirmButtonData:
+      exists: 1
+      text: Delete
+  secondPopupData:
+    header: Delete Save?
+    explanation: Are you REALLY sure? This action CANNOT be undone!
+    cancelButtonData:
+      exists: 1
+      text: Cancel
+    confirmButtonData:
+      exists: 1
+      text: Delete
 --- !u!1001 &2523571216945878190
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -351,17 +369,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6293045475975254776}
     m_Modifications:
+    - target: {fileID: 779156077762743908, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 779156078495758697, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
       propertyPath: m_Color.b
-      value: 0
+      value: 0.5294118
       objectReference: {fileID: 0}
     - target: {fileID: 779156078495758697, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
       propertyPath: m_Color.g
-      value: 0
+      value: 0.5294118
       objectReference: {fileID: 0}
     - target: {fileID: 779156078495758697, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 0.5294118
       objectReference: {fileID: 0}
     - target: {fileID: 779156078495758708, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
       propertyPath: m_Name
@@ -370,6 +392,18 @@ PrefabInstance:
     - target: {fileID: 779156078495758708, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 779156078495758710, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1125269883293917457}
+    - target: {fileID: 779156078495758710, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnDeleteButtonPressed
+      objectReference: {fileID: 0}
+    - target: {fileID: 779156078495758710, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SaveFileLoader, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 779156078495758711, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
       propertyPath: m_Pivot.x
@@ -473,9 +507,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
---- !u!114 &3014483706461493960 stripped
+--- !u!114 &3014483707859234247 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 779156077762743910, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
+  m_CorrespondingSourceObject: {fileID: 779156078495758697, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
   m_PrefabInstance: {fileID: 2523571216945878190}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}

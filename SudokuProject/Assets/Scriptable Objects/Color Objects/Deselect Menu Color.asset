@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98bf86004ba94ec6a6c6443ceaa05f0e, type: 3}
   m_Name: Deselect Menu Color
   m_EditorClassIdentifier: 
-  _color: {r: 0.764151, g: 0.764151, b: 0.764151, a: 1}
+  _color: {r: 0.5, g: 0.5, b: 0.5, a: 1}

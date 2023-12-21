@@ -29,7 +29,6 @@ public class ConfirmPopupWindow : MonoBehaviour
     private PopupData _popupData;
 
     private PopupWindow _popupWindow;
-    [SerializeField] private bool closeOnConfirm;
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button cancelButton;
     [SerializeField] private TextMeshProUGUI header;
@@ -70,12 +69,12 @@ public class ConfirmPopupWindow : MonoBehaviour
 
     public void OnConfirmButtonPressed()
     {
+        _popupWindow.Close();
+
         if (_popupData.confirmButtonData.action != null)
         {
             _popupData.confirmButtonData.action?.Invoke();
         }
-        
-        _popupWindow.Close();
     }
 
     public void CancelButtonPressed()

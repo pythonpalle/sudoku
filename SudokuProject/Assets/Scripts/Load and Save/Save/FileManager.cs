@@ -33,6 +33,22 @@ public static class FileManager
         return false;
     }
 
+    public static bool RemoveFile(string fileName)
+    {
+        string fullFilePath = GetFullFilePathName(fileName);
+        try
+        {
+            File.Delete(fullFilePath);
+            Debug.Log("Successfully deleted file!");
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(($"Failed to delete file {fullFilePath} with exception {e}"));
+            return false;
+        }
+    }
+
     public static bool FileExists(string fileName)
     {
         string fullFilePath = GetFullFilePathName(fileName);

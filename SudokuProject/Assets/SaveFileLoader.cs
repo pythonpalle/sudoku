@@ -25,6 +25,32 @@ public class SaveFileLoader : MonoBehaviour
     [SerializeField] Image removeImage;
     [SerializeField] bool displayRemoval;
 
+    [Header("Popup")] 
+    [SerializeField] private PopupData firstPopupData;
+    [SerializeField] private PopupData secondPopupData;
+
+    private void Awake()
+    {
+        firstPopupData.confirmButtonData.action = FirstDeleteConfirmAction;
+        secondPopupData.confirmButtonData.action = SecondDeleteConfirmAction;
+    }
+
+    private void FirstDeleteConfirmAction()
+    {
+        EventManager.DisplayConfirmPopup(secondPopupData);
+    }
+
+    private void SecondDeleteConfirmAction()
+    {
+        Debug.Log($"Trying to delete save {saveNumber}...");
+        if (SaveManager.TryDeleteUserSave(saveNumber))
+        {
+            Debug.Log($"Successful delete!");
+            transform.parent.gameObject.SetActive(false); 
+            transform.parent.gameObject.SetActive(true);
+        }
+    }
+
     private void OnEnable()
     {
         removeButton.gameObject.SetActive(displayRemoval);
@@ -32,25 +58,26 @@ public class SaveFileLoader : MonoBehaviour
         string savePrefixText = $"Save {saveNumber + 1} - ";
 
         bool isCurrentSaveNumber = SaveManager.currentSaveNumber == saveNumber;
-        background.color = isCurrentSaveNumber ? selectColor.Color : deselectColor.Color;
+
+        Color applyColor = isCurrentSaveNumber ? selectColor.Color : deselectColor.Color;
+        
+        background.color = applyColor;
+        removeImage.color = deselectColor.Color;//applyColor; 
         
         if (SaveManager.TryGetUser(saveNumber, out UserSaveData user))
         {
             text.text = savePrefixText + $"{user.GetTotalPuzzleCount()} puzzles.";
-
-
-            // float alpha = isCurrentSaveNumber ? 1f : 0.8f;
-            // background.color = new Color(background.color.r, background.color.g, background.color.b, alpha);
-            //
-            // if (displayRemoval)
-            // {
-            //     removeImage.color = new Color(removeImage.color.r, removeImage.color.g, removeImage.color.b, alpha);
-            // }
         }
         else
         {
             text.text = savePrefixText + "Empty";
+            removeButton.gameObject.SetActive(false);
         }
+    }
+
+    public void OnDeleteButtonPressed()
+    {
+        EventManager.DisplayConfirmPopup(firstPopupData);
     }
 
     public void LoadSave()

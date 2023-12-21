@@ -64,7 +64,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56673fd0210758c4d958a1523bcf8a4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  closeOnConfirm: 1
   confirmButton: {fileID: 846618050439809956}
   cancelButton: {fileID: 846618051317073760}
   header: {fileID: 3634800742409456752}
