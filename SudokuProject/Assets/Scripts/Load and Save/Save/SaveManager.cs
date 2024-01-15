@@ -19,30 +19,20 @@ namespace Saving
 
     public static class SaveManager
     {
-        public static string userSaveFileName
-        {
-            get
-            {
-                return $"User{currentSaveNumber+1}";
-            }
-        }
-        
+        private static string userSaveFileName => $"User{currentSaveNumber+1}";
+
         private static int MAX_USER_SAVES = 3;
         private static UserSaveData[] userSaveDatas = new UserSaveData[MAX_USER_SAVES];
        
+        private static List<ILoadPuzzleData> loadDatas = new List<ILoadPuzzleData>();
+        private static List<IPopulatePuzzleData> populateDatas = new List<IPopulatePuzzleData>();
+        
         public static int currentSaveNumber { get; private set; }
-
 
         private static UserSaveData currentUserData
         {
-            get
-            {
-                return userSaveDatas[currentSaveNumber];
-            }
-            set
-            {
-                userSaveDatas[currentSaveNumber] = value;
-            }
+            get => userSaveDatas[currentSaveNumber];
+            set => userSaveDatas[currentSaveNumber] = value;
         }
 
         public static PuzzleDataHolder currentPuzzle { get; private set; }
@@ -54,8 +44,7 @@ namespace Saving
         public static UnityAction<PuzzleDataHolder> OnPuzzleDeleted;
         public static UnityAction<PuzzleDataHolder> OnPuzzleReset;
 
-        private static List<ILoadPuzzleData> loadDatas = new List<ILoadPuzzleData>();
-        private static List<IPopulatePuzzleData> populateDatas = new List<IPopulatePuzzleData>();
+        
 
         private static bool compress = true;
         
@@ -151,7 +140,6 @@ namespace Saving
             foreach (var puzzleData in populateDatas)
             {
                 puzzleData.PopulateSaveData(currentPuzzle, false);
-                Debug.Log("Populate save data...");
             }
 
             // find puzzle with id that matches with current puzzle id, overwrite it

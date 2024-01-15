@@ -83,13 +83,7 @@ public static class FileManager
         {
             if (compress)
             {
-                using (FileStream fileStream = File.Create(fullFilePath))
-                {
-                    using (GZipStream compressionStream = new GZipStream(fileStream, System.IO.Compression.CompressionLevel.Optimal))
-                    {
-                        compressionStream.Write(bytes, 0, bytes.Length);
-                    }
-                }
+                WriteAllBytesCompressed(bytes, fullFilePath);
             }
             else
             {
@@ -105,6 +99,18 @@ public static class FileManager
         }
 
         return false;
+    }
+
+    private static void WriteAllBytesCompressed(byte[] bytes, string fullFilePath)
+    {
+        using (FileStream fileStream = File.Create(fullFilePath))
+        {
+            using (GZipStream compressionStream =
+                new GZipStream(fileStream, System.IO.Compression.CompressionLevel.Optimal))
+            {
+                compressionStream.Write(bytes, 0, bytes.Length);
+            }
+        }
     }
 
     public static bool ReadAllBytes(string fileName, out byte[] bytes, bool compress)
@@ -141,22 +147,4 @@ public static class FileManager
         bytes = null;
         return false;
     }
-    
-    // public static byte[] ReadAllBytes(string fileName)
-    // {
-    //     string fullFilePath = GetFullFilePathName(fileName);
-    //     Debug.Log($"File path: {fullFilePath}");
-    //
-    //     try
-    //     {
-    //         Debug.Log("Successfully fetched bytes!");
-    //         return File.ReadAllBytes(fullFilePath);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Debug.LogError(($"Failed to write to {fullFilePath} with exception {e}"));
-    //     }
-    //
-    //     return null;
-    // }
 }

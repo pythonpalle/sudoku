@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Saving;
 using TMPro;
 using UnityEngine;
@@ -33,6 +34,34 @@ public class SaveFileLoader : MonoBehaviour
     {
         firstPopupData.confirmButtonData.action = FirstDeleteConfirmAction;
         secondPopupData.confirmButtonData.action = SecondDeleteConfirmAction;
+
+        TestSave();
+    }
+    
+    private static readonly string fileExtenstion = ".dat";
+    
+    private static string GetFullFilePathName(string fileName)
+    {
+        return Path.Combine(Application.persistentDataPath, fileName) + fileExtenstion;
+    }
+
+    private void TestSave()
+    {
+        byte[] bytes = new byte[] { 0, 12, 43, 225, 255, 1 };
+
+        string path = GetFullFilePathName("test");
+
+        // Write binary data using FileStream
+        using (FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
+        {
+            fileStream.Write(bytes, 0, bytes.Length);
+            Debug.Log("Written!");
+        }
+        
+        // UserSaveData saveData = new UserSaveData(new UserIdentifier("Hej", "123"));
+        // var bytes = saveData.ToBinary();
+        //     
+        // FileManager.WriteAllBytes("test.txt", bytes, false);
     }
 
     private void FirstDeleteConfirmAction()

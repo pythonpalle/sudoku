@@ -25,15 +25,10 @@ namespace Saving
         public List<int>[] cornerMarks;
         public List<int>[] centerMarks;
         public List<int>[] colorMarks;
-
-        // public List<SerializedCommandData> commands = new List<SerializedCommandData>();
-        // public int commandCounter;
-
+        
         // commands (NOT SERIALIZABLE WITH JSON)
         public List<SudokuCommand> undoCommands = new List<SudokuCommand>();
         public List<SudokuCommand> redoCommands = new List<SudokuCommand>();
-        //public int commandCounter;
-
 
         // status
         public bool completed;
