@@ -9025,7 +9025,6 @@ MonoBehaviour:
   - {fileID: 1434790567}
   - {fileID: 603139207}
   - {fileID: 1211582465}
-  removeUnusedColors: 1
 --- !u!1 &1406849997
 GameObject:
   m_ObjectHideFlags: 0
@@ -9598,7 +9597,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1665455175
 RectTransform:
   m_ObjectHideFlags: 0

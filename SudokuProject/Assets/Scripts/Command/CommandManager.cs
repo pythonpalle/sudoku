@@ -32,6 +32,9 @@ public class CommandManager : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleDat
     public UnityAction<SudokuCommand> OnCommandUndo; 
     public UnityAction OnUndoFail;
     
+    public bool CanUndo => undoStack.Count > 0;
+    public bool CanRedo => redoStack.Count > 0;
+    
     private void Awake()
     {
         instance = this;

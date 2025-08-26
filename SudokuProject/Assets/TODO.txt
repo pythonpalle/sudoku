@@ -1,0 +1,69 @@
+/*
+
+TODO
+
+Ta bort Saves så att det bara finns Play, Quit
+
+
+
+
+
+
+
+
+
+
+-------------------
+
+Popups
+- Gör generisk popup som instansieras (inte individuella game objects som enables) med olika inställningar 
+
+
+Settings menu
+
+Settings fel
+- varna om fel
+
+Settings udoku
+- Snyder case vs vanlig case (med inforuta som förklarar vad de betuder)
+
+Hints
+- Option för att sätta ut alla möjliga kandidater
+- mer avancerad hint (inte bara nummer men även kandidater), med förklaring om varför
+
+
+Styling framsidan
+
+GUI skalbart
+
+Spellägen
+
+4 x 4
+stegar
+3d ?
+stjärna
+
+UNDO/REDO
+- redo restart (tillbaka till det tillstånd det var i). Hur mkt data sparas?
+- Gråmarkera när det inte finns fler undos/redos
+
+PDF av sudoku (kunna skriva ut)
+
+Styla om spelbrädet något (inte bli likadant som svens sudoku pad). andra features?
+
+skalbar GUI (bara visa siffror)
+
+spelbart med tangenter
+
+Lägg till mer info om pusslen
+- tid som har ägnats
+
+Filtrera
+- Progression
+- Difficulty
+- Game Mode
+- Name
+
+*/
+
+
