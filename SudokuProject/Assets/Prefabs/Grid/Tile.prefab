@@ -1022,10 +1022,11 @@ MonoBehaviour:
   - {fileID: 6152756704834391101}
   cornerTextsParent: {fileID: 5390585990635704890}
   centerText: {fileID: 7373437563298184094}
-  _colorFiller: {fileID: 7429290102911453876}
   selectionObject: {fileID: 11400000, guid: d832ccca697ea0a4a9f544aa0cf62fca, type: 2}
+  _colorFiller: {fileID: 7429290102911453876}
   selectColor: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
   pencilMarkColor: {fileID: 11400000, guid: 5644fc9c05b3c2d48acebef0a4d623b6, type: 2}
+  autoFillColor: {fileID: 11400000, guid: db0c7ffb1e0e9a54db400b004fe3bc99, type: 2}
 --- !u!1 &5390585990635704890
 GameObject:
   m_ObjectHideFlags: 0

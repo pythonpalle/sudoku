@@ -15,6 +15,8 @@ Ta bort Saves så att det bara finns Play, Quit
 
 -------------------
 
+gör non command till nya main-branchen
+
 Popups
 - Gör generisk popup som instansieras (inte individuella game objects som enables) med olika inställningar 
 
@@ -30,6 +32,50 @@ Settings udoku
 Hints
 - Option för att sätta ut alla möjliga kandidater
 - mer avancerad hint (inte bara nummer men även kandidater), med förklaring om varför
+
+Create Puzzle Scene - Auto Fill knapp
+- Från användarens sudoku, skapa nytt om möjligt med knapp (trollstav-ikon, text "Auto Fill".)
+- Spela upp en animation som visar hur brädet fylls (om användaren har lagt in så att det inte är lösbart, ta bort rutor 
+ tills det är lösbart) 
+ 
+ Create Puzzle Scene - Save Puzzle Popup
+ - visa text på hur det inte går att skapa ett pussel (NOTE: This puzzle has many/no solutions)
+
+Välj spelvariant
+
+Läge
+- Egenskapad
+- Autogenerad
+
+Size
+- 9x9
+- 4x4
+- 6x6
+- Cubic
+Bläddrar mellan bilder på storlekarna
+
+Rules (baseras på Size)
+- Normal
+- Diagonal
+- Even-Odd
+- Color Restrictions
+- Consecutive
+- Greater Than
+- Geometry Sudokus (boxar ersätts av regioner)
+- 0-9
+- Sums
+- Stjärna/Samurai (5 st 9x9)
+- Dubbel (2 st 9x9)
+
+Svårighetsgrad
+- Simple
+- Easy
+- Medium
+- Hard
+- Extreme
+- (Impossible) 
+
+- 
 
 
 Styling framsidan

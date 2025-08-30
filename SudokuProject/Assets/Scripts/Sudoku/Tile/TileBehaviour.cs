@@ -25,15 +25,14 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     [Header("Center")]
     [SerializeField] private TextMeshProUGUI centerText;
     
-    [Header("Color")]
-    [SerializeField] private TileColorFiller _colorFiller;
-    
     [Header("Selection")]
     [SerializeField] private SelectionObject selectionObject;
     
-    [Header("Selection")]
+    [Header("Color")]
+    [SerializeField] private TileColorFiller _colorFiller;
     [SerializeField] private ColorObject selectColor;
     [SerializeField] private ColorObject pencilMarkColor;
+    [SerializeField] private ColorObject autoFillColor;
     
 
     // public fields
@@ -45,6 +44,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     public bool Permanent { get; private set; } = false;
     public bool Contradicted { get; private set; } = false;
+    public bool AutoFilled { get; private set; } = false;
 
     public List<int> CenterMarks { get; private set; } = new List<int>();
     public List<int> CornerMarks  { get; private set; } = new List<int>();
@@ -134,7 +134,7 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     private void SetDigit(int number)
     {
         this.number = number;
-        numberText.text = number > 0 ? number.ToString() : string.Empty;
+        SetNumberText(number);
         if (number == 0)
         {
             RemoveContradiction();
@@ -146,6 +146,11 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
             cornerTextsParent.SetActive(false);
             centerText.gameObject.SetActive(false);
         }
+    }
+
+    private void SetNumberText(int number)
+    {
+        numberText.text = number > 0 ? number.ToString() : string.Empty;
     }
 
     public bool TryUpdateNumber(int number, EnterType enterType, bool remove)
@@ -543,5 +548,19 @@ public class TileBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
             return indexInt;
         }
+    }
+    
+    public void SetAutoFill(int fillNumber)
+    {
+        SetNumberText(fillNumber);
+        numberText.color = autoFillColor.Color;
+        AutoFilled = true;
+    }
+
+    public void RemoveAutoFill()
+    {
+        SetNumberText(number);
+        numberText.color = pencilMarkColor.Color;
+        AutoFilled = false;
     }
 }

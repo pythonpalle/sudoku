@@ -30,6 +30,8 @@ public class GridBehaviour : MonoBehaviour
 
     private TileBehaviour[,] tileBehaviours = new TileBehaviour[9,9];
 
+    private SudokuGenerator9x9 fillGenerator;
+
     [Header("Scriptable Objects")]
     [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private HintObject hintObject;
@@ -74,6 +76,10 @@ public class GridBehaviour : MonoBehaviour
         
         EventManager.OnSelectAllTilesWithNumber += OnSelectAllTilesWithNumber;
         EventManager.OnSelectAllTiles += OnSelectAllTiles;
+        
+        EventManager.OnAutoFillPreview += OnAutoFillPreview;
+        EventManager.OnRemoveAutoFillPreview += OnAutoFillPreviewRemove;
+        EventManager.OnAutoFill += OnAutoFill;
 
         selectionObject.OnRequestTile += OnRequestTile;
 
@@ -92,6 +98,10 @@ public class GridBehaviour : MonoBehaviour
         
         EventManager.OnSelectAllTilesWithNumber -= OnSelectAllTilesWithNumber;
         EventManager.OnSelectAllTiles -= OnSelectAllTiles;
+        
+        EventManager.OnAutoFillPreview -= OnAutoFillPreview;
+        EventManager.OnRemoveAutoFillPreview -= OnAutoFillPreviewRemove;
+        EventManager.OnAutoFill -= OnAutoFill;
 
         selectionObject.OnRequestTile -= OnRequestTile;
         
@@ -113,6 +123,74 @@ public class GridBehaviour : MonoBehaviour
         CommandManager.instance.OnAddMarks -= OnAddMarks;
         CommandManager.instance.OnRemoveAllMarks -= OnRemoveAllMarks;
         CommandManager.instance.OnAddContradiction -= OnAddContradiction;
+    }
+
+    private void OnAutoFill(SudokuGrid9x9 autoFilledGrid)
+    {
+        List<int> indexesAffected = new List<int>();
+        List<int> newDigits = new List<int>();
+        List<int> prevDigits = new List<int>();
+        
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                SudokuTile autoFilledCell = autoFilledGrid[row, col];
+                if (autoFilledCell.Number <= 0) continue;
+
+                var gridTile = tileBehaviours[row, col];
+                if (gridTile.number > 0) continue;
+                
+                indexesAffected.Add(gridTile.IndexInt);
+                newDigits.Add(autoFilledCell.Number);
+                prevDigits.Add(gridTile.number);
+                gridTile.RemoveAutoFill();
+            }
+        }
+        
+        ImportCommand importCommand = new ImportCommand
+        {
+            effectedIndexes = indexesAffected,
+            importedGridDigits = newDigits,
+            previousGridDigits = prevDigits
+        };
+        
+        // TODO: stupid implementation, calls CommandManager that calls back here
+        CommandManager.instance.ExecuteNewCommand(importCommand);
+    }
+
+    private void OnAutoFillPreview(SudokuGrid9x9 autoFilledGrid)
+    {
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                SudokuTile autoFilledCell = autoFilledGrid[row, col];
+                if (autoFilledCell.Number <= 0) continue;
+
+                var gridTile = tileBehaviours[row, col];
+                if (gridTile.number > 0) continue;
+                
+                gridTile.SetAutoFill(autoFilledCell.Number);
+            }
+        }
+    }
+    
+    private void OnAutoFillPreviewRemove(SudokuGrid9x9 autoFilledGrid)
+    {
+        for (int row = 0; row < 9; row++)
+        {
+            for (int col = 0; col < 9; col++)
+            {
+                SudokuTile autoFilledCell = autoFilledGrid[row, col];
+                if (autoFilledCell.Number <= 0) continue;
+
+                var gridTile = tileBehaviours[row, col];
+                if (gridTile.number > 0) continue;
+                
+                gridTile.RemoveAutoFill();
+            }
+        }
     }
 
     private void OnAddContradiction(int index)
@@ -186,7 +264,6 @@ public class GridBehaviour : MonoBehaviour
 
     private void OnAddMultipleDigits(List<int> indexes, List<int> newDigits)
     {
-
         List<TileBehaviour> tiles = IntsToTiles(indexes);
 
         for (var index = 0; index < tiles.Count; index++)
@@ -198,8 +275,6 @@ public class GridBehaviour : MonoBehaviour
         }
         
         HandleRemoveContradictions(); 
-
-        
         UpdateGridStatus();
     }
     

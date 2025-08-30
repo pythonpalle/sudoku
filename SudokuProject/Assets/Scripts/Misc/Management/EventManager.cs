@@ -36,6 +36,10 @@ public static class EventManager
 
     public static UnityAction<SudokuGrid9x9> OnImportGrid;
     
+    public static UnityAction<SudokuGrid9x9> OnAutoFillPreview;
+    public static UnityAction<SudokuGrid9x9> OnRemoveAutoFillPreview;
+    public static UnityAction<SudokuGrid9x9> OnAutoFill;
+    
     public static UnityAction<string, Vector3> OnDisplayHoverText;
     public static UnityAction OnCancelHoverText;
     
@@ -152,5 +156,20 @@ public static class EventManager
     public static void DisplayConfirmPopup(PopupData data)
     {
         OnDisplayConfirmPopup?.Invoke(data);
+    }
+
+    public static void AutoFillPreview(SudokuGrid9x9 autoFilledGrid)
+    {
+        OnAutoFillPreview?.Invoke(autoFilledGrid);
+    }
+    
+    public static void RemoveAutoFillPreview(SudokuGrid9x9 autoFilledGrid)
+    {
+        OnRemoveAutoFillPreview?.Invoke(autoFilledGrid);
+    }
+    
+    public static void AutoFill(SudokuGrid9x9 autoFilledGrid)
+    {
+        OnAutoFill?.Invoke(autoFilledGrid);
     }
 }

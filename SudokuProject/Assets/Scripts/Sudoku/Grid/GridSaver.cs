@@ -35,6 +35,8 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
     private void OnApplicationFocus(bool hasFocus)
     {
+        if (Application.isPlaying) return;
+        
         if (hasFocus) return;
 
         if (generatorPort.isGenerating) return;

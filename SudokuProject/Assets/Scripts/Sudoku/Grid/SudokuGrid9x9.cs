@@ -135,6 +135,13 @@ public struct SudokuGrid9x9
 
     public void PrintGrid()
     {
+        var gridString = ToString();
+
+        Debug.Log(gridString);
+    }
+
+    public override string ToString()
+    {
         string gridString = String.Empty;
         
         for (int row = 0; row < size; row++)
@@ -160,8 +167,8 @@ public struct SudokuGrid9x9
         {
             gridString += tile.Used ? tile.Number : " ";
         }
-        
-        Debug.Log(gridString);
+
+        return gridString;
     }
 
     public void AddStrikeToIndex(TileIndex index, int number)

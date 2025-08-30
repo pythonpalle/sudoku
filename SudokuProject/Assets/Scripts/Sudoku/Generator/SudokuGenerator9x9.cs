@@ -20,6 +20,7 @@ public class SudokuGenerator9x9
     private System.Random random = new System.Random();
 
     private SudokuGrid9x9 grid;
+    public SudokuGrid9x9 Grid => grid;
     private WFCGridSolver _wfcGridSolver;
     
     private Stack<Move> puzzleGridRemovalMoves;
@@ -30,6 +31,7 @@ public class SudokuGenerator9x9
     private SudokuGrid9x9 hardestUsedGrid;
     
     public bool Finished { get; private set; } = false;
+    public bool IsGenerating { get; private set; } = false;
     
     public SudokuGenerator9x9(PuzzleDifficulty difficulty)
     {
@@ -43,6 +45,18 @@ public class SudokuGenerator9x9
         puzzleGridRemovalMoves = new Stack<Move>();
     }
     
+    public SudokuGenerator9x9(PuzzleDifficulty difficulty, SudokuGrid9x9 grid)
+    {
+        SetupConstructor(difficulty, grid);
+    }
+    
+    private void SetupConstructor(PuzzleDifficulty difficulty, SudokuGrid9x9 grid)
+    {
+        this.grid = new SudokuGrid9x9(grid);
+        _wfcGridSolver = new WFCGridSolver(difficulty);
+        puzzleGridRemovalMoves = new Stack<Move>();
+    }
+    
     public IEnumerator GenerateWithRoutine(PuzzleDifficulty difficulty)
     {
         int attempts = 0;
@@ -52,7 +66,7 @@ public class SudokuGenerator9x9
         {
             SetupConstructor(difficulty);
 
-            yield return TryGenerateRoutine(difficulty);
+            yield return TryGenerateRoutine(difficulty, this.grid);
 
             // a grid can always be generated using difficulty simple
             if (difficulty == PuzzleDifficulty.Simple)
@@ -78,6 +92,43 @@ public class SudokuGenerator9x9
         OnGridComplete();
     }
     
+    public IEnumerator Generate(PuzzleDifficulty difficulty, SudokuGrid9x9 grid)
+    {
+        IsGenerating = true;
+        
+        int attempts = 0;
+        const int maxAttempts = 100;
+        
+        do
+        {
+            SetupConstructor(difficulty, grid);
+
+            yield return TryGenerateRoutine(difficulty, grid);
+
+            // a grid can always be generated using difficulty simple
+            if (difficulty == PuzzleDifficulty.Simple)
+                break;
+            
+            attempts++;
+
+            if (attempts > maxAttempts)
+            {
+                Debug.LogWarning($"Too many attempts, a {difficulty} puzzle could not be created.");
+                Debug.LogWarning($"Instead, the difficulty is {bestUsedDifficulty}.");
+                grid = new SudokuGrid9x9(hardestUsedGrid);
+                break;
+            }
+
+            yield return null;
+        } 
+        while (bestUsedDifficulty != difficulty);
+        
+        Debug.Log($"The puzzle is finished after {attempts} attempts, Hurray!");
+        Debug.Log($"Difficulty used: {bestUsedDifficulty}");
+
+        IsGenerating = false;
+    }
+    
     public void GenerateEmptyGrid()
     {
         grid = new SudokuGrid9x9(false);
@@ -93,16 +144,16 @@ public class SudokuGenerator9x9
 
     
 
-    private IEnumerator TryGenerateRoutine(PuzzleDifficulty difficulty)
+    private IEnumerator TryGenerateRoutine(PuzzleDifficulty difficulty, SudokuGrid9x9 originalGrid)
     {
         _wfcGridSolver.SetGrid(grid);
-        bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(false);
+        bool solvedGridCreated = _wfcGridSolver.TrySolveGrid(false); 
     
         grid = new SudokuGrid9x9(_wfcGridSolver.grid);
     
         if (solvedGridCreated)
         {
-            yield return TryCreatePuzzleFromSolvedGridRoutine(difficulty);
+            yield return TryCreatePuzzleFromSolvedGridRoutine(difficulty, originalGrid);
         }
     }
 
@@ -113,13 +164,17 @@ public class SudokuGenerator9x9
         return new SudokuGrid9x9(_wfcGridSolver.grid);
     }
 
-    private IEnumerator TryCreatePuzzleFromSolvedGridRoutine(PuzzleDifficulty difficulty)
+    private IEnumerator TryCreatePuzzleFromSolvedGridRoutine(PuzzleDifficulty difficulty, SudokuGrid9x9 originalGrid)
     {
         bool[,] visitedTiles = new bool[9, 9];
         
-        int iterationCount = 0;
         int maxMoves = GetMaxMoves(difficulty);
         lastUsedDifficulty = PuzzleDifficulty.Simple;
+        
+        // Ignoring tiles in the original grid so they are not removed from the puzzle
+        MarkOriginalAsVisited(originalGrid, visitedTiles);
+        
+        int iterationCount = 0;
 
         // while puzzle is not finished:
         while (!AllTilesVisited(visitedTiles))
@@ -135,6 +190,18 @@ public class SudokuGenerator9x9
         }
 
         UpdateDifficulty();
+    }
+
+    private void MarkOriginalAsVisited(SudokuGrid9x9 originalGrid, bool[,] visitedTiles)
+    {
+        for (int col = 0; col < 9; col++)
+        {
+            for (int row = 0; row < 9; row++)
+            {
+                if (originalGrid[row, col].Number > 0)
+                    visitedTiles[row, col] = true;
+            }
+        }
     }
 
     private int GetMaxMoves(PuzzleDifficulty difficulty)
@@ -251,7 +318,8 @@ public class SudokuGenerator9x9
             int symmetricCol = 8 - col;
             //TileIndex symmetricTileIndex = grid[symmetricRow, symmetricCol].index;
             TileIndex symmetricTileIndex = new TileIndex(symmetricRow, symmetricCol);
-            RemoveFromGrid(visitedTiles, symmetricTileIndex);
+            
+            if (!visitedTiles[symmetricRow, symmetricCol]) RemoveFromGrid(visitedTiles, symmetricTileIndex);
         }
     }
 
