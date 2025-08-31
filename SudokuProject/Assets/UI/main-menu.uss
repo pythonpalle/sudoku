@@ -1,9 +1,12 @@
 .panel {
-    -unity-background-image-tint-color: rgba(154, 238, 35, 255);
+    -unity-background-image-tint-color: rgb(154, 238, 35);
 }
 
 .menu {
 }
 
 .unity-button {
+}
+
+.menu-button {
 }
