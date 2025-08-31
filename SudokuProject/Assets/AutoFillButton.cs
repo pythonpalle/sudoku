@@ -40,9 +40,9 @@ public class AutoFillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             
             Debug.Log("Suggested grid:");
             autoFilledGrid = new SudokuGrid9x9(fillGenerator.Grid);
-            Debug.Log(autoFilledGrid);
+            Debug.Log(autoFilledGrid); 
 
-            EventManager.AutoFillPreview(autoFilledGrid);
+            EventManager.AutoFillPreview(autoFilledGrid); 
         }
         
         /*

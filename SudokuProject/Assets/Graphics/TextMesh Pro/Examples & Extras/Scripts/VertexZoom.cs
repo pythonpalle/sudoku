@@ -150,8 +150,17 @@ namespace TMPro.Examples
                     destinationVertices[vertexIndex + 3] += offset;
 
                     // Restore Source UVS which have been modified by the sorting
-                    Vector2[] sourceUVs0 = cachedMeshInfoVertexData[materialIndex].uvs0;
-                    Vector2[] destinationUVs0 = textInfo.meshInfo[materialIndex].uvs0;
+                    // Vector2[] sourceUVs0 = cachedMeshInfoVertexData[materialIndex].uvs0;
+                    // Vector2[] destinationUVs0 = textInfo.meshInfo[materialIndex].uvs0;
+                    
+                    Vector2[] sourceUVs0 = System.Array.ConvertAll(
+                        cachedMeshInfoVertexData[materialIndex].uvs0,
+                        v4 => (Vector2)v4
+                    );
+                    Vector2[] destinationUVs0 = System.Array.ConvertAll(
+                        textInfo.meshInfo[materialIndex].uvs0,
+                        v4 => (Vector2)v4
+                    );
 
                     destinationUVs0[vertexIndex + 0] = sourceUVs0[vertexIndex + 0];
                     destinationUVs0[vertexIndex + 1] = sourceUVs0[vertexIndex + 1];
@@ -178,7 +187,11 @@ namespace TMPro.Examples
 
                     // Updated modified vertex attributes
                     textInfo.meshInfo[i].mesh.vertices = textInfo.meshInfo[i].vertices;
-                    textInfo.meshInfo[i].mesh.uv = textInfo.meshInfo[i].uvs0;
+                    //textInfo.meshInfo[i].mesh.uv = textInfo.meshInfo[i].uvs0;
+                    textInfo.meshInfo[i].mesh.uv = System.Array.ConvertAll(
+                        textInfo.meshInfo[i].uvs0,
+                        v4 => (Vector2)v4
+                    );
                     textInfo.meshInfo[i].mesh.colors32 = textInfo.meshInfo[i].colors32;
 
                     m_TextComponent.UpdateGeometry(textInfo.meshInfo[i].mesh, i);

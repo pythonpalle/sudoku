@@ -491,8 +491,16 @@ namespace TMPro.Examples
 
             // Restore UV0S
             // UVS0
-            Vector2[] src_uv0s = m_cachedMeshInfoVertexData[materialIndex].uvs0;
-            Vector2[] dst_uv0s = m_TextMeshPro.textInfo.meshInfo[materialIndex].uvs0;
+            //Vector2[] src_uv0s = m_cachedMeshInfoVertexData[materialIndex].uvs0;
+            Vector2[] src_uv0s = System.Array.ConvertAll(
+                m_cachedMeshInfoVertexData[materialIndex].uvs0,
+                v4 => (Vector2)v4
+            );
+            //Vector2[] dst_uv0s = m_TextMeshPro.textInfo.meshInfo[materialIndex].uvs0;
+            Vector2[] dst_uv0s = System.Array.ConvertAll(
+                m_TextMeshPro.textInfo.meshInfo[materialIndex].uvs0,
+                v4 => (Vector2)v4
+            );
             dst_uv0s[vertexIndex + 0] = src_uv0s[vertexIndex + 0];
             dst_uv0s[vertexIndex + 1] = src_uv0s[vertexIndex + 1];
             dst_uv0s[vertexIndex + 2] = src_uv0s[vertexIndex + 2];
@@ -525,8 +533,17 @@ namespace TMPro.Examples
             dst_colors[lastIndex + 3] = src_colors[lastIndex + 3];
 
             // UVS0
-            src_uv0s = m_cachedMeshInfoVertexData[materialIndex].uvs0;
-            dst_uv0s = m_TextMeshPro.textInfo.meshInfo[materialIndex].uvs0;
+            // src_uv0s = m_cachedMeshInfoVertexData[materialIndex].uvs0;
+            // dst_uv0s = m_TextMeshPro.textInfo.meshInfo[materialIndex].uvs0;
+            src_uv0s =  System.Array.ConvertAll(
+                m_cachedMeshInfoVertexData[materialIndex].uvs0,
+                v4 => (Vector2)v4
+            );
+            dst_uv0s =  System.Array.ConvertAll(
+                m_TextMeshPro.textInfo.meshInfo[materialIndex].uvs0,
+                v4 => (Vector2)v4
+            );
+            
             dst_uv0s[lastIndex + 0] = src_uv0s[lastIndex + 0];
             dst_uv0s[lastIndex + 1] = src_uv0s[lastIndex + 1];
             dst_uv0s[lastIndex + 2] = src_uv0s[lastIndex + 2];
