@@ -2,44 +2,70 @@
 
 TODO
 
-Ta bort Saves så att det bara finns Play, Quit
+
+--------------- Refaktorering --------------------------------
+
+Gör så man inte behöver veta att man spelar ett 9x9 sudoku
+
+class Sudoku9x9 : Sudoku: PuzzleGame
+
+--------------- Pusselgenerering -----------------------------
+
+Generera ett antal pussel för svårare svårighetsgrader, spara ner på fil
+
+Om inte kan generera ett pussel på X sekunder, välj en av dessa sparade istället
+
+Använd transformationer (justera rader/kolumner, siffror, reflektioner etc) så att samma pussel inte kan genereras två gånger
 
 
+------------------- Hint -------------------------------------------
 
+Öppna upp ett nytt fönster som visar Sudokuts/spelets tillstånd med alla kandidater
 
+Lägg till pilar längst ner som visar steg för steg hur man kommer vidare i pusslet
 
+För varje av dessa steg, rita ut med kryss och pilar vilka kandidater som kan tas bort, skriv med text förklaring
+("Eftersom siffran 1 saknas i box 4 så måste den vara 1")
 
+------------------- Localisation --------------------------------------
 
+Gör alla texter i engelska, svenska
 
+Meny för att välja språk
 
-
--------------------
+------------------ GIT ---------------------------------------------------
 
 gör non command till nya main-branchen
+
+----------------- GUI ------------------------------------------------------
+
+Använd UI toolkit för att göra allting responsivt
 
 Popups
 - Gör generisk popup som instansieras (inte individuella game objects som enables) med olika inställningar 
 
+------------------ SETTINGS -------------------------------------------------------------
 
 Settings menu
 
-Settings fel
+Fel checkbox
 - varna om fel
 
-Settings udoku
-- Snyder case vs vanlig case (med inforuta som förklarar vad de betuder)
+Snyder case
+- Snyder case vs vanlig case (med inforuta som förklarar vad de betyder)
 
 Hints
 - Option för att sätta ut alla möjliga kandidater
-- mer avancerad hint (inte bara nummer men även kandidater), med förklaring om varför
 
-Create Puzzle Scene - Auto Fill knapp
-- Från användarens sudoku, skapa nytt om möjligt med knapp (trollstav-ikon, text "Auto Fill".)
-- Spela upp en animation som visar hur brädet fylls (om användaren har lagt in så att det inte är lösbart, ta bort rutor 
- tills det är lösbart) 
+-------------- AUTO FILL --------------------------------------------------------
+
+- om användaren har lagt in så att det inte är lösbart, ta bort rutor 
+ tills det är lösbart. ta tillfälligt bort kontradictions?
  
- Create Puzzle Scene - Save Puzzle Popup
+-------------------- Create Puzzle Scene - Save Puzzle Popup -----------------------------
  - visa text på hur det inte går att skapa ett pussel (NOTE: This puzzle has many/no solutions)
+
+
 
 Välj spelvariant
 
@@ -87,13 +113,13 @@ Spellägen
 4 x 4
 stegar
 3d ?
-stjärna
+stjärna 
 
 UNDO/REDO
 - redo restart (tillbaka till det tillstånd det var i). Hur mkt data sparas?
 - Gråmarkera när det inte finns fler undos/redos
 
-PDF av sudoku (kunna skriva ut)
+PDF av sudoku (kunna skriva ut, sparas som en bild)
 
 Styla om spelbrädet något (inte bli likadant som svens sudoku pad). andra features?
 

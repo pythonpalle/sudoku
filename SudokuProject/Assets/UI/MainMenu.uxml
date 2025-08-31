@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/main-menu.uss?fileID=7433441132597879392&amp;guid=f698f6913bb5a0e45a8823b4958628c1&amp;type=3#main-menu" />
+    <ui:VisualElement name="Panel" class="panel" style="align-items: center;">
+        <ui:VisualElement name="Container" class="menu">
+            <ui:Button text="Button" display-tooltip-when-elided="true" class="unity-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
