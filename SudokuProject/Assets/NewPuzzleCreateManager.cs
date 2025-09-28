@@ -3,7 +3,5 @@ using UnityEngine;
 
 public class NewPuzzleCreateManager : MonoBehaviour
 {
-    public List<NewPuzzleSetting> menuOptions = new List<NewPuzzleSetting>();
-    
-    
+    public MenuOptionHolder menuOptionHolder;
 }
