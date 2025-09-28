@@ -22,6 +22,8 @@ namespace PuzzleSelect
 
         public void OnButtonPressed()
         {
+            Debug.Log(nameText.text);
+            
             selectPort.SelectPuzzleBox(this, puzzle); 
         }
 
