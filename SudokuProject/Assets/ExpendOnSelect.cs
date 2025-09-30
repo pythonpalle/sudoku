@@ -13,23 +13,19 @@ public class ExpendOnSelect : MonoBehaviour
     private void Awake()
     {
         menuOption = GetComponent<MenuOption>();
-    }
-
-    private void Start()
-    {
         startSize = transform.localScale.x;
     }
 
     private void OnEnable()
     {
-        menuOption.Select.AddListener(OnSelect); 
-        menuOption.Deselect.AddListener(OnDeselect); 
+        menuOption.OnSelect.AddListener(OnSelect); 
+        menuOption.OnDeselect.AddListener(OnDeselect); 
     }
     
     private void OnDisable()
     {
-        menuOption.Select.RemoveListener(OnSelect); 
-        menuOption.Deselect.RemoveListener(OnDeselect); 
+        menuOption.OnSelect.RemoveListener(OnSelect); 
+        menuOption.OnDeselect.RemoveListener(OnDeselect); 
     }
 
     private void OnSelect()

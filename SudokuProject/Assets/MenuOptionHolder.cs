@@ -8,7 +8,7 @@ public class MenuOptionHolder : MonoBehaviour
     
     [SerializeField, ReadOnly] private MenuOption selectedOption;
 
-    private void Start()
+    private void Awake()
     {
         InitializeChildren();
     }
@@ -21,14 +21,22 @@ public class MenuOptionHolder : MonoBehaviour
         }
     }
 
-    public void Select(MenuOption menuOption)
+    public void RequestSelect(MenuOption menuOption)
     {
-        selectedOption = menuOption;    
+        foreach (MenuOption other in menuOptions)
+        {
+            other.Deselect();
+        }
+        
+        selectedOption = menuOption;
+        menuOption.Select();
     }
     
-    public void Deselect(MenuOption menuOption)
+    public void RequestDeselect(MenuOption menuOption)
     {
         if (selectedOption == menuOption)
             selectedOption = null;
+
+        menuOption.Deselect();
     }
 }
