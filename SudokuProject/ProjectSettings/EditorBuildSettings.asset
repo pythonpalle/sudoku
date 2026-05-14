@@ -18,3 +18,4 @@ EditorBuildSettings:
     path: Assets/Scenes/Backup/Create Own Scene.unity
     guid: 97c23d84b409ba84686b429e548195fb
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

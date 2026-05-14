@@ -2,6 +2,18 @@
 
 TODO 
 
+Gör så att man kan starta från Game Scene
+
+----------------- POPUP Prefab ------------------
+
+Stäng fönster med ESC
+
+Generisk prefab som alla popups delar
+
+------------- HEADER -----------------------
+
+Återanvänd Header med tillbakaknapp i select scene och i puzzle scene
+
 
 --------------- Refaktorering --------------------------------
 
