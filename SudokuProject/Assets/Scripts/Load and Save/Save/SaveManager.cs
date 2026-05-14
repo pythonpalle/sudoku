@@ -447,12 +447,17 @@ namespace Saving
                 listener.LoadFromSaveData(currentPuzzle);
             }
         }
+        
+        static void RestartPuzzle()
+        {
+            currentPuzzle.Reset();
+            OnPuzzleReset?.Invoke(currentPuzzle);
+        }
 
         public static void RestartPuzzle(PuzzleDataHolder puzzleDataHolder)
         {
             currentPuzzle = puzzleDataHolder;
-            currentPuzzle.Reset();
-            OnPuzzleReset?.Invoke(currentPuzzle);
+            RestartPuzzle();
         }
 
 

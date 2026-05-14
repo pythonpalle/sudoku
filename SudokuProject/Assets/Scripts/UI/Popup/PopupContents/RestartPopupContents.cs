@@ -1,14 +1,14 @@
+using PuzzleSelect;
+using Saving;
 using UnityEngine;
 
 public class RestartPopupContentsBehaviour : PopupContentsBehaviour
 {
-    public void Cancel()
-    {
-        Debug.Log("Cancel");
-    }
+    [SerializeField] private PuzzleSelectPort puzzleSelectPort;
+
 
     public void Reset()
     {
-        Debug.Log("Reset");
+        SaveManager.RestartPuzzle(puzzleSelectPort.selectedPuzzle);
     }
 }

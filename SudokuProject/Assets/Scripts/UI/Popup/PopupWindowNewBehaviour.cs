@@ -47,6 +47,8 @@ public class PopupWindowNewBehaviour : MonoBehaviour
         isPopped = true;
         OnPopup?.Invoke();
         
+        popupContents.SetPopupWindow(this);
+        
         Title.text = popupContents.Title;
 
         var buttonDatas  = popupContents.ButtonDatas;
