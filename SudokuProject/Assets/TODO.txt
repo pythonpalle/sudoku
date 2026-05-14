@@ -14,7 +14,13 @@ Enable/Disable hints (avakivera knappen.)
 
 Keybinds
 
+Marking tekniker
+- Snyder Notation
+- Full Notation
+
 -------- INSTRUKTIONER --------------
+
+
 
 
 ----------------- POPUP Prefab ------------------
@@ -167,6 +173,10 @@ Mer data till varje pussel
 -------  SMÅGREJER --------
 
 DAS (Delayed Auto Shift) när håller ner sido-piltangent för snabbt byta mellan rutor
+
+Gör outline runt endat de yttersta cellerna när markerar
+
+Gör bättre kodning färgcirkel. Kanske lägg till fler färger
 
 
 
