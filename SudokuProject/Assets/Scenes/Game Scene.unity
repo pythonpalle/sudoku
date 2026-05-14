@@ -3491,14 +3491,14 @@ PrefabInstance:
     - target: {fileID: 7126686738025957929, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1102141928}
+      objectReference: {fileID: 1057861302}
     - target: {fileID: 7126686738025957929, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadPuzzleSelectScene
+      value: OnGoBackButtonPressed
       objectReference: {fileID: 0}
     - target: {fileID: 7126686738025957929, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SudokuGameSceneManager, Assembly-CSharp
+      value: GoBackToSelectBehaviour, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3510,6 +3510,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7126686737247987787, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
   m_PrefabInstance: {fileID: 1057861300}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1057861302 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5790437363227731706, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
+  m_PrefabInstance: {fileID: 1057861300}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61143a8521cf0f47ac7ff8cdd51741e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1061431741
 GameObject:
   m_ObjectHideFlags: 0
