@@ -7,6 +7,8 @@ namespace Command
     [System.Serializable]
     public abstract class SudokuCommand
     {
+        protected CommandManager _commandManager => CommandManager.instance;
+        
         public abstract void Execute();
     
         public abstract void Undo();

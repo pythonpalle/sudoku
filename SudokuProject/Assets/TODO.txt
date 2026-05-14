@@ -4,16 +4,24 @@ TODO
 
 Gör så att man kan starta från Game Scene
 
+---- INSTÄLLNINGAR ---------
+
+Hintmode:
+- Level 1: Bara rutan
+- Level 2: Popupfönster
+
+Enable/Disable hints (avakivera knappen.)
+
+Keybinds
+
+-------- INSTRUKTIONER --------------
+
+
 ----------------- POPUP Prefab ------------------
 
 Stäng fönster med ESC
 
 Generisk prefab som alla popups delar
-
-------------- HEADER -----------------------
-
-Återanvänd Header med tillbakaknapp i select scene och i puzzle scene
-
 
 --------------- Refaktorering --------------------------------
 
@@ -148,6 +156,17 @@ Filtrera
 - Game Mode
 - Name
 
+Mer data till varje pussel
+- Starttid
+- Sluttid
+- Antal hintar använda
+- Total nedlagd tid (timer)
+
 */
+
+-------  SMÅGREJER --------
+
+DAS (Delayed Auto Shift) när håller ner sido-piltangent för snabbt byta mellan rutor
+
 
 

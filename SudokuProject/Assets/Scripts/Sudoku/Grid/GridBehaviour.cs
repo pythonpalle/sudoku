@@ -24,6 +24,8 @@ public enum GridStatus
 
 public class GridBehaviour : MonoBehaviour
 {
+    private CommandManager _commandManager => CommandManager.instance;
+    
     private SudokuGrid9x9 grid;
     private GridSaver gridSaver;
     private WFCGridSolver gridSolver = new WFCGridSolver(PuzzleDifficulty.Extreme);
@@ -53,18 +55,18 @@ public class GridBehaviour : MonoBehaviour
     {
         SetupBoxes();
         
-        CommandManager.instance.OnAddOneDigit += OnAddOneDigit;
-        CommandManager.instance.OnAddDigitToTile += OnAddDigitToTile;
-        CommandManager.instance.OnAddMultipleDigits += OnAddMultipleDigits;
-        CommandManager.instance.OnRemoveDigits += OnRemoveDigits;
+        _commandManager.OnAddOneDigit += OnAddOneDigit;
+        _commandManager.OnAddDigitToTile += OnAddDigitToTile;
+        _commandManager.OnAddMultipleDigits += OnAddMultipleDigits;
+        _commandManager.OnRemoveDigits += OnRemoveDigits;
         
-        CommandManager.instance.OnAddMark += OnAddMark;
-        CommandManager.instance.OnAddAllMarksToTile += OnAddAllMarksToTile;
-        CommandManager.instance.OnRemoveSingleMark += OnRemoveMark;
+        _commandManager.OnAddMark += OnAddMark;
+        _commandManager.OnAddAllMarksToTile += OnAddAllMarksToTile;
+        _commandManager.OnRemoveSingleMark += OnRemoveMark;
 
-        CommandManager.instance.OnAddMarks += OnAddMarks;
-        CommandManager.instance.OnRemoveAllMarks += OnRemoveAllMarks;
-        CommandManager.instance.OnAddContradiction += OnAddContradiction;
+        _commandManager.OnAddMarks += OnAddMarks;
+        _commandManager.OnRemoveAllMarks += OnRemoveAllMarks;
+        _commandManager.OnAddContradiction += OnAddContradiction;
     }
 
     private void OnEnable()
@@ -111,18 +113,18 @@ public class GridBehaviour : MonoBehaviour
 
         hintObject.OnHintFound -= OnHintFound;
 
-        CommandManager.instance.OnAddOneDigit -= OnAddOneDigit;
-        CommandManager.instance.OnAddDigitToTile -= OnAddDigitToTile;
-        CommandManager.instance.OnAddMultipleDigits -= OnAddMultipleDigits;
-        CommandManager.instance.OnRemoveDigits -= OnRemoveDigits;
+        _commandManager.OnAddOneDigit -= OnAddOneDigit;
+        _commandManager.OnAddDigitToTile -= OnAddDigitToTile;
+        _commandManager.OnAddMultipleDigits -= OnAddMultipleDigits;
+        _commandManager.OnRemoveDigits -= OnRemoveDigits;
         
-        CommandManager.instance.OnAddMark -= OnAddMark;
-        CommandManager.instance.OnRemoveSingleMark -= OnRemoveMark;
-        CommandManager.instance.OnAddAllMarksToTile -= OnAddAllMarksToTile;
+        _commandManager.OnAddMark -= OnAddMark;
+        _commandManager.OnRemoveSingleMark -= OnRemoveMark;
+        _commandManager.OnAddAllMarksToTile -= OnAddAllMarksToTile;
 
-        CommandManager.instance.OnAddMarks -= OnAddMarks;
-        CommandManager.instance.OnRemoveAllMarks -= OnRemoveAllMarks;
-        CommandManager.instance.OnAddContradiction -= OnAddContradiction;
+        _commandManager.OnAddMarks -= OnAddMarks;
+        _commandManager.OnRemoveAllMarks -= OnRemoveAllMarks;
+        _commandManager.OnAddContradiction -= OnAddContradiction;
     }
 
     private void OnAutoFill(SudokuGrid9x9 autoFilledGrid)
@@ -156,7 +158,7 @@ public class GridBehaviour : MonoBehaviour
         };
         
         // TODO: stupid implementation, calls CommandManager that calls back here
-        CommandManager.instance.ExecuteNewCommand(importCommand);
+        _commandManager.ExecuteNewCommand(importCommand);
     }
 
     private void OnAutoFillPreview(SudokuGrid9x9 autoFilledGrid)
@@ -795,10 +797,10 @@ public class GridBehaviour : MonoBehaviour
             previousMarks = GetPreviousMarks(tiles, enterType)
         };
 
-        CommandManager.instance.ExecuteNewCommand(removeAllMarksCommand);
+        _commandManager.ExecuteNewCommand(removeAllMarksCommand);
     }
 
-    private static void CreateRemoveSingleMarkCommand(int number, List<int> tilesAsIndices, EnterType enterType)
+    private void CreateRemoveSingleMarkCommand(int number, List<int> tilesAsIndices, EnterType enterType)
     {
         var removeSingleMarkCommand = new RemoveSingleMarkCommand()
         {
@@ -807,10 +809,10 @@ public class GridBehaviour : MonoBehaviour
             number = number
         };
 
-        CommandManager.instance.ExecuteNewCommand(removeSingleMarkCommand);
+        _commandManager.ExecuteNewCommand(removeSingleMarkCommand);
     }
 
-    private static void CreateAddMarkCommand(int number, List<int> tilesAsIndices, EnterType enterType)
+    private void CreateAddMarkCommand(int number, List<int> tilesAsIndices, EnterType enterType)
     {
         var addMarkCommand = new AddMarkCommand
         {
@@ -819,7 +821,7 @@ public class GridBehaviour : MonoBehaviour
             number = number,
         };
 
-        CommandManager.instance.ExecuteNewCommand(addMarkCommand);
+        _commandManager.ExecuteNewCommand(addMarkCommand);
     }
 
     private List<List<int>> GetPreviousMarks(List<TileBehaviour> tiles, EnterType enterType)
@@ -871,7 +873,7 @@ public class GridBehaviour : MonoBehaviour
             previousGridDigits = previousDigits
         };
         
-        CommandManager.instance.ExecuteNewCommand(addDigitCommand);
+        _commandManager.ExecuteNewCommand(addDigitCommand);
     }
 
     private void CreateRemoveDigitCommand(List<int> tilesToInt, List<int> previousDigits)
@@ -882,7 +884,7 @@ public class GridBehaviour : MonoBehaviour
             previousGridDigits = previousDigits
         };
         
-        CommandManager.instance.ExecuteNewCommand(removeDigitCommand);
+        _commandManager.ExecuteNewCommand(removeDigitCommand);
     }
 
     private List<int> GetPreviousDigits(List<TileBehaviour> selectedTiles)

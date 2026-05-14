@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class SelectionManager : MonoBehaviour
 {
+    private CommandManager _commandManager => CommandManager.instance;
+    
     [SerializeField] private SelectionObject selectionObject;
     [SerializeField] private GridPort gridPort;
     [SerializeField] private bool pointerOverGrid = false;
@@ -22,9 +24,9 @@ public class SelectionManager : MonoBehaviour
 
     private void Start()
     {
-        CommandManager.instance.OnCommandRedo += OnCommandRedo;
-        CommandManager.instance.OnCommandUndo += OnCommandUndo;
-        CommandManager.instance.OnUndoFail += OnUndoFail;
+        _commandManager.OnCommandRedo += OnCommandRedo;
+        _commandManager.OnCommandUndo += OnCommandUndo;
+        _commandManager.OnUndoFail += OnUndoFail;
     }
 
     private void OnEnable()
@@ -59,10 +61,10 @@ public class SelectionManager : MonoBehaviour
         EventManager.OnUIElementHover -= OnUIElementHover;
         EventManager.OnUIElementExit -= OnUIElementExit;
         
-        CommandManager.instance.OnCommandRedo -= OnCommandRedo;
-        CommandManager.instance.OnCommandUndo -= OnCommandUndo;
+        _commandManager.OnCommandRedo -= OnCommandRedo;
+        _commandManager.OnCommandUndo -= OnCommandUndo;
         
-        CommandManager.instance.OnUndoFail -= OnUndoFail;
+        _commandManager.OnUndoFail -= OnUndoFail;
     }
 
     private void OnUndoFail()

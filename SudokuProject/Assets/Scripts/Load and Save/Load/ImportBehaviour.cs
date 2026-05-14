@@ -9,6 +9,8 @@ using UnityEngine.UI;
 
 public class ImportBehaviour : MonoBehaviour
 {
+    private CommandManager _commandManager => CommandManager.instance;
+    
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private GridPort gridPort;
 
@@ -65,7 +67,7 @@ public class ImportBehaviour : MonoBehaviour
                 previousGridDigits = previous
             };
             
-            CommandManager.instance.ExecuteNewCommand(importCommand);
+            _commandManager.ExecuteNewCommand(importCommand);
         }
         else
         {

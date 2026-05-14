@@ -15,12 +15,12 @@ namespace Command
         
         public override void Execute()
         {
-            CommandManager.instance.AddMark(effectedIndexes, number, enterType);
+            _commandManager.AddMark(effectedIndexes, number, enterType);
         }
 
         public override void Undo()
         {
-            CommandManager.instance.RemoveSingleMark(effectedIndexes, number, enterType);
+            _commandManager.RemoveSingleMark(effectedIndexes, number, enterType);
         }
     }
     
@@ -31,12 +31,12 @@ namespace Command
         
         public override void Execute()
         {
-            CommandManager.instance.RemoveSingleMark(effectedIndexes, number, enterType);
+            _commandManager.RemoveSingleMark(effectedIndexes, number, enterType);
         }
 
         public override void Undo()
         {
-            CommandManager.instance.AddMark(effectedIndexes, number, enterType);
+            _commandManager.AddMark(effectedIndexes, number, enterType);
         }
     }
     
@@ -47,12 +47,12 @@ namespace Command
 
         public override void Execute()
         {
-            CommandManager.instance.RemoveAllMarks(effectedIndexes, enterType);
+            _commandManager.RemoveAllMarks(effectedIndexes, enterType);
         }
 
         public override void Undo()
         {
-            CommandManager.instance.AddMarks(effectedIndexes, previousMarks, enterType);
+            _commandManager.AddMarks(effectedIndexes, previousMarks, enterType);
         }
     }
 }

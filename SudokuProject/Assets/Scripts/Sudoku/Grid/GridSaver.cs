@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Saving;
 using UnityEngine;
 
 public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 {
+    private CommandManager _commandManager => CommandManager.instance;
+    
     [SerializeField] private GridPort _gridPort;
     [SerializeField] private GeneratorPort generatorPort;
     [SerializeField] private SaveRequestPort requestPort;
@@ -15,12 +18,38 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
     private void OnEnable()
     {
+        // way of debbuging directly from the Game Scene without first selecting a puzzle from the Select scene
+        if (!SaveManager.HasCreatedPuzzleData)
+        {
+            string errorMsg = "Puzzle save not found when initializing GridSaver!";
+            if (Application.isEditor)
+            {
+                LoadFirstPuzzleOrNew();
+                Debug.LogWarning(errorMsg);
+            }
+            else
+            {
+                Debug.LogError(errorMsg);
+            }
+        }
+        
         AddListenersToSaveManager();
 
         if (generatorPort.GenerationType == GridGenerationType.loaded)
         {
             Invoke("LoadCurrentPuzzle", 0.02f);
         }
+    }
+
+    private void LoadFirstPuzzleOrNew()
+    {
+        if (SaveManager.TrySetCurrentUserData(out UserSaveData data))
+        {
+            if (data != null && data.puzzles.Any())
+            {
+                SaveManager.SetCurrentPuzzle(data.puzzles.First());
+            }
+        }    
     }
 
     private void OnDisable()
@@ -152,18 +181,18 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         {
             // Get all marks for the tile, add them to grid
             Dictionary<EnterType, List<int>> marksForTile = GetAllMarksForTile(puzzleData, i);
-            CommandManager.instance.AddAllMarksToTile(i, marksForTile);
+            _commandManager.AddAllMarksToTile(i, marksForTile);
             
             // if digit for tile is not permanent, add it to grid
             int number = numbers[i];
             if (!permanents[i] || number == 0)
             {
-                CommandManager.instance.AddDigitToTile(i, number);
+                _commandManager.AddDigitToTile(i, number);
             }
 
             if (contradictions[i])
             {
-                CommandManager.instance.AddContradictionToTile(i);
+                _commandManager.AddContradictionToTile(i);
             }
         }
 

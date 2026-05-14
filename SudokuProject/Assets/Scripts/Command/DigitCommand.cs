@@ -15,13 +15,13 @@ namespace Command
     
         public override void Execute()
         {
-            CommandManager.instance.AddDigit(effectedIndexes, addedDigit);
+            _commandManager.AddDigit(effectedIndexes, addedDigit);
         }
     
         public override void Undo()
         {
-            CommandManager.instance.RemoveDigits(effectedIndexes);
-            CommandManager.instance.AddDigits(effectedIndexes, previousGridDigits);
+            _commandManager.RemoveDigits(effectedIndexes);
+            _commandManager.AddDigits(effectedIndexes, previousGridDigits);
         }
     }
     
@@ -29,15 +29,15 @@ namespace Command
     public class RemoveDigitCommand : EffectedTilesCommand
     {
         public List<int> previousGridDigits;
-    
+        
         public override void Execute()
         {
-            CommandManager.instance.RemoveDigits(effectedIndexes);
+            _commandManager.RemoveDigits(effectedIndexes);
         }
     
         public override void Undo()
         {
-            CommandManager.instance.AddDigits(effectedIndexes, previousGridDigits);
+            _commandManager.AddDigits(effectedIndexes, previousGridDigits);
         }
     }
 }
