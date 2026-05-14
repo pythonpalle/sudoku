@@ -5,15 +5,16 @@ public class PopupWindowManager : MonoBehaviour
     public static PopupWindowManager instance;
 
     [SerializeField] private RectTransform popupParent;
-    [SerializeField] private GameObject genericPopupWindowPrefab;
+    [SerializeField] private PopupWindowNewBehaviour genericPopupWindowPrefab;
     
     void Awake()
     {
         instance = this;
     }
 
-    public void ShowPopupWindow()
+    public void CreatePopupWindow(PopupContentsBehaviour popupData)
     {
-        GameObject popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
+        PopupWindowNewBehaviour popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
+        popupWindow.Initialize(popupData);
     }
 }
