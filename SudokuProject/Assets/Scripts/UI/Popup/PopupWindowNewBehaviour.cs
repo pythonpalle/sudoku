@@ -1,5 +1,6 @@
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -85,27 +86,31 @@ public class PopupWindowNewBehaviour : MonoBehaviour
 
         Root.sizeDelta = new Vector2(popupData.Width, popupData.Height);
         
-        var popupContent = Instantiate(popupData.PopupContent, ContentRoot); 
+        var popupContent = Instantiate(popupData.PopupContent, ContentRoot);
+        if (!string.IsNullOrEmpty(popupData.ExplanationText))
+        {
+            TrySetChildText(popupContent, popupData.ExplanationText);
+        }
 
         if (confirmAction != null)
         {
             if (popupData.UseCancelButton)
             {
                 var cancelButton = Instantiate(ButtonPrefab, ButtonLayoutGroup);
-                TrySetButtonText(cancelButton, "Cancel");
+                TrySetChildText(cancelButton.gameObject, "Cancel");
                 cancelButton.onClick.AddListener(Close);
             }
             
             var confirmButton = Instantiate(ButtonPrefab, ButtonLayoutGroup);
-            TrySetButtonText(confirmButton, popupData.ConfirmButtonText);
+            TrySetChildText(confirmButton.gameObject, popupData.ConfirmButtonText);
             confirmButton.onClick.AddListener(Close);
             confirmButton.onClick.AddListener(confirmAction);
         }
     }
 
-    private static void TrySetButtonText(Button cancelButton, string text)
+    private static void TrySetChildText(GameObject gameObject, string text)
     {
-        var textTransform = cancelButton.GetComponentInChildren<TextMeshProUGUI>();
+        var textTransform = gameObject.GetComponentInChildren<TextMeshProUGUI>();
         if (textTransform != null)
             textTransform.text = text;
     }

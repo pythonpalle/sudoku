@@ -22,7 +22,8 @@ public class PopupDataObject : ScriptableObject
     // [Header("Buttons")]
     // public List<ButtonData> ButtonDatas;
 
-    [Header("Button")] 
+    [Header("Confrim Popup Data")] 
+    public string ExplanationText;
     public bool UseCancelButton;
     public string ConfirmButtonText;
     

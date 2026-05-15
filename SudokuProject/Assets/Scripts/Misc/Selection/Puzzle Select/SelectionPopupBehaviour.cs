@@ -18,6 +18,7 @@ namespace PuzzleSelect
         
         [Space]
         [SerializeField] private PopupDataObject restartPopupDataObject;
+        [SerializeField] private PopupDataObject deletePopupDataObject;
         
         private PuzzleDataHolder currentPuzzle;
         private string lastSelectedPuzzleID = "";
@@ -102,18 +103,15 @@ namespace PuzzleSelect
         
         public void OnDeleteButtonPressed()
         {
-            EventManager.DisplayConfirmPopup(deletePopupData);
+            //EventManager.DisplayConfirmPopup(deletePopupData);
+            PopupWindowManager.instance.CreateConfirmPopupWindow(deletePopupDataObject, DeletePuzzle);
+
         }
         
         public void OnRestartButtonPressed()
         {
             //EventManager.DisplayConfirmPopup(restartPopupData);
-            PopupWindowManager.instance.CreateConfirmPopupWindow(restartPopupDataObject, RestartPuzzleAction);
-        }
-
-        private void RestartPuzzleAction()
-        {
-            SaveManager.RestartPuzzle(puzzleSelectPort.selectedPuzzle);
+            PopupWindowManager.instance.CreateConfirmPopupWindow(restartPopupDataObject, RestartPuzzle);
         }
 
         void DeletePuzzle()

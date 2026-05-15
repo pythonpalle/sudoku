@@ -10994,7 +10994,7 @@ PrefabInstance:
     - target: {fileID: 6786756718001429018, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
       propertyPath: confirmPopupData
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 091370c830d113a4d840f35d3afb6484, type: 2}
     - target: {fileID: 6786756718001429018, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
       propertyPath: confirmationRootPrefab
       value: 
@@ -11651,12 +11651,29 @@ PrefabInstance:
       propertyPath: m_Name
       value: Selection Box Popup Activator
       objectReference: {fileID: 0}
+    - target: {fileID: 8383101422544488289, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 187975645}
+    - target: {fileID: 8383101422544488289, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnDeleteButtonPressed
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383101422544488289, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PuzzleSelect.SelectionPopupBehaviour, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8726838892836664472, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
+      propertyPath: deletePopupDataObject
+      value: 
+      objectReference: {fileID: 11400000, guid: e9f65eef3bf22a341b53706729707182, type: 2}
     - target: {fileID: 8726838892836664472, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
       propertyPath: restartPopupDataObject
       value: 
       objectReference: {fileID: 11400000, guid: 091370c830d113a4d840f35d3afb6484, type: 2}
     m_RemovedComponents:
     - {fileID: 9134731342065251473, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
+    - {fileID: 7118019047428753366, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
