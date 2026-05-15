@@ -29,13 +29,15 @@ public class SaveFileLoader : MonoBehaviour
     [Header("Popup")] 
     [SerializeField] private PopupData firstPopupData;
     [SerializeField] private PopupData secondPopupData;
+    
+    [SerializeField] private PopupActivatorBehaviour deletePopupActivator;
 
     private void Awake()
     {
         firstPopupData.confirmButtonData.action = FirstDeleteConfirmAction;
         secondPopupData.confirmButtonData.action = SecondDeleteConfirmAction;
 
-        TestSave();
+        //TestSave();
     }
     
     private static readonly string fileExtenstion = ".dat";
@@ -95,7 +97,10 @@ public class SaveFileLoader : MonoBehaviour
         
         if (SaveManager.TryGetUser(saveNumber, out UserSaveData user))
         {
-            text.text = savePrefixText + $"{user.GetTotalPuzzleCount()} puzzles";
+            int puzzleCount = user.GetTotalPuzzleCount();
+            string puzzlesText = puzzleCount > 1 ? "puzzles" : "puzzle";
+            
+            text.text = $"{savePrefixText} {puzzleCount} {puzzlesText}";
         }
         else
         {
@@ -106,7 +111,9 @@ public class SaveFileLoader : MonoBehaviour
 
     public void OnDeleteButtonPressed()
     {
-        EventManager.DisplayConfirmPopup(firstPopupData);
+        deletePopupActivator.ActivatePopup();
+        
+        //EventManager.DisplayConfirmPopup(firstPopupData);
     }
 
     public void LoadSave()
