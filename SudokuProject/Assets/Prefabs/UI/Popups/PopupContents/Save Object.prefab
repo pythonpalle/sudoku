@@ -309,7 +309,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5953598476776603662}
   - component: {fileID: 4892796152848263422}
-  - component: {fileID: 4925067389183153737}
   m_Layer: 5
   m_Name: Save Object
   m_TagString: Untagged
@@ -359,38 +358,8 @@ MonoBehaviour:
   removeButton: {fileID: 2104126491895700714}
   removeImage: {fileID: 6739139031358433792}
   displayRemoval: 1
-  firstPopupData:
-    header: Delete Save?
-    explanation: Are you sure? This action cannot be undone!
-    cancelButtonData:
-      exists: 1
-      text: Cancel
-    confirmButtonData:
-      exists: 1
-      text: Delete
-  secondPopupData:
-    header: Delete Save?
-    explanation: Are you REALLY sure? This action CANNOT be undone!
-    cancelButtonData:
-      exists: 1
-      text: Cancel
-    confirmButtonData:
-      exists: 1
-      text: Delete
-  deletePopupActivator: {fileID: 4925067389183153737}
---- !u!114 &4925067389183153737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4241780543273693937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aeb6e653241b9754bb24d99b25e160ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  popupContentsPrefab: {fileID: 535855094873140346, guid: 8d3e5ac8b0e04cc409a911a3de0566bb, type: 3}
+  firstPopupData: {fileID: 11400000, guid: ff00338ed541fcc4495eec42397f1665, type: 2}
+  secondPopupData: {fileID: 11400000, guid: 3370743aaa58816429abfb5761c46a16, type: 2}
 --- !u!1 &4940235378170291689
 GameObject:
   m_ObjectHideFlags: 0

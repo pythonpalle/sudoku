@@ -28,36 +28,38 @@ public class SaveFileLoader : MonoBehaviour
     [SerializeField] bool displayRemoval;
 
     [Header("Popup")] 
-    [SerializeField] private PopupData firstPopupData;
-    [SerializeField] private PopupData secondPopupData;
+    // [SerializeField] private PopupData firstPopupData;
+    // [SerializeField] private PopupData secondPopupData;
+    [SerializeField] private PopupDataObject firstPopupData;
+    [SerializeField] private PopupDataObject secondPopupData;
     
-    [SerializeField] private PopupActivatorBehaviour deletePopupActivator;
+   // [SerializeField] private PopupActivatorBehaviour deletePopupActivator;
 
     private void Awake()
     {
-        firstPopupData.confirmButtonData.action = FirstDeleteConfirmAction;
-        secondPopupData.confirmButtonData.action = SecondDeleteConfirmAction;
+        // firstPopupData.confirmButtonData.action = FirstDeleteConfirmAction;
+        // secondPopupData.confirmButtonData.action = SecondDeleteConfirmAction;
 
         //TestSave();
     }
     
     private static readonly string fileExtenstion = ".dat";
 
-    private void FirstDeleteConfirmAction()
-    {
-        EventManager.DisplayConfirmPopup(secondPopupData);
-    }
-
-    private void SecondDeleteConfirmAction()
-    {
-        Debug.Log($"Trying to delete save {saveNumber}...");
-        if (SaveManager.TryDeleteUserSave(saveNumber))
-        {
-            Debug.Log($"Successful delete!");
-            transform.parent.gameObject.SetActive(false); 
-            transform.parent.gameObject.SetActive(true);
-        }
-    }
+    // private void FirstDeleteConfirmAction()
+    // {
+    //     EventManager.DisplayConfirmPopup(secondPopupData);
+    // }
+    //
+    // private void SecondDeleteConfirmAction()
+    // {
+    //     Debug.Log($"Trying to delete save {saveNumber}...");
+    //     if (SaveManager.TryDeleteUserSave(saveNumber))
+    //     {
+    //         Debug.Log($"Successful delete!");
+    //         transform.parent.gameObject.SetActive(false); 
+    //         transform.parent.gameObject.SetActive(true);
+    //     }
+    // }
 
     private void OnEnable()
     {
@@ -98,7 +100,23 @@ public class SaveFileLoader : MonoBehaviour
     public void OnDeleteButtonPressed()
     {
         _userSavePort.SelectedIndexForDelete = saveNumber;
-        deletePopupActivator.ActivatePopup();
+        //deletePopupActivator.ActivatePopup();
+        PopupWindowManager.instance.CreateConfirmPopupWindow(firstPopupData, OnFirstDeleteConfirmation);
+    }
+
+    private void OnFirstDeleteConfirmation()
+    {
+        PopupWindowManager.instance.CreateConfirmPopupWindow(secondPopupData, DeleteUserSaveFile);
+    }
+    
+    private void DeleteUserSaveFile()
+    {
+        Debug.Log($"Trying to delete save {saveNumber}...");
+        if (SaveManager.TryDeleteUserSave(saveNumber))
+        {
+            Debug.Log($"Successful delete!");
+            _scenePort.CallLoadPuzzleSelectScene();
+        }
     }
 
     public void LoadSave()

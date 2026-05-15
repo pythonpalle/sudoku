@@ -124,17 +124,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7215500286092961879, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
   m_PrefabInstance: {fileID: 5336392318736638100}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &87638530 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2731006216526137794, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
-  m_PrefabInstance: {fileID: 1180643931}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aeb6e653241b9754bb24d99b25e160ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &97198210
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5660,7 +5649,7 @@ PrefabInstance:
     - target: {fileID: 7145337558261114987, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 87638530}
+      objectReference: {fileID: 1180643933}
     - target: {fileID: 7145337558261114987, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ActivatePopup
@@ -5679,6 +5668,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7126686737247987787, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
   m_PrefabInstance: {fileID: 1180643931}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1180643933 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2731006216526137794, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
+  m_PrefabInstance: {fileID: 1180643931}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb6e653241b9754bb24d99b25e160ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1211582464 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8350243897922062515, guid: ee57cbe107993004e9cabe997006b2fa, type: 3}
