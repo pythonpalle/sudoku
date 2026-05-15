@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Title: 
   height: 1
-  width: 1
+  width: 2
   PopupContent: {fileID: 7088422236035962794, guid: c06b5a6741926f74aa2c3c7c57aadf80, type: 3}
   ExplanationText: 
   UseCancelButton: 0
