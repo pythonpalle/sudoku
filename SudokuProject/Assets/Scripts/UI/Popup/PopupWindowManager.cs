@@ -20,15 +20,11 @@ public class PopupWindowManager : MonoBehaviour
 
     public void CreatePopupWindow(PopupContentsBehaviour popupData)
     {
-        CreateAndInitializePopupWindow(popupData);
+        PopupWindowNewBehaviour popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
+        popupWindow.Initialize(popupData); 
     }
 
-    private PopupWindowNewBehaviour CreateAndInitializePopupWindow(PopupContentsBehaviour popupData)
-    {
-        PopupWindowNewBehaviour popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
-        popupWindow.Initialize(popupData);
-        return popupWindow;
-    }
+ 
 
     public void CreateConfirmPopupWindow(PopupDataObject popupData, UnityAction confirmAction)
     {
@@ -37,5 +33,11 @@ public class PopupWindowManager : MonoBehaviour
         
         var popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
         popupWindow.Initialize(popupData, confirmAction);
+    }
+    
+    public void CreatePopupWindow(PopupDataObject popupData)
+    {
+        PopupWindowNewBehaviour popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
+        popupWindow.Initialize(popupData, null); 
     }
 }

@@ -53,6 +53,9 @@ Lägg till pilar längst ner som visar steg för steg hur man kommer vidare i pu
 För varje av dessa steg, rita ut med kryss och pilar vilka kandidater som kan tas bort, skriv med text förklaring
 ("Eftersom siffran 1 saknas i box 4 så måste den vara 1")
 
+Lägg till checkbox "Avoid Spoilers". med denna så visas endast vilken ruta som är näst för lösningen. 
+TODO: hur blir det när nästa ruta är en candidate och inte digit?
+
 ------------------- Localisation --------------------------------------
 
 Gör alla texter i engelska, svenska
