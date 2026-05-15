@@ -6,19 +6,19 @@ using UnityEngine.UI;
 
 public class PopupWindowNewBehaviour : MonoBehaviour
 {
-    //[SerializeField] private RectTransform popupWindow;
-
     private PopupContentsBehaviour popupContentsBehaviour;
-    
-    public UnityAction OnPopup;
-    public UnityAction OnClose;
-    
+
+    [Header("Prefabs")]
     public Button ButtonPrefab;
-    
+
+    [Header("Assignables")]
     public TextMeshProUGUI Title;
+    public RectTransform Root;
     public RectTransform ContentRoot;
     public RectTransform ButtonLayoutGroup;
     
+    public UnityAction OnPopup;
+    public UnityAction OnClose;
     
     private bool isPopped;
 
@@ -50,6 +50,8 @@ public class PopupWindowNewBehaviour : MonoBehaviour
         popupContents.SetPopupWindow(this);
         
         Title.text = popupContents.Title;
+
+        Root.sizeDelta = new Vector2(popupContents.Width, popupContents.Height);
 
         var buttonDatas  = popupContents.ButtonDatas;
         if (buttonDatas != null && buttonDatas.Any())

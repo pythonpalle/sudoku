@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5335492448118696880}
   - component: {fileID: 819705437495388674}
   - component: {fileID: 1122584120416664422}
+  - component: {fileID: 9134731342065251473}
   m_Layer: 5
   m_Name: Restart Button
   m_TagString: Untagged
@@ -123,9 +124,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8726838892836664472}
-        m_TargetAssemblyTypeName: PuzzleSelect.SelectionPopupBehaviour, Assembly-CSharp
-        m_MethodName: OnRestartButtonPressed
+      - m_Target: {fileID: 9134731342065251473}
+        m_TargetAssemblyTypeName: PopupActivatorBehaviour, Assembly-CSharp
+        m_MethodName: ActivatePopup
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -163,6 +164,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explanationText: Restart
   closeWhenClicked: 1
+--- !u!114 &9134731342065251473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292677830765135708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb6e653241b9754bb24d99b25e160ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupContentsPrefab: {fileID: 4887330078320833464, guid: 29714450c150d954e939c47662c0e03f, type: 3}
 --- !u!1 &576797535738970734
 GameObject:
   m_ObjectHideFlags: 0
@@ -1126,7 +1140,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7290566352093775439}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
@@ -2095,7 +2109,15 @@ PrefabInstance:
     - target: {fileID: 779156078495758710, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 8726838892836664472}
+      objectReference: {fileID: 7118019047428753366}
+    - target: {fileID: 779156078495758710, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ActivatePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 779156078495758710, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PopupActivatorBehaviour, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 779156078495758711, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2183,13 +2205,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 779156078495758708, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7118019047428753366}
   m_SourcePrefab: {fileID: 100100000, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
 --- !u!224 &8383101422544488288 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 779156078495758711, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
   m_PrefabInstance: {fileID: 9117216419447406103}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8383101422544488291 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 779156078495758708, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
+  m_PrefabInstance: {fileID: 9117216419447406103}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7118019047428753366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8383101422544488291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb6e653241b9754bb24d99b25e160ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupContentsPrefab: {fileID: 1810307999966216101, guid: 7931767941209e144b26d9a02d971e2e, type: 3}
 --- !u!1001 &9150200186748153285
 PrefabInstance:
   m_ObjectHideFlags: 0
