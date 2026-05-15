@@ -11,7 +11,7 @@ public enum WindowSize
     Large
 }
 
-public abstract class PopupContentsBehaviour : MonoBehaviour
+public class PopupContentsBehaviour : MonoBehaviour
 {
     private PopupWindowNewBehaviour _popupWindow;
     

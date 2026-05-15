@@ -212,6 +212,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6340093839486197688, guid: 0286ac95e26824740a63ee396aa197b9, type: 3}
   m_PrefabInstance: {fileID: 97198210}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &187975645 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8726838892836664472, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
+  m_PrefabInstance: {fileID: 5336392318736638100}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4aa29f85f4dfc342a5eb6b11d521ba5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &195751307 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5550261219088594513, guid: 6aec074b3d3e50a43851cae92f06a6fb, type: 3}
@@ -10981,6 +10992,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1893580196}
     - target: {fileID: 6786756718001429018, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
+      propertyPath: confirmPopupData
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6786756718001429018, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
+      propertyPath: confirmationRootPrefab
+      value: 
+      objectReference: {fileID: 1872530688673392069, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+    - target: {fileID: 6786756718001429018, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
       propertyPath: genericPopupWindowPrefab
       value: 
       objectReference: {fileID: 6804213353919521977, guid: 5061408c700cb074eac6769a9a4a7f8a, type: 3}
@@ -11536,6 +11555,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1770266383}
     m_Modifications:
+    - target: {fileID: 5335492448118696880, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 187975645}
+    - target: {fileID: 5335492448118696880, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnRestartButtonPressed
+      objectReference: {fileID: 0}
+    - target: {fileID: 5335492448118696880, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PuzzleSelect.SelectionPopupBehaviour, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 7215500286092961879, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -11620,7 +11651,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Selection Box Popup Activator
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8726838892836664472, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
+      propertyPath: restartPopupDataObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 091370c830d113a4d840f35d3afb6484, type: 2}
+    m_RemovedComponents:
+    - {fileID: 9134731342065251473, guid: 34ee5e1d514790d45a161c8f5a958fa8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

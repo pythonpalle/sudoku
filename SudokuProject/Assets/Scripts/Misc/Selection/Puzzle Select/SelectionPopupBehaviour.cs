@@ -16,6 +16,9 @@ namespace PuzzleSelect
         [SerializeField] private ProgressionIcon progressionIcon;
         [SerializeField] private DifficultyIcon difficultyIcon;
         
+        [Space]
+        [SerializeField] private PopupDataObject restartPopupDataObject;
+        
         private PuzzleDataHolder currentPuzzle;
         private string lastSelectedPuzzleID = "";
 
@@ -104,7 +107,13 @@ namespace PuzzleSelect
         
         public void OnRestartButtonPressed()
         {
-            EventManager.DisplayConfirmPopup(restartPopupData);
+            //EventManager.DisplayConfirmPopup(restartPopupData);
+            PopupWindowManager.instance.CreateConfirmPopupWindow(restartPopupDataObject, RestartPuzzleAction);
+        }
+
+        private void RestartPuzzleAction()
+        {
+            SaveManager.RestartPuzzle(puzzleSelectPort.selectedPuzzle);
         }
 
         void DeletePuzzle()

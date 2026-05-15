@@ -10,11 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b1d4dff9c4438104c8025fbb830c26bf, type: 3}
-  m_Name: RestartPopupData
+  m_Name: Confirm Popup Data
   m_EditorClassIdentifier: 
+  prefab: {fileID: 0}
   Title: Are you sure?
-  height: 0
-  width: 1
-  PopupContent: {fileID: 0}
-  UseCancelButton: 1
-  ConfirmButtonText: Restart
+  ButtonDatas:
+  - Text: Cancel
+    OnClick:
+      m_PersistentCalls:
+        m_Calls: []
+  - Text: Restart
+    OnClick:
+      m_PersistentCalls:
+        m_Calls: []

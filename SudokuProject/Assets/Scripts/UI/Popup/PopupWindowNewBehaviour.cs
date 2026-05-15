@@ -21,7 +21,7 @@ public class PopupWindowNewBehaviour : MonoBehaviour
     public UnityAction OnClose;
     
     private bool isPopped;
-
+    public UnityAction ConfirmAction { get; set; }
 
 
     public void Close()
@@ -52,25 +52,62 @@ public class PopupWindowNewBehaviour : MonoBehaviour
         Title.text = popupContents.Title;
 
         Root.sizeDelta = new Vector2(popupContents.Width, popupContents.Height);
-
-        var buttonDatas  = popupContents.ButtonDatas;
-        if (buttonDatas != null && buttonDatas.Any())
-        {
-            foreach (var buttonData in buttonDatas)
-            {
-                var button = Instantiate(ButtonPrefab, ButtonLayoutGroup);
-                
-                // todo: gör ny monobehaviour av den knappen?
-                var textTransform = button.GetComponentInChildren<TextMeshProUGUI>();
-                if (textTransform != null)
-                    textTransform.text = buttonData.Text;
-                
-                button.onClick = buttonData.OnClick;
-            }
-        }
-
+        
         var popupContent = Instantiate(popupContents.PopupContent, ContentRoot); 
 
+
+        // var buttonDatas  = popupContents.ButtonDatas;
+        // if (buttonDatas != null && buttonDatas.Any())
+        // {
+        //     foreach (var buttonData in buttonDatas)
+        //     {
+        //         var button = Instantiate(ButtonPrefab, ButtonLayoutGroup);
+        //         
+        //         // todo: gör ny monobehaviour av den knappen?
+        //         var textTransform = button.GetComponentInChildren<TextMeshProUGUI>();
+        //         if (textTransform != null)
+        //             textTransform.text = buttonData.Text;
+        //         
+        //         button.onClick = buttonData.OnClick;
+        //     }
+        // }
+
+
+    }
+    
+    public void Initialize(PopupDataObject popupData, UnityAction confirmAction)
+    {
+        GameStateManager.OnPopup();
+        isPopped = true;
+        OnPopup?.Invoke();
+        
+        Title.text = popupData.Title;
+
+        Root.sizeDelta = new Vector2(popupData.Width, popupData.Height);
+        
+        var popupContent = Instantiate(popupData.PopupContent, ContentRoot); 
+
+        if (confirmAction != null)
+        {
+            if (popupData.UseCancelButton)
+            {
+                var cancelButton = Instantiate(ButtonPrefab, ButtonLayoutGroup);
+                TrySetButtonText(cancelButton, "Cancel");
+                cancelButton.onClick.AddListener(Close);
+            }
+            
+            var confirmButton = Instantiate(ButtonPrefab, ButtonLayoutGroup);
+            TrySetButtonText(confirmButton, popupData.ConfirmButtonText);
+            confirmButton.onClick.AddListener(Close);
+            confirmButton.onClick.AddListener(confirmAction);
+        }
+    }
+
+    private static void TrySetButtonText(Button cancelButton, string text)
+    {
+        var textTransform = cancelButton.GetComponentInChildren<TextMeshProUGUI>();
+        if (textTransform != null)
+            textTransform.text = text;
     }
 }
 
