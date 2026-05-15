@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class SudokuGameSceneManager : MonoBehaviour
 {
+    public static SudokuGameSceneManager instance;
+    
     [SerializeField] private GeneratorPort generatorPort;
     [SerializeField] private PuzzleSelectPort selectPort;
     [SerializeField] private ScenePort scenePort;
@@ -24,12 +26,19 @@ public class SudokuGameSceneManager : MonoBehaviour
 
     public void Awake()
     {
-        Debug.Log("SudokuGameSceneManager::Awake");
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         
         if (string.IsNullOrEmpty(SceneNameDuringStart))
         {
             SceneNameDuringStart = SceneManager.GetActiveScene().name;
-            Debug.Log("SudokuGameSceneManager sets SceneNameDuringStart: " + SceneNameDuringStart);
         }
     }
     
