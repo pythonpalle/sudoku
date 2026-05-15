@@ -13,8 +13,25 @@ public class SudokuGameSceneManager : MonoBehaviour
     [SerializeField] private ScenePort scenePort;
 
     private static string startSceneName = "Start Scene";
-    public static string puzzleSelectSceneName = "Puzzle Select Scene"; 
+    private static string puzzleSelectSceneName = "Puzzle Select Scene"; 
     private static string gameSceneName = "Game Scene";
+    
+    public static string PuzzleSelectSceneName => puzzleSelectSceneName;
+    public static string GameSceneName => gameSceneName;
+
+
+    public static string SceneNameDuringStart;
+
+    public void Awake()
+    {
+        Debug.Log("SudokuGameSceneManager::Awake");
+        
+        if (string.IsNullOrEmpty(SceneNameDuringStart))
+        {
+            SceneNameDuringStart = SceneManager.GetActiveScene().name;
+            Debug.Log("SudokuGameSceneManager sets SceneNameDuringStart: " + SceneNameDuringStart);
+        }
+    }
     
     public void OnEnable()
     {

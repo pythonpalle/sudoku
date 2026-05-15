@@ -18,8 +18,10 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
 
     private void OnEnable()
     {
+        
+        
         // way of debbuging directly from the Game Scene without first selecting a puzzle from the Select scene
-        if (!SaveManager.HasCreatedPuzzleData && generatorPort.GenerationType != GridGenerationType.empty)
+        if (SudokuGameSceneManager.SceneNameDuringStart == SudokuGameSceneManager.GameSceneName)
         {
             string errorMsg = "Puzzle save not found when initializing GridSaver!";
             if (Application.isEditor)
