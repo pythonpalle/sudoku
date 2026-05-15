@@ -344,10 +344,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Save Object
       objectReference: {fileID: 0}
-    - target: {fileID: 4892796152848263422, guid: 6fc09fbf6878339479f7463b468e2a05, type: 3}
-      propertyPath: deletePopupActivator
-      value: 
-      objectReference: {fileID: 4753678657568879770}
     - target: {fileID: 5953598476776603662, guid: 6fc09fbf6878339479f7463b468e2a05, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -431,31 +427,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4241780543273693937, guid: 6fc09fbf6878339479f7463b468e2a05, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4753678657568879770}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6fc09fbf6878339479f7463b468e2a05, type: 3}
 --- !u!224 &3625608125133816253 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5953598476776603662, guid: 6fc09fbf6878339479f7463b468e2a05, type: 3}
   m_PrefabInstance: {fileID: 6976024300617499059}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &6490256378910831426 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4241780543273693937, guid: 6fc09fbf6878339479f7463b468e2a05, type: 3}
-  m_PrefabInstance: {fileID: 6976024300617499059}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4753678657568879770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6490256378910831426}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aeb6e653241b9754bb24d99b25e160ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  popupContentsPrefab: {fileID: 535855094873140346, guid: 8d3e5ac8b0e04cc409a911a3de0566bb, type: 3}

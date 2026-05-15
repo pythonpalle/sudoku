@@ -1,6 +1,7 @@
+using UnityEditor;
 using UnityEngine;
 
-public class SaveFilesPopupContentBehaviour : MonoBehaviour
+public class SaveFilesPopupContentBehaviour : PopupContentsBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

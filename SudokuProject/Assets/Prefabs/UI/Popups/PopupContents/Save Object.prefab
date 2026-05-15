@@ -309,6 +309,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5953598476776603662}
   - component: {fileID: 4892796152848263422}
+  - component: {fileID: 4925067389183153737}
   m_Layer: 5
   m_Name: Save Object
   m_TagString: Untagged
@@ -354,6 +355,7 @@ MonoBehaviour:
   selectColor: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
   deselectColor: {fileID: 11400000, guid: 0a9ac037b908cee47b3c4c71bac9eb37, type: 2}
   _scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
+  _userSavePort: {fileID: 11400000, guid: 16661beb76d8c8e429959d25a4221e89, type: 2}
   removeButton: {fileID: 2104126491895700714}
   removeImage: {fileID: 6739139031358433792}
   displayRemoval: 1
@@ -375,6 +377,20 @@ MonoBehaviour:
     confirmButtonData:
       exists: 1
       text: Delete
+  deletePopupActivator: {fileID: 4925067389183153737}
+--- !u!114 &4925067389183153737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4241780543273693937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb6e653241b9754bb24d99b25e160ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupContentsPrefab: {fileID: 535855094873140346, guid: 8d3e5ac8b0e04cc409a911a3de0566bb, type: 3}
 --- !u!1 &4940235378170291689
 GameObject:
   m_ObjectHideFlags: 0

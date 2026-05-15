@@ -3,16 +3,19 @@ using UnityEngine;
 
 public class DeleteSavePopupContents : PopupContentsBehaviour
 {
-    public int saveNumber = 2;
+    [SerializeField] private UserSavePort savePort;
+    [SerializeField] ScenePort _scenePort;
     
     public void DeleteSaveFile()
     {
+        int saveNumber = savePort.SelectedIndexForDelete;
         Debug.Log($"Trying to delete save {saveNumber}...");
         if (SaveManager.TryDeleteUserSave(saveNumber))
         {
+            _scenePort.CallLoadPuzzleSelectScene();
+            
             Debug.Log($"Successful delete!");
-            transform.parent.gameObject.SetActive(false); 
-            transform.parent.gameObject.SetActive(true);
+            Close();
         } 
     }
 }

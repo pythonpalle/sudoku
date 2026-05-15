@@ -20,6 +20,7 @@ public class SaveFileLoader : MonoBehaviour
     
     [Header("Ports")]
     [SerializeField] ScenePort _scenePort;
+    [SerializeField] UserSavePort _userSavePort;
     
     [Header("Removal")]
     [SerializeField] Button removeButton;
@@ -41,30 +42,6 @@ public class SaveFileLoader : MonoBehaviour
     }
     
     private static readonly string fileExtenstion = ".dat";
-    
-    private static string GetFullFilePathName(string fileName)
-    {
-        return Path.Combine(Application.persistentDataPath, fileName) + fileExtenstion;
-    }
-
-    private void TestSave()
-    {
-        byte[] bytes = new byte[] { 0, 12, 43, 225, 255, 1 };
-
-        string path = GetFullFilePathName("test");
-
-        // Write binary data using FileStream
-        using (FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
-        {
-            fileStream.Write(bytes, 0, bytes.Length);
-            Debug.Log("Written!");
-        }
-        
-        // UserSaveData saveData = new UserSaveData(new UserIdentifier("Hej", "123"));
-        // var bytes = saveData.ToBinary();
-        //     
-        // FileManager.WriteAllBytes("test.txt", bytes, false);
-    }
 
     private void FirstDeleteConfirmAction()
     {
@@ -94,26 +71,34 @@ public class SaveFileLoader : MonoBehaviour
         
         background.color = applyColor;
         removeImage.color = deselectColor.Color;//applyColor; 
+
+        bool displayRemoveButton = false;
         
         if (SaveManager.TryGetUser(saveNumber, out UserSaveData user))
         {
             int puzzleCount = user.GetTotalPuzzleCount();
-            string puzzlesText = puzzleCount > 1 ? "puzzles" : "puzzle";
+            string puzzlesText = "Empty";
+
+            if (puzzleCount > 0)
+            {
+                puzzlesText = $"{puzzleCount} " + (puzzleCount == 1 ? "Puzzle" : "Puzzles");
+                displayRemoveButton = true;
+            }
             
-            text.text = $"{savePrefixText} {puzzleCount} {puzzlesText}";
+            text.text = $"{savePrefixText} {puzzlesText}";
         }
         else
         {
             text.text = savePrefixText + "Empty";
-            removeButton.gameObject.SetActive(false);
         }
+        
+        removeButton.gameObject.SetActive(displayRemoveButton);
     }
 
     public void OnDeleteButtonPressed()
     {
+        _userSavePort.SelectedIndexForDelete = saveNumber;
         deletePopupActivator.ActivatePopup();
-        
-        //EventManager.DisplayConfirmPopup(firstPopupData);
     }
 
     public void LoadSave()

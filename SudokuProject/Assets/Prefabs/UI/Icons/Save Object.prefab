@@ -31,7 +31,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6293045475975254776}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -109,15 +108,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -170,7 +171,6 @@ RectTransform:
   - {fileID: 1327958862066146237}
   - {fileID: 3014483707859234265}
   m_Father: {fileID: 6293045477002111888}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -316,7 +316,6 @@ RectTransform:
   m_Children:
   - {fileID: 6293045475975254776}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -341,6 +340,7 @@ MonoBehaviour:
   selectColor: {fileID: 11400000, guid: 53009d173dfec3842ae63825772dee5f, type: 2}
   deselectColor: {fileID: 11400000, guid: 0a9ac037b908cee47b3c4c71bac9eb37, type: 2}
   _scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
+  _userSavePort: {fileID: 11400000, guid: 16661beb76d8c8e429959d25a4221e89, type: 2}
   removeButton: {fileID: 3014483707859234264}
   removeImage: {fileID: 3014483707859234247}
   displayRemoval: 0
@@ -362,11 +362,13 @@ MonoBehaviour:
     confirmButtonData:
       exists: 1
       text: Delete
+  deletePopupActivator: {fileID: 0}
 --- !u!1001 &2523571216945878190
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 6293045475975254776}
     m_Modifications:
     - target: {fileID: 779156077762743908, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
@@ -506,6 +508,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a33f02bb3e4ab7049bb8a95580a1c883, type: 3}
 --- !u!114 &3014483707859234247 stripped
 MonoBehaviour:

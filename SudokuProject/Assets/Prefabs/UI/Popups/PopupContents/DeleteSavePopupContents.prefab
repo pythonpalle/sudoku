@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Title: Delete Save
-  height: 1
+  height: 0
   width: 1
   PopupContent: {fileID: 4689700639876421949}
   ButtonDatas:
@@ -163,4 +163,5 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  saveNumber: 2
+  savePort: {fileID: 11400000, guid: 16661beb76d8c8e429959d25a4221e89, type: 2}
+  _scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}
