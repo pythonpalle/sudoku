@@ -1,101 +1,54 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Saving;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace PuzzleSelect
 {
     public class SelectionPopupBehaviour : MonoBehaviour
     {
-        [SerializeField] private PuzzleSelectPort puzzleSelectPort;
-        //[SerializeField] private PopupWindow _popupWindow;
+        [Header("Assignables")]
         [SerializeField] private ValidNameChecker _validNameChecker;
         [SerializeField] private PuzzleSelectBox popupBox;
         [SerializeField] private ProgressionIcon progressionIcon;
         [SerializeField] private DifficultyIcon difficultyIcon;
         
-        [Space]
+        [Header("Ports")]
+        [SerializeField] private PuzzleSelectPort puzzleSelectPort;
+        
+        [Header("Popup Data")]
         [SerializeField] private PopupDataObject restartPopupDataObject;
         [SerializeField] private PopupDataObject deletePopupDataObject;
         [SerializeField] private PopupDataObject puzzleSelectPopupData;
-
         
         private PuzzleDataHolder currentPuzzle;
         private string lastSelectedPuzzleID = "";
-
-        //public PopupData deletePopupData;
-        //public PopupData restartPopupData;
-
+        
         private void OnEnable()
         {
-            Debug.Log("SelectionPopupBehaviour OnEnable");
-            
-            //puzzleSelectPort.OnSelectPuzzleBox += OnSelectPuzzleBox;
             OnSelectPuzzleBox();
-            
-           // puzzleSelectPort.OnSelectPuzzleBox += OnSelectPuzzleBox;
-        
-            // deletePopupData.confirmButtonData.action = DeletePuzzle;
-            // restartPopupData.confirmButtonData.action = RestartPuzzle;
-        
-            // SaveManager.OnPuzzleDeleted += OnPuzzleDeleted;
-            // SaveManager.OnPuzzleReset += OnPuzzleReset;
-            
-           // _popupWindow.OnClose += OnPopupWindowClose;
         }
         
-        private void OnDisable()
-        {
-           // puzzleSelectPort.OnSelectPuzzleBox -= OnSelectPuzzleBox;
-            
-            // SaveManager.OnPuzzleDeleted -= OnPuzzleDeleted;
-            // SaveManager.OnPuzzleReset -= OnPuzzleReset;
-            
-           // _popupWindow.OnClose -= OnPopupWindowClose;
-        }
-
         private void OnDestroy()
         {
             UpdatePuzzleName();
-        
         }
         
-        // private void OnPopupWindowClose()
-        // {
-        //     UpdatePuzzleName();
-        // }
-        //
         private void UpdatePuzzleName()
         {
             currentPuzzle.name = _validNameChecker.GetPuzzleSaveName();
             puzzleSelectPort.selectedBox.UpdateName();
             _validNameChecker.ResetUserEntered();
         }
-        //
-        // private void OnPuzzleReset(PuzzleDataHolder arg0)
-        // {
-        //     _popupWindow.Close();
-        // }
-        //
+
         private void OnSelectPuzzleBox()
         {
             currentPuzzle = puzzleSelectPort.selectedPuzzle;
             _validNameChecker.SetPlaceHolder(currentPuzzle.name);
             
-            Debug.Log("Current puzzle name: " + currentPuzzle.name);
-        
             if (lastSelectedPuzzleID == "" || currentPuzzle.id != lastSelectedPuzzleID)
             {
                 popupBox.Clear();
                 popupBox.SetData(currentPuzzle);
             }
-            
-            //_popupWindow.PopUp();
-            
-            //PopupWindowManager.instance.CreatePopupWindow(puzzleSelectPopupData);
         
             float progression = currentPuzzle.difficulty >= (int) PuzzleDifficulty.Impossible
                 ? 0
@@ -106,18 +59,10 @@ namespace PuzzleSelect
             
             lastSelectedPuzzleID = currentPuzzle.id;
         }
-        //
-        // private void OnPuzzleDeleted(PuzzleDataHolder _)
-        // {
-        //     _popupWindow.Close();
-        // }
-        //
+
         public void OnPlayButtonPressed()
         {
-            // UpdatePuzzleName();
-            //_popupWindow.Close();
-            
-            PopupWindowManager.instance.ClosePopup(gameObject);
+            ClosePopup();
             puzzleSelectPort.SelectAndLoad(currentPuzzle);
         }
         
@@ -133,12 +78,19 @@ namespace PuzzleSelect
 
         void DeletePuzzle()
         {
+            ClosePopup();
             SaveManager.TryDeletePuzzle(currentPuzzle);
         } 
         
         private void RestartPuzzle()
         {
+            ClosePopup();
             SaveManager.RestartPuzzle(currentPuzzle);
+        }
+
+        private void ClosePopup()
+        {
+            PopupWindowManager.instance.ClosePopup(gameObject);
         }
     }
 }
