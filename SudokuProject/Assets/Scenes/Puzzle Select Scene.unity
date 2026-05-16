@@ -3036,6 +3036,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5184688797412245678, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: canvasTransform
+      value: 
+      objectReference: {fileID: 1893580196}
+    - target: {fileID: 5383386888205456992, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6877273810900924438, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3045,6 +3057,11 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5184688797412245677, guid: 7b06bbaeeb35de0459d7c3d4ae8d0675, type: 3}
   m_PrefabInstance: {fileID: 726686668}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &737532471 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 918828878947138634, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
+  m_PrefabInstance: {fileID: 1321307223148417469}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &827403875
 GameObject:
@@ -3128,7 +3145,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1430187886}
   m_HandleRect: {fileID: 1430187885}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 10
   m_OnValueChanged:
@@ -3211,7 +3228,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000030517578}
+  m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 790, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &931070852
@@ -5534,6 +5551,10 @@ PrefabInstance:
       propertyPath: popupContentsPrefab
       value: 
       objectReference: {fileID: 3689147906005026501, guid: 1081dec049480ee4dbf134b0e0309707, type: 3}
+    - target: {fileID: 2745213088670244661, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     - target: {fileID: 2881945335559451148, guid: aab10a0cd60778240a6ba1643322f576, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
@@ -5893,6 +5914,18 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7546148000372858803, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
   m_PrefabInstance: {fileID: 1321307223148417469}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1602797521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 737532471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cece285b0bf7f2c42a0eef98f72bf2c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1669507349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10660,8 +10693,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1277523492}
-  - {fileID: 1180643932}
   - {fileID: 317696927}
+  - {fileID: 1180643932}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -10855,7 +10888,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 918828878947138634, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
       propertyPath: m_Name
-      value: PopupWindowManager
+      value: Popup Window Manager
       objectReference: {fileID: 0}
     - target: {fileID: 6786756718001429018, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
       propertyPath: popupParent
@@ -10916,7 +10949,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 918828878947138634, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1602797521}
   m_SourcePrefab: {fileID: 100100000, guid: dd16e990278e41a49b7f3739e094ac69, type: 3}
 --- !u!1001 &3461909404023621029
 PrefabInstance:

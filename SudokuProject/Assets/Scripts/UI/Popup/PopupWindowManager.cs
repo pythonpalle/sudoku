@@ -11,8 +11,6 @@ public class PopupWindowManager : MonoBehaviour
     
     [Header("Confirm Popup")]
     [SerializeField] private GameObject confirmationRootPrefab;
-   // [SerializeField] private PopupContentsBehaviour confirmPopupData;
-    //[SerializeField] private PopupDataObject confirmPopupData;
     
     // todo: readonly attribute. Stack<> instead?
     [SerializeField]  List<PopupWindowNewBehaviour> activePopupWindows;
@@ -54,11 +52,7 @@ public class PopupWindowManager : MonoBehaviour
     public void CreatePopupWindow(PopupDataObject popupData)
     {
         PopupWindowNewBehaviour popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
-        // popupWindow.Initialize(popupData, null); 
-        // activePopupWindows.Add(popupWindow);
-        
         InitializeAndAddToActive(popupData, null, popupWindow);
-
     }
 
     public void ClosePopup(GameObject o)
