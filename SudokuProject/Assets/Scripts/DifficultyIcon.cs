@@ -15,6 +15,12 @@ public class DifficultyIcon : MonoBehaviour
     public void SetDifficulty(int difficulty)
     {
         string explanationText = $"Difficulty: {EnumUtility.GetEnumValue<PuzzleDifficulty>(difficulty)}";
+
+        if (_explanationText == null)
+        {
+            _explanationText = GetComponentInChildren<HoverBehaviour>();
+        }
+        
         _explanationText.SetText(explanationText); 
         
         int maxDifficulty = 4;

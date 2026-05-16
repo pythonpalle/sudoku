@@ -23,13 +23,8 @@ namespace PuzzleSelect
 
         public void OnButtonPressed()
         {
-            Debug.Log("nametext: " + nameText.text);
-            Debug.Log("puzzle name: " + puzzle.name);
-            
             selectPort.SelectPuzzleBox(this, puzzle); 
-            
             PopupWindowManager.instance.CreatePopupWindow(puzzleSelectPopupData);
-            
         }
 
         public bool HasPuzzle(PuzzleDataHolder other)
