@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using Saving;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace PuzzleSelect
 {
     public class SelectionPopupBehaviour : MonoBehaviour
     {
         [SerializeField] private PuzzleSelectPort puzzleSelectPort;
-        [SerializeField] private PopupWindow _popupWindow;
+        //[SerializeField] private PopupWindow _popupWindow;
         [SerializeField] private ValidNameChecker _validNameChecker;
         [SerializeField] private PuzzleSelectBox popupBox;
         [SerializeField] private ProgressionIcon progressionIcon;
@@ -19,66 +20,83 @@ namespace PuzzleSelect
         [Space]
         [SerializeField] private PopupDataObject restartPopupDataObject;
         [SerializeField] private PopupDataObject deletePopupDataObject;
+        [SerializeField] private PopupDataObject puzzleSelectPopupData;
+
         
         private PuzzleDataHolder currentPuzzle;
         private string lastSelectedPuzzleID = "";
 
-        public PopupData deletePopupData;
-        public PopupData restartPopupData;
+        //public PopupData deletePopupData;
+        //public PopupData restartPopupData;
 
         private void OnEnable()
         {
-            puzzleSelectPort.OnSelectPuzzleBox += OnSelectPuzzleBox;
-
-            deletePopupData.confirmButtonData.action = DeletePuzzle;
-            restartPopupData.confirmButtonData.action = RestartPuzzle;
-
-            SaveManager.OnPuzzleDeleted += OnPuzzleDeleted;
-            SaveManager.OnPuzzleReset += OnPuzzleReset;
-
-            _popupWindow.OnClose += OnPopupWindowClose;
+            Debug.Log("SelectionPopupBehaviour OnEnable");
+            
+            //puzzleSelectPort.OnSelectPuzzleBox += OnSelectPuzzleBox;
+            OnSelectPuzzleBox();
+            
+           // puzzleSelectPort.OnSelectPuzzleBox += OnSelectPuzzleBox;
+        
+            // deletePopupData.confirmButtonData.action = DeletePuzzle;
+            // restartPopupData.confirmButtonData.action = RestartPuzzle;
+        
+            // SaveManager.OnPuzzleDeleted += OnPuzzleDeleted;
+            // SaveManager.OnPuzzleReset += OnPuzzleReset;
+            
+           // _popupWindow.OnClose += OnPopupWindowClose;
         }
-
+        
         private void OnDisable()
         {
-            puzzleSelectPort.OnSelectPuzzleBox -= OnSelectPuzzleBox;
+           // puzzleSelectPort.OnSelectPuzzleBox -= OnSelectPuzzleBox;
             
-            SaveManager.OnPuzzleDeleted -= OnPuzzleDeleted;
-            SaveManager.OnPuzzleReset -= OnPuzzleReset;
+            // SaveManager.OnPuzzleDeleted -= OnPuzzleDeleted;
+            // SaveManager.OnPuzzleReset -= OnPuzzleReset;
             
-            _popupWindow.OnClose -= OnPopupWindowClose;
+           // _popupWindow.OnClose -= OnPopupWindowClose;
         }
 
-        private void OnPopupWindowClose()
+        private void OnDestroy()
         {
             UpdatePuzzleName();
-        }
 
+        }
+        
+        // private void OnPopupWindowClose()
+        // {
+        //     UpdatePuzzleName();
+        // }
+        //
         private void UpdatePuzzleName()
         {
             currentPuzzle.name = _validNameChecker.GetPuzzleSaveName();
             puzzleSelectPort.selectedBox.UpdateName();
             _validNameChecker.ResetUserEntered();
         }
-
-        private void OnPuzzleReset(PuzzleDataHolder arg0)
-        {
-            _popupWindow.Close();
-        }
-
+        //
+        // private void OnPuzzleReset(PuzzleDataHolder arg0)
+        // {
+        //     _popupWindow.Close();
+        // }
+        //
         private void OnSelectPuzzleBox()
         {
             currentPuzzle = puzzleSelectPort.selectedPuzzle;
             _validNameChecker.SetPlaceHolder(currentPuzzle.name);
-
+            
+            Debug.Log("Current puzzle name: " + currentPuzzle.name);
+        
             if (lastSelectedPuzzleID == "" || currentPuzzle.id != lastSelectedPuzzleID)
             {
                 popupBox.Clear();
                 popupBox.SetData(currentPuzzle);
             }
             
-            _popupWindow.PopUp();
-
+            //_popupWindow.PopUp();
+            
+            //PopupWindowManager.instance.CreatePopupWindow(puzzleSelectPopupData);
+        
             float progression = currentPuzzle.difficulty >= (int) PuzzleDifficulty.Impossible
                 ? 0
                 : currentPuzzle.progression;
@@ -88,16 +106,18 @@ namespace PuzzleSelect
             
             lastSelectedPuzzleID = currentPuzzle.id;
         }
-
-        private void OnPuzzleDeleted(PuzzleDataHolder _)
-        {
-            _popupWindow.Close();
-        }
-
+        //
+        // private void OnPuzzleDeleted(PuzzleDataHolder _)
+        // {
+        //     _popupWindow.Close();
+        // }
+        //
         public void OnPlayButtonPressed()
         {
-            //UpdatePuzzleName();
-            _popupWindow.Close();
+            UpdatePuzzleName();
+            //_popupWindow.Close();
+            
+            PopupWindowManager.instance.ClosePopup(gameObject);
             puzzleSelectPort.SelectAndLoad(currentPuzzle);
         }
         

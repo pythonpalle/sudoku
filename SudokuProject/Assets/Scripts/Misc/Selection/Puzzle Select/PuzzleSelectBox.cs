@@ -13,6 +13,7 @@ namespace PuzzleSelect
         private PuzzleDataHolder puzzle;
 
         [SerializeField] private List<SelectTile> tiles;
+        [SerializeField] private PopupDataObject puzzleSelectPopupData;
 
         public void SetData(PuzzleDataHolder puzzleData) 
         {
@@ -22,9 +23,13 @@ namespace PuzzleSelect
 
         public void OnButtonPressed()
         {
-            Debug.Log(nameText.text);
+            Debug.Log("nametext: " + nameText.text);
+            Debug.Log("puzzle name: " + puzzle.name);
             
             selectPort.SelectPuzzleBox(this, puzzle); 
+            
+            PopupWindowManager.instance.CreatePopupWindow(puzzleSelectPopupData);
+            
         }
 
         public bool HasPuzzle(PuzzleDataHolder other)

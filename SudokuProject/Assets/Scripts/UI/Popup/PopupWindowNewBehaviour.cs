@@ -29,6 +29,7 @@ public class PopupWindowNewBehaviour : MonoBehaviour
     {
         //popupWindow.gameObject.SetActive(false);
         GameStateManager.OnPopupClose();
+        PopupWindowManager.instance.OnPopupWindowClose(this);
         isPopped = false;
         OnClose?.Invoke();
         Destroy(this.gameObject);
