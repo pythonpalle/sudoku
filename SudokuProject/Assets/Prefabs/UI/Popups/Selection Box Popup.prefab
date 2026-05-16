@@ -1886,6 +1886,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+  showExplanationText: 1
+  explanationText: Delete
+  closeWhenClicked: 1
 --- !u!114 &2912578728503089242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1893,7 +1896,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 592502371987515292}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
   m_Name: 
@@ -2522,6 +2525,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+  showExplanationText: 1
+  explanationText: 
+  closeWhenClicked: 1
 --- !u!1 &861457616487782387
 GameObject:
   m_ObjectHideFlags: 0
@@ -9095,7 +9101,7 @@ MonoBehaviour:
   - {fileID: 7859121881201679481}
   - {fileID: 9093155964801245965}
   - {fileID: 6696459228439085127}
-  _explanationText: {fileID: 4308311560564090962}
+  _explanationText: {fileID: 0}
   difficultyColors: {fileID: 11400000, guid: bfc59532f7d63fd4d9a045bb49309d9e, type: 2}
   backgroundColor: {fileID: 11400000, guid: 86b48811ac1f8394e9bd4656a491fccf, type: 2}
   impossibleColor: {fileID: 11400000, guid: c6f1e2d1ea45b474194ea34b754d2018, type: 2}
@@ -12279,7 +12285,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5823418467201922692}
   - component: {fileID: 4705063438965753689}
-  - component: {fileID: 4232561060140921630}
   - component: {fileID: 8321677118442969478}
   - component: {fileID: 1638159209719196053}
   m_Layer: 5
@@ -12322,20 +12327,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
---- !u!114 &4232561060140921630
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3445891586501960985}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  showExplanationText: 1
   explanationText: 
-  closeWhenClicked: 0
+  closeWhenClicked: 1
 --- !u!222 &8321677118442969478
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15378,6 +15372,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+  showExplanationText: 1
+  explanationText: 
+  closeWhenClicked: 1
 --- !u!1 &4164337127956914965
 GameObject:
   m_ObjectHideFlags: 0
@@ -18931,6 +18928,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+  showExplanationText: 1
+  explanationText: 
+  closeWhenClicked: 1
 --- !u!114 &4308311560564090962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24598,12 +24598,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4aa29f85f4dfc342a5eb6b11d521ba5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puzzleSelectPort: {fileID: 11400000, guid: 12e4ef2e78913584ea4cfd254336a2df, type: 2}
-  _popupWindow: {fileID: 0}
   _validNameChecker: {fileID: 678233324719921199}
   popupBox: {fileID: 4295012321764304809}
   progressionIcon: {fileID: 2781288673346594782}
   difficultyIcon: {fileID: 7766410439272032741}
+  puzzleSelectPort: {fileID: 11400000, guid: 12e4ef2e78913584ea4cfd254336a2df, type: 2}
   restartPopupDataObject: {fileID: 11400000, guid: 091370c830d113a4d840f35d3afb6484, type: 2}
   deletePopupDataObject: {fileID: 11400000, guid: e9f65eef3bf22a341b53706729707182, type: 2}
   puzzleSelectPopupData: {fileID: 11400000, guid: 265d60a86a3debb42a7c0eb04cb2f785, type: 2}
@@ -28897,6 +28896,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+  showExplanationText: 1
+  explanationText: Restart
+  closeWhenClicked: 1
 --- !u!114 &7877832907427027303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28904,7 +28906,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8070752505975883010}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d8a11a4230acc0342a5d00f57723a2b9, type: 3}
   m_Name: 
@@ -32354,7 +32356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 004ec7501076ec24ba7db8116fcc9a47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _explanationText: {fileID: 4232561060140921630}
+  _explanationText: {fileID: 4705063438965753689}
   circleFillSlider: {fileID: 693734972853019039}
   pointerRotator: {fileID: 6507510712396609484}
 --- !u!1 &8958094220325670029

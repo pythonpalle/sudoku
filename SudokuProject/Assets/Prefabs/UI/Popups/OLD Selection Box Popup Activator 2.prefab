@@ -5716,7 +5716,7 @@ GameObject:
   - component: {fileID: 6259725552883525213}
   - component: {fileID: 405332130724353060}
   m_Layer: 5
-  m_Name: Selection Box Popup Activator 2
+  m_Name: OLD Selection Box Popup Activator 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
