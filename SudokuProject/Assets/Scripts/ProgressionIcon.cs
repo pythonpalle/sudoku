@@ -14,7 +14,7 @@ public static class EnumUtility
 
 public class ProgressionIcon : MonoBehaviour
 {
-    [SerializeField] ExplanationText _explanationText;
+    [SerializeField] HoverBehaviour _explanationText;
     
     [SerializeField] Image circleFillSlider;
     [SerializeField] Transform pointerRotator;

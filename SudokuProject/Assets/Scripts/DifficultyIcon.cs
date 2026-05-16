@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class DifficultyIcon : MonoBehaviour
 {
     [SerializeField] private List<StarIcon> stars;
-    [SerializeField] private ExplanationText _explanationText;
+    [SerializeField] private HoverBehaviour _explanationText;
     [SerializeField] private TileColors difficultyColors;
     [SerializeField] private ColorObject backgroundColor;
     [SerializeField] private ColorObject impossibleColor;
@@ -15,7 +15,7 @@ public class DifficultyIcon : MonoBehaviour
     public void SetDifficulty(int difficulty)
     {
         string explanationText = $"Difficulty: {EnumUtility.GetEnumValue<PuzzleDifficulty>(difficulty)}";
-        _explanationText.SetText(explanationText);
+        _explanationText.SetText(explanationText); 
         
         int maxDifficulty = 4;
         if (difficulty > maxDifficulty)

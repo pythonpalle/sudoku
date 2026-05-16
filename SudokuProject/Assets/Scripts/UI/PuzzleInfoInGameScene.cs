@@ -6,7 +6,7 @@ using Saving;
 using TMPro;
 using UnityEngine;
 
-public class PuzzleInfoInGameScene : MonoBehaviour
+public class PuzzleInfoInGameScene : MonoBehaviour, ILoadPuzzleData
 {
     [SerializeField] private PuzzleSelectPort _puzzleSelectPort;
     [SerializeField] private GeneratorPort generatorPort;
@@ -15,12 +15,14 @@ public class PuzzleInfoInGameScene : MonoBehaviour
     
     private void OnEnable()
     {
+        SaveManager.AddLoadDataListener(this);
+        
         SaveManager.OnPuzzleSaveCreated += OnSuccessfulSave;
 
         switch (generatorPort.GenerationType)
         {
             case GridGenerationType.loaded:
-                SetNameText();
+               // SetNameText();
                 break;
             
             case GridGenerationType.random:
@@ -47,6 +49,23 @@ public class PuzzleInfoInGameScene : MonoBehaviour
 
     private void SetNameText()
     {
+        if (SaveManager.currentPuzzle == null)
+        {
+            Debug.LogError("Save manager ha no current puzzle");
+            return;
+        }
+        
         nameText.text = SaveManager.currentPuzzle.name;
+    }
+    
+    private void SetNameText(PuzzleDataHolder dataHolder)
+    {
+        if (dataHolder != null && !string.IsNullOrEmpty(dataHolder.name))
+            nameText.text = dataHolder.name;
+    }
+
+    public void LoadFromSaveData(PuzzleDataHolder dataHolder)
+    {
+        SetNameText(dataHolder);
     }
 }

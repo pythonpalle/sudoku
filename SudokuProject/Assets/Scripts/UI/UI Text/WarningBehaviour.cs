@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class WarningBehaviour : MonoBehaviour
 {
-    [SerializeField] private ExplanationText warningText;
+    [SerializeField] private HoverBehaviour warningText;
     [SerializeField] private GridPort _gridPort;
     
     [Header("Colors")]

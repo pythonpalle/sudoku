@@ -22,7 +22,7 @@ public class SudokuGameSceneManager : MonoBehaviour
     public static string GameSceneName => gameSceneName;
 
 
-    public static string SceneNameDuringStart;
+    public string SceneNameDuringStart;
 
     public void Awake()
     {
