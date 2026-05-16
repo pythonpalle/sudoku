@@ -60,7 +60,7 @@ namespace PuzzleSelect
         private void OnDestroy()
         {
             UpdatePuzzleName();
-
+        
         }
         
         // private void OnPopupWindowClose()
@@ -114,7 +114,7 @@ namespace PuzzleSelect
         //
         public void OnPlayButtonPressed()
         {
-            UpdatePuzzleName();
+            // UpdatePuzzleName();
             //_popupWindow.Close();
             
             PopupWindowManager.instance.ClosePopup(gameObject);
@@ -123,14 +123,11 @@ namespace PuzzleSelect
         
         public void OnDeleteButtonPressed()
         {
-            //EventManager.DisplayConfirmPopup(deletePopupData);
             PopupWindowManager.instance.CreateConfirmPopupWindow(deletePopupDataObject, DeletePuzzle);
-
         }
         
         public void OnRestartButtonPressed()
         {
-            //EventManager.DisplayConfirmPopup(restartPopupData);
             PopupWindowManager.instance.CreateConfirmPopupWindow(restartPopupDataObject, RestartPuzzle);
         }
 
