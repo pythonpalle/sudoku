@@ -2,7 +2,10 @@
 
 TODO 
 
-Gör så att man kan starta från Game Scene
+------ BUGS ----------
+
+När man avslutar spelet från menyn, och man har bytt namn på ett pussel, så sparas inte den ändringen.
+
 
 ---- INSTÄLLNINGAR ---------
 
