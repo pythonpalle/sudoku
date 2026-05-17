@@ -4,7 +4,8 @@ using UnityEngine.UI;
 
 public class PopupWindowActivator2 : MonoBehaviour
 {
-    [SerializeField] private PopupDataObject poupData;
+    //[SerializeField] private PopupDataObject poupData;
+    [SerializeField] private PopupContentsBehaviour poupData;
 
     private Button button;
     

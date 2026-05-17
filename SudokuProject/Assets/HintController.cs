@@ -2,10 +2,13 @@ using UnityEngine;
 
 public class HintController : MonoBehaviour
 {
-    [SerializeField] private PopupDataObject popupData;
-
-    public void OpenHintPopup()
+    public void OnNextButtonClicked()
     {
-        PopupWindowManager.instance.CreatePopupWindow(popupData); 
+        Debug.Log("Next");
+    }
+    
+    public void OnPreviousButtonClicked()
+    {
+        Debug.Log("Previous");
     }
 }

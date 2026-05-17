@@ -23775,7 +23775,7 @@ MonoBehaviour:
   - {fileID: 2929765985630831891}
   - {fileID: 5197324327473657676}
   - {fileID: 5226425975704142675}
-  puzzleSelectPopupData: {fileID: 11400000, guid: 265d60a86a3debb42a7c0eb04cb2f785, type: 2}
+  popupContents: {fileID: 0}
 --- !u!1 &6763649967802105575
 GameObject:
   m_ObjectHideFlags: 0
@@ -24574,9 +24574,8 @@ MonoBehaviour:
   progressionIcon: {fileID: 2781288673346594782}
   difficultyIcon: {fileID: 7766410439272032741}
   puzzleSelectPort: {fileID: 11400000, guid: 12e4ef2e78913584ea4cfd254336a2df, type: 2}
-  restartPopupDataObject: {fileID: 11400000, guid: 091370c830d113a4d840f35d3afb6484, type: 2}
-  deletePopupDataObject: {fileID: 11400000, guid: e9f65eef3bf22a341b53706729707182, type: 2}
-  puzzleSelectPopupData: {fileID: 11400000, guid: 265d60a86a3debb42a7c0eb04cb2f785, type: 2}
+  restartPopupDataObject: {fileID: 4170445264067679226, guid: 29714450c150d954e939c47662c0e03f, type: 3}
+  deletePopupDataObject: {fileID: 1410822154776310690, guid: 7931767941209e144b26d9a02d971e2e, type: 3}
 --- !u!114 &678233324719921199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24604,7 +24603,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4600ff08aa5f1044e893bbc282f98071, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Title: 
+  height: 1
+  width: 1
+  PopupContent: {fileID: 0}
+  contentCoversFooterArea: 0
   ButtonDatas: []
+  ExplanationText: 
+  UseCancelButton: 0
+  ConfirmButtonText: 
 --- !u!1 &6953167019451076641
 GameObject:
   m_ObjectHideFlags: 0

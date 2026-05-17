@@ -96,72 +96,24 @@ PrefabInstance:
       propertyPath: m_text
       value: This action cannot be undone
       objectReference: {fileID: 0}
+    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+      propertyPath: Title
+      value: Delete Save?
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+      propertyPath: ExplanationText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+      propertyPath: UseCancelButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+      propertyPath: ConfirmButtonText
+      value: Delete
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1872530688673392069, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 535855094873140346}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
---- !u!1 &4689700639876421949 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1935365977026037644, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
-  m_PrefabInstance: {fileID: 6615476659237822129}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4770002795655281524 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1872530688673392069, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
-  m_PrefabInstance: {fileID: 6615476659237822129}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &535855094873140346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4770002795655281524}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1125e5aefab04b34fabe7caeb19c7fb3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Title: Delete Save
-  height: 0
-  width: 1
-  PopupContent: {fileID: 4689700639876421949}
-  ButtonDatas:
-  - Text: Cancel
-    OnClick:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 535855094873140346}
-          m_TargetAssemblyTypeName: DeleteSavePopupContents, Assembly-CSharp
-          m_MethodName: Close
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - Text: Delete
-    OnClick:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 535855094873140346}
-          m_TargetAssemblyTypeName: DeleteSavePopupContents, Assembly-CSharp
-          m_MethodName: DeleteSaveFile
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  savePort: {fileID: 11400000, guid: 16661beb76d8c8e429959d25a4221e89, type: 2}
-  _scenePort: {fileID: 11400000, guid: 82b490cf687d6494f8c4279df8b02f26, type: 2}

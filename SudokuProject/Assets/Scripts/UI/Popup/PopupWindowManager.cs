@@ -20,7 +20,7 @@ public class PopupWindowManager : MonoBehaviour
         instance = this;
     }
     
-    public void CreateConfirmPopupWindow(PopupDataObject popupData, UnityAction confirmAction)
+    public void CreateConfirmPopupWindow(PopupContentsBehaviour popupData, UnityAction confirmAction)
     {
         // all confirm popups share same content
         popupData.PopupContent = confirmationRootPrefab;
@@ -28,17 +28,18 @@ public class PopupWindowManager : MonoBehaviour
         InitializeAndAddToActive(popupData, confirmAction);
     }
     
-    public void CreatePopupWindow(PopupDataObject popupData)
+    public void CreatePopupWindow(PopupContentsBehaviour popupContent)
     {
-        InitializeAndAddToActive(popupData, null);
+        InitializeAndAddToActive(popupContent, null);
     }
-
-    private void InitializeAndAddToActive(PopupDataObject popupData, UnityAction confirmAction)
+    
+    private void InitializeAndAddToActive(PopupContentsBehaviour popupContent, UnityAction confirmAction)
     {
         PopupWindowNewBehaviour popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
-        popupWindow.Initialize(popupData, confirmAction);
+        popupWindow.Initialize(popupContent, confirmAction);
         activePopupWindows.Add(popupWindow);
     }
+    
 
     public void ClosePopup(GameObject o)
     {

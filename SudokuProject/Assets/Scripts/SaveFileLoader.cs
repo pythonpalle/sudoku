@@ -30,8 +30,8 @@ public class SaveFileLoader : MonoBehaviour
     [Header("Popup")] 
     // [SerializeField] private PopupData firstPopupData;
     // [SerializeField] private PopupData secondPopupData;
-    [SerializeField] private PopupDataObject firstPopupData;
-    [SerializeField] private PopupDataObject secondPopupData;
+    [SerializeField] private PopupContentsBehaviour firstPopupData;
+    [SerializeField] private PopupContentsBehaviour secondPopupData;
     
    // [SerializeField] private PopupActivatorBehaviour deletePopupActivator;
 

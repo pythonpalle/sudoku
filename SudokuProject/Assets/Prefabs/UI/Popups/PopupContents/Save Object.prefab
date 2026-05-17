@@ -149,6 +149,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+  showExplanationText: 1
+  explanationText: 
+  closeWhenClicked: 1
 --- !u!114 &8050096211665740590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,8 +361,8 @@ MonoBehaviour:
   removeButton: {fileID: 2104126491895700714}
   removeImage: {fileID: 6739139031358433792}
   displayRemoval: 1
-  firstPopupData: {fileID: 11400000, guid: ff00338ed541fcc4495eec42397f1665, type: 2}
-  secondPopupData: {fileID: 11400000, guid: 3370743aaa58816429abfb5761c46a16, type: 2}
+  firstPopupData: {fileID: 3793361278337081085, guid: 8d3e5ac8b0e04cc409a911a3de0566bb, type: 3}
+  secondPopupData: {fileID: 3793361278337081085, guid: fd9293d79974a9d4582a01296e8da9c9, type: 3}
 --- !u!1 &4940235378170291689
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,3 +587,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+  showExplanationText: 1
+  explanationText: 
+  closeWhenClicked: 1

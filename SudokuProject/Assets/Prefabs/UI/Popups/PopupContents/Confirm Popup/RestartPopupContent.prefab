@@ -96,71 +96,24 @@ PrefabInstance:
       propertyPath: m_text
       value: All progress will be lost!
       objectReference: {fileID: 0}
+    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+      propertyPath: Title
+      value: Restart Puzzle?
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+      propertyPath: ExplanationText
+      value: This action cannot be undone.
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+      propertyPath: UseCancelButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+      propertyPath: ConfirmButtonText
+      value: Restart
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1872530688673392069, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4887330078320833464}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
---- !u!1 &5499446832179680314 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1935365977026037644, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
-  m_PrefabInstance: {fileID: 6235859149682643894}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &5725949132545275507 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1872530688673392069, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
-  m_PrefabInstance: {fileID: 6235859149682643894}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4887330078320833464
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5725949132545275507}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0c3d18cd3ff4d9428372ee2be1446d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Title: Reset Puzzle
-  height: 0
-  width: 1
-  PopupContent: {fileID: 5499446832179680314}
-  ButtonDatas:
-  - Text: Cancel
-    OnClick:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4887330078320833464}
-          m_TargetAssemblyTypeName: RestartPopupContentsBehaviour, Assembly-CSharp
-          m_MethodName: Close
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - Text: Reset
-    OnClick:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4887330078320833464}
-          m_TargetAssemblyTypeName: RestartPopupContentsBehaviour, Assembly-CSharp
-          m_MethodName: Reset
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  puzzleSelectPort: {fileID: 11400000, guid: 12e4ef2e78913584ea4cfd254336a2df, type: 2}

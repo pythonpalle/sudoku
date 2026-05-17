@@ -15,9 +15,9 @@ namespace PuzzleSelect
         [SerializeField] private PuzzleSelectPort puzzleSelectPort;
         
         [Header("Popup Data")]
-        [SerializeField] private PopupDataObject restartPopupDataObject;
-        [SerializeField] private PopupDataObject deletePopupDataObject;
-        [SerializeField] private PopupDataObject puzzleSelectPopupData;
+        [SerializeField] private PopupContentsBehaviour restartPopupDataObject;
+        [SerializeField] private PopupContentsBehaviour deletePopupDataObject;
+        //[SerializeField] private PopupDataObject puzzleSelectPopupData;
         
         private PuzzleDataHolder currentPuzzle;
         private string lastSelectedPuzzleID = "";

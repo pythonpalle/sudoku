@@ -533,6 +533,7 @@ GameObject:
   - component: {fileID: 4348127763391807429}
   - component: {fileID: 2319540007961527444}
   - component: {fileID: 6457939704103054890}
+  - component: {fileID: 5136526686466657049}
   m_Layer: 5
   m_Name: New Puzzle Popup 3
   m_TagString: Untagged
@@ -631,6 +632,27 @@ MonoBehaviour:
   mediumButton: {fileID: 1887232939981488465}
   hardButton: {fileID: 1887232940681887005}
   extremeButton: {fileID: 4796566415214942439}
+--- !u!114 &5136526686466657049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7088422236035962794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4600ff08aa5f1044e893bbc282f98071, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Title: 
+  height: 1
+  width: 1
+  PopupContent: {fileID: 0}
+  contentCoversFooterArea: 0
+  ButtonDatas: []
+  ExplanationText: 
+  UseCancelButton: 0
+  ConfirmButtonText: 
 --- !u!1 &7402391286149936287
 GameObject:
   m_ObjectHideFlags: 0
@@ -778,6 +800,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+  showExplanationText: 1
+  explanationText: 
+  closeWhenClicked: 1
 --- !u!1001 &910104927417264838
 PrefabInstance:
   m_ObjectHideFlags: 0

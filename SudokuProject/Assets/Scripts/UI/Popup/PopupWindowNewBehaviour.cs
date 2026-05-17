@@ -40,7 +40,7 @@ public class PopupWindowNewBehaviour : MonoBehaviour
         }
     }
     
-    public void Initialize(PopupDataObject popupData, UnityAction confirmAction)
+    public void Initialize(PopupContentsBehaviour popupData, UnityAction confirmAction)
     {
         GameStateManager.OnPopup();
         isPopped = true;
@@ -49,8 +49,12 @@ public class PopupWindowNewBehaviour : MonoBehaviour
         Title.text = popupData.Title;
 
         Root.sizeDelta = new Vector2(popupData.Width, popupData.Height);
+
+        var popupPrefab = popupData.PopupContent;
+        if (popupPrefab == null)
+            popupPrefab = popupData;
         
-        var popupContent = Instantiate(popupData.PopupContent, ContentRoot);
+        var popupContent = Instantiate(popupPrefab, ContentRoot);
         
         
         if (!string.IsNullOrEmpty(popupData.ExplanationText))
@@ -81,6 +85,8 @@ public class PopupWindowNewBehaviour : MonoBehaviour
                 
                 if (!string.IsNullOrEmpty(buttonData.Text))
                     TrySetChildText(button.gameObject, buttonData.Text);
+
+                button.onClick?.AddListener(() => buttonData.OnClick?.Invoke());
             }
         }
     }

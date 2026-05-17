@@ -871,6 +871,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7129347527240168483}
   - component: {fileID: 7141194762059234064}
+  - component: {fileID: 4775961341999128151}
   m_Layer: 5
   m_Name: Hint Popup Screen
   m_TagString: Untagged
@@ -910,11 +911,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4600ff08aa5f1044e893bbc282f98071, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Title: 
+  Title: Hint
   height: 1
   width: 1
   PopupContent: {fileID: 0}
-  ButtonDatas: []
+  contentCoversFooterArea: 0
+  ButtonDatas:
+  - Text: Previous
+    Icon: {fileID: 0}
+    OnClick:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4775961341999128151}
+          m_TargetAssemblyTypeName: HintController, Assembly-CSharp
+          m_MethodName: OnPreviousButtonClicked
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Text: Next
+    Icon: {fileID: 0}
+    OnClick:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4775961341999128151}
+          m_TargetAssemblyTypeName: HintController, Assembly-CSharp
+          m_MethodName: OnNextButtonClicked
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  ExplanationText: 
+  UseCancelButton: 0
+  ConfirmButtonText: 
+--- !u!114 &4775961341999128151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6124116489168733873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d95fd302b91bd6944b0a448280025938, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6822623261619377462
 GameObject:
   m_ObjectHideFlags: 0

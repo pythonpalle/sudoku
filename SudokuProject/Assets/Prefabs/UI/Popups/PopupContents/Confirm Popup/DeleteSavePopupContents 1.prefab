@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &9006744343774737390
+--- !u!1001 &6615476659237822129
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -90,21 +90,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1872530688673392069, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
       propertyPath: m_Name
-      value: DeletePopupContents
+      value: DeleteSavePopupContents 1
       objectReference: {fileID: 0}
     - target: {fileID: 2702456144576872157, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
       propertyPath: m_text
-      value: 'This action cannot be undone.
-
-'
+      value: This action cannot be undone
       objectReference: {fileID: 0}
     - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
       propertyPath: Title
-      value: Delete Puzzle?
-      objectReference: {fileID: 0}
-    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
-      propertyPath: ExplanationText
-      value: This action cannot be undone.
+      value: Are you sure?
       objectReference: {fileID: 0}
     - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
       propertyPath: UseCancelButton

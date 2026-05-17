@@ -147,6 +147,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+  showExplanationText: 1
+  explanationText: 
+  closeWhenClicked: 1
 --- !u!1 &8350243897730756928
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,7 +421,7 @@ MonoBehaviour:
   - {fileID: 7605276777195016651}
   - {fileID: 1343831795986780549}
   - {fileID: 8127920521915079342}
-  puzzleSelectPopupData: {fileID: 11400000, guid: 265d60a86a3debb42a7c0eb04cb2f785, type: 2}
+  popupContents: {fileID: 8884442512001192128, guid: 4a544df7a5b4d5749b76de14f05bed82, type: 3}
 --- !u!1001 &3113009856502757242
 PrefabInstance:
   m_ObjectHideFlags: 0

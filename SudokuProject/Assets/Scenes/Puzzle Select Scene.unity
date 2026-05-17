@@ -2918,7 +2918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e2c37dddc365014e8352fcc412c1501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poupData: {fileID: 11400000, guid: b6502e24246e1144ba3e668062948ccc, type: 2}
+  poupData: {fileID: 5136526686466657049, guid: c06b5a6741926f74aa2c3c7c57aadf80, type: 3}
 --- !u!4 &569886675 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 241150713637304179, guid: 09a997a9af9599b45a9f87a971b40a24, type: 3}
@@ -5703,7 +5703,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e2c37dddc365014e8352fcc412c1501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poupData: {fileID: 11400000, guid: 571051d8ff9a4bc4b8f6552b6ba6c513, type: 2}
+  poupData: {fileID: 6656539497002764877, guid: 1081dec049480ee4dbf134b0e0309707, type: 3}
 --- !u!224 &1211582464 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8350243897922062515, guid: ee57cbe107993004e9cabe997006b2fa, type: 3}
