@@ -59,6 +59,8 @@ För varje av dessa steg, rita ut med kryss och pilar vilka kandidater som kan t
 Lägg till checkbox "Avoid Spoilers". med denna så visas endast vilken ruta som är näst för lösningen. 
 TODO: hur blir det när nästa ruta är en candidate och inte digit?
 
+Generera griden dynamiskt, skala med skärmen
+
 ------------------- Localisation --------------------------------------
 
 Gör alla texter i engelska, svenska

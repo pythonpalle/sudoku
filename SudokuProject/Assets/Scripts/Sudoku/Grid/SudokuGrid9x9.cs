@@ -75,6 +75,11 @@ public struct SudokuGrid9x9
     {
         get { return Tiles[row, col]; }
     }
+    
+    public SudokuTile this[int number]
+    {
+        get { return Tiles[number/9, number%9]; }
+    }
 
     public SudokuTile this[TileIndex index]
     {

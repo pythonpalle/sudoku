@@ -46,7 +46,12 @@ public struct TileIndex
 
     public override int GetHashCode()
     {
-        throw new NotImplementedException();
+        return row.GetHashCode() ^ col.GetHashCode();
+    }
+
+    public static int IndexToInt(TileIndex tileIndex)
+    {
+        return tileIndex.row * 9 + tileIndex.col;
     }
 
 
