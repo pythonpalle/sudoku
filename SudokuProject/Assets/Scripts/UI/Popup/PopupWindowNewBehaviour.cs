@@ -22,12 +22,9 @@ public class PopupWindowNewBehaviour : MonoBehaviour
     public UnityAction OnClose;
     
     private bool isPopped;
-    public UnityAction ConfirmAction { get; set; }
-
 
     public void Close()
     {
-        //popupWindow.gameObject.SetActive(false);
         GameStateManager.OnPopupClose();
         PopupWindowManager.instance.OnPopupWindowClose(this);
         isPopped = false;
@@ -42,24 +39,6 @@ public class PopupWindowNewBehaviour : MonoBehaviour
             Close();
         }
     }
-
-    // public void Initialize(PopupContentsBehaviour popupContents)
-    // {
-    //     GameStateManager.OnPopup();
-    //     isPopped = true;
-    //     OnPopup?.Invoke();
-    //     
-    //     popupContents.SetPopupWindow(this);
-    //     
-    //     Title.text = popupContents.Title;
-    //
-    //     Root.sizeDelta = new Vector2(popupContents.Width, popupContents.Height);
-    //     
-    //     var popupContent = Instantiate(popupContents.PopupContent, ContentRoot); 
-    //
-    //
-    //
-    // }
     
     public void Initialize(PopupDataObject popupData, UnityAction confirmAction)
     {
@@ -72,9 +51,11 @@ public class PopupWindowNewBehaviour : MonoBehaviour
         Root.sizeDelta = new Vector2(popupData.Width, popupData.Height);
         
         var popupContent = Instantiate(popupData.PopupContent, ContentRoot);
+        
+        
         if (!string.IsNullOrEmpty(popupData.ExplanationText))
         {
-            TrySetChildText(popupContent, popupData.ExplanationText);
+            TrySetChildText(popupContent.gameObject, popupData.ExplanationText);
         }
 
         if (confirmAction != null)
@@ -91,6 +72,17 @@ public class PopupWindowNewBehaviour : MonoBehaviour
             confirmButton.onClick.AddListener(Close);
             confirmButton.onClick.AddListener(confirmAction);
         }
+
+        if (popupData.ButtonDatas.Any())
+        {
+            foreach (var buttonData in popupData.ButtonDatas)
+            {
+                var button = Instantiate(ButtonPrefab, ButtonLayoutGroup);
+                
+                if (!string.IsNullOrEmpty(buttonData.Text))
+                    TrySetChildText(button.gameObject, buttonData.Text);
+            }
+        }
     }
 
     private static void TrySetChildText(GameObject gameObject, string text)
@@ -100,23 +92,3 @@ public class PopupWindowNewBehaviour : MonoBehaviour
             textTransform.text = text;
     }
 }
-
-/*
- 
- PopupWindowData
- 
- HEIGHT (enum?)
- 
- TITLE
- - hasTitleText
- - titleText
- 
- CONTENT
- 
- BUTTON BUTTONS
- 
- ButtonButton
- - Text
- - Action
- 
- */

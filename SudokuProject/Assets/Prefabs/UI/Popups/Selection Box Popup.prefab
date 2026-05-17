@@ -24516,6 +24516,7 @@ GameObject:
   - component: {fileID: 1393126442084467182}
   - component: {fileID: 2602482859147811619}
   - component: {fileID: 678233324719921199}
+  - component: {fileID: 8884442512001192128}
   m_Layer: 5
   m_Name: Selection Box Popup
   m_TagString: Untagged
@@ -24591,6 +24592,19 @@ MonoBehaviour:
   placeHolderText: {fileID: 2794534266748568704}
   userEnterText: {fileID: 8694781101352139461}
   inputField: {fileID: 6044458976260878840}
+--- !u!114 &8884442512001192128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6927323455605631275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4600ff08aa5f1044e893bbc282f98071, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ButtonDatas: []
 --- !u!1 &6953167019451076641
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,7 +15,11 @@ MonoBehaviour:
   Title: 
   height: 1
   width: 1
-  PopupContent: {fileID: 6927323455605631275, guid: 4a544df7a5b4d5749b76de14f05bed82, type: 3}
+  PopupContent: {fileID: 8884442512001192128, guid: 4a544df7a5b4d5749b76de14f05bed82, type: 3}
+  contentCoversFooterArea: 0
+  ButtonDatas:
+  - Text: Play
+    Icon: {fileID: 0}
   ExplanationText: 
   UseCancelButton: 0
   ConfirmButtonText: 

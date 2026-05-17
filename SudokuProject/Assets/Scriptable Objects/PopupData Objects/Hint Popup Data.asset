@@ -15,7 +15,11 @@ MonoBehaviour:
   Title: Hint
   height: 1
   width: 2
-  PopupContent: {fileID: 6124116489168733873, guid: b84b99a0a1d0eee4cb84d6fcb1b1623b, type: 3}
+  PopupContent: {fileID: 7141194762059234064, guid: b84b99a0a1d0eee4cb84d6fcb1b1623b, type: 3}
+  contentCoversFooterArea: 0
+  ButtonDatas:
+  - Text: 
+    Icon: {fileID: 0}
   ExplanationText: 
   UseCancelButton: 0
   ConfirmButtonText: 

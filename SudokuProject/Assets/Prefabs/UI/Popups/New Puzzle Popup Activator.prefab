@@ -494,6 +494,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePointerEnter: 1
   usePointerExit: 1
+  showExplanationText: 1
+  explanationText: 
+  closeWhenClicked: 1
 --- !u!1 &4483950286278621329
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,6 +508,7 @@ GameObject:
   - component: {fileID: 5099864186385922007}
   - component: {fileID: 9158437979282456787}
   - component: {fileID: 6987964600825648448}
+  - component: {fileID: 8438712014249285217}
   m_Layer: 5
   m_Name: New Puzzle Popup Activator
   m_TagString: Untagged
@@ -564,6 +568,19 @@ MonoBehaviour:
   mediumButton: {fileID: 5684191672100643758}
   hardButton: {fileID: 5684191672507555810}
   extremeButton: {fileID: 1603934389459040792}
+--- !u!114 &8438712014249285217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4483950286278621329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4600ff08aa5f1044e893bbc282f98071, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ButtonDatas: []
 --- !u!1 &6041309437698303889
 GameObject:
   m_ObjectHideFlags: 0

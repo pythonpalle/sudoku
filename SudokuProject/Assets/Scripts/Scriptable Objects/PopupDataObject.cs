@@ -17,11 +17,11 @@ public class PopupDataObject : ScriptableObject
     public int Width => _sizeLookup[width];
 
     [Header("Content")]
-    public GameObject PopupContent;
+    public PopupContentsBehaviour PopupContent;
     [SerializeField] private bool contentCoversFooterArea = false;
 
-    // [Header("Buttons")]
-    // public List<ButtonData> ButtonDatas;
+    [Header("Buttons")]
+    public List<ButtonData> ButtonDatas;
 
     [Header("Confirm Popup Data")] 
     public string ExplanationText;
@@ -37,4 +37,3 @@ public class PopupDataObject : ScriptableObject
     
 
 }
-

@@ -49,19 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4600ff08aa5f1044e893bbc282f98071, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Title: Confirm
-  height: 0
-  width: 1
-  PopupContent: {fileID: 0}
-  ButtonDatas:
-  - Text: 
-    OnClick:
-      m_PersistentCalls:
-        m_Calls: []
-  - Text: 
-    OnClick:
-      m_PersistentCalls:
-        m_Calls: []
+  ButtonDatas: []
 --- !u!1 &1935365977026037644
 GameObject:
   m_ObjectHideFlags: 0

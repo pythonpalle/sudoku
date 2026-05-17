@@ -10,7 +10,7 @@ public class PopupWindowManager : MonoBehaviour
     [SerializeField] private PopupWindowNewBehaviour genericPopupWindowPrefab;
     
     [Header("Confirm Popup")]
-    [SerializeField] private GameObject confirmationRootPrefab;
+    [SerializeField] private PopupContentsBehaviour confirmationRootPrefab;
     
     // todo: readonly attribute. Stack<> instead?
     [SerializeField]  List<PopupWindowNewBehaviour> activePopupWindows;
