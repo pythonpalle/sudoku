@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using PuzzleSelect;
 using Saving;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class SudokuGameSceneManager : MonoBehaviour
@@ -20,15 +21,15 @@ public class SudokuGameSceneManager : MonoBehaviour
     
     public static string PuzzleSelectSceneName => puzzleSelectSceneName;
     public static string GameSceneName => gameSceneName;
-
-
-    public string SceneNameDuringStart;
-
+    
+    private HashSet<string> visitedScenes = new HashSet<string>();
+    
     public void Awake()
     {
         if (instance == null)
         {
             instance = this;
+            transform.SetParent(null);
             DontDestroyOnLoad(this);
         }
         else
@@ -36,10 +37,7 @@ public class SudokuGameSceneManager : MonoBehaviour
             Destroy(gameObject);
         }
         
-        if (string.IsNullOrEmpty(SceneNameDuringStart))
-        {
-            SceneNameDuringStart = SceneManager.GetActiveScene().name;
-        }
+        visitedScenes.Add(SceneManager.GetActiveScene().name);
     }
     
     public void OnEnable()
@@ -51,8 +49,12 @@ public class SudokuGameSceneManager : MonoBehaviour
 
         SaveManager.OnPuzzleSaveCreated += OnPuzzleSaveCreated;
         SaveManager.OnPuzzleReset += OnPuzzleReset;
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
-    
+
+
+
     public void OnDisable()
     {
         selectPort.OnSelectAndLoad -= OnSelectAndLoad;
@@ -62,6 +64,19 @@ public class SudokuGameSceneManager : MonoBehaviour
         
         SaveManager.OnPuzzleSaveCreated -= OnPuzzleSaveCreated;
         SaveManager.OnPuzzleReset -= OnPuzzleReset;
+
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    public bool OnlyVisitedGameScene()
+    {
+        return visitedScenes.Count == 1 && visitedScenes.Contains(gameSceneName);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
+    {
+        string name = scene.name;
+        visitedScenes.Add(name);
     }
 
     private void OnPuzzleReset(PuzzleDataHolder data)
@@ -86,7 +101,6 @@ public class SudokuGameSceneManager : MonoBehaviour
     private void OnLoadPuzzle()
     {
         generatorPort.GenerationType = GridGenerationType.loaded;
-        //SaveManager.SetGenerationType(generatorPort.GenerationType);
         LoadGameScene();
     }
 
@@ -113,7 +127,6 @@ public class SudokuGameSceneManager : MonoBehaviour
     public void LoadRandom()
     {
         generatorPort.GenerationType = GridGenerationType.random;
-        //SaveManager.SetGenerationType(generatorPort.GenerationType);
         LoadGameScene();
     }
     
