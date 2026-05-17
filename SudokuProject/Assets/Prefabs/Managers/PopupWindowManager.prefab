@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7546148000372858803}
   - component: {fileID: 6786756718001429018}
+  - component: {fileID: 1163011505325833879}
   m_Layer: 0
   m_Name: PopupWindowManager
   m_TagString: Untagged
@@ -44,4 +45,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ae7431982a931b4e973e7087c487391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  genericPopupWindowPrefab: {fileID: 501131894309675434, guid: 5061408c700cb074eac6769a9a4a7f8a, type: 3}
+  popupParent: {fileID: 0}
+  genericPopupWindowPrefab: {fileID: 6804213353919521977, guid: 5061408c700cb074eac6769a9a4a7f8a, type: 3}
+  confirmationRootPrefab: {fileID: 1872530688673392069, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+  activePopupWindows: []
+--- !u!114 &1163011505325833879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 918828878947138634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cece285b0bf7f2c42a0eef98f72bf2c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -15,7 +15,7 @@ public class PopupWindowActivator2 : MonoBehaviour
 
     private void OnEnable()
     {
-        if (button)
+        if (button && button.onClick.GetPersistentEventCount() == 0) 
         {
             button.onClick.AddListener(OnButtonClick);
         }

@@ -19,40 +19,25 @@ public class PopupWindowManager : MonoBehaviour
     {
         instance = this;
     }
-
-    public void CreatePopupWindow(PopupContentsBehaviour popupData)
-    {
-        PopupWindowNewBehaviour popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
-        InitializeAndAddToActive(popupData, popupWindow);
-    }
-
-    private void InitializeAndAddToActive(PopupContentsBehaviour popupData, PopupWindowNewBehaviour popupWindow)
-    {
-        popupWindow.Initialize(popupData);
-        activePopupWindows.Add(popupWindow);
-    }
-
-
+    
     public void CreateConfirmPopupWindow(PopupDataObject popupData, UnityAction confirmAction)
     {
         // all confirm popups share same content
         popupData.PopupContent = confirmationRootPrefab;
         
-        var popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
-        InitializeAndAddToActive(popupData, confirmAction, popupWindow);
+        InitializeAndAddToActive(popupData, confirmAction);
     }
-
-    private void InitializeAndAddToActive(PopupDataObject popupData, UnityAction confirmAction,
-        PopupWindowNewBehaviour popupWindow)
-    {
-        popupWindow.Initialize(popupData, confirmAction);
-        activePopupWindows.Add(popupWindow);
-    }
-
+    
     public void CreatePopupWindow(PopupDataObject popupData)
     {
+        InitializeAndAddToActive(popupData, null);
+    }
+
+    private void InitializeAndAddToActive(PopupDataObject popupData, UnityAction confirmAction)
+    {
         PopupWindowNewBehaviour popupWindow = Instantiate(genericPopupWindowPrefab, popupParent);
-        InitializeAndAddToActive(popupData, null, popupWindow);
+        popupWindow.Initialize(popupData, confirmAction);
+        activePopupWindows.Add(popupWindow);
     }
 
     public void ClosePopup(GameObject o)

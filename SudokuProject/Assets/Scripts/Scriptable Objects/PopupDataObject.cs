@@ -18,11 +18,12 @@ public class PopupDataObject : ScriptableObject
 
     [Header("Content")]
     public GameObject PopupContent;
+    [SerializeField] private bool contentCoversFooterArea = false;
 
     // [Header("Buttons")]
     // public List<ButtonData> ButtonDatas;
 
-    [Header("Confrim Popup Data")] 
+    [Header("Confirm Popup Data")] 
     public string ExplanationText;
     public bool UseCancelButton;
     public string ConfirmButtonText;
