@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum SolutionsState
@@ -7,6 +8,29 @@ public enum SolutionsState
     None,
     Single,
     Multiple
+}
+
+public struct SolutionStepData
+{
+    public TileIndex tileIndex;
+    public SolveMethod solveMethod;
+    public int digit;
+    public CandidateRemoval candidateRemoval;
+    public bool isDigitSolve;
+
+    public override string ToString()
+    {
+        if (isDigitSolve)
+        {
+            return $"Digit {digit} must be in {tileIndex} | Solve method: {solveMethod}";
+        }
+        else
+        {
+            string text = "The digits " + candidateRemoval.candidateSet.ToList() + "can be excluded from tileIndexes " + candidateRemoval.indexes + " | Solve method: " + solveMethod;
+            
+            return text;
+        }
+    }
 }
 
 public class WFCGridSolver
@@ -245,6 +269,83 @@ public class WFCGridSolver
         return false;
     }
     
+    public bool TryFindProgression(SudokuGrid9x9 grid, out SolutionStepData solutionStep)
+    {
+         solutionStep = new SolutionStepData();
+        var progressIndex = new TileIndex(-1, -1);
+        SolveMethod method = null;
+        
+        this.grid = new SudokuGrid9x9(grid);
+
+        // // in case the 
+        // var lowestEntropyIndex = FindLowestEntropyTile();
+
+        // can only progress if the grid is actually solveable
+        if (TrySolveGrid())
+        {
+            
+        }
+        else
+        {
+            Debug.LogWarning("Oops, can't solve this grid!");
+            progressIndex = new TileIndex(-1, -1);
+            return false;
+        }
+        
+        this.grid = new SudokuGrid9x9(grid);
+
+        progressIndex = new TileIndex();
+
+        int iterations = 0;
+        while (!gridFilled)
+        {
+            iterations++;
+
+            if (iterations > 90) 
+            {
+                Debug.LogError("Maximum iterations reached.");
+                return false;
+            }
+            
+            // start with digit methods, place digit directly
+            if (TryFindDigitProgression(out progressIndex, out method, out int digit))
+            {
+                solutionStep = new SolutionStepData()
+                {
+                    tileIndex = progressIndex,
+                    solveMethod = method,
+                    isDigitSolve = true,
+                    digit = digit
+                };
+                
+                return true; 
+            }
+            
+            bool someMethodYieldProgress = TryProgressWithCandidateMethods(out CandidateRemoval removal, out method);
+            if (someMethodYieldProgress)
+            {
+                solutionStep = new SolutionStepData()
+                {
+                    //tileIndex = progressIndex,
+                    solveMethod = method,
+                    isDigitSolve = false,
+                    candidateRemoval = removal
+                };
+                
+                return true;
+            }
+            else
+            {
+                Debug.LogWarning("NOT PROGRESSION FOUND ");
+                return false;
+            }
+        }
+
+        
+        Debug.LogWarning("NO HINT FOUND");
+        return false;
+    }
+    
     public bool HumanlySolvable(SudokuGrid9x9 gridToCheck, out PuzzleDifficulty hardestUsed)
     {
         grid = new SudokuGrid9x9(gridToCheck);
@@ -314,6 +415,24 @@ public class WFCGridSolver
         index = new TileIndex();
         return false;
     }
+    
+    private bool TryFindDigitProgression(out TileIndex index, out SolveMethod solveMethod, out int digit)
+    {
+        foreach (var method in digitMethods)
+        {
+            if (method.TryFindDigit(grid, out index, out digit))
+            {
+                solveMethod = method;
+                Debug.Log($"Found progress: {method.GetName} at index {index}, digit {digit}");
+                return true;
+            }
+        }
+
+        digit = -1;
+        solveMethod = null;
+        index = new TileIndex();
+        return false;
+    }
 
     private bool TryProgressWithCandidateMethods()
     {
@@ -328,6 +447,25 @@ public class WFCGridSolver
                 {
                     Debug.LogWarning($"Hard method used: {method.GetName}");
                 }
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private bool TryProgressWithCandidateMethods(out CandidateRemoval candidateRemoval, out SolveMethod solveMethod)
+    {
+        candidateRemoval = new CandidateRemoval();
+        solveMethod = null;
+        
+        foreach (var method in candidatesMethods)
+        {
+            if (method.TryFindCandidates(grid, out CandidateRemoval removal))
+            {
+                candidateRemoval = removal;
+                solveMethod = method;
                 
                 return true;
             }

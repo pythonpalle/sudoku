@@ -18,6 +18,8 @@ public class HintController : MonoBehaviour
     [SerializeField] private float paddingBetweenCells = 5f;
 
     private SudokuGrid9x9 _hintGrid;
+    private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
+
     
     private Dictionary<TileIndex, SelectTile> hintTiles = new Dictionary<TileIndex, SelectTile>();
 
@@ -26,6 +28,7 @@ public class HintController : MonoBehaviour
     public void OnEnable()
     {
         gridPort.RequestGrid();
+        gridPort.RequestTiles();
         _hintGrid = new SudokuGrid9x9(gridPort.grid);
     
         // Starta en Coroutine istället för Invoke
@@ -39,7 +42,23 @@ public class HintController : MonoBehaviour
     
         CreateEmptyGrid();
         UpdateContents();
+
+        TryFindNextSolutionStep();
     }
+
+    private void TryFindNextSolutionStep()
+    {
+        if (TryFindProgression(_hintGrid, out SolutionStepData solutionStep))
+        {
+            Debug.Log(solutionStep);
+        }
+    }
+    
+    private bool TryFindProgression(SudokuGrid9x9 gridCopy, out SolutionStepData solutionStep)
+    {
+        return _solver.TryFindProgression(gridCopy, out solutionStep);
+    }
+
     private void FillGrid()
     {
         //if (hintTiles == null || hintTiles.Count == 0)
@@ -124,15 +143,29 @@ public class HintController : MonoBehaviour
         var permanents = puzzle.permanent;
         bool[] contradicted = puzzle.contradicted;
 
+        var gridTiles = gridPort.tileBehaviours;
+
         foreach (var kvp in hintTiles)
         {
+            
             TileIndex tileIndex = kvp.Key;
+            
+            var tileBehaviourUI = gridTiles[tileIndex.row, tileIndex.col];
+            
+            // TODO: FIX THIS! Permanent should NOT be fetched from the UI tile. store it in the actual tile
+            var permanent = tileBehaviourUI.Permanent;
+            
             SelectTile selectTile = kvp.Value;
             
             var realTile = _hintGrid[tileIndex];
-            
+
             if (realTile.Number != 0)
-                selectTile.SetDigit(realTile.Number, false);
+            {
+                selectTile.SetDigit(realTile.Number, permanent);
+                selectTile.HideCandidates();
+            }
+            else
+                selectTile.SetCandidatesDigit(realTile.Candidates);
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -20,15 +21,46 @@ namespace PuzzleSelect
 
         [Header("Misc")] 
         [SerializeField] private RectTransform rectTransform;
+        [SerializeField] private GameObject candidateParent;
+        [SerializeField] private List<TextMeshProUGUI> candidateTexts;
         
         private static float defaultCenterSize = 4.2f; 
         private static float defaultDigitSize = 10f; 
 
         public void SetDigit(int number, bool permanent)
         {
-            digitText.text = number.ToString();
+            string text = number.ToString();
+
+            SetDigitText(permanent, text);
+        }
+
+        private void SetDigitText(bool permanent, string text)
+        {
+            digitText.text = text;
             digitText.color = permanent ? permanentColor.Color : markColor.Color;
-        } 
+        }
+
+        public void SetCandidatesDigit(HashSet<int> digits)
+        {
+            string text = "";
+            
+            candidateParent.SetActive(true);
+            
+            for (int digit = 1; digit <= 9; digit++)
+            {
+                bool hasCandidate = digits.Contains(digit);
+                
+                var candidateText = candidateTexts[digit - 1];
+                
+                candidateText.text = hasCandidate ? digit.ToString() : string.Empty;
+                candidateText.color = markColor.Color;
+            }
+        }
+        
+        public void HideCandidates()
+        {
+            candidateParent.SetActive(false);
+        }
 
         public void SetCenters(List<int> centerMarks)
         {
@@ -83,5 +115,7 @@ namespace PuzzleSelect
         {
             colorFiller.RemoveUnusedSections(colorMarksLength);
         }
+
+
     }
 }
