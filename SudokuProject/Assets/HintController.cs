@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using PuzzleSelect;
 using Saving;
@@ -26,13 +27,22 @@ public class HintController : MonoBehaviour
     {
         gridPort.RequestGrid();
         _hintGrid = new SudokuGrid9x9(gridPort.grid);
-        
-        Invoke(nameof(FillGrid), 0.01f);
+    
+        // Starta en Coroutine istället för Invoke
+        StartCoroutine(FillGridRoutine());
     }
 
+    private IEnumerator FillGridRoutine()
+    {
+        // Vänta tills Unity har kört klart alla layout-beräkningar för denna frame
+        yield return new WaitForEndOfFrame();
+    
+        CreateEmptyGrid();
+        UpdateContents();
+    }
     private void FillGrid()
     {
-        if (hintTiles == null || hintTiles.Count == 0)
+        //if (hintTiles == null || hintTiles.Count == 0)
         {
             CreateEmptyGrid();
         }
