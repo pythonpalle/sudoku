@@ -2,4 +2,6 @@
 {
     public abstract string GetName { get; }
     public abstract PuzzleDifficulty Difficulty { get; }
+
+    public abstract string GetSolveDescription(SolutionStepData solutionStepData);
 }

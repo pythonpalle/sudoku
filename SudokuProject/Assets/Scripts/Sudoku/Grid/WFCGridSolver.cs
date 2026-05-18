@@ -20,16 +20,7 @@ public struct SolutionStepData
 
     public override string ToString()
     {
-        if (isDigitSolve)
-        {
-            return $"Digit {digit} must be in {tileIndex} | Solve method: {solveMethod}";
-        }
-        else
-        {
-            string text = "The digits " + candidateRemoval.candidateSet.ToList() + "can be excluded from tileIndexes " + candidateRemoval.indexes + " | Solve method: " + solveMethod;
-            
-            return text;
-        }
+        return solveMethod.GetSolveDescription(this);
     }
 }
 
@@ -256,6 +247,60 @@ public class WFCGridSolver
             if (someMethodYieldProgress)
             {
                 continue;
+            }
+            else
+            {
+                Debug.LogWarning("NOT PROGRESSION FOUND ");
+                return false;
+            }
+        }
+
+        
+        Debug.LogWarning("NO HINT FOUND");
+        return false;
+    }
+    
+    public bool TryFindProgression(SudokuGrid9x9 grid)
+    {
+        this.grid = new SudokuGrid9x9(grid);
+
+        // // in case the 
+        // var lowestEntropyIndex = FindLowestEntropyTile();
+
+        // can only progress if the grid is actually solveable
+        if (TrySolveGrid())
+        {
+            
+        }
+        else
+        {
+            Debug.LogWarning("Oops, can't solve this grid!");
+            return false;
+        }
+        
+        this.grid = new SudokuGrid9x9(grid);
+        
+        int iterations = 0;
+        while (!gridFilled)
+        {
+            iterations++;
+
+            if (iterations > 90) 
+            {
+                Debug.LogError("Maximum iterations reached.");
+                return false;
+            }
+            
+            // start with digit methods, place digit directly
+            if (TryFindDigitProgression(out TileIndex _))
+            {
+                return true; 
+            }
+            
+            bool someMethodYieldProgress = TryProgressWithCandidateMethods();
+            if (someMethodYieldProgress)
+            {
+                return true;
             }
             else
             {

@@ -112,6 +112,10 @@ PrefabInstance:
       propertyPath: ConfirmButtonText
       value: Delete
       objectReference: {fileID: 0}
+    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+      propertyPath: HasExplanationText
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

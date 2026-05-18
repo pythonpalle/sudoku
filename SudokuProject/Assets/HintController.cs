@@ -20,6 +20,8 @@ public class HintController : MonoBehaviour
     private SudokuGrid9x9 _hintGrid;
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
 
+    public int number;
+
     
     private Dictionary<TileIndex, SelectTile> hintTiles = new Dictionary<TileIndex, SelectTile>();
 
@@ -27,9 +29,14 @@ public class HintController : MonoBehaviour
     
     public void OnEnable()
     {
+        number = 7;
+        
         gridPort.RequestGrid();
         gridPort.RequestTiles();
         _hintGrid = new SudokuGrid9x9(gridPort.grid);
+        
+        Debug.Log("Before coroutine:");
+        Debug.Log(_hintGrid);
     
         // Starta en Coroutine istället för Invoke
         StartCoroutine(FillGridRoutine());
@@ -44,6 +51,9 @@ public class HintController : MonoBehaviour
         UpdateContents();
 
         TryFindNextSolutionStep();
+        
+        Debug.Log("After coroutine:");
+        Debug.Log(_hintGrid);
     }
 
     private void TryFindNextSolutionStep()
@@ -59,15 +69,15 @@ public class HintController : MonoBehaviour
         return _solver.TryFindProgression(gridCopy, out solutionStep);
     }
 
-    private void FillGrid()
-    {
-        //if (hintTiles == null || hintTiles.Count == 0)
-        {
-            CreateEmptyGrid();
-        }
-        
-        UpdateContents();
-    }
+    // private void FillGrid()
+    // {
+    //     //if (hintTiles == null || hintTiles.Count == 0)
+    //     {
+    //         CreateEmptyGrid();
+    //     }
+    //     
+    //     UpdateContents();
+    // }
 
     private void CreateEmptyGrid()
     {
@@ -139,9 +149,6 @@ public class HintController : MonoBehaviour
     {
         var puzzle = SaveManager.currentPuzzle;
         
-        var numbers = puzzle.numbers;
-        var permanents = puzzle.permanent;
-        bool[] contradicted = puzzle.contradicted;
 
         var gridTiles = gridPort.tileBehaviours;
 
@@ -171,7 +178,12 @@ public class HintController : MonoBehaviour
 
     public void OnNextButtonClicked()
     {
-        Debug.Log("Next");
+        Debug.Log("Next button pressed...");
+
+        Debug.Log(number);
+
+        _solver.TryFindProgression(_hintGrid);
+        UpdateContents();
     }
     
     public void OnPreviousButtonClicked()

@@ -23,7 +23,7 @@ public class PopupWindowManager : MonoBehaviour
     public void CreateConfirmPopupWindow(PopupContentsBehaviour popupData, UnityAction confirmAction)
     {
         // all confirm popups share same content
-        popupData.PopupContent = confirmationRootPrefab;
+        confirmationRootPrefab.InjectConfirmContent(popupData);
         
         InitializeAndAddToActive(popupData, confirmAction);
     }

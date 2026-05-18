@@ -524,11 +524,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
-  tiles: []
   gridParent: {fileID: 3318846861885116838}
   selectTilePrefab: {fileID: 2903648157190855232, guid: 99e4ddddafdc679428f6e4d35833bf5c, type: 3}
   paddingBetweenBoxes: 10
   paddingBetweenCells: 5
+  number: 6
 --- !u!1 &6822623261619377462
 GameObject:
   m_ObjectHideFlags: 0

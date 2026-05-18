@@ -102,7 +102,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
       propertyPath: ExplanationText
-      value: This action cannot be undone.
+      value: All progress will be lost!
       objectReference: {fileID: 0}
     - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
       propertyPath: UseCancelButton
@@ -111,6 +111,10 @@ PrefabInstance:
     - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
       propertyPath: ConfirmButtonText
       value: Restart
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028331560350695500, guid: 801ec3136d091ce4c813808bce910e62, type: 3}
+      propertyPath: HasExplanationText
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

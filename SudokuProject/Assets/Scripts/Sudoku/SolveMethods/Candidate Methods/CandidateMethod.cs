@@ -16,7 +16,10 @@ public struct CandidateRemoval
 
 public abstract class CandidateMethod : SolveMethod
 {
-
+    public override string GetSolveDescription(SolutionStepData solutionStepData)
+    {
+        return $"{GetName} found at positions {solutionStepData.candidateRemoval.indexes} for candidate set {solutionStepData.candidateRemoval.candidateSet}";
+    }
     
 
     public virtual bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)

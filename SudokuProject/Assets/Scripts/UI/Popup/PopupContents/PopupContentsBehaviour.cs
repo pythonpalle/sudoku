@@ -24,13 +24,13 @@ public class PopupContentsBehaviour : MonoBehaviour
     public int Width => _sizeLookup[width];
 
     [Header("Content")]
-    public PopupContentsBehaviour PopupContent;
     [SerializeField] private bool contentCoversFooterArea = false;
 
     [Header("Buttons")]
     public List<ButtonData> ButtonDatas;
 
     [Header("Confirm Popup Data")] 
+    public bool HasExplanationText;
     public string ExplanationText;
     public bool UseCancelButton;
     public string ConfirmButtonText;
@@ -41,7 +41,17 @@ public class PopupContentsBehaviour : MonoBehaviour
         { WindowSize.Medium, 900 },
         { WindowSize.Large, 1350 }
     };
-
+    
+    public void InjectConfirmContent(PopupContentsBehaviour from)
+    {
+        // height = from.height;
+        // width = from.width;
+        
+        Title = from.Title;
+        ExplanationText = from.ExplanationText;
+        UseCancelButton = from.UseCancelButton;
+        ConfirmButtonText = from.ConfirmButtonText;
+    }
 }
 
 [Serializable]

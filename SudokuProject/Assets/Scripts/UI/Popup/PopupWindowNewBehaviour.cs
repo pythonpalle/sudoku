@@ -40,31 +40,27 @@ public class PopupWindowNewBehaviour : MonoBehaviour
         }
     }
     
-    public void Initialize(PopupContentsBehaviour popupData, UnityAction confirmAction)
+    public void Initialize(PopupContentsBehaviour popupContentsPrefab, UnityAction confirmAction)
     {
         GameStateManager.OnPopup();
         isPopped = true;
         OnPopup?.Invoke();
         
-        Title.text = popupData.Title;
+        var popupContentsInstance = Instantiate(popupContentsPrefab, ContentRoot);
+        
+        Title.text = popupContentsInstance.Title;
 
-        Root.sizeDelta = new Vector2(popupData.Width, popupData.Height);
-
-        var popupPrefab = popupData.PopupContent;
-        if (popupPrefab == null)
-            popupPrefab = popupData;
-        
-        var popupContent = Instantiate(popupPrefab, ContentRoot);
+        Root.sizeDelta = new Vector2(popupContentsInstance.Width, popupContentsInstance.Height);
         
         
-        if (!string.IsNullOrEmpty(popupData.ExplanationText))
+        if (popupContentsInstance.HasExplanationText)
         {
-            TrySetChildText(popupContent.gameObject, popupData.ExplanationText);
+            TrySetChildText(popupContentsInstance.gameObject, popupContentsInstance.ExplanationText);
         }
 
         if (confirmAction != null)
         {
-            if (popupData.UseCancelButton)
+            if (popupContentsInstance.UseCancelButton)
             {
                 var cancelButton = Instantiate(ButtonPrefab, ButtonLayoutGroup);
                 TrySetChildText(cancelButton.gameObject, "Cancel");
@@ -72,14 +68,14 @@ public class PopupWindowNewBehaviour : MonoBehaviour
             }
             
             var confirmButton = Instantiate(ButtonPrefab, ButtonLayoutGroup);
-            TrySetChildText(confirmButton.gameObject, popupData.ConfirmButtonText);
+            TrySetChildText(confirmButton.gameObject, popupContentsInstance.ConfirmButtonText);
             confirmButton.onClick.AddListener(Close);
             confirmButton.onClick.AddListener(confirmAction);
         }
 
-        if (popupData.ButtonDatas.Any())
+        if (popupContentsInstance.ButtonDatas.Any())
         {
-            foreach (var buttonData in popupData.ButtonDatas)
+            foreach (var buttonData in popupContentsInstance.ButtonDatas)
             {
                 var button = Instantiate(ButtonPrefab, ButtonLayoutGroup);
                 
