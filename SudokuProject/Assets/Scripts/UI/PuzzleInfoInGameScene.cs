@@ -19,7 +19,7 @@ public class PuzzleInfoInGameScene : MonoBehaviour, ILoadPuzzleData
         
         SaveManager.OnPuzzleSaveCreated += OnSuccessfulSave;
 
-        switch (generatorPort.GenerationType)
+        switch (generatorPort.GetGenerationType())
         {
             case GridGenerationType.loaded:
                // SetNameText();

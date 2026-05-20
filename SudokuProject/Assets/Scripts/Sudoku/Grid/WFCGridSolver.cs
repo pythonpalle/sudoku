@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using UnityEngine;
 
 public enum SolutionsState
@@ -17,6 +18,60 @@ public struct SolutionStepData
     public int digit;
     public CandidateRemoval candidateRemoval;
     public bool isDigitSolve;
+    
+    public string GetCandidateDigitsString()
+    {
+        return ToNaturalLanguageList(CandidateRemovalDigits);
+    }
+
+    public string GetCandidateIndexesString()
+    {
+        return ToNaturalLanguageList(CandidateRemovalIndexesAlphaNumeric);
+        
+        string result = "";
+        var numericalIndexes = CandidateRemovalIndexesAlphaNumeric;
+
+        for (int i = 0; i < numericalIndexes.Count; i++)
+        {
+            if (i == 0)
+            {
+                
+            }
+            else if (i == numericalIndexes.Count - 2)
+            {
+                result += " and ";
+            }
+            else if (i > 0)
+            {
+                result += ", ";
+            }
+            
+            result += numericalIndexes[i];
+        }
+        
+        return result;
+    }
+    
+    public static string ToNaturalLanguageList<T>(
+        IEnumerable<T> items,
+        Func<T, string>? selector = null)
+    {
+        selector ??= x => x?.ToString() ?? "";
+
+        var list = items.Select(selector).ToList();
+
+        return list.Count switch
+        {
+            0 => "",
+            1 => list[0],
+            2 => $"{list[0]} and {list[1]}",
+            _ => $"{string.Join(", ", list.Take(list.Count - 1))} and {list.Last()}"
+        };
+    }
+
+    private List<string> CandidateRemovalIndexesAlphaNumeric =>
+        candidateRemoval.indexes.Select(index => index.ToAlphaNumeric()).ToList();
+    private List<int> CandidateRemovalDigits => candidateRemoval.candidateSet.OrderBy(x => x).ToList();
 
     public override string ToString()
     {
@@ -409,26 +464,34 @@ public class WFCGridSolver
                 return false;
             }
             
-            // start with digit methods, place digit directly
-            if (TryProgressWithDigitMethods())
-            {
-                continue;
-            }
-            
-            bool someMethodYieldProgress = TryProgressWithCandidateMethods();
-            if (someMethodYieldProgress)
-            {
-                continue;
-            }
-            else
-            {
-                Debug.LogWarning("NO PROGRESSION FOUND " );
+            if (!TryProgressWithHumanMethods())
                 return false;
-            }
+            else
+                continue;
         }
 
         hardestUsed = highestSuccessfulDifficulty = highestAttemptedDifficulty;
         return true;
+    }
+
+    public bool TryProgressWithHumanMethods()
+    {
+        // start with digit methods, place digit directly
+        if (TryProgressWithDigitMethods())
+        {
+            return true;
+        }
+            
+        bool someMethodYieldProgress = TryProgressWithCandidateMethods();
+        if (someMethodYieldProgress)
+        {
+            return true;
+        }
+        else
+        {
+            Debug.LogWarning("NO PROGRESSION FOUND " );
+            return false;
+        }
     }
 
     private bool TryProgressWithDigitMethods()
@@ -468,7 +531,7 @@ public class WFCGridSolver
             if (method.TryFindDigit(grid, out index, out digit))
             {
                 solveMethod = method;
-                Debug.Log($"Found progress: {method.GetName} at index {index}, digit {digit}");
+                //Debug.Log($"Found progress: {method.GetName} at index {index}, digit {digit}");
                 return true;
             }
         }
@@ -652,15 +715,8 @@ public class WFCGridSolver
                 cancelSolve = true;
                 return;
             }
-            
-            Move lastMove = moves.Pop();
-            
-            grid.SetNumberToIndex(lastMove.Index, 0);
-            grid.AddCandidateToIndex(lastMove.Index, lastMove.Number);
-            Propagate(lastMove.Number, lastMove.EffectedTileIndecies, false);
 
-            lastEntropy = grid[lastMove.Index].Entropy;
-            moveToChange = lastMove;
+            lastEntropy = BackTrack(out moveToChange);
         } 
         while (lastEntropy <= 1);
 
@@ -675,6 +731,20 @@ public class WFCGridSolver
         {
             HandleBackTracking(findAllSolutions);
         }
+    }
+
+    public int BackTrack(out Move moveToChange)
+    {
+        int lastEntropy;
+        Move lastMove = moves.Pop();
+            
+        grid.SetNumberToIndex(lastMove.Index, 0);
+        grid.AddCandidateToIndex(lastMove.Index, lastMove.Number);
+        Propagate(lastMove.Number, lastMove.EffectedTileIndecies, false);
+
+        lastEntropy = grid[lastMove.Index].Entropy;
+        moveToChange = lastMove;
+        return lastEntropy;
     }
 
     private void CollapseWaveFunction(TileIndex placeTileIndex, bool findAllSolutions = false)

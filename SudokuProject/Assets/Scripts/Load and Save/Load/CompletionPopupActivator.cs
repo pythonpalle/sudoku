@@ -40,7 +40,7 @@ public class CompletionPopupActivator : MonoBehaviour
 
     private void GoBackToSelect()
     {
-        if (SaveManager.TrySave(SaveRequestLocation.ExitGameButton, generatorPort.GenerationType))
+        if (SaveManager.TrySave(SaveRequestLocation.ExitGameButton, generatorPort.GetGenerationType()))
         {
             _scenePort.OnCallLoadPuzzleSelectScene();
         }

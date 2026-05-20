@@ -18,7 +18,7 @@ public abstract class CandidateMethod : SolveMethod
 {
     public override string GetSolveDescription(SolutionStepData solutionStepData)
     {
-        return $"{GetName} found at positions {solutionStepData.candidateRemoval.indexes} for candidate set {solutionStepData.candidateRemoval.candidateSet}";
+        return $"{GetName} found at positions {solutionStepData.GetCandidateIndexesString()} for candidates {solutionStepData.GetCandidateDigitsString()}";
     }
     
 

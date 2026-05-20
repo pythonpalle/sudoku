@@ -37,7 +37,7 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         
         AddListenersToSaveManager();
 
-        if (generatorPort.GenerationType == GridGenerationType.loaded)
+        if (generatorPort.GetGenerationType() == GridGenerationType.loaded)
         {
             Invoke("LoadCurrentPuzzle", 0.02f);
         }
@@ -75,7 +75,7 @@ public class GridSaver : MonoBehaviour, IPopulatePuzzleData, ILoadPuzzleData
         Debug.Log("App loses focus, save data!");
         requestPort.Location = SaveRequestLocation.ExitGameButton;
 
-        var generationType = generatorPort.GenerationType;
+        var generationType = generatorPort.GetGenerationType();
 
         if (SaveManager.HasCreatedPuzzleData)
         {

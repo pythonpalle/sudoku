@@ -30,7 +30,7 @@ public class GeneratorBehaviour : MonoBehaviour
 
     private void Start()
     {
-        switch (_generatorPort.GenerationType)
+        switch (_generatorPort.GetGenerationType())
         {
             case GridGenerationType.empty:
                 Invoke("GenerateEmptyGrid", 0.01f);

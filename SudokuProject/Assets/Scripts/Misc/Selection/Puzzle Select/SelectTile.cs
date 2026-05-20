@@ -34,6 +34,11 @@ namespace PuzzleSelect
             SetDigitText(permanent, text);
         }
 
+        public void ResetDigit()
+        {
+            SetDigitText(false, "");
+        }
+
         private void SetDigitText(bool permanent, string text)
         {
             digitText.text = text;

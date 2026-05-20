@@ -86,7 +86,7 @@ public class SudokuGameSceneManager : MonoBehaviour
 
     private void OnPuzzleSaveCreated()
     {
-        if (generatorPort.GenerationType == GridGenerationType.empty)
+        if (generatorPort.GetGenerationType() == GridGenerationType.empty)
         {
             OnLoadPuzzle();
         }
@@ -100,7 +100,7 @@ public class SudokuGameSceneManager : MonoBehaviour
 
     private void OnLoadPuzzle()
     {
-        generatorPort.GenerationType = GridGenerationType.loaded;
+        generatorPort.SetGenerationType(GridGenerationType.loaded);
         LoadGameScene();
     }
 
@@ -126,13 +126,13 @@ public class SudokuGameSceneManager : MonoBehaviour
     
     public void LoadRandom()
     {
-        generatorPort.GenerationType = GridGenerationType.random;
+        generatorPort.SetGenerationType(GridGenerationType.random);
         LoadGameScene();
     }
     
     public void LoadCreateOwnScene()
     {
-        generatorPort.GenerationType = GridGenerationType.empty;
+        generatorPort.SetGenerationType(GridGenerationType.empty);
         LoadGameScene();
     }
 }

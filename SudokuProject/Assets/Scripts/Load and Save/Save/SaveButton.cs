@@ -28,7 +28,7 @@ public class SaveButton : MonoBehaviour
         Debug.Log($"Save button OnSuccSave, location: {location}");
         
         // Don't display popup after a puzzle has just been created
-        if (_generatorPort.GenerationType == GridGenerationType.empty)
+        if (_generatorPort.GetGenerationType() == GridGenerationType.empty)
         {
             return;
         }
@@ -51,7 +51,7 @@ public class SaveButton : MonoBehaviour
         Debug.Log("OnSaveButtonPress");
         _saveRequestPort.Location = location;
         
-        if (SaveManager.TrySave(location, _generatorPort.GenerationType))
+        if (SaveManager.TrySave(location, _generatorPort.GetGenerationType()))
         {
             DisplaySavePopup();
         }

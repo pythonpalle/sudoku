@@ -50,8 +50,8 @@ namespace Saving
         string puzzleSaveName = _nameChecker.GetPuzzleSaveName();
         
         _gridPort.RequestGrid();
-        PuzzleDifficulty difficulty = puzzleSaveInfo.GetDifficultySuggestion(generatorPort.GenerationType, _gridPort.grid, difficultyObject.Difficulty);
-        SaveManager.TryCreateNewPuzzleSave(puzzleSaveName, _location, difficulty, generatorPort.GenerationType);
+        PuzzleDifficulty difficulty = puzzleSaveInfo.GetDifficultySuggestion(generatorPort.GetGenerationType(), _gridPort.grid, difficultyObject.Difficulty);
+        SaveManager.TryCreateNewPuzzleSave(puzzleSaveName, _location, difficulty, generatorPort.GetGenerationType());
 
         if (_location == SaveRequestLocation.SaveButton)
         {
@@ -65,7 +65,7 @@ namespace Saving
 
     private void SetPlaceHolderText()
     {
-        placeHolderString = puzzleSaveInfo.GetNameSuggestion(generatorPort.GenerationType, difficultyObject.Difficulty);
+        placeHolderString = puzzleSaveInfo.GetNameSuggestion(generatorPort.GetGenerationType(), difficultyObject.Difficulty);
         _nameChecker.SetPlaceHolder(placeHolderString);
     }
 

@@ -12,7 +12,7 @@ public class DeactivateOnLoad : MonoBehaviour
     {
         foreach (var typeToDeactivate in typesToDeactivate)
         {
-            if (typeToDeactivate == GeneratorPort.GenerationType)
+            if (typeToDeactivate == GeneratorPort.GetGenerationType())
                 Destroy(gameObject);
         }
     }

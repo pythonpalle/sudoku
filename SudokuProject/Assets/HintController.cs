@@ -19,25 +19,22 @@ public class HintController : MonoBehaviour
 
     private SudokuGrid9x9 _hintGrid;
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
-
-    public int number;
-
     
     private Dictionary<TileIndex, SelectTile> hintTiles = new Dictionary<TileIndex, SelectTile>();
 
     private List<GridLayoutGroup> boxGroups;
     
+    private Stack<SudokuGrid9x9> gridStack = new Stack<SudokuGrid9x9>();
+    
+    IList<SudokuGrid9x9> orderedGridsToComplete = new List<SudokuGrid9x9>();
+    
     public void OnEnable()
     {
-        number = 7;
-        
         gridPort.RequestGrid();
         gridPort.RequestTiles();
         _hintGrid = new SudokuGrid9x9(gridPort.grid);
+        //gridStack.Push(_hintGrid);
         
-        Debug.Log("Before coroutine:");
-        Debug.Log(_hintGrid);
-    
         // Starta en Coroutine istället för Invoke
         StartCoroutine(FillGridRoutine());
     }
@@ -51,16 +48,14 @@ public class HintController : MonoBehaviour
         UpdateContents();
 
         TryFindNextSolutionStep();
-        
-        Debug.Log("After coroutine:");
-        Debug.Log(_hintGrid);
     }
 
     private void TryFindNextSolutionStep()
     {
         if (TryFindProgression(_hintGrid, out SolutionStepData solutionStep))
         {
-            Debug.Log(solutionStep);
+            if (!solutionStep.isDigitSolve)
+                Debug.Log(solutionStep);
         }
     }
     
@@ -68,16 +63,6 @@ public class HintController : MonoBehaviour
     {
         return _solver.TryFindProgression(gridCopy, out solutionStep);
     }
-
-    // private void FillGrid()
-    // {
-    //     //if (hintTiles == null || hintTiles.Count == 0)
-    //     {
-    //         CreateEmptyGrid();
-    //     }
-    //     
-    //     UpdateContents();
-    // }
 
     private void CreateEmptyGrid()
     {
@@ -147,9 +132,6 @@ public class HintController : MonoBehaviour
 
     void UpdateContents()
     {
-        var puzzle = SaveManager.currentPuzzle;
-        
-
         var gridTiles = gridPort.tileBehaviours;
 
         foreach (var kvp in hintTiles)
@@ -172,22 +154,32 @@ public class HintController : MonoBehaviour
                 selectTile.HideCandidates();
             }
             else
+            {
+                if (!permanent) selectTile.ResetDigit();
+                
                 selectTile.SetCandidatesDigit(realTile.Candidates);
+            }
         }
     }
 
     public void OnNextButtonClicked()
     {
-        Debug.Log("Next button pressed...");
+        gridStack.Push(_hintGrid);
+        
+        _solver.TryProgressWithHumanMethods(); 
+        _hintGrid = new SudokuGrid9x9(_solver.grid);
 
-        Debug.Log(number);
-
-        _solver.TryFindProgression(_hintGrid);
         UpdateContents();
+        TryFindNextSolutionStep();
     }
     
     public void OnPreviousButtonClicked()
     {
-        Debug.Log("Previous");
+        var prevGrid = gridStack.Pop();
+        
+        _hintGrid = prevGrid;
+        _solver.SetGrid(prevGrid);
+        
+        UpdateContents();
     }
 }
