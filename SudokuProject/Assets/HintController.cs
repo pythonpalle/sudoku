@@ -112,29 +112,66 @@ public class HintController : MonoBehaviour
 
     private List<TileIndex> GetEliminatingPeersNakedSingle(TileIndex nakedSingleIndex, int digit)
     {
-        List<TileIndex> eliminatingPeers = new List<TileIndex>();
-        
-        List<TileIndex> intersectingHouses = GetIntersectingHouses(nakedSingleIndex);
-        HashSet<int> usedDigits = new HashSet<int>() { 1,2,3,4,5,6,7,8,9 };
-        usedDigits.Remove(digit);
+        // 1. Get the 3 houses separately
+        var rowPeers = GetRowPeers(nakedSingleIndex);
+        var colPeers = GetColPeers(nakedSingleIndex);
+        var boxPeers = GetBoxPeers(nakedSingleIndex);
 
-        foreach (var tileIndex in intersectingHouses)
+        // 2. Try to find all 8 digits in a single house first (Highest Intuition)
+        if (TryGetPeersFromHouse(colPeers, digit, out var colResult)) return colResult;
+        if (TryGetPeersFromHouse(rowPeers, digit, out var rowResult)) return rowResult;
+        if (TryGetPeersFromHouse(boxPeers, digit, out var boxResult)) return boxResult;
+
+        // 3. Fallback: Prioritize intersections (tiles in the same Box AND Row/Col)
+        List<TileIndex> prioritizedFallback = new List<TileIndex>();
+    
+        // Add box tiles that are also in the same row/col first
+        var intersections = boxPeers.Where(t => rowPeers.Contains(t) || colPeers.Contains(t));
+        prioritizedFallback.AddRange(intersections);
+    
+        // Add the rest of the unique peers
+        var uniquePeers = rowPeers.Concat(colPeers).Concat(boxPeers).Distinct();
+        prioritizedFallback.AddRange(uniquePeers.Where(t => !prioritizedFallback.Contains(t)));
+
+        // Extract the final eliminating peers from the prioritized fallback list
+        TryGetPeersFromHouse(prioritizedFallback, digit, out var finalResult);
+        return finalResult;
+    }
+    
+    private bool TryGetPeersFromHouse(IEnumerable<TileIndex> houseTiles, int targetDigit, out List<TileIndex> result)
+    {
+        result = new List<TileIndex>();
+        HashSet<int> neededDigits = new HashSet<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        neededDigits.Remove(targetDigit);
+
+        foreach (var tileIndex in houseTiles)
         {
             var tile = _hintGrid[tileIndex];
-            if (usedDigits.Contains(tile.Number))
+            if (neededDigits.Contains(tile.Number))
             {
-                eliminatingPeers.Add(tileIndex);
-                usedDigits.Remove(tile.Number);
-                if (usedDigits.Count == 0) break;
+                result.Add(tileIndex);
+                neededDigits.Remove(tile.Number);
+                if (neededDigits.Count == 0) return true; // Successfully found all 8 digits
             }
         }
-        
-        return eliminatingPeers;
+        return false; // This group didn't contain all 8 digits
     }
 
-    private List<TileIndex> GetIntersectingHouses(TileIndex index)
+    private List<TileIndex> GetRowPeers(TileIndex index) => 
+        Enumerable.Range(0, 9).Select(i => _hintGrid[index.row, i].index).ToList();
+
+    private List<TileIndex> GetColPeers(TileIndex index) => 
+        Enumerable.Range(0, 9).Select(i => _hintGrid[i, index.col].index).ToList();
+
+    private List<TileIndex> GetBoxPeers(TileIndex index)
     {
-        return WFCGridSolver.GetIntersectingHouses(index, _hintGrid);
+        List<TileIndex> box = new List<TileIndex>();
+        int startRow = index.row - index.row % 3;
+        int startCol = index.col - index.col % 3;
+        for (int r = 0; r < 3; r++)
+        for (int c = 0; c < 3; c++)
+            box.Add(_hintGrid[startRow + r, startCol + c].index);
+        return box;
     }
 
     private void AddSolveCircleAroundDigit(SelectTile uiTile, int solutionStepDigit)
