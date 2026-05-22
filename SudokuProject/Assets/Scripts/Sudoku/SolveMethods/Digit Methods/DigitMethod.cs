@@ -14,3 +14,6 @@ public abstract class DigitMethod : SolveMethod
         return $"{GetName} found in cell {solutionStepData.tileIndex.ToAlphaNumeric()}, revealing a {solutionStepData.digit}.";
     }
 }
+
+public abstract class HiddenSingle : DigitMethod
+{ }

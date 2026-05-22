@@ -99,6 +99,11 @@ public class HintController : MonoBehaviour
             }
         }
         
+        else if (solveMethod is HiddenSingle)
+        {
+            
+        }
+        
         AddSolveCircleAroundDigit(uiTile, solutionStep.digit);
     }
 

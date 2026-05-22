@@ -1,5 +1,5 @@
 ﻿
-public class HiddenSingleBox : DigitMethod
+public class HiddenSingleBox : HiddenSingle
 {
     public override bool TryFindDigit(SudokuGrid9x9 grid, out TileIndex index, out int digit)
     {

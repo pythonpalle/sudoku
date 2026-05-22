@@ -1,4 +1,4 @@
-﻿public class HiddenSingleColumn : DigitMethod
+﻿public class HiddenSingleColumn : HiddenSingle
 {
     public override string GetName => "Hidden Single Column";
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Easy;
