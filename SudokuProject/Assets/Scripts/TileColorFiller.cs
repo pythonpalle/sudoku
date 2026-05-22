@@ -12,6 +12,11 @@ public class TileColorFiller : MonoBehaviour
     [SerializeField] TileColors tileColors;
     [SerializeField] ColorObject contradictionColor;
     [SerializeField] ColorObject baseColor;
+    
+    
+    [Header("Hint Colors")]
+    [SerializeField] private ColorObject hintSolveBgColor;
+    [SerializeField] private ColorObject hintSolveCircleColor;
 
     private int BaseIndex => sections.Count - 1;
 
@@ -77,16 +82,29 @@ public class TileColorFiller : MonoBehaviour
 
     private void HandleOneColorFill(List<int> colorNumbers, int colorCount, bool isContradicted)
     {
+        Color color = new Color();
+        bool setColor = false;
+        
         if (colorCount == 0)
         {
-            Color color = isContradicted ? contradictionColor.Color : baseColor.Color;
-            sections[BaseIndex].SetFill(color, 1f);
+            color = isContradicted ? contradictionColor.Color : baseColor.Color;
+            setColor = true;
+            //sections[BaseIndex].SetFill(color, 1f);
         }
         else if (colorCount == 1)
         {
-            Color color = GetColorForSection(colorNumbers, 0, isContradicted);
-            sections[BaseIndex].SetFill(color, 1f);
+            color = GetColorForSection(colorNumbers, 0, isContradicted);
+            setColor = true;
+            //sections[BaseIndex].SetFill(color, 1f);
         }
+        
+        if (setColor)
+            SetBaseColor(color);
+    }
+
+    public void SetBaseColor(Color color)
+    {
+        sections[BaseIndex].SetFill(color, 1f);
     }
     
 
@@ -101,5 +119,15 @@ public class TileColorFiller : MonoBehaviour
             color = new Color(color.r * 3, color.g, color.b) * 0.75f;
         }
         return color;
+    }
+
+    public void SetSolveHintColor()
+    {
+        SetBaseColor(hintSolveBgColor.Color);
+    }
+
+    public void ResetBaseColor()
+    {
+        SetBaseColor(baseColor.Color);
     }
 }

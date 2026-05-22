@@ -471,7 +471,6 @@ MonoBehaviour:
   Title: Hint
   height: 1
   width: 2
-  PopupContent: {fileID: 0}
   contentCoversFooterArea: 0
   ButtonDatas:
   - Text: Previous
@@ -508,6 +507,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  HasExplanationText: 0
   ExplanationText: 
   UseCancelButton: 0
   ConfirmButtonText: 
@@ -524,11 +524,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
-  gridParent: {fileID: 3318846861885116838}
   selectTilePrefab: {fileID: 2903648157190855232, guid: 99e4ddddafdc679428f6e4d35833bf5c, type: 3}
+  gridParent: {fileID: 3318846861885116838}
   paddingBetweenBoxes: 10
   paddingBetweenCells: 5
-  number: 6
+  circleTexture: {fileID: 2800000, guid: 00ced263e622bf745bc6c2ecde097aae, type: 3}
 --- !u!1 &6822623261619377462
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace PuzzleSelect
 {
@@ -18,11 +20,15 @@ namespace PuzzleSelect
         [Header("Colors")]
         [SerializeField] private ColorObject permanentColor;
         [SerializeField] private ColorObject markColor;
-
+        
         [Header("Misc")] 
         [SerializeField] private RectTransform rectTransform;
         [SerializeField] private GameObject candidateParent;
         [SerializeField] private List<TextMeshProUGUI> candidateTexts;
+        
+        [Header("Candidate Add On")]
+        [SerializeField] private RawImage candidateImageOverlay;
+        
         
         private static float defaultCenterSize = 4.2f; 
         private static float defaultDigitSize = 10f; 
@@ -122,5 +128,27 @@ namespace PuzzleSelect
         }
 
 
+        public void SetDigitSolveHint(int solutionStepDigit)
+        {
+            colorFiller.SetSolveHintColor();
+        }
+
+        public void ResetHintDisplayInfo()
+        {
+            colorFiller.ResetBaseColor();
+            candidateImageOverlay.gameObject.SetActive(false);
+        }
+
+        public void AddObjectAroundCandidate(int candidate, Texture2D texture, Color color)
+        {
+            var candidateText = candidateTexts[candidate - 1];
+            
+            candidateImageOverlay.gameObject.SetActive(true);
+            candidateImageOverlay.transform.SetParent(candidateText.transform);
+            candidateImageOverlay.transform.position = candidateText.transform.position;
+            
+            candidateImageOverlay.texture = texture;        
+            candidateImageOverlay.color = color;
+        }
     }
 }

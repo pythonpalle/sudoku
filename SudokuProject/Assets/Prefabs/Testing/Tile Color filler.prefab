@@ -32,7 +32,6 @@ RectTransform:
   m_Children:
   - {fileID: 7499022654505776060}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -58,6 +57,8 @@ MonoBehaviour:
   tileColors: {fileID: 11400000, guid: 6ff501726a0f0ef46ba65ac2dc5bf9b3, type: 2}
   contradictionColor: {fileID: 11400000, guid: 90506eac03aaf8d409aaf7e41cf7787a, type: 2}
   baseColor: {fileID: 11400000, guid: e543c52345e384d41b13698039f93bc3, type: 2}
+  hintSolveBgColor: {fileID: 11400000, guid: 3abd8b8cf9add4e4ab6a13ab3a8b5894, type: 2}
+  hintSolveCircleColor: {fileID: 11400000, guid: df2964fa9bb8c72498e97bc831de587a, type: 2}
 --- !u!222 &5212046097701537287
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -71,6 +72,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 3226568070469402797}
     m_Modifications:
     - target: {fileID: 1105429804991013928, guid: 180c7e2374b40e541b17b705ca097039, type: 3}
@@ -170,6 +172,9 @@ PrefabInstance:
       value: Filled Tile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 180c7e2374b40e541b17b705ca097039, type: 3}
 --- !u!114 &6595760485847732080 stripped
 MonoBehaviour:

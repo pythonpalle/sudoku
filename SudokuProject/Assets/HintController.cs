@@ -4,18 +4,27 @@ using System.Collections.Generic;
 using PuzzleSelect;
 using Saving;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class HintController : MonoBehaviour
 {
+    [Header("Ports")]
     [SerializeField] private GridPort gridPort;
     
     //[SerializeField] private List<SelectTile> tiles;
-    [SerializeField] private RectTransform gridParent;
+    [Header("Prefabs")]
     [SerializeField] private SelectTile selectTilePrefab;
+    
+    [Header("Parent")]
+    [SerializeField] private RectTransform gridParent;
 
+    [Header("Padding")]
     [SerializeField] private float paddingBetweenBoxes = 2f;
     [SerializeField] private float paddingBetweenCells = 5f;
+    
+    [Header("Add on Objects")]
+    [SerializeField] private Texture2D circleTexture;
 
     private SudokuGrid9x9 _hintGrid;
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
@@ -26,20 +35,17 @@ public class HintController : MonoBehaviour
     
     private Stack<SudokuGrid9x9> gridStack = new Stack<SudokuGrid9x9>();
     
-    IList<SudokuGrid9x9> orderedGridsToComplete = new List<SudokuGrid9x9>();
-    
     public void OnEnable()
     {
         gridPort.RequestGrid();
         gridPort.RequestTiles();
         _hintGrid = new SudokuGrid9x9(gridPort.grid);
-        //gridStack.Push(_hintGrid);
         
         // Starta en Coroutine istället för Invoke
-        StartCoroutine(FillGridRoutine());
+        StartCoroutine(CreateInitialGridRoutine());
     }
 
-    private IEnumerator FillGridRoutine()
+    private IEnumerator CreateInitialGridRoutine()
     {
         // Vänta tills Unity har kört klart alla layout-beräkningar för denna frame
         yield return new WaitForEndOfFrame();
@@ -54,11 +60,45 @@ public class HintController : MonoBehaviour
     {
         if (TryFindProgression(_hintGrid, out SolutionStepData solutionStep))
         {
+            ResetTileHintColors();
+            
             if (!solutionStep.isDigitSolve)
                 Debug.Log(solutionStep);
+            if (solutionStep.isDigitSolve)
+            {
+                HandleDigitSolveHint(solutionStep);
+            }
         }
     }
-    
+
+    private void ResetTileHintColors()
+    {
+        foreach (SelectTile selectTile in hintTiles.Values)
+        {
+            selectTile.ResetHintDisplayInfo();
+        }
+    }
+
+    private void HandleDigitSolveHint(SolutionStepData solutionStep)
+    {
+        Debug.Log($"Place a {solutionStep.digit} at index {solutionStep.tileIndex}");
+        
+        var uiTile = GetUITile(solutionStep.tileIndex);
+        uiTile.SetDigitSolveHint(solutionStep.digit);
+        
+        AddSolveCircleAroundDigit(uiTile, solutionStep.digit);
+    }
+
+    private void AddSolveCircleAroundDigit(SelectTile uiTile, int solutionStepDigit)
+    {
+        uiTile.AddObjectAroundCandidate(solutionStepDigit, circleTexture, Color.yellow);
+    }
+
+    private SelectTile GetUITile(TileIndex tileIndex)
+    {
+        return hintTiles[tileIndex];
+    }
+
     private bool TryFindProgression(SudokuGrid9x9 gridCopy, out SolutionStepData solutionStep)
     {
         return _solver.TryFindProgression(gridCopy, out solutionStep);
@@ -181,5 +221,6 @@ public class HintController : MonoBehaviour
         _solver.SetGrid(prevGrid);
         
         UpdateContents();
+        TryFindNextSolutionStep();
     }
 }
