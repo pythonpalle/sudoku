@@ -780,6 +780,39 @@ public class WFCGridSolver
         return effectedTiles;
     }
     
+    public static List<TileIndex> GetIntersectingHouses(TileIndex tileIndex, SudokuGrid9x9 grid)
+    {
+        int tileRow = tileIndex.row;
+        int tileCol = tileIndex.col;
+
+        List<TileIndex> effectedTiles = new List<TileIndex>();
+        
+        // Tiles in same row or column
+        for (int i = 0; i < 9; i++)
+        {
+            var rowTile = grid[i, tileCol];
+            var colTile = grid[tileRow, i];
+            
+            effectedTiles.Add(rowTile.index);
+            effectedTiles.Add(colTile.index);
+        }
+        
+        // Tiles in same box
+        int topLeftBoxRow = tileRow - tileRow % 3;
+        int topLeftBoxCol = tileCol - tileCol % 3;
+
+        for (int deltaRow = 0; deltaRow < 3; deltaRow++)
+        {
+            for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+            {
+                SudokuTile boxTile = grid[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol];
+                effectedTiles.Add(boxTile.index);
+            } 
+        }
+
+        return effectedTiles;
+    }
+    
     private List<TileIndex> RemoveTilesWithMissingCandidate(List<TileIndex> effectedTiles, TileIndex placeTileIndex)
     {
         List<TileIndex> filteredTiles = new List<TileIndex>();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -30,8 +31,14 @@ namespace PuzzleSelect
         [SerializeField] private RawImage candidateImageOverlay;
         
         
-        private static float defaultCenterSize = 4.2f; 
-        private static float defaultDigitSize = 10f; 
+        private static float defaultCenterSize = 4.2f;  
+        private static float defaultDigitSize = 10f;
+
+        private void OnDestroy()
+        {
+            if (candidateImageOverlay)
+                Destroy(candidateImageOverlay.gameObject);  
+        }
 
         public void SetDigit(int number, bool permanent)
         {
@@ -132,6 +139,11 @@ namespace PuzzleSelect
         {
             colorFiller.SetSolveHintColor();
         }
+        
+        public void SetEffectedHint()
+        {
+            colorFiller.SetEffectedHintColor();
+        }
 
         public void ResetHintDisplayInfo()
         {
@@ -141,14 +153,32 @@ namespace PuzzleSelect
 
         public void AddObjectAroundCandidate(int candidate, Texture2D texture, Color color)
         {
+            StartCoroutine(PlaceNextFrame(candidate, texture, color));
+        }
+
+        private bool hasPlacedObject = false;
+
+        private IEnumerator PlaceNextFrame(int candidate, Texture2D texture, Color color)
+        {
+            if (!hasPlacedObject)
+                yield return new WaitForEndOfFrame();
+            
             var candidateText = candidateTexts[candidate - 1];
             
             candidateImageOverlay.gameObject.SetActive(true);
-            candidateImageOverlay.transform.SetParent(candidateText.transform);
+            
+            // sets the overlay on top of everything else
+            candidateImageOverlay.transform.SetParent(transform.root, true);
+            candidateImageOverlay.transform.SetAsLastSibling();
+            
             candidateImageOverlay.transform.position = candidateText.transform.position;
+
+            //candidateImageOverlay.rectTransform.rect.size = candidateText.GetComponent<RectTransform>().sizeDelta;
             
             candidateImageOverlay.texture = texture;        
             candidateImageOverlay.color = color;
+
+            hasPlacedObject = true;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using PuzzleSelect;
 using Saving;
 using UnityEngine;
@@ -86,7 +87,54 @@ public class HintController : MonoBehaviour
         var uiTile = GetUITile(solutionStep.tileIndex);
         uiTile.SetDigitSolveHint(solutionStep.digit);
         
+        var solveMethod = solutionStep.solveMethod;
+        if (solveMethod is NakedSingle)
+        {
+            List<TileIndex> eliminatingPeersIndexes = GetEliminatingPeersNakedSingle(solutionStep.tileIndex, solutionStep.digit);
+            List<SelectTile> eliminatingTiles = GetUITiles(eliminatingPeersIndexes);
+
+            foreach (var eliminatingTile in eliminatingTiles)
+            {
+                eliminatingTile.SetEffectedHint();
+            }
+        }
+        
         AddSolveCircleAroundDigit(uiTile, solutionStep.digit);
+    }
+
+    private List<SelectTile> GetUITiles(List<TileIndex> tileIndexes)
+    {
+        return tileIndexes
+            .Where(hintTiles.ContainsKey)
+            .Select(index => hintTiles[index])
+            .ToList();
+    }
+
+    private List<TileIndex> GetEliminatingPeersNakedSingle(TileIndex nakedSingleIndex, int digit)
+    {
+        List<TileIndex> eliminatingPeers = new List<TileIndex>();
+        
+        List<TileIndex> intersectingHouses = GetIntersectingHouses(nakedSingleIndex);
+        HashSet<int> usedDigits = new HashSet<int>() { 1,2,3,4,5,6,7,8,9 };
+        usedDigits.Remove(digit);
+
+        foreach (var tileIndex in intersectingHouses)
+        {
+            var tile = _hintGrid[tileIndex];
+            if (usedDigits.Contains(tile.Number))
+            {
+                eliminatingPeers.Add(tileIndex);
+                usedDigits.Remove(tile.Number);
+                if (usedDigits.Count == 0) break;
+            }
+        }
+        
+        return eliminatingPeers;
+    }
+
+    private List<TileIndex> GetIntersectingHouses(TileIndex index)
+    {
+        return WFCGridSolver.GetIntersectingHouses(index, _hintGrid);
     }
 
     private void AddSolveCircleAroundDigit(SelectTile uiTile, int solutionStepDigit)
