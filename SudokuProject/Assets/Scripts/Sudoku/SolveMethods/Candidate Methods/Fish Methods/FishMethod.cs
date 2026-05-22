@@ -66,7 +66,7 @@ public abstract class FishMethod : CandidateMethod
                 }
             }
             
-            // can't be fish in row if less then _multCount_ rows
+            // can't be fish in row if less than _multCount_ rows
             if (rowCandidates.Count < multCount)
             {
                 continue;
@@ -85,8 +85,10 @@ public abstract class FishMethod : CandidateMethod
             {
                 if (effectedTileList.Count > 0)
                 {
-                    removal.indexes = effectedTileList;
-                    removal.candidateSet = new HashSet<int>{digit};
+                    removal = new CandidateRemoval(effectedTileList, digit, null); // TODO: FIX!
+                    
+                    // removal.indexes = effectedTileList;
+                    // removal.candidateSet = new HashSet<int>{digit};
                     return true;
                 }
             }

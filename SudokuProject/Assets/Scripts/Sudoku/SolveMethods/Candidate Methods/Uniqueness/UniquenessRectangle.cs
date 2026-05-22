@@ -94,7 +94,7 @@ public class UniquenessRectangle : CandidateMethod
                     if (removalCandidates.IsSubsetOf(uniqueTile.Candidates))
                     {
                         removal.candidateSet = removalCandidates;
-                        removal.indexes = new List<TileIndex> {uniqueTile.index};
+                        removal.removalIndexes = new List<TileIndex> {uniqueTile.index};
                         grid.PrintGrid();
                         DebugRectangle(tileIndex1, tileIndex2, tileIndex3, uniqueTile.index, removalCandidates);
                         return true;

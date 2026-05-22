@@ -59,8 +59,10 @@ public abstract class PointingMethod : CandidateMethod
                     List<TileIndex> effectedTileIndices = FindEffectedIndicesFromBox(grid, indices, candidate, checkRow);
                     if (effectedTileIndices.Count > 0)
                     {
-                        removal.candidateSet = new HashSet<int>{candidate};
-                        removal.indexes = effectedTileIndices;
+                        removal = new CandidateRemoval(effectedTileIndices, new HashSet<int>{candidate}, indices);
+                        
+                        // removal.candidateSet = new HashSet<int>{candidate};
+                        // removal.indexes = effectedTileIndices;
                         
                         return true;
                     }
@@ -183,11 +185,13 @@ public abstract class PointingMethod : CandidateMethod
                         List<TileIndex> effectedTileIndices = FindEffectedIndicesRowColToBox(grid, indices, candidate);
                         if (effectedTileIndices.Count > 0)
                         {
-                            removal.candidateSet = new HashSet<int>{candidate};
-                            removal.indexes = effectedTileIndices;
-                            Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
-                            Debug.Log("Effected indices: ");
-                            foreach (var index in removal.indexes)
+                            removal = new CandidateRemoval(effectedTileIndices, new HashSet<int>{candidate}, indices );
+                            
+                            // removal.candidateSet = new HashSet<int>{candidate};
+                            // removal.indexes = effectedTileIndices;
+                            // Debug.LogWarning($"Found pointing TO BOX at {indices[0]}, {indices[1]} (digit: {candidate}");
+                            // Debug.Log("Effected indices: ");
+                            foreach (var index in removal.RemovalIndexes)
                             {
                                 Debug.Log(index);
                             }
@@ -223,12 +227,14 @@ public abstract class PointingMethod : CandidateMethod
                         List<TileIndex> effectedTileIndices = FindEffectedIndicesRowColToBox(grid, indices, candidate);
                         if (effectedTileIndices.Count > 0)
                         {
-                            removal.candidateSet = new HashSet<int>{candidate};
-                            removal.indexes = effectedTileIndices;
+                            removal = new CandidateRemoval(effectedTileIndices, new HashSet<int>{candidate}, indices );
+                            
+                            // removal.candidateSet = new HashSet<int>{candidate};
+                            // removal.indexes = effectedTileIndices;
                             
                             Debug.LogWarning($"Found pointing TO COL at {indices[0]}, {indices[1]} (digit: {candidate}");
                             Debug.Log("Effected indices: ");
-                            foreach (var index in removal.indexes)
+                            foreach (var index in removal.RemovalIndexes)
                             {
                                 Debug.Log(index);
                             }

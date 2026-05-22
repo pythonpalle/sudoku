@@ -111,11 +111,12 @@ public abstract class HiddenMultiple : CandidateMethod
         FindAllCombinations(potentialMultiples, numbers, candidateCount, tempList, 0, n-1, 0, k);
         foreach (var multList in potentialMultiples)
         {
-            removal.indexes = multList.tileIndices;
+            //removal.indexes = multList.tileIndices;
             var candidateSet = GetEffectedCandidates(grid, multList.tileIndices, multList.candidates);
-            removal.candidateSet = candidateSet; 
-            if (removal.candidateSet.Count > 0)
+            //removal.candidateSet = candidateSet; 
+            if (candidateSet.Count > 0)
             {
+                removal = new CandidateRemoval(multList.tileIndices, candidateSet, null); // TODO
                 return true;
             }
         }

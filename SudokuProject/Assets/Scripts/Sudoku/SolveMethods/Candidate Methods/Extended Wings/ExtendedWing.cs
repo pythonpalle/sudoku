@@ -102,7 +102,7 @@ public abstract class ExtendedWing : CandidateMethod
                         // should now have valid XYWing
                         // DebugWing(baseTile, wing1, wing2);
                         
-                        removal.indexes = intersectIndices;
+                        removal.removalIndexes = intersectIndices;
                         removal.candidateSet = wing1_wing2_intersect_set;
                         return true;
                     }

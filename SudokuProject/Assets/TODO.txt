@@ -2,6 +2,11 @@
 
 TODO 
 
+-- HINT --
+
+Lägg till triggerIndex på alla (inklusive dem som har NULL)
+
+
 ------ BUGS ----------
 
 När man avslutar spelet från menyn, och man har bytt namn på ett pussel, så sparas inte den ändringen.

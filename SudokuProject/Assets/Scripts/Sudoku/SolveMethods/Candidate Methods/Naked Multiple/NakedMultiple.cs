@@ -67,8 +67,9 @@ public abstract class NakedMultiple : CandidateMethod
         //var candidateSet = grid[tileIndex].Candidates;
         bool foundEffected = false;
 
-        removal = new CandidateRemoval(new List<TileIndex>(), candidateSet);
-
+        // removal = new CandidateRemoval(new List<TileIndex>(), candidateSet);
+        List<TileIndex> effectedTiles = new List<TileIndex>();
+        
         for (int i = 0; i < 9; i++)
         {
             var compareTile = fromRow ? grid[multRow, i] : grid[i, multCol];
@@ -78,9 +79,19 @@ public abstract class NakedMultiple : CandidateMethod
 
             if (candidateSet.Overlaps(compareTile.Candidates))
             {
-                removal.indexes.Add(compareTile.index);
+                effectedTiles.Add(compareTile.index);
+                //removal.indexes.Add(compareTile.index);
                 foundEffected = true;
             }
+        }
+
+        if (foundEffected)
+        {
+            removal = new CandidateRemoval(effectedTiles, candidateSet, multTiles);
+        }
+        else
+        {
+            removal = new CandidateRemoval();
         }
 
         return foundEffected;
@@ -202,7 +213,9 @@ public abstract class NakedMultiple : CandidateMethod
         
         bool foundEffected = false;
 
-        removal = new CandidateRemoval(new List<TileIndex>(), candidateSet);
+        // removal = new CandidateRemoval(new List<TileIndex>(), candidateSet);
+        
+        List<TileIndex> tempList = new List<TileIndex>();
 
         for (int deltaRow = 0; deltaRow < 3; deltaRow++)
         {
@@ -215,10 +228,20 @@ public abstract class NakedMultiple : CandidateMethod
 
                 if (candidateSet.Overlaps(compareTile.Candidates))
                 {
-                    removal.indexes.Add(compareTile.index);
+                    tempList.Add(compareTile.index);
+                    //removal.indexes.Add(compareTile.index);
                     foundEffected = true;
                 }
             } 
+        }
+
+        if (foundEffected)
+        {
+            removal = new CandidateRemoval(tempList, candidateSet, multTiles);
+        }
+        else
+        {
+            removal = new CandidateRemoval();
         }
         
         return foundEffected;

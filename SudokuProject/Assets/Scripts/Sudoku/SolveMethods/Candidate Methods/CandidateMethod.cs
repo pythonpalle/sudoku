@@ -4,13 +4,29 @@ using System.Linq;
 
 public struct CandidateRemoval
 {
-    public List<TileIndex> indexes;
+    public List<TileIndex> RemovalIndexes => removalIndexes;
+    public HashSet<int> CandidateSet => candidateSet;  
+    public List<TileIndex> TriggerIndexes => triggerIndexes;
+    
+    public List<TileIndex> removalIndexes;
     public HashSet<int> candidateSet;
+    private List<TileIndex> triggerIndexes;
+    // private List<TileIndex> triggerRowsCols;
+    // private List<TileIndex> removalRowCols;
+    // private bool isTriggerRows;
 
-    public CandidateRemoval(List<TileIndex> indexes, HashSet<int> candidateSet)
+    public CandidateRemoval(List<TileIndex> removalIndexes, HashSet<int> candidateSet, List<TileIndex> triggerIndexes)
     {
-        this.indexes = indexes;
+        this.removalIndexes = removalIndexes;
         this.candidateSet = candidateSet;
+        this.triggerIndexes = triggerIndexes;
+    }
+    
+    public CandidateRemoval(List<TileIndex> removalIndexes, int singularCandidate, List<TileIndex> triggerIndexes)
+    {
+        this.removalIndexes = removalIndexes;
+        this.candidateSet = new HashSet<int>(singularCandidate);
+        this.triggerIndexes = triggerIndexes;
     }
 }
 

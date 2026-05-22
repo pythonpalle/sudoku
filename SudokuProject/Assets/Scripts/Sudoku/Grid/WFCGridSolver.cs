@@ -27,29 +27,6 @@ public struct SolutionStepData
     public string GetCandidateIndexesString()
     {
         return ToNaturalLanguageList(CandidateRemovalIndexesAlphaNumeric);
-        
-        string result = "";
-        var numericalIndexes = CandidateRemovalIndexesAlphaNumeric;
-
-        for (int i = 0; i < numericalIndexes.Count; i++)
-        {
-            if (i == 0)
-            {
-                
-            }
-            else if (i == numericalIndexes.Count - 2)
-            {
-                result += " and ";
-            }
-            else if (i > 0)
-            {
-                result += ", ";
-            }
-            
-            result += numericalIndexes[i];
-        }
-        
-        return result;
     }
     
     public static string ToNaturalLanguageList<T>(
@@ -70,8 +47,8 @@ public struct SolutionStepData
     }
 
     private List<string> CandidateRemovalIndexesAlphaNumeric =>
-        candidateRemoval.indexes.Select(index => index.ToAlphaNumeric()).ToList();
-    private List<int> CandidateRemovalDigits => candidateRemoval.candidateSet.OrderBy(x => x).ToList();
+        candidateRemoval.RemovalIndexes.Select(index => index.ToAlphaNumeric()).ToList();
+    private List<int> CandidateRemovalDigits => candidateRemoval.CandidateSet.OrderBy(x => x).ToList();
 
     public override string ToString()
     {
@@ -604,7 +581,7 @@ public class WFCGridSolver
         Debug.Log($"Digit(s): {digits}");
                 
         Debug.Log("Indices: ");
-        foreach (var index in removal.indexes)
+        foreach (var index in removal.removalIndexes)
         {
             Debug.Log(index);
         }
@@ -612,7 +589,7 @@ public class WFCGridSolver
 
     private void RemoveCandidates(CandidateRemoval removal)
     {
-        foreach (var index in removal.indexes)
+        foreach (var index in removal.removalIndexes)
         {
             foreach (var candidate in removal.candidateSet)
             {
