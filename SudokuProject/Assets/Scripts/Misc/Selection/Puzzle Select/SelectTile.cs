@@ -135,14 +135,19 @@ namespace PuzzleSelect
         }
 
 
-        public void SetDigitSolveHint(int solutionStepDigit)
-        {
-            colorFiller.SetSolveHintColor();
-        }
+        // public void SetDigitSolveHint(int solutionStepDigit)
+        // {
+        //     colorFiller.SetSolveHintColor();
+        // }
+        //
+        // public void SetEffectedHint()
+        // {
+        //     colorFiller.SetEffectedHintColor();
+        // }
         
-        public void SetEffectedHint()
+        public void UpdateBackgroundColor(Color color)
         {
-            colorFiller.SetEffectedHintColor();
+            colorFiller.SetBaseColor(color);
         }
 
         public void ResetHintDisplayInfo()

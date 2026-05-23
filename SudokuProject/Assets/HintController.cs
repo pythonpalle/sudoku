@@ -27,6 +27,12 @@ public class HintController : MonoBehaviour
     
     [Header("Add on Objects")]
     [SerializeField] private Texture2D circleTexture;
+    
+    [Header("Color")]
+    [SerializeField] private ColorObject hintSolveBgColor;
+    [SerializeField] private ColorObject hintSolveCircleColor;
+    [SerializeField] private ColorObject hintEffectedColor;
+    [SerializeField] private ColorObject sharedHouseColor;
 
     private SudokuGrid9x9 _hintGrid;
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
@@ -86,7 +92,7 @@ public class HintController : MonoBehaviour
         Debug.Log($"Place a {solutionStep.digit} at index {solutionStep.tileIndex}");
         
         var uiTile = GetUITile(solutionStep.tileIndex);
-        uiTile.SetDigitSolveHint(solutionStep.digit);
+        SetDigitSolveColor(uiTile);
         
         var solveMethod = solutionStep.solveMethod;
         if (solveMethod is NakedSingle)
@@ -94,7 +100,7 @@ public class HintController : MonoBehaviour
             List<TileIndex> eliminatingPeersIndexes = GetEliminatingPeersNakedSingle(solutionStep.tileIndex, solutionStep.digit);
             List<SelectTile> eliminatingTiles = GetUITiles(eliminatingPeersIndexes);
 
-            SetEffectedHints(eliminatingTiles);
+            SetTriggeringTileColor(eliminatingTiles);
         }
         
         else if (solveMethod is HiddenSingle hiddenSingle)
@@ -102,20 +108,20 @@ public class HintController : MonoBehaviour
             var tileIndex = solutionStep.tileIndex;
             HouseType houseType = hiddenSingle.HouseType;
             var tileIndexesInSameHouse = GetPeersInHouse(tileIndex, houseType).Where(x => x != tileIndex).ToList(); 
-            List<SelectTile> eliminatingTiles = GetUITiles(tileIndexesInSameHouse);
-            SetEffectedHints(eliminatingTiles);
+            List<SelectTile> tilesInSameHouse = GetUITiles(tileIndexesInSameHouse);
+            SetSharedHouseColor(tilesInSameHouse);
             
             List<TileIndex> getTileIndexesSeeingHouse = GetTileIndexesSeeingHouse(houseType, tileIndex, solutionStep.digit);
             List<SelectTile> laserUiTiles = GetUITiles(getTileIndexesSeeingHouse);
             
-            SetEffectedHints(laserUiTiles);
+            SetTriggeringTileColor(laserUiTiles);
 
         }
         
         AddSolveCircleAroundDigit(uiTile, solutionStep.digit);
     }
 
-    private List<TileIndex> GetTileIndexesSeeingHouse(HouseType houseType, TileIndex targetTileIndex, int digit)
+    private List<TileIndex> GetTileIndexesSeeingHouse(HouseType houseType, TileIndex targetTileIndex, int digit, bool ignorePopulated = true)
 {
     List<TileIndex> laserTiles = new List<TileIndex>();
 
@@ -130,9 +136,15 @@ public class HintController : MonoBehaviour
             // Vi kollar alla rutor i samma kolumner som de tomma rutorna i raden har.
             foreach (var houseTile in houseTiles)
             {
+                int houseTileBox = houseTile.GetBox();
+                
                 for (int r = 0; r < 9; r++)
                 {
                     var checkIndex = _hintGrid[r, houseTile.col].index;
+
+                    if (IgnoreUsed(ignorePopulated, checkIndex, houseTileBox, houseTiles, houseTile)) 
+                        continue;
+                    
                     CheckAndAddLaserTile(checkIndex, houseTiles, digit, laserTiles);
                 }
             }
@@ -142,9 +154,15 @@ public class HintController : MonoBehaviour
             // För en kolumn letar vi efter rader (horisontella lasrar) som skär kolumnen.
             foreach (var houseTile in houseTiles)
             {
+                int houseTileBox = houseTile.GetBox();
+                
                 for (int c = 0; c < 9; c++)
                 {
                     var checkIndex = _hintGrid[houseTile.row, c].index;
+                    
+                    if (IgnoreUsed(ignorePopulated, checkIndex, houseTileBox, houseTiles, houseTile)) 
+                        continue;
+                    
                     CheckAndAddLaserTile(checkIndex, houseTiles, digit, laserTiles);
                 }
             }
@@ -180,8 +198,30 @@ public class HintController : MonoBehaviour
     return laserTiles;
 }
 
-// Hjälpmetod för att validera och lägga till unika laserrutor
-    private void CheckAndAddLaserTile(TileIndex checkIndex, HashSet<TileIndex> houseTiles, int digit, List<TileIndex> laserTiles)
+    private bool IgnoreUsed(bool ignorePopulated, TileIndex checkIndex, int houseTileBox, HashSet<TileIndex> houseTiles,
+        TileIndex houseTile)
+    {
+        if (ignorePopulated)
+        {
+            bool shareBox = checkIndex.GetBox() == houseTileBox;
+            if (shareBox)
+            {
+                bool allHouseTilesInBoxAreUsed = houseTiles.Where(x => x.GetBox() == houseTileBox).All(x => _hintGrid[x].Used);
+                            
+                if (allHouseTilesInBoxAreUsed) return true;
+            }
+            else
+            {
+                if (_hintGrid[houseTile].Used)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Hjälpmetod för att validera och lägga till unika laserrutor
+    private void CheckAndAddLaserTile(TileIndex checkIndex, HashSet<TileIndex> houseTiles, int digit, List<TileIndex> laserTiles, bool ignorePopulated = true)
     {
         // Rutan får inte vara en del av själva huset vi undersöker
         if (houseTiles.Contains(checkIndex)) return;
@@ -196,12 +236,32 @@ public class HintController : MonoBehaviour
         }
     }
 
-    private static void SetEffectedHints(List<SelectTile> eliminatingTiles)
+    private void SetTriggeringTileColor(List<SelectTile> eliminatingTiles)
+    {
+        UpdateBackgroundColor(eliminatingTiles, hintEffectedColor.Color);
+    }
+    
+    private void SetSharedHouseColor(List<SelectTile> eliminatingTiles)
+    {
+        UpdateBackgroundColor(eliminatingTiles, sharedHouseColor.Color);
+    }
+    
+    private static void UpdateBackgroundColor(List<SelectTile> eliminatingTiles, Color color)
     {
         foreach (var eliminatingTile in eliminatingTiles)
         {
-            eliminatingTile.SetEffectedHint();
+            eliminatingTile.UpdateBackgroundColor(color);
         }
+    }
+    
+    private void SetDigitSolveColor(SelectTile tile)
+    {
+        UpdateBackgroundColor(new List<SelectTile> { tile }, hintSolveBgColor.Color);
+    }
+    
+    private static void UpdateBackgroundColor(SelectTile tile, Color color)
+    {
+        UpdateBackgroundColor(new List<SelectTile> { tile }, color);
     }
 
     private List<TileIndex> GetPeersInHouse(TileIndex tileIndex, HouseType houseType)

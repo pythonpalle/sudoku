@@ -10,6 +10,11 @@ public struct TileIndex
     public int row;
     public int col;
 
+    public int GetBox()
+    {
+        return (col/3) * 3 + (row / 3);
+    }
+
     private static Dictionary<int, char> letterSet = new Dictionary<int, char>()
     {
         { 0, 'A' },

@@ -15,9 +15,9 @@ public class TileColorFiller : MonoBehaviour
     
     
     [Header("Hint Colors")]
-    [SerializeField] private ColorObject hintSolveBgColor;
-    [SerializeField] private ColorObject hintSolveCircleColor;
-    [SerializeField] private ColorObject hintEffectedColor;
+    // [SerializeField] private ColorObject hintSolveBgColor;
+    // [SerializeField] private ColorObject hintSolveCircleColor;
+    // [SerializeField] private ColorObject hintEffectedColor;
 
     private int BaseIndex => sections.Count - 1;
 
@@ -122,14 +122,19 @@ public class TileColorFiller : MonoBehaviour
         return color;
     }
 
-    public void SetSolveHintColor()
-    {
-        SetBaseColor(hintSolveBgColor.Color);
-    }
+    // public void SetSolveHintColor()
+    // {
+    //     SetBaseColor(hintSolveBgColor.Color);
+    // }
+    //
+    // public void SetEffectedHintColor()
+    // {
+    //     SetBaseColor(hintEffectedColor.Color);
+    // }
 
-    public void SetEffectedHintColor()
+    public void UpdateBackgroundColor(Color color)
     {
-        SetBaseColor(hintEffectedColor.Color);
+        SetBaseColor(color);
     }
 
     public void ResetBaseColor()

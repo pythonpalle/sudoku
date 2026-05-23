@@ -529,6 +529,10 @@ MonoBehaviour:
   paddingBetweenBoxes: 10
   paddingBetweenCells: 5
   circleTexture: {fileID: 2800000, guid: 00ced263e622bf745bc6c2ecde097aae, type: 3}
+  hintSolveBgColor: {fileID: 11400000, guid: c48faa9b447ad984dbd6f25db3cea637, type: 2}
+  hintSolveCircleColor: {fileID: 11400000, guid: df2964fa9bb8c72498e97bc831de587a, type: 2}
+  hintEffectedColor: {fileID: 11400000, guid: 3f54ab674e54977499c2753c97fe5353, type: 2}
+  sharedHouseColor: {fileID: 11400000, guid: 3abd8b8cf9add4e4ab6a13ab3a8b5894, type: 2}
 --- !u!1 &6822623261619377462
 GameObject:
   m_ObjectHideFlags: 0
