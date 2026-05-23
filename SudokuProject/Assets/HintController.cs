@@ -113,6 +113,14 @@ public class HintController : MonoBehaviour
             
             List<TileIndex> getTileIndexesSeeingHouse = GetTileIndexesSeeingHouse(houseType, tileIndex, solutionStep.digit);
             List<SelectTile> laserUiTiles = GetUITiles(getTileIndexesSeeingHouse);
+
+            
+            List<LaserArrow> laserArrows = LaserArrow.CalculateLaserArrows(tileIndex, getTileIndexesSeeingHouse, houseType, _hintGrid);
+            foreach (var laser in laserArrows)
+            {
+                Debug.Log($"Draw line from {laser.StartTile} to {laser.EndTile}");
+            }
+            
             
             SetTriggeringTileColor(laserUiTiles);
 
