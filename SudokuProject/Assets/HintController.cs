@@ -121,120 +121,95 @@ public class HintController : MonoBehaviour
         AddSolveCircleAroundDigit(uiTile, solutionStep.digit);
     }
 
-    private List<TileIndex> GetTileIndexesSeeingHouse(HouseType houseType, TileIndex targetTileIndex, int digit, bool ignorePopulated = true)
+    private List<TileIndex> GetTileIndexesSeeingHouse(HouseType houseType, TileIndex targetTileIndex, int digit)
 {
-    List<TileIndex> laserTiles = new List<TileIndex>();
+    // 1. Hämta alla rutor i huset
+    List<TileIndex> houseTiles = GetPeersInHouse(targetTileIndex, houseType);
 
-    // 1. Hämta alla rutor som ingår i det aktuella huset (så vi kan exkludera dem)
-    HashSet<TileIndex> houseTiles = new HashSet<TileIndex>(GetPeersInHouse(targetTileIndex, houseType));
+    // 2. Hitta de tomma rutorna i huset som faktiskt MÅSTE elimineras
+    // (Vi behöver inte eliminera rutor som redan har andra siffror, och inte målrutan)
+    List<TileIndex> tilesToEliminate = houseTiles
+        .Where(t => t != targetTileIndex && !_hintGrid[t].Used)
+        .ToList();
 
-    // 2. Loopa igenom och leta efter blockerande siffror baserat på hustyp
-    switch (houseType)
+    if (tilesToEliminate.Count == 0) return new List<TileIndex>();
+
+    // 3. Kartlägg vilka laserrutor som kan eliminera vilka tomma rutor
+    // Key: Laserrutan, Value: Lista på tomma rutor i huset som denna laser "ser"
+    Dictionary<TileIndex, List<TileIndex>> laserCoverage = new Dictionary<TileIndex, List<TileIndex>>();
+
+    foreach (var emptyTile in tilesToEliminate)
     {
-        case HouseType.Row:
-            // För en rad letar vi efter kolumner (vertikala lasrar) som skär raden.
-            // Vi kollar alla rutor i samma kolumner som de tomma rutorna i raden har.
-            foreach (var houseTile in houseTiles)
-            {
-                int houseTileBox = houseTile.GetBox();
-                
-                for (int r = 0; r < 9; r++)
-                {
-                    var checkIndex = _hintGrid[r, houseTile.col].index;
+        // Hitta alla rutor på spelplanen som "ser" denna specifika tomma ruta och har rätt siffra
+        List<TileIndex> seers = GetAllSeersWithDigit(emptyTile, digit);
 
-                    if (IgnoreUsed(ignorePopulated, checkIndex, houseTileBox, houseTiles, houseTile)) 
-                        continue;
-                    
-                    CheckAndAddLaserTile(checkIndex, houseTiles, digit, laserTiles);
-                }
-            }
-            break;
+        foreach (var seer in seers)
+        {
+            // Laserrutan får inte tillhöra huset vi undersöker
+            if (houseTiles.Contains(seer)) continue;
 
-        case HouseType.Column:
-            // För en kolumn letar vi efter rader (horisontella lasrar) som skär kolumnen.
-            foreach (var houseTile in houseTiles)
-            {
-                int houseTileBox = houseTile.GetBox();
-                
-                for (int c = 0; c < 9; c++)
-                {
-                    var checkIndex = _hintGrid[houseTile.row, c].index;
-                    
-                    if (IgnoreUsed(ignorePopulated, checkIndex, houseTileBox, houseTiles, houseTile)) 
-                        continue;
-                    
-                    CheckAndAddLaserTile(checkIndex, houseTiles, digit, laserTiles);
-                }
-            }
-            break;
+            if (!laserCoverage.ContainsKey(seer))
+                laserCoverage[seer] = new List<TileIndex>();
 
-        case HouseType.Box:
-            // För en box kollar vi alla rader och kolumner som skär igenom boxen.
-            int startRow = targetTileIndex.row - targetTileIndex.row % 3;
-            int startCol = targetTileIndex.col - targetTileIndex.col % 3;
-
-            // Kolla de 3 raderna som går igenom boxen
-            for (int r = startRow; r < startRow + 3; r++)
-            {
-                for (int c = 0; c < 9; c++)
-                {
-                    var checkIndex = _hintGrid[r, c].index;
-                    CheckAndAddLaserTile(checkIndex, houseTiles, digit, laserTiles);
-                }
-            }
-
-            // Kolla de 3 kolumnerna som går igenom boxen
-            for (int c = startCol; c < startCol + 3; c++)
-            {
-                for (int r = 0; r < 9; r++)
-                {
-                    var checkIndex = _hintGrid[r, c].index;
-                    CheckAndAddLaserTile(checkIndex, houseTiles, digit, laserTiles);
-                }
-            }
-            break;
+            laserCoverage[seer].Add(emptyTile);
+        }
     }
 
-    return laserTiles;
+    // 4. Girig algoritm: Välj de lasrar som täcker flest kvarvarande tomma rutor
+    List<TileIndex> minimalLaserTiles = new List<TileIndex>();
+    HashSet<TileIndex> eliminatedSoFar = new HashSet<TileIndex>();
+
+    while (eliminatedSoFar.Count < tilesToEliminate.Count)
+    {
+        TileIndex bestLaser = default;
+        int maxNewCoverage = 0;
+
+        foreach (var kvp in laserCoverage)
+        {
+            // Hur många NYA rutor eliminerar den här lasern som vi inte redan har täckt?
+            int newCoverageCount = kvp.Value.Count(t => !eliminatedSoFar.Contains(t));
+
+            if (newCoverageCount > maxNewCoverage)
+            {
+                maxNewCoverage = newCoverageCount;
+                bestLaser = kvp.Key;
+            }
+        }
+
+        // Om vi inte hittar någon laser som täcker mer (skydd mot ogiltiga Sudokus)
+        if (maxNewCoverage == 0) break; 
+
+        // Spara den bästa lasern och markera rutorna som eliminerade
+        minimalLaserTiles.Add(bestLaser);
+        foreach (var coveredTile in laserCoverage[bestLaser])
+        {
+            eliminatedSoFar.Add(coveredTile);
+        }
+    }
+
+    return minimalLaserTiles;
 }
 
-    private bool IgnoreUsed(bool ignorePopulated, TileIndex checkIndex, int houseTileBox, HashSet<TileIndex> houseTiles,
-        TileIndex houseTile)
+// Enkel hjälpmetod för att hitta alla rutor som "ser" en specifik ruta och har rätt siffra
+private List<TileIndex> GetAllSeersWithDigit(TileIndex index, int digit)
+{
+    List<TileIndex> seers = new List<TileIndex>();
+    
+    // Kombinera rad, kolumn och box för rutan
+    var allPeers = GetRowPeers(index)
+        .Concat(GetColPeers(index))
+        .Concat(GetBoxPeers(index))
+        .Distinct();
+
+    foreach (var peer in allPeers)
     {
-        if (ignorePopulated)
+        if (_hintGrid[peer].Number == digit)
         {
-            bool shareBox = checkIndex.GetBox() == houseTileBox;
-            if (shareBox)
-            {
-                bool allHouseTilesInBoxAreUsed = houseTiles.Where(x => x.GetBox() == houseTileBox).All(x => _hintGrid[x].Used);
-                            
-                if (allHouseTilesInBoxAreUsed) return true;
-            }
-            else
-            {
-                if (_hintGrid[houseTile].Used)
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
-    // Hjälpmetod för att validera och lägga till unika laserrutor
-    private void CheckAndAddLaserTile(TileIndex checkIndex, HashSet<TileIndex> houseTiles, int digit, List<TileIndex> laserTiles, bool ignorePopulated = true)
-    {
-        // Rutan får inte vara en del av själva huset vi undersöker
-        if (houseTiles.Contains(checkIndex)) return;
-
-        // Rutan får inte redan ha lagts till i listan
-        if (laserTiles.Contains(checkIndex)) return;
-
-        // Har rutan rätt siffra? (Här kollar vi i _hintGrid eller motsvarande rutnät)
-        if (_hintGrid[checkIndex].Number == digit)
-        {
-            laserTiles.Add(checkIndex);
+            seers.Add(peer);
         }
     }
+    return seers;
+}
 
     private void SetTriggeringTileColor(List<SelectTile> eliminatingTiles)
     {
