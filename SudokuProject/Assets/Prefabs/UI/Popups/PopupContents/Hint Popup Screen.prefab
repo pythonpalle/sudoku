@@ -429,6 +429,7 @@ GameObject:
   - component: {fileID: 7129347527240168483}
   - component: {fileID: 7141194762059234064}
   - component: {fileID: 4775961341999128151}
+  - component: {fileID: 5718192971242474530}
   m_Layer: 5
   m_Name: Hint Popup Screen
   m_TagString: Untagged
@@ -525,6 +526,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
   selectTilePrefab: {fileID: 2903648157190855232, guid: 99e4ddddafdc679428f6e4d35833bf5c, type: 3}
+  laserManager: {fileID: 0}
   gridParent: {fileID: 3318846861885116838}
   paddingBetweenBoxes: 10
   paddingBetweenCells: 5
@@ -533,6 +535,21 @@ MonoBehaviour:
   hintSolveCircleColor: {fileID: 11400000, guid: df2964fa9bb8c72498e97bc831de587a, type: 2}
   hintEffectedColor: {fileID: 11400000, guid: 3f54ab674e54977499c2753c97fe5353, type: 2}
   sharedHouseColor: {fileID: 11400000, guid: 3abd8b8cf9add4e4ab6a13ab3a8b5894, type: 2}
+--- !u!114 &5718192971242474530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6124116489168733873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62ac024bfc20a314c9e6b578d986a11c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowPrefab: {fileID: 5363192449812454617, guid: 2992daf6485cbe647a07428762a4bba1, type: 3}
+  arrowThickness: 30
+  laserColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &6822623261619377462
 GameObject:
   m_ObjectHideFlags: 0

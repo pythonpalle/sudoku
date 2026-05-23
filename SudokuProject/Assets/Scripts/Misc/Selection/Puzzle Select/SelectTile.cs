@@ -30,6 +30,7 @@ namespace PuzzleSelect
         [Header("Candidate Add On")]
         [SerializeField] private RawImage candidateImageOverlay;
         
+        public RectTransform RectTransform => rectTransform;
         
         private static float defaultCenterSize = 4.2f;  
         private static float defaultDigitSize = 10f;

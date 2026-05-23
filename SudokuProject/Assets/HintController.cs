@@ -18,6 +18,9 @@ public class HintController : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private SelectTile selectTilePrefab;
     
+    [Header("Components")]
+    [SerializeField] private UILaserManager laserManager;
+    
     [Header("Parent")]
     [SerializeField] private RectTransform gridParent;
 
@@ -53,12 +56,23 @@ public class HintController : MonoBehaviour
         StartCoroutine(CreateInitialGridRoutine());
     }
 
+    private void SetUpLaserManager()
+    {
+        if (!laserManager) laserManager = GetComponent<UILaserManager>();
+
+        if (laserManager.IsSetup) return;
+
+        laserManager.SetUp(hintTiles);
+    }
+
     private IEnumerator CreateInitialGridRoutine()
     {
         // Vänta tills Unity har kört klart alla layout-beräkningar för denna frame
         yield return new WaitForEndOfFrame();
     
         CreateEmptyGrid();
+        SetUpLaserManager();
+        
         UpdateContents();
 
         TryFindNextSolutionStep();
@@ -69,6 +83,7 @@ public class HintController : MonoBehaviour
         if (TryFindProgression(_hintGrid, out SolutionStepData solutionStep))
         {
             ResetTileHintColors();
+            ResetArrows();
             
             if (!solutionStep.isDigitSolve)
                 Debug.Log(solutionStep);
@@ -77,6 +92,11 @@ public class HintController : MonoBehaviour
                 HandleDigitSolveHint(solutionStep);
             }
         }
+    }
+
+    private void ResetArrows()
+    {
+        laserManager.ClearArrows();
     }
 
     private void ResetTileHintColors()
@@ -89,8 +109,6 @@ public class HintController : MonoBehaviour
 
     private void HandleDigitSolveHint(SolutionStepData solutionStep)
     {
-        Debug.Log($"Place a {solutionStep.digit} at index {solutionStep.tileIndex}");
-        
         var uiTile = GetUITile(solutionStep.tileIndex);
         SetDigitSolveColor(uiTile);
         
@@ -113,17 +131,11 @@ public class HintController : MonoBehaviour
             
             List<TileIndex> getTileIndexesSeeingHouse = GetTileIndexesSeeingHouse(houseType, tileIndex, solutionStep.digit);
             List<SelectTile> laserUiTiles = GetUITiles(getTileIndexesSeeingHouse);
-
             
             List<LaserArrow> laserArrows = LaserArrow.CalculateLaserArrows(tileIndex, getTileIndexesSeeingHouse, houseType, _hintGrid);
-            foreach (var laser in laserArrows)
-            {
-                Debug.Log($"Draw line from {laser.StartTile} to {laser.EndTile}");
-            }
-            
+            laserManager.DrawLaserArrows(laserArrows);
             
             SetTriggeringTileColor(laserUiTiles);
-
         }
         
         AddSolveCircleAroundDigit(uiTile, solutionStep.digit);
