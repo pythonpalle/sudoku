@@ -1,5 +1,6 @@
 ﻿public class HiddenSingleColumn : HiddenSingle
 {
+    public override HouseType HouseType => HouseType.Column;
     public override string GetName => "Hidden Single Column";
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Easy;
 

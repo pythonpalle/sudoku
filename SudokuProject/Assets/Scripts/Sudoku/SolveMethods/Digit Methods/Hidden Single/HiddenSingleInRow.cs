@@ -1,5 +1,6 @@
 ﻿public class HiddenSingleInRow : HiddenSingle
 {
+    public override HouseType HouseType => HouseType.Column;
     public override string GetName => "Hidden Single Row";
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Easy;
 

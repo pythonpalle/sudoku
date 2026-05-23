@@ -1,7 +1,7 @@
 ﻿
-
 public abstract class DigitMethod : SolveMethod
 {
+    
     public virtual bool TryFindDigit(SudokuGrid9x9 grid, out TileIndex index, out int digit)
     {
         index = new TileIndex();
@@ -16,4 +16,13 @@ public abstract class DigitMethod : SolveMethod
 }
 
 public abstract class HiddenSingle : DigitMethod
-{ }
+{
+    public abstract HouseType HouseType { get; }
+}
+
+public enum HouseType
+{
+    Row,
+    Column,
+    Box
+}

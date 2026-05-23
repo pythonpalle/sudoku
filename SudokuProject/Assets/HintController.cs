@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using PuzzleSelect;
 using Saving;
 using UnityEngine;
@@ -93,18 +94,129 @@ public class HintController : MonoBehaviour
             List<TileIndex> eliminatingPeersIndexes = GetEliminatingPeersNakedSingle(solutionStep.tileIndex, solutionStep.digit);
             List<SelectTile> eliminatingTiles = GetUITiles(eliminatingPeersIndexes);
 
-            foreach (var eliminatingTile in eliminatingTiles)
-            {
-                eliminatingTile.SetEffectedHint();
-            }
+            SetEffectedHints(eliminatingTiles);
         }
         
-        else if (solveMethod is HiddenSingle)
+        else if (solveMethod is HiddenSingle hiddenSingle)
         {
+            var tileIndex = solutionStep.tileIndex;
+            HouseType houseType = hiddenSingle.HouseType;
+            var tileIndexesInSameHouse = GetPeersInHouse(tileIndex, houseType).Where(x => x != tileIndex).ToList(); 
+            List<SelectTile> eliminatingTiles = GetUITiles(tileIndexesInSameHouse);
+            SetEffectedHints(eliminatingTiles);
             
+            List<TileIndex> getTileIndexesSeeingHouse = GetTileIndexesSeeingHouse(houseType, tileIndex, solutionStep.digit);
+            List<SelectTile> laserUiTiles = GetUITiles(getTileIndexesSeeingHouse);
+            
+            SetEffectedHints(laserUiTiles);
+
         }
         
         AddSolveCircleAroundDigit(uiTile, solutionStep.digit);
+    }
+
+    private List<TileIndex> GetTileIndexesSeeingHouse(HouseType houseType, TileIndex targetTileIndex, int digit)
+{
+    List<TileIndex> laserTiles = new List<TileIndex>();
+
+    // 1. Hämta alla rutor som ingår i det aktuella huset (så vi kan exkludera dem)
+    HashSet<TileIndex> houseTiles = new HashSet<TileIndex>(GetPeersInHouse(targetTileIndex, houseType));
+
+    // 2. Loopa igenom och leta efter blockerande siffror baserat på hustyp
+    switch (houseType)
+    {
+        case HouseType.Row:
+            // För en rad letar vi efter kolumner (vertikala lasrar) som skär raden.
+            // Vi kollar alla rutor i samma kolumner som de tomma rutorna i raden har.
+            foreach (var houseTile in houseTiles)
+            {
+                for (int r = 0; r < 9; r++)
+                {
+                    var checkIndex = _hintGrid[r, houseTile.col].index;
+                    CheckAndAddLaserTile(checkIndex, houseTiles, digit, laserTiles);
+                }
+            }
+            break;
+
+        case HouseType.Column:
+            // För en kolumn letar vi efter rader (horisontella lasrar) som skär kolumnen.
+            foreach (var houseTile in houseTiles)
+            {
+                for (int c = 0; c < 9; c++)
+                {
+                    var checkIndex = _hintGrid[houseTile.row, c].index;
+                    CheckAndAddLaserTile(checkIndex, houseTiles, digit, laserTiles);
+                }
+            }
+            break;
+
+        case HouseType.Box:
+            // För en box kollar vi alla rader och kolumner som skär igenom boxen.
+            int startRow = targetTileIndex.row - targetTileIndex.row % 3;
+            int startCol = targetTileIndex.col - targetTileIndex.col % 3;
+
+            // Kolla de 3 raderna som går igenom boxen
+            for (int r = startRow; r < startRow + 3; r++)
+            {
+                for (int c = 0; c < 9; c++)
+                {
+                    var checkIndex = _hintGrid[r, c].index;
+                    CheckAndAddLaserTile(checkIndex, houseTiles, digit, laserTiles);
+                }
+            }
+
+            // Kolla de 3 kolumnerna som går igenom boxen
+            for (int c = startCol; c < startCol + 3; c++)
+            {
+                for (int r = 0; r < 9; r++)
+                {
+                    var checkIndex = _hintGrid[r, c].index;
+                    CheckAndAddLaserTile(checkIndex, houseTiles, digit, laserTiles);
+                }
+            }
+            break;
+    }
+
+    return laserTiles;
+}
+
+// Hjälpmetod för att validera och lägga till unika laserrutor
+    private void CheckAndAddLaserTile(TileIndex checkIndex, HashSet<TileIndex> houseTiles, int digit, List<TileIndex> laserTiles)
+    {
+        // Rutan får inte vara en del av själva huset vi undersöker
+        if (houseTiles.Contains(checkIndex)) return;
+
+        // Rutan får inte redan ha lagts till i listan
+        if (laserTiles.Contains(checkIndex)) return;
+
+        // Har rutan rätt siffra? (Här kollar vi i _hintGrid eller motsvarande rutnät)
+        if (_hintGrid[checkIndex].Number == digit)
+        {
+            laserTiles.Add(checkIndex);
+        }
+    }
+
+    private static void SetEffectedHints(List<SelectTile> eliminatingTiles)
+    {
+        foreach (var eliminatingTile in eliminatingTiles)
+        {
+            eliminatingTile.SetEffectedHint();
+        }
+    }
+
+    private List<TileIndex> GetPeersInHouse(TileIndex tileIndex, HouseType houseType)
+    {
+        switch (houseType)
+        {
+            case HouseType.Row:
+                return GetRowPeers(tileIndex);
+            case HouseType.Column:
+                return GetColPeers(tileIndex);
+            case HouseType.Box:
+                return GetBoxPeers(tileIndex);
+        }
+        
+        throw new Exception($"Unknown house type {houseType}");
     }
 
     private List<SelectTile> GetUITiles(List<TileIndex> tileIndexes)
