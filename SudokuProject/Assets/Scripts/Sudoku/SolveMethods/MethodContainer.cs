@@ -19,23 +19,18 @@ public static class MethodContainer
 
     private static readonly List<CandidateMethod> CandidateMethods = new ()
     {
-        // Pointing Pairs
-        new PointingPairRowToBox(),
-        new PointingPairColToBox(),
-        
-        new PointingPairBoxToRow(),
-        new PointingPairBoxToCol(),
-        
-        // Pointing Triples
-        new PointingTripleRowToBox(),
-        new PointingTripleColToBox(),
-        new PointingTripleBoxToRow(),
-        new PointingTripleBoxToCol(),
+        // Pointing
+        new PointingPair(),
+        new PointingTriple(),
         
         // Naked Pairs
         new NakedPairInCol(),
         new NakedPairInRow(),
         new NakedPairInBox(),
+        
+        // Claiming
+        new ClaimingPair(),
+        new ClaimingTriple(),
         
         // Hidden pairs
         new HiddenPairInBox(),
