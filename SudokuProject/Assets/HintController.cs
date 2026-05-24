@@ -117,11 +117,13 @@ public class HintController : MonoBehaviour
         //var solveInfo = solutionStep.CandidateSolveInformation;
         
 
-        if (candidateMethod is LockedCandidatesMethod lockedMethod)
+        if (candidateMethod is LockedCandidatesMethod || candidateMethod is NakedMultiple)
         {
             var solveInfo = solutionStep.CandidateSolveInformation;
 
             var removalIndexes = solveInfo.removalIndexes;
+            var effectedTiles = GetUITiles(removalIndexes);
+
             var triggeringIndexes = solveInfo.triggerIndexes;
             
             var tileIndexesInSameHouse = solveInfo.fullHouseVisualIndexes.Where(x => !triggeringIndexes.Contains(x)).ToList(); 
@@ -131,17 +133,24 @@ public class HintController : MonoBehaviour
             List<SelectTile> solveTiles = GetUITiles(triggeringIndexes);
             SetDigitSolveColor(solveTiles);
 
-            int candidate = solveInfo.candidateSet.First();
+            var candidates = solveInfo.candidateSet.ToList();
 
-            foreach (var solveTile in solveTiles)
+            for (int i = 0; i < candidates.Count; i++)
             {
-                AddSolveCircleAroundDigit(solveTile, candidate);
-            }
+                int candidate = candidates[i];
+                
+                foreach (var solveTile in solveTiles)
+                {
+                    AddSolveCircleAroundDigit(solveTile, candidate);
+                }
             
-            var effectedTiles = GetUITiles(removalIndexes);
-            foreach (var effectedTile in effectedTiles)
-            {
-                AddRejectCircleAroundDigit(effectedTile, candidate);
+                foreach (var removeIndex in removalIndexes)
+                {
+                    if (!_hintGrid[removeIndex].Candidates.Contains(candidate)) continue;
+                    
+                    var effectedTile = GetUITile(removeIndex);
+                    AddRejectCircleAroundDigit(effectedTile, candidate);
+                }
             }
         }
     }

@@ -129,22 +129,6 @@ namespace PuzzleSelect
                 if (cornerTextInstance) cornerTextInstance.TextMesh.color = markColor.Color;
             }
         }
-
-        public void RemoveUnusedColors(int colorMarksLength)
-        {
-            colorFiller.RemoveUnusedSections(colorMarksLength);
-        }
-
-
-        // public void SetDigitSolveHint(int solutionStepDigit)
-        // {
-        //     colorFiller.SetSolveHintColor();
-        // }
-        //
-        // public void SetEffectedHint()
-        // {
-        //     colorFiller.SetEffectedHintColor();
-        // }
         
         public void UpdateBackgroundColor(Color color)
         {

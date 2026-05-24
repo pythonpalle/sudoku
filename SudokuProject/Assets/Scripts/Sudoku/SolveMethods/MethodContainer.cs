@@ -24,9 +24,7 @@ public static class MethodContainer
         new PointingTriple(),
         
         // Naked Pairs
-        new NakedPairInCol(),
-        new NakedPairInRow(),
-        new NakedPairInBox(),
+        new NakedPair(),
         
         // Claiming
         new ClaimingPair(),
@@ -38,9 +36,7 @@ public static class MethodContainer
         new HiddenPairInCol(),
         
         // Naked Triples
-        new NakedTripleInRow(),
-        new NakedTripleInCol(),
-        new NakedTripleInBox(),
+        new NakedTriple(),
         
         // Hidden triples 
         new HiddenTripleInBox(),

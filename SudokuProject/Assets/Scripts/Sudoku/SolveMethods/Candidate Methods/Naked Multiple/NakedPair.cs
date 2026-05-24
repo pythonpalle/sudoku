@@ -1,11 +1,11 @@
-﻿public class NakedTripleInBox : NakedMultiple
+﻿public class NakedPair : NakedMultiple
 {
-    public override string GetName => "Naked Triple In Box";
+    protected override int multCount => 2;
+    public override string GetName => "Naked Pair";
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Medium;
-
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateSolveInformation solveInformation)
     {
-        return TryFindMultipleInBox(grid, 3, out solveInformation);
+        return SearchNakedMultiples(grid, out solveInformation);
     }
 }

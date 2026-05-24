@@ -1,249 +1,142 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 public abstract class NakedMultiple : CandidateMethod
 {
-    protected bool TryFindMultipleInRow(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
+    protected abstract int multCount { get; }
+    
+    // Den centrala sök-motorn för BÅDE Rader, Kolumner och Boxar
+    
+    protected bool SearchNakedMultiples(SudokuGrid9x9 grid, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromMultipleInRowCol(grid, multCount, true, out solveInformation);
+        // 1. Sök i rader
+        if (SearchNakedMultiples(grid, HouseType.Row, out solveInformation)) return true;
+        
+        // 2. Sök i kolumner
+        if (SearchNakedMultiples(grid, HouseType.Column, out solveInformation)) return true;
+        
+        // 3. Sök i boxar
+        if (SearchNakedMultiples(grid, HouseType.Box, out solveInformation)) return true;
+
+        return false;    
     }
     
-    protected bool TryFindMultipleInCol(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
+    private bool SearchNakedMultiples(SudokuGrid9x9 grid, HouseType houseType, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromMultipleInRowCol(grid, multCount, false, out solveInformation);
-    }
-    
-    protected bool TryFindMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
-    {
-        return CandidatesFromMultipleInBox(grid, multCount, out solveInformation);
-    }
-
-    private bool CandidatesFromMultipleInRowCol(SudokuGrid9x9 grid, int multCount, bool fromRow, out CandidateSolveInformation solveInformation)
-    {
-        List<SudokuTile> multTiles = new List<SudokuTile>();
         solveInformation = new CandidateSolveInformation();
 
-        for (int row = 0; row < 9; row++)
+        // Loopa igenom de 9 husen (0-8) av den valda typen
+        for (int houseIndex = 0; houseIndex < 9; houseIndex++)
         {
-            multTiles.Clear();
-            
-            for (int col = 0; col < 9; col++)
+            // 1. Hämta alla rutor i det aktuella huset
+            List<SudokuTile> houseTiles = GetHouseTiles(grid, houseIndex, houseType);
+
+            // 2. Filtrera ut rutor som är tomma och har max 'multCount' antal kandidater (Entropi)
+            List<SudokuTile> validTiles = houseTiles
+                .Where(t => !t.Used && t.Candidates.Count > 1 && t.Candidates.Count <= multCount)
+                .ToList();
+
+            // Om vi har färre rutor än storleken på vår grupp (t.ex. mindre än 3 rutor för en Triple), hoppa över
+            if (validTiles.Count < multCount) continue;
+
+            // 3. Generera alla möjliga kombinationer av dessa rutor med storleken 'multCount'
+            List<List<SudokuTile>> combinations = new List<List<SudokuTile>>();
+            GenerateCombinations(validTiles, multCount, 0, new List<SudokuTile>(), combinations);
+
+            // 4. Utvärdera varje kombination
+            foreach (var combination in combinations)
             {
-                // invert index if checking column
-                var tile = fromRow ? grid[row, col] : grid[col, row];
-
-                if (tile.Used || tile.Entropy > multCount) 
-                    continue;
-                
-                multTiles.Add(tile);
-            }
-
-            // try find multiples
-            if (TryFindNakedMultipleFromTiles(grid, fromRow, multTiles, multCount, out solveInformation))
-                return true;
-
-        }
-        
-        return false;
-    }
-
-    private bool TryFindEffectedTilesFromMultRowCol(SudokuGrid9x9 grid, List<TileIndex> multTiles, bool fromRow, out CandidateSolveInformation solveInformation)
-    {
-        // todo: testa ej ha som out parameter
-        
-        
-        var tileIndex = multTiles[0];
-        
-        int multRow = tileIndex.row;
-        int multCol = tileIndex.col;
-
-        HashSet<int> candidateSet = new HashSet<int>();
-        foreach (var index in multTiles)
-        {
-            candidateSet.UnionWith(grid[index].Candidates);
-        }
-        
-        
-        //var candidateSet = grid[tileIndex].Candidates;
-        bool foundEffected = false;
-
-        // removal = new CandidateRemoval(new List<TileIndex>(), candidateSet);
-        List<TileIndex> effectedTiles = new List<TileIndex>();
-        
-        for (int i = 0; i < 9; i++)
-        {
-            var compareTile = fromRow ? grid[multRow, i] : grid[i, multCol];
-            
-            if (!ValidTile(compareTile, multTiles))
-                continue;
-
-            if (candidateSet.Overlaps(compareTile.Candidates))
-            {
-                effectedTiles.Add(compareTile.index);
-                //removal.indexes.Add(compareTile.index);
-                foundEffected = true;
-            }
-        }
-
-        if (foundEffected)
-        {
-            solveInformation = new CandidateSolveInformation(effectedTiles, candidateSet);//, multTiles);
-        }
-        else
-        {
-            solveInformation = new CandidateSolveInformation();
-        }
-
-        return foundEffected;
-    }
-
-    private bool TryFindNakedMultipleFromTiles(SudokuGrid9x9 grid, bool fromRow, List<SudokuTile> rightEntropyTiles, int multCount, out CandidateSolveInformation solveInformation, bool boxCheck = false) 
-    {
-        //var multTiles = new List<TileIndex>(multCount);
-        //HashSet<int> candidateSet = new HashSet<int>();
-
-        solveInformation = new CandidateSolveInformation();
-        
-        // cant have n tiles that share n candidates if only n-1 tiles exist
-        if (rightEntropyTiles.Count < multCount)
-            return false;
-        
-
-        int n = rightEntropyTiles.Count;
-        int k = multCount;
-
-        List<List<TileIndex>> potentialMultiples = new List<List<TileIndex>>();
-        SudokuTile[] tempList = new SudokuTile[k];
-        FindAllCombinations(potentialMultiples, rightEntropyTiles, tempList, 0, n-1, 0, k);
-        
-        foreach (var multTileList in potentialMultiples)
-        {
-            if (!boxCheck && TryFindEffectedTilesFromMultRowCol(grid, multTileList, fromRow, out solveInformation))
-            {
-                return true;
-            }
-                
-            if (boxCheck && TryFindEffectedTilesFromBox(grid, multTileList, out solveInformation))
-            {
-                return true;
-            }
-        }
-
-        // for (int i = 0; i < rightEntropyTiles.Count; i++)
-        // {
-        //     multTiles.Clear();
-        //
-        //     var tile = rightEntropyTiles[i];
-        //     candidateSet = tile.Candidates;
-        //     
-        //     for (int j = i+1; j < rightEntropyTiles.Count; j++)
-        //     {
-        //         var compareTile = rightEntropyTiles[j];
-        //         var compareSet = compareTile.Candidates;
-        //
-        //         if (candidateSet.SetEquals(compareSet))
-        //         {
-        //             multTiles.Add(compareTile.index);
-        //         }
-        //     }
-        //
-        //     // multCount - 1 since the compare tile hasn't been added yet
-        //     if (multTiles.Count == multCount - 1)
-        //     {
-        //         multTiles.Add(tile.index);
-        //
-        //         if (!boxCheck && TryFindEffectedTilesFromMultRowCol(grid, multTiles, fromRow, out removal))
-        //         {
-        //             return true;
-        //         }
-        //         
-        //         if (boxCheck && TryFindEffectedTilesFromBox(grid, multTiles, out removal))
-        //         {
-        //             return true;
-        //         }
-        //     }
-        // }
-
-        return false;
-    }
-
-    private bool CandidatesFromMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
-    {
-        List<SudokuTile> multTiles = new List<SudokuTile>();
-        solveInformation = new CandidateSolveInformation();
-        
-        foreach (var box in Boxes.boxes)
-        {
-            multTiles.Clear();
-
-            for (int deltaRow = 0; deltaRow < 3; deltaRow++)
-            {
-                for (int deltaCol = 0; deltaCol < 3; deltaCol++)
+                // Samla alla unika kandidater som denna grupp av rutor innehåller
+                HashSet<int> sharedCandidates = new HashSet<int>();
+                foreach (var tile in combination)
                 {
-                    var tile = grid[box.row + deltaRow, box.col + deltaCol];
-                    
-                    if (tile.Used || tile.Entropy > multCount) 
-                        continue;
-                
-                    multTiles.Add(tile);
+                    sharedCandidates.UnionWith(tile.Candidates);
+                }
+
+                // GULDREGELN: En Naked Multiple existerar BARA om antalet unika kandidater 
+                // är EXAKT lika med antalet rutor i kombinationen!
+                if (sharedCandidates.Count != multCount) continue;
+
+                // 5. Hitta rutor i resten av HUSET som har dessa kandidater och kan rensas
+                List<TileIndex> triggerIndexes = combination.Select(t => t.index).ToList();
+                List<TileIndex> removalIndexes = new List<TileIndex>();
+                List<int> candidatesToRemove = new List<int>();
+
+                foreach (var houseTile in houseTiles)
+                {
+                    // Vi kan inte rensa i de rutor som utgör själva ledtråden (våra triggers)
+                    if (triggerIndexes.Contains(houseTile.index) || houseTile.Used) continue;
+
+                    // Hitta vilka av de delade kandidaterna som finns i denna ruta
+                    var overlaps = houseTile.Candidates.Intersect(sharedCandidates).ToList();
+                    if (overlaps.Count > 0)
+                    {
+                        removalIndexes.Add(houseTile.index);
+                        foreach (var c in overlaps) candidatesToRemove.Add(c);
+                    }
+                }
+
+                // Om vi faktiskt hittade kandidater att rensa har vi en giltig lösning!
+                if (removalIndexes.Count > 0)
+                {
+                    List<TileIndex> fullHouse = houseTiles.Select(t => t.index).ToList();
+                    HashSet<int> candidateSet = new HashSet<int>(candidatesToRemove);
+
+                    // Returnera all data inklusive den visuella kontexten till ditt GUI!
+                    solveInformation = new CandidateSolveInformation(
+                        removalIndexes, 
+                        candidateSet, 
+                        triggerIndexes, 
+                        fullHouse, 
+                        houseType
+                    );
+                    return true;
                 }
             }
-            
-            if (TryFindNakedMultipleFromTiles(grid, false, multTiles, multCount, out solveInformation, true))
-                return true;
         }
 
         return false;
     }
-    
-    private bool TryFindEffectedTilesFromBox(SudokuGrid9x9 grid, List<TileIndex> multTiles, out CandidateSolveInformation solveInformation)
+
+    #region Geometri och Kombination-Hjälpare
+
+    private List<SudokuTile> GetHouseTiles(SudokuGrid9x9 grid, int houseIndex, HouseType type)
     {
-        var tileIndex = multTiles[0];
-
-        int topLeftBoxRow = tileIndex.row - tileIndex.row % 3;
-        int topLeftBoxCol = tileIndex.col - tileIndex.col % 3;
-
-        //var candidateSet = grid[tileIndex].Candidates;
-        
-        HashSet<int> candidateSet = new HashSet<int>();
-        foreach (var index in multTiles)
+        List<SudokuTile> tiles = new List<SudokuTile>();
+        switch (type)
         {
-            candidateSet.UnionWith(grid[index].Candidates);
+            case HouseType.Row:
+                for (int i = 0; i < 9; i++) tiles.Add(grid[houseIndex, i]);
+                break;
+            case HouseType.Column:
+                for (int i = 0; i < 9; i++) tiles.Add(grid[i, houseIndex]);
+                break;
+            case HouseType.Box:
+                int startRow = (houseIndex / 3) * 3;
+                int startCol = (houseIndex % 3) * 3;
+                for (int r = 0; r < 3; r++)
+                    for (int c = 0; c < 3; c++)
+                        tiles.Add(grid[startRow + r, startCol + c]);
+                break;
         }
-        
-        bool foundEffected = false;
-
-        // removal = new CandidateRemoval(new List<TileIndex>(), candidateSet);
-        
-        List<TileIndex> tempList = new List<TileIndex>();
-
-        for (int deltaRow = 0; deltaRow < 3; deltaRow++)
-        {
-            for (int deltaCol = 0; deltaCol < 3; deltaCol++)
-            {
-                var compareTile = grid[topLeftBoxRow + deltaRow, topLeftBoxCol + deltaCol];
-            
-                if (!ValidTile(compareTile, multTiles))
-                    continue;
-
-                if (candidateSet.Overlaps(compareTile.Candidates))
-                {
-                    tempList.Add(compareTile.index);
-                    //removal.indexes.Add(compareTile.index);
-                    foundEffected = true;
-                }
-            } 
-        }
-
-        if (foundEffected)
-        {
-            solveInformation = new CandidateSolveInformation(tempList, candidateSet);//, multTiles);
-        }
-        else
-        {
-            solveInformation = new CandidateSolveInformation();
-        }
-        
-        return foundEffected;
+        return tiles;
     }
+
+    // En ren och effektiv rekursiv metod för att hitta kombinationer (ersätter FindAllCombinations)
+    private void GenerateCombinations(List<SudokuTile> source, int k, int start, List<SudokuTile> current, List<List<SudokuTile>> result)
+    {
+        if (current.Count == k)
+        {
+            result.Add(new List<SudokuTile>(current));
+            return;
+        }
+
+        for (int i = start; i < source.Count; i++)
+        {
+            current.Add(source[i]);
+            GenerateCombinations(source, k, i + 1, current, result);
+            current.RemoveAt(current.Count - 1); // Backtrack
+        }
+    }
+    #endregion
 }
