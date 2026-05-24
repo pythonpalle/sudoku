@@ -157,7 +157,7 @@ public class HintController : MonoBehaviour
             }
         }
     }
-
+    
     // 2. BERÄKNA REJEKTERINGAR (Vilka kandidater ska kryssas över?)
     foreach (var candidate in candidatesInSet)
     {
