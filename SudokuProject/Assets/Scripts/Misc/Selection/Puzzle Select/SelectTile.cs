@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,9 +11,16 @@ namespace PuzzleSelect
 {
     public class SelectTile : MonoBehaviour
     {
+        struct ImageObjectPair
+        {
+            public RawImage image;
+            public GameObject gameObject;
+        }
+        
         [Header("Prefabs")]
         [SerializeField] private TextMeshContainer cornerTextPrefab;
         private TextMeshContainer cornerTextInstance;
+        [SerializeField] private RawImage overlayImagePrefab;
 
         [Header("Marks")]
         [SerializeField] private TextMeshProUGUI digitText;
@@ -27,18 +35,24 @@ namespace PuzzleSelect
         [SerializeField] private GameObject candidateParent;
         [SerializeField] private List<TextMeshProUGUI> candidateTexts;
         
-        [Header("Candidate Add On")]
-        [SerializeField] private RawImage candidateImageOverlay;
-        
         public RectTransform RectTransform => rectTransform;
         
         private static float defaultCenterSize = 4.2f;  
         private static float defaultDigitSize = 10f;
+        
+        Dictionary<int, ImageObjectPair> imageOverlaysSet = new Dictionary<int, ImageObjectPair>();
 
         private void OnDestroy()
         {
-            if (candidateImageOverlay)
-                Destroy(candidateImageOverlay.gameObject);  
+            foreach (var imageInstance in GetImageOverlayObjects())
+            {
+                Destroy(imageInstance);  
+            }
+        }
+
+        private List<GameObject> GetImageOverlayObjects()
+        {
+            return imageOverlaysSet.Values.Select(x => x.gameObject).ToList();
         }
 
         public void SetDigit(int number, bool permanent)
@@ -138,7 +152,11 @@ namespace PuzzleSelect
         public void ResetHintDisplayInfo()
         {
             colorFiller.ResetBaseColor();
-            candidateImageOverlay.gameObject.SetActive(false);
+
+            foreach (var imageObject in GetImageOverlayObjects())
+            {
+                imageObject.SetActive(false);
+            }
         }
 
         public void AddObjectAroundCandidate(int candidate, Texture2D texture, Color color, float scaleFactor)
@@ -152,24 +170,34 @@ namespace PuzzleSelect
         {
             if (!hasPlacedObject)
                 yield return new WaitForEndOfFrame();
-            
+
             var candidateText = candidateTexts[candidate - 1];
+
+            ImageObjectPair imageObjectPair = new ImageObjectPair();
             
-            candidateImageOverlay.gameObject.SetActive(true);
+            if (!imageOverlaysSet.TryGetValue(candidate, out imageObjectPair))
+            {
+                var imageInstance = Instantiate(overlayImagePrefab, candidateText.transform);
+                imageObjectPair.image = imageInstance;
+                imageObjectPair.gameObject = imageInstance.gameObject;
+                imageOverlaysSet[candidate] = imageObjectPair;
+            }
+            
+            GameObject imageObject = imageObjectPair.image.gameObject;
+            
+            imageObject.SetActive(true);
             
             // sets the overlay on top of everything else
-            var overlayTransform = candidateImageOverlay.transform;
+            var overlayTransform = imageObject.transform;
             overlayTransform.SetParent(transform.root, true);
             overlayTransform.SetAsLastSibling();
             
             overlayTransform.position = candidateText.transform.position;
             
             overlayTransform.localScale = Vector3.one * scaleFactor;
-
-            //candidateImageOverlay.rectTransform.rect.size = candidateText.GetComponent<RectTransform>().sizeDelta;
             
-            candidateImageOverlay.texture = texture;        
-            candidateImageOverlay.color = color;
+            imageObjectPair.image.texture = texture;        
+            imageObjectPair.image.color = color;
 
             hasPlacedObject = true;
         }
