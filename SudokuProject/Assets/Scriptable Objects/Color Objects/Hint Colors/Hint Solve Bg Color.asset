@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98bf86004ba94ec6a6c6443ceaa05f0e, type: 3}
   m_Name: Hint Solve Bg Color
   m_EditorClassIdentifier: 
-  _color: {r: 0.4113164, g: 1, b: 0, a: 1}
+  _color: {r: 0.31689018, g: 0.7735849, b: 0, a: 1}

@@ -526,11 +526,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPort: {fileID: 11400000, guid: 4a7736c0aa0e8cb4a80a03c199980189, type: 2}
   selectTilePrefab: {fileID: 2903648157190855232, guid: 99e4ddddafdc679428f6e4d35833bf5c, type: 3}
-  laserManager: {fileID: 0}
+  laserManager: {fileID: 5718192971242474530}
   gridParent: {fileID: 3318846861885116838}
   paddingBetweenBoxes: 10
   paddingBetweenCells: 5
-  circleTexture: {fileID: 2800000, guid: 00ced263e622bf745bc6c2ecde097aae, type: 3}
+  solveCircleTexture: {fileID: 2800000, guid: 199f94d32c512b744916f7b3ac03ec67, type: 3}
+  blockCircleTexture: {fileID: 2800000, guid: 07057301b4e1fb24dac5c0d343c9e46e, type: 3}
   hintSolveBgColor: {fileID: 11400000, guid: c48faa9b447ad984dbd6f25db3cea637, type: 2}
   hintSolveCircleColor: {fileID: 11400000, guid: df2964fa9bb8c72498e97bc831de587a, type: 2}
   hintEffectedColor: {fileID: 11400000, guid: 3f54ab674e54977499c2753c97fe5353, type: 2}

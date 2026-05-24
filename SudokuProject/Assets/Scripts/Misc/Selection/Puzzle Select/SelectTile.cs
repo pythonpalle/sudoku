@@ -157,14 +157,14 @@ namespace PuzzleSelect
             candidateImageOverlay.gameObject.SetActive(false);
         }
 
-        public void AddObjectAroundCandidate(int candidate, Texture2D texture, Color color)
+        public void AddObjectAroundCandidate(int candidate, Texture2D texture, Color color, float scaleFactor)
         {
-            StartCoroutine(PlaceNextFrame(candidate, texture, color));
+            StartCoroutine(PlaceObjectAroundCandidateRoutine(candidate, texture, color, scaleFactor));
         }
 
         private bool hasPlacedObject = false;
 
-        private IEnumerator PlaceNextFrame(int candidate, Texture2D texture, Color color)
+        private IEnumerator PlaceObjectAroundCandidateRoutine(int candidate, Texture2D texture, Color color, float scaleFactor)
         {
             if (!hasPlacedObject)
                 yield return new WaitForEndOfFrame();
@@ -174,10 +174,13 @@ namespace PuzzleSelect
             candidateImageOverlay.gameObject.SetActive(true);
             
             // sets the overlay on top of everything else
-            candidateImageOverlay.transform.SetParent(transform.root, true);
-            candidateImageOverlay.transform.SetAsLastSibling();
+            var overlayTransform = candidateImageOverlay.transform;
+            overlayTransform.SetParent(transform.root, true);
+            overlayTransform.SetAsLastSibling();
             
-            candidateImageOverlay.transform.position = candidateText.transform.position;
+            overlayTransform.position = candidateText.transform.position;
+            
+            overlayTransform.localScale = Vector3.one * scaleFactor;
 
             //candidateImageOverlay.rectTransform.rect.size = candidateText.GetComponent<RectTransform>().sizeDelta;
             

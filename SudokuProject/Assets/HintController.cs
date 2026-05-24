@@ -29,7 +29,10 @@ public class HintController : MonoBehaviour
     [SerializeField] private float paddingBetweenCells = 5f;
     
     [Header("Add on Objects")]
-    [SerializeField] private Texture2D circleTexture;
+    [FormerlySerializedAs("circleTexture")]
+    [SerializeField] private Texture2D solveCircleTexture;
+    [SerializeField] private Texture2D blockCircleTexture;
+    [SerializeField] private float circleScaleFactor = 0.8f;
     
     [Header("Color")]
     [SerializeField] private ColorObject hintSolveBgColor;
@@ -135,11 +138,12 @@ public class HintController : MonoBehaviour
                 AddSolveCircleAroundDigit(solveTile, candidate);
             }
             
-            // todo: AddBlockCircleAroundDigit
-            
+            var effectedTiles = GetUITiles(removalIndexes);
+            foreach (var effectedTile in effectedTiles)
+            {
+                AddRejectCircleAroundDigit(effectedTile, candidate);
+            }
         }
-        
-        
     }
 
     private void ResetArrows()
@@ -166,7 +170,7 @@ public class HintController : MonoBehaviour
             List<TileIndex> eliminatingPeersIndexes = GetEliminatingPeersNakedSingle(solutionStep.tileIndex, solutionStep.digit);
             List<SelectTile> eliminatingTiles = GetUITiles(eliminatingPeersIndexes);
 
-            SetTriggeringTileColor(eliminatingTiles);
+            SetSharedHouseColor(eliminatingTiles);
         }
         
         else if (solveMethod is HiddenSingle hiddenSingle)
@@ -399,10 +403,15 @@ private List<TileIndex> GetAllSeersWithDigit(TileIndex index, int digit)
             box.Add(_hintGrid[startRow + r, startCol + c].index);
         return box;
     }
+    
+    private void AddRejectCircleAroundDigit(SelectTile uiTile, int solutionStepDigit)
+    {
+        uiTile.AddObjectAroundCandidate(solutionStepDigit, blockCircleTexture, Color.red, circleScaleFactor);
+    }
 
     private void AddSolveCircleAroundDigit(SelectTile uiTile, int solutionStepDigit)
     {
-        uiTile.AddObjectAroundCandidate(solutionStepDigit, circleTexture, Color.yellow);
+        uiTile.AddObjectAroundCandidate(solutionStepDigit, solveCircleTexture, Color.yellow, circleScaleFactor);
     }
 
     private SelectTile GetUITile(TileIndex tileIndex)
