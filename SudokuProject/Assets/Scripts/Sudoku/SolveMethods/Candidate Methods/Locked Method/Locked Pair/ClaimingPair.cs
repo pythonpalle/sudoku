@@ -5,10 +5,9 @@
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
     {
-        if (SearchLockedCandidates(grid, pointers: 2, findPointing: false, out removal)) return true;
+        if (SearchLockedCandidates(grid, pointers: 2, findPointing: false, out removal)) 
+            return true;
 
         return false;
-        
-        //return TryFindColToBoxCandidates(grid, 2, out removal);
     }
 }

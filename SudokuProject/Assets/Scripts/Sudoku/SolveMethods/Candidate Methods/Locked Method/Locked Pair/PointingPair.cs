@@ -10,7 +10,5 @@
             return true;
 
         return false;
-        
-        //return TryFindBoxToColCandidates(grid, 2, out removal);
     }
 }
