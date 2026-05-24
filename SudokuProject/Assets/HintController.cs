@@ -85,13 +85,61 @@ public class HintController : MonoBehaviour
             ResetTileHintColors();
             ResetArrows();
             
-            if (!solutionStep.isDigitSolve)
-                Debug.Log(solutionStep);
-            if (solutionStep.isDigitSolve)
-            {
-                HandleDigitSolveHint(solutionStep);
-            }
+            HandleSolveSolutionStep(solutionStep);
         }
+    }
+
+    private void HandleSolveSolutionStep(SolutionStepData solutionStep)
+    {
+        if (solutionStep.isDigitSolve)
+        {
+            HandleDigitSolveHint(solutionStep);
+        }
+        else
+        {
+            HandleCandidateSolveHint(solutionStep);
+        }   
+    }
+
+    private void HandleCandidateSolveHint(SolutionStepData solutionStep)
+    {
+        CandidateMethod candidateMethod = solutionStep.solveMethod as CandidateMethod;
+
+        if (candidateMethod == null)
+        {
+            Debug.LogError($"Solve method {solutionStep.solveMethod} is not a candidate method");
+            return;
+        }
+        
+        //var solveInfo = solutionStep.CandidateSolveInformation;
+        
+
+        if (candidateMethod is LockedCandidatesMethod lockedMethod)
+        {
+            var solveInfo = solutionStep.CandidateSolveInformation;
+
+            var removalIndexes = solveInfo.removalIndexes;
+            var triggeringIndexes = solveInfo.triggerIndexes;
+            
+            var tileIndexesInSameHouse = solveInfo.fullHouseVisualIndexes.Where(x => !triggeringIndexes.Contains(x)).ToList(); 
+            List<SelectTile> tilesInSameHouse = GetUITiles(tileIndexesInSameHouse);
+            SetSharedHouseColor(tilesInSameHouse);
+            
+            List<SelectTile> solveTiles = GetUITiles(triggeringIndexes);
+            SetDigitSolveColor(solveTiles);
+
+            int candidate = solveInfo.candidateSet.First();
+
+            foreach (var solveTile in solveTiles)
+            {
+                AddSolveCircleAroundDigit(solveTile, candidate);
+            }
+            
+            // todo: AddBlockCircleAroundDigit
+            
+        }
+        
+        
     }
 
     private void ResetArrows()
@@ -241,17 +289,23 @@ private List<TileIndex> GetAllSeersWithDigit(TileIndex index, int digit)
         UpdateBackgroundColor(eliminatingTiles, sharedHouseColor.Color);
     }
     
+    private void SetDigitSolveColor(List<SelectTile> tiles)
+    {
+        UpdateBackgroundColor(tiles, hintSolveBgColor.Color);
+    }
+    
+    private void SetDigitSolveColor(SelectTile tile)
+    {
+        SetDigitSolveColor(new List<SelectTile> { tile });
+    }
+
+    
     private static void UpdateBackgroundColor(List<SelectTile> eliminatingTiles, Color color)
     {
         foreach (var eliminatingTile in eliminatingTiles)
         {
             eliminatingTile.UpdateBackgroundColor(color);
         }
-    }
-    
-    private void SetDigitSolveColor(SelectTile tile)
-    {
-        UpdateBackgroundColor(new List<SelectTile> { tile }, hintSolveBgColor.Color);
     }
     
     private static void UpdateBackgroundColor(SelectTile tile, Color color)

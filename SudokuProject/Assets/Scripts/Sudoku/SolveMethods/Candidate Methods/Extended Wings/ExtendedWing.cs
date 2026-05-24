@@ -5,9 +5,9 @@ using UnityEngine.Assertions;
 
 public abstract class ExtendedWing : CandidateMethod
 {
-    protected bool TryFindWingCandidates(SudokuGrid9x9 grid, bool xyzWing, out CandidateRemoval removal)
+    protected bool TryFindWingCandidates(SudokuGrid9x9 grid, bool xyzWing, out CandidateSolveInformation solveInformation)
     {
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
         List<TileIndex> twoEntropyTiles = FindAllIndicesWithEntropy(grid, 2);
         
         if (twoEntropyTiles.Count < 3)
@@ -102,8 +102,8 @@ public abstract class ExtendedWing : CandidateMethod
                         // should now have valid XYWing
                         // DebugWing(baseTile, wing1, wing2);
                         
-                        removal.removalIndexes = intersectIndices;
-                        removal.candidateSet = wing1_wing2_intersect_set;
+                        solveInformation.removalIndexes = intersectIndices;
+                        solveInformation.candidateSet = wing1_wing2_intersect_set;
                         return true;
                     }
                 }

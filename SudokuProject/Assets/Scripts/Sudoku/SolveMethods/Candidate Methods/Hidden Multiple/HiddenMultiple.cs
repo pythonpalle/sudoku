@@ -16,25 +16,25 @@ public struct MultiCombo
 
 public abstract class HiddenMultiple : CandidateMethod
 {
-    protected bool TryFindMultipleInRow(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindMultipleInRow(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromMultipleInRowCol(grid, multCount, true, out removal);
+        return CandidatesFromMultipleInRowCol(grid, multCount, true, out solveInformation);
     }
     
-    protected bool TryFindMultipleInCol(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindMultipleInCol(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromMultipleInRowCol(grid, multCount, false, out removal);
+        return CandidatesFromMultipleInRowCol(grid, multCount, false, out solveInformation);
     }
     
-    protected bool TryFindMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromMultipleInBox(grid, multCount, out removal);
+        return CandidatesFromMultipleInBox(grid, multCount, out solveInformation);
     }
 
-    private bool CandidatesFromMultipleInRowCol(SudokuGrid9x9 grid, int multCount, bool fromRow, out CandidateRemoval removal)
+    private bool CandidatesFromMultipleInRowCol(SudokuGrid9x9 grid, int multCount, bool fromRow, out CandidateSolveInformation solveInformation)
     {
         List<SudokuTile> nonUseTiles = new List<SudokuTile>();
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
 
         for (int row = 0; row < 9; row++)
         {
@@ -52,7 +52,7 @@ public abstract class HiddenMultiple : CandidateMethod
             }
 
             // try find multiples
-            if (TryFindHiddenMultipleFromTiles(grid, nonUseTiles, multCount, out removal))
+            if (TryFindHiddenMultipleFromTiles(grid, nonUseTiles, multCount, out solveInformation))
                 return true;
 
         }
@@ -60,9 +60,9 @@ public abstract class HiddenMultiple : CandidateMethod
         return false;
     }
 
-    private bool TryFindHiddenMultipleFromTiles(SudokuGrid9x9 grid, List<SudokuTile> nonUseTiles, int multCount, out CandidateRemoval removal) 
+    private bool TryFindHiddenMultipleFromTiles(SudokuGrid9x9 grid, List<SudokuTile> nonUseTiles, int multCount, out CandidateSolveInformation solveInformation) 
     {
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
         
         // cant have n tiles that share n candidates if only n-1 tiles exist
         if (nonUseTiles.Count < multCount)
@@ -116,7 +116,7 @@ public abstract class HiddenMultiple : CandidateMethod
             //removal.candidateSet = candidateSet; 
             if (candidateSet.Count > 0)
             {
-                removal = new CandidateRemoval(multList.tileIndices, candidateSet, null); // TODO
+                solveInformation = new CandidateSolveInformation(multList.tileIndices, candidateSet); // TODO
                 return true;
             }
         }
@@ -194,10 +194,10 @@ public abstract class HiddenMultiple : CandidateMethod
     //     return everyCandidate;
     // }
 
-    private bool CandidatesFromMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    private bool CandidatesFromMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
         List<SudokuTile> multTiles = new List<SudokuTile>();
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
         
         foreach (var box in Boxes.boxes)
         {
@@ -216,7 +216,7 @@ public abstract class HiddenMultiple : CandidateMethod
                 }
             }
             
-            if (TryFindHiddenMultipleFromTiles(grid,  multTiles, multCount, out removal))
+            if (TryFindHiddenMultipleFromTiles(grid,  multTiles, multCount, out solveInformation))
                 return true;
         }
 

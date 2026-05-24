@@ -4,11 +4,11 @@
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Hard;
 
 
-    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateSolveInformation solveInformation)
     {
         int multCount = 4;
-        return TryFindMultipleInCol(grid, multCount, out removal) 
-               || TryFindMultipleInRow(grid, multCount, out removal) 
-               || TryFindMultipleInBox(grid, multCount, out removal);
+        return TryFindMultipleInCol(grid, multCount, out solveInformation) 
+               || TryFindMultipleInRow(grid, multCount, out solveInformation) 
+               || TryFindMultipleInBox(grid, multCount, out solveInformation);
     }
 }

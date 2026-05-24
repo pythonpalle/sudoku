@@ -6,8 +6,8 @@ public class XYWing : ExtendedWing
 {
     public override string GetName => "XY-Wing";
 
-    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateSolveInformation solveInformation)
     {
-        return TryFindWingCandidates(grid, false, out removal);
+        return TryFindWingCandidates(grid, false, out solveInformation);
     }
 }

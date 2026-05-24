@@ -2,49 +2,55 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public struct CandidateRemoval
+public struct CandidateSolveInformation
 {
-    public List<TileIndex> RemovalIndexes => removalIndexes;
-    public HashSet<int> CandidateSet => candidateSet;  
-    public List<TileIndex> TriggerIndexes => triggerIndexes;
-    
     public List<TileIndex> removalIndexes;
     public HashSet<int> candidateSet;
-    private List<TileIndex> triggerIndexes;
-    // private List<TileIndex> triggerRowsCols;
-    // private List<TileIndex> removalRowCols;
-    // private bool isTriggerRows;
 
-    public CandidateRemoval(List<TileIndex> removalIndexes, HashSet<int> candidateSet, List<TileIndex> triggerIndexes)
+    // NYTT: Valfri visuell data för GUI-rendering
+    public List<TileIndex> triggerIndexes;
+    public List<TileIndex> fullHouseVisualIndexes; 
+    public HouseType? houseType; 
+
+    // Behåll dina gamla konstruktorer exakt som de är så ingenting går sönder!
+    public CandidateSolveInformation(List<TileIndex> removalIndexes, HashSet<int> candidateSet)
+    {
+        this.removalIndexes = removalIndexes;
+        this.candidateSet = candidateSet;
+        this.triggerIndexes = null;
+        this.fullHouseVisualIndexes = null;
+        this.houseType = null;
+    }
+    
+    public CandidateSolveInformation(List<TileIndex> removalIndexes, int candidate) 
+        : this(removalIndexes, new HashSet<int> {candidate}) { }
+
+    // NY: En extra konstruktor för när du VILL skicka med visuell data
+    public CandidateSolveInformation(List<TileIndex> removalIndexes, HashSet<int> candidateSet, List<TileIndex> triggerIndexes, List<TileIndex> fullHouse, HouseType type)
     {
         this.removalIndexes = removalIndexes;
         this.candidateSet = candidateSet;
         this.triggerIndexes = triggerIndexes;
+        this.fullHouseVisualIndexes = fullHouse;
+        this.houseType = type;
     }
-    
-    public CandidateRemoval(List<TileIndex> removalIndexes, int singularCandidate, List<TileIndex> triggerIndexes)
+
+    public CandidateSolveInformation(List<TileIndex> removalIndexes, int candidate, List<TileIndex> triggerIndexes,
+        List<TileIndex> fullHouse, HouseType type)
+        : this(removalIndexes, new HashSet<int> {candidate}, triggerIndexes, fullHouse, type)
     {
-        this.removalIndexes = removalIndexes;
-        this.candidateSet = new HashSet<int>(singularCandidate);
-        this.triggerIndexes = triggerIndexes;
     }
 }
 
 public abstract class CandidateMethod : SolveMethod
 {
+    public abstract bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateSolveInformation solveInformation);
+    
     public override string GetSolveDescription(SolutionStepData solutionStepData)
     {
         return $"{GetName} found at positions {solutionStepData.GetCandidateIndexesString()} for candidates {solutionStepData.GetCandidateDigitsString()}";
     }
-    
-
-    public virtual bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
-    {
-        removal = new CandidateRemoval();
-        return false;
-    }
-
-    
+ 
     protected bool AllIndicesHaveSameRowCol(List<TileIndex> tileIndices, bool checkRow)
     {
         if (checkRow)

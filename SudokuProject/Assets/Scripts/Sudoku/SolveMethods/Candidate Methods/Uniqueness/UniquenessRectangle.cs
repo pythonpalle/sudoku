@@ -8,11 +8,11 @@ public class UniquenessRectangle : CandidateMethod
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Extreme;
 
 
-    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateRemoval removal)
+    public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateSolveInformation solveInformation)
     {
         List<TileIndex> twoEntropyTiles = FindAllIndicesWithEntropy(grid, 2);
 
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
 
         foreach (var tileIndex1 in twoEntropyTiles)
         {
@@ -93,8 +93,8 @@ public class UniquenessRectangle : CandidateMethod
                     // only deadly pattern if the intersected tile has both candidates
                     if (removalCandidates.IsSubsetOf(uniqueTile.Candidates))
                     {
-                        removal.candidateSet = removalCandidates;
-                        removal.removalIndexes = new List<TileIndex> {uniqueTile.index};
+                        solveInformation.candidateSet = removalCandidates;
+                        solveInformation.removalIndexes = new List<TileIndex> {uniqueTile.index};
                         grid.PrintGrid();
                         DebugRectangle(tileIndex1, tileIndex2, tileIndex3, uniqueTile.index, removalCandidates);
                         return true;

@@ -22,25 +22,25 @@ public abstract class FishMethod : CandidateMethod
         get => PuzzleDifficulty.Extreme;
     }
     
-    protected bool TryFindFish(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindFish(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
-        return TryFindFishInRow(grid, multCount, out removal)
-               || TryFindFishInCol(grid, multCount, out removal);
+        return TryFindFishInRow(grid, multCount, out solveInformation)
+               || TryFindFishInCol(grid, multCount, out solveInformation);
     }
     
-    protected bool TryFindFishInRow(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindFishInRow(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromFishInRowCol(grid, multCount, true, out removal);
+        return CandidatesFromFishInRowCol(grid, multCount, true, out solveInformation);
     }
     
-    protected bool TryFindFishInCol(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindFishInCol(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromFishInRowCol(grid, multCount, false, out removal);
+        return CandidatesFromFishInRowCol(grid, multCount, false, out solveInformation);
     }
     
-    private bool CandidatesFromFishInRowCol(SudokuGrid9x9 grid, int multCount, bool fishInRow, out CandidateRemoval removal)
+    private bool CandidatesFromFishInRowCol(SudokuGrid9x9 grid, int multCount, bool fishInRow, out CandidateSolveInformation solveInformation)
     {
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
 
         for (int digit = 1; digit <= 9; digit++)
         {
@@ -85,7 +85,7 @@ public abstract class FishMethod : CandidateMethod
             {
                 if (effectedTileList.Count > 0)
                 {
-                    removal = new CandidateRemoval(effectedTileList, digit, null); // TODO: FIX!
+                    solveInformation = new CandidateSolveInformation(effectedTileList, digit); // TODO: FIX!
                     
                     // removal.indexes = effectedTileList;
                     // removal.candidateSet = new HashSet<int>{digit};

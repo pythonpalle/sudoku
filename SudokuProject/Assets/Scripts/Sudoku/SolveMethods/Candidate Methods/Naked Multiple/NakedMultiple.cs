@@ -3,25 +3,25 @@ using System.Collections.Generic;
 
 public abstract class NakedMultiple : CandidateMethod
 {
-    protected bool TryFindMultipleInRow(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindMultipleInRow(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromMultipleInRowCol(grid, multCount, true, out removal);
+        return CandidatesFromMultipleInRowCol(grid, multCount, true, out solveInformation);
     }
     
-    protected bool TryFindMultipleInCol(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindMultipleInCol(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromMultipleInRowCol(grid, multCount, false, out removal);
+        return CandidatesFromMultipleInRowCol(grid, multCount, false, out solveInformation);
     }
     
-    protected bool TryFindMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    protected bool TryFindMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromMultipleInBox(grid, multCount, out removal);
+        return CandidatesFromMultipleInBox(grid, multCount, out solveInformation);
     }
 
-    private bool CandidatesFromMultipleInRowCol(SudokuGrid9x9 grid, int multCount, bool fromRow, out CandidateRemoval removal)
+    private bool CandidatesFromMultipleInRowCol(SudokuGrid9x9 grid, int multCount, bool fromRow, out CandidateSolveInformation solveInformation)
     {
         List<SudokuTile> multTiles = new List<SudokuTile>();
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
 
         for (int row = 0; row < 9; row++)
         {
@@ -39,7 +39,7 @@ public abstract class NakedMultiple : CandidateMethod
             }
 
             // try find multiples
-            if (TryFindNakedMultipleFromTiles(grid, fromRow, multTiles, multCount, out removal))
+            if (TryFindNakedMultipleFromTiles(grid, fromRow, multTiles, multCount, out solveInformation))
                 return true;
 
         }
@@ -47,7 +47,7 @@ public abstract class NakedMultiple : CandidateMethod
         return false;
     }
 
-    private bool TryFindEffectedTilesFromMultRowCol(SudokuGrid9x9 grid, List<TileIndex> multTiles, bool fromRow, out CandidateRemoval removal)
+    private bool TryFindEffectedTilesFromMultRowCol(SudokuGrid9x9 grid, List<TileIndex> multTiles, bool fromRow, out CandidateSolveInformation solveInformation)
     {
         // todo: testa ej ha som out parameter
         
@@ -87,22 +87,22 @@ public abstract class NakedMultiple : CandidateMethod
 
         if (foundEffected)
         {
-            removal = new CandidateRemoval(effectedTiles, candidateSet, multTiles);
+            solveInformation = new CandidateSolveInformation(effectedTiles, candidateSet);//, multTiles);
         }
         else
         {
-            removal = new CandidateRemoval();
+            solveInformation = new CandidateSolveInformation();
         }
 
         return foundEffected;
     }
 
-    private bool TryFindNakedMultipleFromTiles(SudokuGrid9x9 grid, bool fromRow, List<SudokuTile> rightEntropyTiles, int multCount, out CandidateRemoval removal, bool boxCheck = false) 
+    private bool TryFindNakedMultipleFromTiles(SudokuGrid9x9 grid, bool fromRow, List<SudokuTile> rightEntropyTiles, int multCount, out CandidateSolveInformation solveInformation, bool boxCheck = false) 
     {
         //var multTiles = new List<TileIndex>(multCount);
         //HashSet<int> candidateSet = new HashSet<int>();
 
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
         
         // cant have n tiles that share n candidates if only n-1 tiles exist
         if (rightEntropyTiles.Count < multCount)
@@ -118,12 +118,12 @@ public abstract class NakedMultiple : CandidateMethod
         
         foreach (var multTileList in potentialMultiples)
         {
-            if (!boxCheck && TryFindEffectedTilesFromMultRowCol(grid, multTileList, fromRow, out removal))
+            if (!boxCheck && TryFindEffectedTilesFromMultRowCol(grid, multTileList, fromRow, out solveInformation))
             {
                 return true;
             }
                 
-            if (boxCheck && TryFindEffectedTilesFromBox(grid, multTileList, out removal))
+            if (boxCheck && TryFindEffectedTilesFromBox(grid, multTileList, out solveInformation))
             {
                 return true;
             }
@@ -167,10 +167,10 @@ public abstract class NakedMultiple : CandidateMethod
         return false;
     }
 
-    private bool CandidatesFromMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateRemoval removal)
+    private bool CandidatesFromMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
     {
         List<SudokuTile> multTiles = new List<SudokuTile>();
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
         
         foreach (var box in Boxes.boxes)
         {
@@ -189,14 +189,14 @@ public abstract class NakedMultiple : CandidateMethod
                 }
             }
             
-            if (TryFindNakedMultipleFromTiles(grid, false, multTiles, multCount, out removal, true))
+            if (TryFindNakedMultipleFromTiles(grid, false, multTiles, multCount, out solveInformation, true))
                 return true;
         }
 
         return false;
     }
     
-    private bool TryFindEffectedTilesFromBox(SudokuGrid9x9 grid, List<TileIndex> multTiles, out CandidateRemoval removal)
+    private bool TryFindEffectedTilesFromBox(SudokuGrid9x9 grid, List<TileIndex> multTiles, out CandidateSolveInformation solveInformation)
     {
         var tileIndex = multTiles[0];
 
@@ -237,11 +237,11 @@ public abstract class NakedMultiple : CandidateMethod
 
         if (foundEffected)
         {
-            removal = new CandidateRemoval(tempList, candidateSet, multTiles);
+            solveInformation = new CandidateSolveInformation(tempList, candidateSet);//, multTiles);
         }
         else
         {
-            removal = new CandidateRemoval();
+            solveInformation = new CandidateSolveInformation();
         }
         
         return foundEffected;

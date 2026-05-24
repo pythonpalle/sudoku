@@ -6,9 +6,9 @@ using UnityEngine;
 public abstract class LockedCandidatesMethod : CandidateMethod
 {
     // EN ENHETLIG MOTOR FÖR BÅDE POINTING OCH CLAIMING
-    protected bool SearchLockedCandidates(SudokuGrid9x9 grid, int pointers, bool findPointing, out CandidateRemoval removal)
+    protected bool SearchLockedCandidates(SudokuGrid9x9 grid, int pointers, bool findPointing, out CandidateSolveInformation solveInformation)
     {
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
 
         for (int candidate = 1; candidate <= 9; candidate++)
         {
@@ -19,13 +19,13 @@ public abstract class LockedCandidatesMethod : CandidateMethod
                 List<SudokuTile> sourceTiles = findPointing ? GetBoxTiles(grid, i) : GetLineTiles(grid, i, isRow: true); 
                 // Om findPointing är falskt körs rader först, vi kan lägga till kolumner i loopen efter
                 
-                if (ProcessHouse(grid, sourceTiles, candidate, pointers, findPointing, out removal)) 
+                if (ProcessHouse(grid, sourceTiles, candidate, pointers, findPointing, out solveInformation)) 
                     return true;
 
                 if (!findPointing)
                 {
                     List<SudokuTile> colTiles = GetLineTiles(grid, i, isRow: false);
-                    if (ProcessHouse(grid, colTiles, candidate, pointers, findPointing, out removal)) 
+                    if (ProcessHouse(grid, colTiles, candidate, pointers, findPointing, out solveInformation)) 
                         return true;
                 }
             }
@@ -33,9 +33,9 @@ public abstract class LockedCandidatesMethod : CandidateMethod
         return false;
     }
 
-    private bool ProcessHouse(SudokuGrid9x9 grid, List<SudokuTile> sourceTiles, int candidate, int pointers, bool findPointing, out CandidateRemoval removal)
+    private bool ProcessHouse(SudokuGrid9x9 grid, List<SudokuTile> sourceTiles, int candidate, int pointers, bool findPointing, out CandidateSolveInformation solveInformation)
     {
-        removal = new CandidateRemoval();
+        solveInformation = new CandidateSolveInformation();
 
         // Hitta alla rutor i huset som faktiskt har denna kandidat tillgänglig
         List<TileIndex> candidateIndices = sourceTiles
@@ -74,7 +74,12 @@ public abstract class LockedCandidatesMethod : CandidateMethod
         // Om vi hittade rutor att rensa har vi en giltig exkludering!
         if (eliminationIndices.Count > 0)
         {
-            removal = new CandidateRemoval(eliminationIndices, new HashSet<int> { candidate }, candidateIndices);
+            var fullHouse = targetHouse.Select(t => t.index).ToList();
+            var houseType = findPointing 
+                ? (sameRow ? HouseType.Row : HouseType.Column) 
+                : HouseType.Box;
+            
+            solveInformation = new CandidateSolveInformation(eliminationIndices, candidate, candidateIndices, fullHouse, houseType);
             return true;
         }
 

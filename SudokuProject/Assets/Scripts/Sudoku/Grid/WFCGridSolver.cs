@@ -16,7 +16,7 @@ public struct SolutionStepData
     public TileIndex tileIndex;
     public SolveMethod solveMethod;
     public int digit;
-    public CandidateRemoval candidateRemoval;
+    public CandidateSolveInformation CandidateSolveInformation;
     public bool isDigitSolve;
     
     public string GetCandidateDigitsString()
@@ -47,8 +47,8 @@ public struct SolutionStepData
     }
 
     private List<string> CandidateRemovalIndexesAlphaNumeric =>
-        candidateRemoval.RemovalIndexes.Select(index => index.ToAlphaNumeric()).ToList();
-    private List<int> CandidateRemovalDigits => candidateRemoval.CandidateSet.OrderBy(x => x).ToList();
+        CandidateSolveInformation.removalIndexes.Select(index => index.ToAlphaNumeric()).ToList();
+    private List<int> CandidateRemovalDigits => CandidateSolveInformation.candidateSet.OrderBy(x => x).ToList();
 
     public override string ToString()
     {
@@ -398,7 +398,7 @@ public class WFCGridSolver
                 return true; 
             }
             
-            bool someMethodYieldProgress = TryProgressWithCandidateMethods(out CandidateRemoval removal, out method);
+            bool someMethodYieldProgress = TryProgressWithCandidateMethods(out CandidateSolveInformation removal, out method);
             if (someMethodYieldProgress)
             {
                 solutionStep = new SolutionStepData()
@@ -406,7 +406,7 @@ public class WFCGridSolver
                     //tileIndex = progressIndex,
                     solveMethod = method,
                     isDigitSolve = false,
-                    candidateRemoval = removal
+                    CandidateSolveInformation = removal
                 };
                 
                 return true;
@@ -523,7 +523,7 @@ public class WFCGridSolver
     {
         foreach (var method in candidatesMethods)
         {
-            if (method.TryFindCandidates(grid, out CandidateRemoval removal))
+            if (method.TryFindCandidates(grid, out CandidateSolveInformation removal))
             {
                 RemoveCandidates(removal);
                 UpdateAttemptedDifficult(method.Difficulty);
@@ -540,16 +540,16 @@ public class WFCGridSolver
         return false;
     }
     
-    private bool TryProgressWithCandidateMethods(out CandidateRemoval candidateRemoval, out SolveMethod solveMethod)
+    private bool TryProgressWithCandidateMethods(out CandidateSolveInformation candidateSolveInformation, out SolveMethod solveMethod)
     {
-        candidateRemoval = new CandidateRemoval();
+        candidateSolveInformation = new CandidateSolveInformation();
         solveMethod = null;
         
         foreach (var method in candidatesMethods)
         {
-            if (method.TryFindCandidates(grid, out CandidateRemoval removal))
+            if (method.TryFindCandidates(grid, out CandidateSolveInformation removal))
             {
-                candidateRemoval = removal;
+                candidateSolveInformation = removal;
                 solveMethod = method;
                 
                 return true;
@@ -570,28 +570,28 @@ public class WFCGridSolver
         }
     }
 
-    private void DebugRemoval(CandidateRemoval removal, CandidateMethod method)
+    private void DebugRemoval(CandidateSolveInformation solveInformation, CandidateMethod method)
     {
         Debug.LogWarning("Found candidate(s) with: " + method.GetName);
         string digits = String.Empty;
-        foreach (var candidate in removal.candidateSet)
+        foreach (var candidate in solveInformation.candidateSet)
         {
             digits += $"{candidate}, ";
         }
         Debug.Log($"Digit(s): {digits}");
                 
         Debug.Log("Indices: ");
-        foreach (var index in removal.removalIndexes)
+        foreach (var index in solveInformation.removalIndexes)
         {
             Debug.Log(index);
         }
     }
 
-    private void RemoveCandidates(CandidateRemoval removal)
+    private void RemoveCandidates(CandidateSolveInformation solveInformation)
     {
-        foreach (var index in removal.removalIndexes)
+        foreach (var index in solveInformation.removalIndexes)
         {
-            foreach (var candidate in removal.candidateSet)
+            foreach (var candidate in solveInformation.candidateSet)
             {
                 grid.RemoveCandidateFromIndex(index, candidate);
             }
