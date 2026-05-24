@@ -104,56 +104,105 @@ public class HintController : MonoBehaviour
         }   
     }
 
-    private void HandleCandidateSolveHint(SolutionStepData solutionStep)
+ private void HandleCandidateSolveHint(SolutionStepData solutionStep)
+{
+    CandidateMethod candidateMethod = solutionStep.solveMethod as CandidateMethod;
+
+    if (candidateMethod == null)
     {
-        CandidateMethod candidateMethod = solutionStep.solveMethod as CandidateMethod;
+        Debug.LogError($"Solve method {solutionStep.solveMethod} is not a candidate method");
+        return;
+    }
+    
+    var solveInfo = solutionStep.CandidateSolveInformation;
+    var triggeringIndexes = solveInfo.triggerIndexes;
+    var removalIndexes = solveInfo.removalIndexes;
+    var candidatesInSet = solveInfo.candidateSet.ToList();
 
-        if (candidateMethod == null)
+    Dictionary<TileIndex, List<int>> candidateSolves = new Dictionary<TileIndex, List<int>>();
+    Dictionary<TileIndex, List<int>> candidateRemovals = new Dictionary<TileIndex, List<int>>();
+
+    // 1. BERÄKNA CIRKLAR (Vilka kandidater ska ringas in som ledtråd?)
+    if (candidateMethod is HiddenMultiple)
+    {
+        // I en Hidden Multiple vill vi ringa in de kandidater som INTE ska tas bort i trigger-cellerna
+        foreach (var triggerIndex in triggeringIndexes)
         {
-            Debug.LogError($"Solve method {solutionStep.solveMethod} is not a candidate method");
-            return;
-        }
-        
-        //var solveInfo = solutionStep.CandidateSolveInformation;
-        
+            if (!candidateSolves.ContainsKey(triggerIndex))
+                candidateSolves[triggerIndex] = new List<int>();
 
-        if (candidateMethod is LockedCandidatesMethod || candidateMethod is NakedMultiple)
-        {
-            var solveInfo = solutionStep.CandidateSolveInformation;
-
-            var removalIndexes = solveInfo.removalIndexes;
-            var effectedTiles = GetUITiles(removalIndexes);
-
-            var triggeringIndexes = solveInfo.triggerIndexes;
-            
-            var tileIndexesInSameHouse = solveInfo.fullHouseVisualIndexes.Where(x => !triggeringIndexes.Contains(x)).ToList(); 
-            List<SelectTile> tilesInSameHouse = GetUITiles(tileIndexesInSameHouse);
-            SetSharedHouseColor(tilesInSameHouse);
-            
-            List<SelectTile> solveTiles = GetUITiles(triggeringIndexes);
-            SetDigitSolveColor(solveTiles);
-
-            var candidates = solveInfo.candidateSet.ToList();
-
-            for (int i = 0; i < candidates.Count; i++)
+            // Hämta cellens nuvarande kandidater från ditt rutnät
+            var tileCandidates = _hintGrid[triggerIndex].Candidates;
+            foreach (var candidate in tileCandidates)
             {
-                int candidate = candidates[i];
-                
-                foreach (var solveTile in solveTiles)
+                // Om kandidaten inte ska tas bort, så är den en del av det dolda mönstret!
+                if (!solveInfo.candidateSet.Contains(candidate))
                 {
-                    AddSolveCircleAroundDigit(solveTile, candidate);
-                }
-            
-                foreach (var removeIndex in removalIndexes)
-                {
-                    if (!_hintGrid[removeIndex].Candidates.Contains(candidate)) continue;
-                    
-                    var effectedTile = GetUITile(removeIndex);
-                    AddRejectCircleAroundDigit(effectedTile, candidate);
+                    candidateSolves[triggerIndex].Add(candidate);
                 }
             }
         }
     }
+    else if (candidateMethod is LockedCandidatesMethod || candidateMethod is NakedMultiple)
+    {
+        // I Locked och Naked vill vi ringa in exakt de kandidater som finns i candidateSet
+        foreach (var candidate in candidatesInSet)
+        {
+            foreach (var solveIndex in triggeringIndexes)
+            {
+                if (!candidateSolves.ContainsKey(solveIndex))
+                    candidateSolves[solveIndex] = new List<int>();
+                
+                candidateSolves[solveIndex].Add(candidate);
+            }
+        }
+    }
+
+    // 2. BERÄKNA REJEKTERINGAR (Vilka kandidater ska kryssas över?)
+    foreach (var candidate in candidatesInSet)
+    {
+        foreach (var removeIndex in removalIndexes)
+        {
+            // Säkerställ att rutan faktiskt har kvar den kandidat vi vill rensa
+            if (!_hintGrid[removeIndex].Candidates.Contains(candidate)) continue;
+            
+            if (!candidateRemovals.ContainsKey(removeIndex))
+                candidateRemovals[removeIndex] = new List<int>();
+            
+            candidateRemovals[removeIndex].Add(candidate);
+        }
+    }
+
+    // 3. APPLICERA BAKGRUNDSFÄRGER PÅ CELLERNA
+    // Hela huset får en neutral färg (förutom trigger-cellerna som har ett eget fokus)
+    List<TileIndex> houseColorTiles = solveInfo.fullHouseVisualIndexes
+        .Where(x => !triggeringIndexes.Contains(x))
+        .ToList();
+
+    SetSharedHouseColor(GetUITiles(houseColorTiles));
+    SetDigitSolveColor(GetUITiles(triggeringIndexes));
+
+    // 4. RITA UT ALLA CIRKLAR I UI
+    foreach (var solvesPerIndex in candidateSolves)
+    {
+        var solveUiTile = GetUITile(solvesPerIndex.Key);
+        foreach (var solveCandidate in solvesPerIndex.Value)
+        {
+            AddSolveCircleAroundDigit(solveUiTile, solveCandidate);
+        }
+    }
+
+    // 5. RITA UT ALLA KRYSSTECKEN (PROHIBITION ICONS) I UI
+    foreach (var removalsPerIndex in candidateRemovals)
+    {
+        var uiTile = GetUITile(removalsPerIndex.Key);
+        foreach (var candidate in removalsPerIndex.Value)
+        {
+            AddRejectCircleAroundDigit(uiTile, candidate);
+        }
+    }
+}
+
 
     private void ResetArrows()
     {
