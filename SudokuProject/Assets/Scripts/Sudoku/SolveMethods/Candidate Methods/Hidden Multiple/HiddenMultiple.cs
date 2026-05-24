@@ -1,226 +1,145 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
-public struct MultiCombo
-{
-    public List<TileIndex> tileIndices;
-    public HashSet<int> candidates;
-
-    public MultiCombo(List<TileIndex> indices, HashSet<int> candidates)
-    {
-        tileIndices = indices;
-        this.candidates = candidates;
-    }
-}
 
 public abstract class HiddenMultiple : CandidateMethod
 {
-    protected bool TryFindMultipleInRow(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
-    {
-        return CandidatesFromMultipleInRowCol(grid, multCount, true, out solveInformation);
-    }
+    protected abstract int multCount { get; }
     
-    protected bool TryFindMultipleInCol(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
+    protected bool SearchHiddenMultiples(SudokuGrid9x9 grid, out CandidateSolveInformation solveInformation)
     {
-        return CandidatesFromMultipleInRowCol(grid, multCount, false, out solveInformation);
-    }
-    
-    protected bool TryFindMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
-    {
-        return CandidatesFromMultipleInBox(grid, multCount, out solveInformation);
-    }
+        // check box first, easier to find for humans
+        if (SearchHiddenMultiples(grid, HouseType.Box, out solveInformation)) return true;
 
-    private bool CandidatesFromMultipleInRowCol(SudokuGrid9x9 grid, int multCount, bool fromRow, out CandidateSolveInformation solveInformation)
-    {
-        List<SudokuTile> nonUseTiles = new List<SudokuTile>();
-        solveInformation = new CandidateSolveInformation();
+        if (SearchHiddenMultiples(grid, HouseType.Row, out solveInformation)) return true;
+        if (SearchHiddenMultiples(grid, HouseType.Column, out solveInformation)) return true;
 
-        for (int row = 0; row < 9; row++)
-        {
-            nonUseTiles.Clear();
-            
-            for (int col = 0; col < 9; col++)
-            {
-                // invert index if checking column
-                var tile = fromRow ? grid[row, col] : grid[col, row];
-
-                if (tile.Used) 
-                    continue;
-                
-                nonUseTiles.Add(tile);
-            }
-
-            // try find multiples
-            if (TryFindHiddenMultipleFromTiles(grid, nonUseTiles, multCount, out solveInformation))
-                return true;
-
-        }
-        
         return false;
     }
-
-    private bool TryFindHiddenMultipleFromTiles(SudokuGrid9x9 grid, List<SudokuTile> nonUseTiles, int multCount, out CandidateSolveInformation solveInformation) 
+    
+    // Den centrala sök-motorn för BÅDE Rader, Kolumner och Boxar
+    private bool SearchHiddenMultiples(SudokuGrid9x9 grid, HouseType houseType, out CandidateSolveInformation solveInformation)
     {
         solveInformation = new CandidateSolveInformation();
-        
-        // cant have n tiles that share n candidates if only n-1 tiles exist
-        if (nonUseTiles.Count < multCount)
-            return false;
-        
-        
-        // key: candidate,
-        // value: tiles with that candidate
-        Dictionary<int, List<TileIndex>> candidateCount = new Dictionary<int, List<TileIndex>>();
 
-        // store witch tiles contain each index
-        for (int candidate = 1; candidate <= 9; candidate++)
+        // Loopa igenom de 9 husen (0-8) av den valda typen
+        for (int houseIndex = 0; houseIndex < 9; houseIndex++)
         {
-            for (int i = 0; i < nonUseTiles.Count; i++)
-            {
-                if (nonUseTiles[i].Candidates.Contains(candidate))
-                {
-                    if (candidateCount.ContainsKey(candidate))
-                    {
-                        candidateCount[candidate].Add(nonUseTiles[i].index);
-                    }
-                    else
-                    {
-                        candidateCount.Add(candidate, new List<TileIndex>{nonUseTiles[i].index});
+            // 1. Hämta alla rutor i det aktuella huset
+            List<SudokuTile> houseTiles = GetHouseTiles(grid, houseIndex, houseType);
 
-                        // remove entry if more then multCount tiles share candidate
-                        if (candidateCount[candidate].Count > multCount)
-                        {
-                            candidateCount.Remove(candidate);
-                            break;
-                        }
+            // 2. Samla alla tillgängliga kandidatsiffror (1-9) som fortfarande finns kvar i husets tomma rutor
+            List<int> availableDigits = new List<int>();
+            for (int d = 1; d <= 9; d++)
+            {
+                if (houseTiles.Any(t => !t.Used && t.Candidates.Contains(d)))
+                {
+                    availableDigits.Add(d);
+                }
+            }
+
+            // Om vi har färre unika siffror kvar än storleken på vår dolda grupp, hoppa över huset
+            if (availableDigits.Count < multCount) continue;
+
+            // 3. Generera alla möjliga kombinationer av siffror med storleken 'multCount' (t.ex. par eller tripplar av siffror)
+            List<List<int>> digitCombinations = new List<List<int>>();
+            GenerateDigitCombinations(availableDigits, multCount, 0, new List<int>(), digitCombinations);
+
+            // 4. Utvärdera varje sifferkombination
+            foreach (var digitGroup in digitCombinations)
+            {
+                // Hitta alla celler i huset som innehåller MINST EN av siffrorna i vår siffergrupp
+                List<SudokuTile> tilesContainingDigits = houseTiles
+                    .Where(t => !t.Used && t.Candidates.Overlaps(digitGroup))
+                    .ToList();
+
+                // GULDREGELN FÖR HIDDEN MULTIPLES:
+                // Siffergruppen är en Hidden Multiple OM och endast OM dessa siffror är 
+                // totalt isolerade till exakt lika många celler som antalet siffror i gruppen!
+                if (tilesContainingDigits.Count != multCount) continue;
+
+                // 5. Kontrollera om det finns ANDRA kandidater i dessa celler som kan rensas bort
+                List<TileIndex> triggerIndexes = tilesContainingDigits.Select(t => t.index).ToList();
+                List<int> candidatesToRemove = new List<int>();
+
+                foreach (var tile in tilesContainingDigits)
+                {
+                    // I en Hidden Multiple är det de kandidater som INTE tillhör digitGroup som ska rensas bort
+                    var illegalCandidates = tile.Candidates.Where(c => !digitGroup.Contains(c)).ToList();
+                    foreach (var c in illegalCandidates)
+                    {
+                        candidatesToRemove.Add(c);
                     }
+                }
+
+                // Om vi hittade kandidater som faktiskt kan tas bort, har vi en giltig Hidden Multiple!
+                if (candidatesToRemove.Count > 0)
+                {
+                    List<TileIndex> fullHouse = houseTiles.Select(t => t.index).ToList();
+                    HashSet<int> candidateSet = new HashSet<int>(candidatesToRemove);
+
+                    // Skicka all strukturerad information till ditt Hint-GUI via din konstruktor
+                    solveInformation = new CandidateSolveInformation(
+                        triggerIndexes,       // De celler där det dolda paret/trippeln bor (Triggers)
+                        candidateSet,         // De kandidater som rensas bort (Removals)
+                        triggerIndexes,       // I Hidden Multiples är trigger-cellerna och raderings-cellerna samma fysiska celler!
+                        fullHouse,            // Det påverkade husets index för bakgrundsljus
+                        houseType             // Hustypen
+                    );
+                    return true;
                 }
             }
         }
 
-        
-        int n = candidateCount.Count;
-        int k = multCount;
-        
-        // Lista med listor som innehåller indexer för mult tiles och lista med multcandidaterna 
-        List<MultiCombo> potentialMultiples = new List<MultiCombo>();
-        List<int> numbers = candidateCount.Keys.ToList();
-        int[] tempList = new int[k];
-        
-        FindAllCombinations(potentialMultiples, numbers, candidateCount, tempList, 0, n-1, 0, k);
-        foreach (var multList in potentialMultiples)
-        {
-            //removal.indexes = multList.tileIndices;
-            var candidateSet = GetEffectedCandidates(grid, multList.tileIndices, multList.candidates);
-            //removal.candidateSet = candidateSet; 
-            if (candidateSet.Count > 0)
-            {
-                solveInformation = new CandidateSolveInformation(multList.tileIndices, candidateSet); // TODO
-                return true;
-            }
-        }
-        
-        // var multTiles = new List<int>();
-        // foreach (var candidatePair in candidateCount)
-        // {
-        //     if (candidatePair.Value.Count != multCount) continue;
-        //     
-        //     multTiles.Clear();
-        //     
-        //     foreach (var compareCandidatePair in candidateCount)
-        //     {
-        //         // don't compare the same candidate
-        //         if (candidatePair.Key == compareCandidatePair.Key) continue;
-        //         
-        //         if (compareCandidatePair.Value.Count != multCount) continue;
-        //
-        //         // exact match, those tiles are the hidden multiple
-        //         if (candidatePair.Value.SequenceEqual(compareCandidatePair.Value))
-        //         {
-        //             multTiles.Add(compareCandidatePair.Key);
-        //         }
-        //     }
-        //     
-        //     // multCount - 1 since the compare tile hasn't been added yet
-        //     if (multTiles.Count == multCount - 1)
-        //     {
-        //         removal.indexes = candidatePair.Value;
-        //         multTiles.Add(candidatePair.Key);
-        //         var candidateSet = GetEffectedCandidates(grid, multTiles.ToHashSet(), candidatePair.Value);
-        //         removal.candidateSet = candidateSet;
-        //         if (removal.candidateSet.Count > 0)
-        //         {
-        //             return true;
-        //         }
-        //     }
-        // }
-
         return false;
     }
 
-    private HashSet<int> GetEffectedCandidates(SudokuGrid9x9 grid, List<TileIndex> indices, HashSet<int> sharedCandidates)
+    #region Geometri och Kombination-Hjälpare
+
+    private List<SudokuTile> GetHouseTiles(SudokuGrid9x9 grid, int houseIndex, HouseType type)
     {
-        var everyCandidate = new HashSet<int>();
-        
-        // make set include every candidate from effected indices
-        foreach (var tileIndex in indices)
+        List<SudokuTile> tiles = new List<SudokuTile>();
+        switch (type)
         {
-            everyCandidate.UnionWith(grid[tileIndex].Candidates);
-        }
-        
-        // now remove the candidate multiple (pair, triple, etc)
-        everyCandidate.ExceptWith(sharedCandidates);
-
-        return everyCandidate;
-    }
-
-
-    // private HashSet<int> GetEffectedCandidates(SudokuGrid9x9 grid, HashSet<int> multCandidates, List<TileIndex> indices)
-    // {
-    //     // OLD METHOD
-    //     
-    //     var everyCandidate = new HashSet<int>();
-    //     
-    //     // make set include every candidate from effected indices
-    //     foreach (var index in indices)
-    //     {
-    //         everyCandidate.UnionWith(grid[index].Candidates);
-    //     }
-    //     
-    //     // now remove the candidate multiple (pair, triple, etc)
-    //     everyCandidate.ExceptWith(multCandidates);
-    //
-    //     return everyCandidate;
-    // }
-
-    private bool CandidatesFromMultipleInBox(SudokuGrid9x9 grid, int multCount, out CandidateSolveInformation solveInformation)
-    {
-        List<SudokuTile> multTiles = new List<SudokuTile>();
-        solveInformation = new CandidateSolveInformation();
-        
-        foreach (var box in Boxes.boxes)
-        {
-            multTiles.Clear();
-
-            for (int deltaRow = 0; deltaRow < 3; deltaRow++)
-            {
-                for (int deltaCol = 0; deltaCol < 3; deltaCol++)
-                {
-                    var tile = grid[box.row + deltaRow, box.col + deltaCol];
-                    
-                    if (tile.Used) 
-                        continue;
-                
-                    multTiles.Add(tile);
-                }
-            }
+            case HouseType.Row:
+                for (int i = 0; i < 9; i++) tiles.Add(grid[houseIndex, i]);
+                break;
             
-            if (TryFindHiddenMultipleFromTiles(grid,  multTiles, multCount, out solveInformation))
-                return true;
+            case HouseType.Column:
+                for (int i = 0; i < 9; i++) tiles.Add(grid[i, houseIndex]);
+                break;
+            
+            case HouseType.Box:
+                int startRow = (houseIndex / 3) * 3;
+                int startCol = (houseIndex % 3) * 3;
+            
+                for (int r = 0; r < 3; r++)
+                {
+                    for (int c = 0; c < 3; c++)
+                    {
+                        tiles.Add(grid[startRow + r, startCol + c]);
+                    }
+                }
+                break;
+        }
+        return tiles;
+    }
+
+
+    // En ren, rekursiv metod för att hitta kombinationer av siffror (ersätter FindAllCombinations)
+    private void GenerateDigitCombinations(List<int> source, int k, int start, List<int> current, List<List<int>> result)
+    {
+        if (current.Count == k)
+        {
+            result.Add(new List<int>(current));
+            return;
         }
 
-        return false;
+        for (int i = start; i < source.Count; i++)
+        {
+            current.Add(source[i]);
+            GenerateDigitCombinations(source, k, i + 1, current, result);
+            current.RemoveAt(current.Count - 1); // Backtrack
+        }
     }
+    #endregion
 }
-

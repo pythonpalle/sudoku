@@ -31,17 +31,13 @@ public static class MethodContainer
         new ClaimingTriple(),
         
         // Hidden pairs
-        new HiddenPairInBox(),
-        new HiddenPairInRow(),
-        new HiddenPairInCol(),
+        new HiddenPair(),
         
         // Naked Triples
         new NakedTriple(),
         
         // Hidden triples 
-        new HiddenTripleInBox(),
-        new HiddenTripleInRow(),
-        new HiddenTripleInCol(),
+        new HiddenTriple(),
         
         // Naked Quad (includes row, col and box)
         new NakedQuad(),

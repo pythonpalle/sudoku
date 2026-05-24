@@ -2,6 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 
+public struct MultiCombo
+{
+    public List<TileIndex> tileIndices;
+    public HashSet<int> candidates;
+
+    public MultiCombo(List<TileIndex> indices, HashSet<int> candidates)
+    {
+        tileIndices = indices;
+        this.candidates = candidates;
+    }
+}
+
 public struct CandidateSolveInformation
 {
     public List<TileIndex> removalIndexes;
