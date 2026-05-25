@@ -48,21 +48,18 @@ public static class MethodContainer
         // Uniqueness
         new UniquenessRectangle(),
         
-        // XWings
-        new XWingRow(),
-        new XWingCol(),
+        // XWing
+        new XWing(),
 
         // Extended Wings
         new XYWing(),
         new XYZWing(),
         
         // Swordfish
-        new SwordFishRow(),
-        new SwordFishCol(),
+        new SwordFish(),
         
         // JellyFish
-        new JellyFishRow(),
-        new JellyFishCol(),
+        new JellyFish(),
     };
 
     private static List<DigitMethod> easyDigitMethods = new List<DigitMethod>();
