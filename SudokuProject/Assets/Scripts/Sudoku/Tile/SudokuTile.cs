@@ -15,24 +15,6 @@ public struct TileIndex
         return (col/3) * 3 + (row / 3);
     }
 
-    private static Dictionary<int, char> letterSet = new Dictionary<int, char>()
-    {
-        { 0, 'A' },
-        { 1, 'B' },
-        { 2, 'C' },
-        { 3, 'D' },
-        { 4, 'E' },
-        { 5, 'F' },
-        { 6, 'G' },
-        { 7, 'H' },
-        { 8, 'I' },
-    };
-
-    public string ToAlphaNumeric()
-    {
-        return $"{letterSet[col]}{row+1}";
-    }
-
     public static bool operator==(TileIndex tileIndex1, TileIndex tileIndex2)
     {
         return tileIndex1.row == tileIndex2.row && tileIndex1.col == tileIndex2.col;

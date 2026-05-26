@@ -5,6 +5,7 @@ using System.Linq;
 using NUnit.Framework;
 using PuzzleSelect;
 using Saving;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ public class HintController : MonoBehaviour
     
     [Header("Components")]
     [SerializeField] private UILaserManager laserManager;
+    [SerializeField] private TextMeshProUGUI hintText;
     
     [Header("Parent")]
     [SerializeField] private RectTransform gridParent;
@@ -102,7 +104,9 @@ public class HintController : MonoBehaviour
         else
         {
             HandleCandidateSolveHint(solutionStep);
-        }   
+        }
+        
+        UpdateHintText(solutionStep);
     }
 
 private void HandleCandidateSolveHint(SolutionStepData solutionStep)
@@ -285,6 +289,13 @@ private void HandleCandidateSolveHint(SolutionStepData solutionStep)
         }
         
         AddSolveCircleAroundDigit(uiTile, solutionStep.digit);
+    }
+
+    private void UpdateHintText(SolutionStepData solutionStep)
+    {
+        string explanationText = HintTextGenerator.GenerateHintText(solutionStep, _hintGrid);
+        hintText.text = explanationText;
+        //Debug.Log(explanationText);    
     }
 
     private List<TileIndex> GetTileIndexesSeeingHouse(HouseType houseType, TileIndex targetTileIndex, int digit)
