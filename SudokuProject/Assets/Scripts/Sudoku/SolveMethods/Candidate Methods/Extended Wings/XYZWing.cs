@@ -4,6 +4,6 @@
 
     public override bool TryFindCandidates(SudokuGrid9x9 grid, out CandidateSolveInformation solveInformation)
     {
-        return TryFindWingCandidates(grid, true, out solveInformation);
+        return SearchWingCandidates(grid, isXyzWing: true, out solveInformation);
     }
 }
