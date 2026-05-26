@@ -532,10 +532,12 @@ MonoBehaviour:
   paddingBetweenCells: 5
   solveCircleTexture: {fileID: 2800000, guid: 199f94d32c512b744916f7b3ac03ec67, type: 3}
   blockCircleTexture: {fileID: 2800000, guid: 07057301b4e1fb24dac5c0d343c9e46e, type: 3}
+  circleScaleFactor: 0.8
   hintSolveBgColor: {fileID: 11400000, guid: c48faa9b447ad984dbd6f25db3cea637, type: 2}
   hintSolveCircleColor: {fileID: 11400000, guid: df2964fa9bb8c72498e97bc831de587a, type: 2}
   hintEffectedColor: {fileID: 11400000, guid: 3f54ab674e54977499c2753c97fe5353, type: 2}
   sharedHouseColor: {fileID: 11400000, guid: 3abd8b8cf9add4e4ab6a13ab3a8b5894, type: 2}
+  pivotTileColor: {fileID: 11400000, guid: 8c6aaee5488e1354eb762e16cfef5702, type: 2}
 --- !u!114 &5718192971242474530
 MonoBehaviour:
   m_ObjectHideFlags: 0

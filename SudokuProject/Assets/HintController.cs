@@ -39,6 +39,7 @@ public class HintController : MonoBehaviour
     [SerializeField] private ColorObject hintSolveCircleColor;
     [SerializeField] private ColorObject hintEffectedColor;
     [SerializeField] private ColorObject sharedHouseColor;
+    [SerializeField] private ColorObject pivotTileColor;
 
     private SudokuGrid9x9 _hintGrid;
     private WFCGridSolver _solver = new WFCGridSolver(PuzzleDifficulty.Extreme);
@@ -104,7 +105,7 @@ public class HintController : MonoBehaviour
         }   
     }
 
- private void HandleCandidateSolveHint(SolutionStepData solutionStep)
+private void HandleCandidateSolveHint(SolutionStepData solutionStep)
 {
     CandidateMethod candidateMethod = solutionStep.solveMethod as CandidateMethod;
 
@@ -122,7 +123,9 @@ public class HintController : MonoBehaviour
     Dictionary<TileIndex, List<int>> candidateSolves = new Dictionary<TileIndex, List<int>>();
     Dictionary<TileIndex, List<int>> candidateRemovals = new Dictionary<TileIndex, List<int>>();
 
+    // =========================================================================
     // 1. BERÄKNA CIRKLAR (Vilka kandidater ska ringas in som ledtråd?)
+    // =========================================================================
     if (candidateMethod is HiddenMultiple)
     {
         // I en Hidden Multiple vill vi ringa in de kandidater som INTE ska tas bort i trigger-cellerna
@@ -131,11 +134,9 @@ public class HintController : MonoBehaviour
             if (!candidateSolves.ContainsKey(triggerIndex))
                 candidateSolves[triggerIndex] = new List<int>();
 
-            // Hämta cellens nuvarande kandidater från ditt rutnät
             var tileCandidates = _hintGrid[triggerIndex].Candidates;
             foreach (var candidate in tileCandidates)
             {
-                // Om kandidaten inte ska tas bort, så är den en del av det dolda mönstret!
                 if (!solveInfo.candidateSet.Contains(candidate))
                 {
                     candidateSolves[triggerIndex].Add(candidate);
@@ -143,9 +144,9 @@ public class HintController : MonoBehaviour
             }
         }
     }
-    else if (candidateMethod is LockedCandidatesMethod || candidateMethod is NakedMultiple)
+    else if (candidateMethod is LockedCandidatesMethod || candidateMethod is NakedMultiple || candidateMethod is UniquenessRectangle)
     {
-        // I Locked och Naked vill vi ringa in exakt de kandidater som finns i candidateSet
+        // I Locked, Naked och Unique Rectangle vill vi ringa in exakt de kandidater som finns i candidateSet
         foreach (var candidate in candidatesInSet)
         {
             foreach (var solveIndex in triggeringIndexes)
@@ -157,13 +158,28 @@ public class HintController : MonoBehaviour
             }
         }
     }
+    else if (candidateMethod is ExtendedWing)
+    {
+        // I en vinge vill vi ringa in den delade Z-kandidaten i alla tre hörnstenar (Pivot + Vingar)
+        int zCandidate = candidatesInSet.First();
+        foreach (var triggerIndex in triggeringIndexes)
+        {
+            if (!candidateSolves.ContainsKey(triggerIndex))
+                candidateSolves[triggerIndex] = new List<int>();
+            
+            // this eliminates the pivot for xy wings
+            if (_hintGrid[triggerIndex].Candidates.Contains(zCandidate))
+                candidateSolves[triggerIndex].Add(zCandidate);
+        }
+    }
     
+    // =========================================================================
     // 2. BERÄKNA REJEKTERINGAR (Vilka kandidater ska kryssas över?)
+    // =========================================================================
     foreach (var candidate in candidatesInSet)
     {
         foreach (var removeIndex in removalIndexes)
         {
-            // Säkerställ att rutan faktiskt har kvar den kandidat vi vill rensa
             if (!_hintGrid[removeIndex].Candidates.Contains(candidate)) continue;
             
             if (!candidateRemovals.ContainsKey(removeIndex))
@@ -173,16 +189,36 @@ public class HintController : MonoBehaviour
         }
     }
 
+    // =========================================================================
     // 3. APPLICERA BAKGRUNDSFÄRGER PÅ CELLERNA
-    // Hela huset får en neutral färg (förutom trigger-cellerna som har ett eget fokus)
+    // =========================================================================
+    // Hela huset/sammanhanget får en neutral delad färg
     List<TileIndex> houseColorTiles = solveInfo.fullHouseVisualIndexes
         .Where(x => !triggeringIndexes.Contains(x))
         .ToList();
-
     SetSharedHouseColor(GetUITiles(houseColorTiles));
-    SetDigitSolveColor(GetUITiles(triggeringIndexes));
 
-    // 4. RITA UT ALLA CIRKLAR I UI
+    // Applicera färger på själva trigger-cellerna (ledtrådarna)
+    if (candidateMethod is ExtendedWing)
+    {
+        // Specialfall för vingen: Index 0 är Pivot (Orange/Guld), Index 1 och 2 är Vingarna (Gröna)
+        var pivotUI = GetUITile(triggeringIndexes[0]);
+        var wing1UI = GetUITile(triggeringIndexes[1]);
+        var wing2UI = GetUITile(triggeringIndexes[2]);
+
+        UpdateBackgroundColor(pivotUI, pivotTileColor.Color);
+        UpdateBackgroundColor(wing1UI, hintSolveBgColor.Color);
+        UpdateBackgroundColor(wing2UI, hintSolveBgColor.Color);
+    }
+    else
+    {
+        // Standardfall för alla andra metoder: Ge alla triggers samma lösningsfärg
+        SetDigitSolveColor(GetUITiles(triggeringIndexes));
+    }
+
+    // =========================================================================
+    // 4. RITA UT ALLA CIRKLAR OCH KRYSS I UI
+    // =========================================================================
     foreach (var solvesPerIndex in candidateSolves)
     {
         var solveUiTile = GetUITile(solvesPerIndex.Key);
@@ -192,7 +228,6 @@ public class HintController : MonoBehaviour
         }
     }
 
-    // 5. RITA UT ALLA KRYSSTECKEN (PROHIBITION ICONS) I UI
     foreach (var removalsPerIndex in candidateRemovals)
     {
         var uiTile = GetUITile(removalsPerIndex.Key);
@@ -202,6 +237,7 @@ public class HintController : MonoBehaviour
         }
     }
 }
+
 
 
     private void ResetArrows()
