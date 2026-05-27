@@ -1,4 +1,4 @@
-﻿public class PointingPair : LockedPairs
+﻿public class PointingPair : PointingMethod
 {
     public override string GetName => "Pointing Pair";
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Medium;

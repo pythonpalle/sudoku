@@ -1,1 +1,1 @@
-﻿public abstract class LockedTriples : LockedCandidatesMethod {}
+﻿// public abstract class LockedTriples : LockedCandidatesMethod {}

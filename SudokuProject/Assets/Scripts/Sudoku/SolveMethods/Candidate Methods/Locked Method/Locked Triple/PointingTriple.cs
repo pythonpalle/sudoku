@@ -1,4 +1,4 @@
-﻿public class PointingTriple : LockedTriples
+﻿public class PointingTriple : PointingMethod
 {
     public override string GetName => "Pointing Triple";
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Medium;

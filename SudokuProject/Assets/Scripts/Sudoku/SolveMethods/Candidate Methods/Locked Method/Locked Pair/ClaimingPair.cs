@@ -1,4 +1,4 @@
-﻿public class ClaimingPair : LockedPairs
+﻿public class ClaimingPair : ClaimingMethod
 {
     public override string GetName => "Claiming Pair";
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Medium;

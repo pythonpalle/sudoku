@@ -1,4 +1,4 @@
-﻿public class ClaimingTriple : LockedTriples
+﻿public class ClaimingTriple : ClaimingMethod
 {
     public override string GetName => "Claiming Triple";
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Medium;

@@ -2,6 +2,8 @@
 using System.Linq;
 using UnityEngine;
 
+public abstract class PointingMethod : LockedCandidatesMethod {}
+public abstract class ClaimingMethod : LockedCandidatesMethod {}
 
 public abstract class LockedCandidatesMethod : CandidateMethod
 {
