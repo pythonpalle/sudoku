@@ -50,8 +50,4 @@ public class HiddenSingleBox : HiddenSingle
         
         return false;
     }
-    
-    public override string GetName => "Hidden Single Box";
-
-    public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Easy;
 }

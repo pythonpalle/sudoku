@@ -21,7 +21,7 @@ public class HintController : MonoBehaviour
     
     [Header("Components")]
     [SerializeField] private UILaserManager laserManager;
-    [SerializeField] private TextMeshProUGUI hintText;
+    [FormerlySerializedAs("hintText")] [SerializeField] private HintTextBehaviour hintTextBehaviour;
     
     [Header("Parent")]
     [SerializeField] private RectTransform gridParent;
@@ -268,7 +268,9 @@ private void HandleCandidateSolveHint(SolutionStepData solutionStep)
             List<TileIndex> eliminatingPeersIndexes = GetEliminatingPeersNakedSingle(solutionStep.tileIndex, solutionStep.digit);
             List<SelectTile> eliminatingTiles = GetUITiles(eliminatingPeersIndexes);
 
-            SetSharedHouseColor(eliminatingTiles);
+            // this only makes sense if all other tiles are visibly occupied. otherwise, this is confusing
+            if (eliminatingTiles.Count == 8)
+                SetSharedHouseColor(eliminatingTiles);
         }
         
         else if (solveMethod is HiddenSingle hiddenSingle)
@@ -283,19 +285,41 @@ private void HandleCandidateSolveHint(SolutionStepData solutionStep)
             List<SelectTile> laserUiTiles = GetUITiles(getTileIndexesSeeingHouse);
             
             List<LaserArrow> laserArrows = LaserArrow.CalculateLaserArrows(tileIndex, getTileIndexesSeeingHouse, houseType, _hintGrid);
-            laserManager.DrawLaserArrows(laserArrows);
             
-            SetTriggeringTileColor(laserUiTiles);
+            if (LasersCoverAllUnusedTiles(getTileIndexesSeeingHouse, tileIndexesInSameHouse, tileIndex, solutionStep.digit))
+            {
+                SetTriggeringTileColor(laserUiTiles);
+                laserManager.DrawLaserArrows(laserArrows);
+            }
         }
         
         AddSolveCircleAroundDigit(uiTile, solutionStep.digit);
     }
 
+    private bool LasersCoverAllUnusedTiles(List<TileIndex> laserTiles, List<TileIndex> tilesInSameHouse, TileIndex tileIndex, int solutionStepDigit)
+    {
+        foreach (TileIndex houseIndex in tilesInSameHouse.Where(x => x != tileIndex && !_hintGrid[x].Used))
+        {
+            bool someLaserSeesTile = false;
+            foreach (var laser in laserTiles)
+            {
+                if (laser.row == houseIndex.row || laser.col == houseIndex.col || laser.GetBox() == houseIndex.GetBox())
+                {
+                    someLaserSeesTile = true;
+                    break;
+                }
+            }
+            
+            if (!someLaserSeesTile) return false;
+        }
+
+        return true;
+    }
+
     private void UpdateHintText(SolutionStepData solutionStep)
     {
-        string explanationText = HintTextGenerator.GenerateHintText(solutionStep, _hintGrid);
-        hintText.text = explanationText;
-        //Debug.Log(explanationText);    
+        HintText hintText = HintTextGenerator.GenerateHintText(solutionStep, _hintGrid);
+        hintTextBehaviour.SetHintText(hintText);
     }
 
     private List<TileIndex> GetTileIndexesSeeingHouse(HouseType houseType, TileIndex targetTileIndex, int digit)
