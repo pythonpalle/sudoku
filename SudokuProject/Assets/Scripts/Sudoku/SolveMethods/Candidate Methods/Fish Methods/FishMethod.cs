@@ -15,8 +15,8 @@ public abstract class FishMethod : CandidateMethod
         for (int digit = 1; digit <= 9; digit++)
         {
             // Testa både med rader som bas-linjer och kolumner som bas-linjer
-            if (EvaluateFishLines(grid, digit, fishSize, isRowBase: true, out solveInformation)) return true;
             if (EvaluateFishLines(grid, digit, fishSize, isRowBase: false, out solveInformation)) return true;
+            if (EvaluateFishLines(grid, digit, fishSize, isRowBase: true, out solveInformation)) return true;
         }
 
         return false;
