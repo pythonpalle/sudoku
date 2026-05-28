@@ -232,6 +232,80 @@ public static class HintTextGenerator
             description = sb.ToString();
         }
         
+            // --- EXTENDED WING (XY-Wing / XYZ-Wing) ---
+        else if (method is ExtendedWing extendedWing)
+        {
+            bool isXyz = extendedWing.WingType == ExtendedWingType.XYZ;
+
+            TileIndex pivot = solveInfo.triggerIndexes[0];
+            TileIndex wing1 = solveInfo.triggerIndexes[1];
+            TileIndex wing2 = solveInfo.triggerIndexes[2];
+
+            string pivotStr = pivot.ToAlphaNumeric();
+            string wing1Str = wing1.ToAlphaNumeric();
+            string wing2Str = wing2.ToAlphaNumeric();
+
+            // Målsiffran Z (den som ska rensas bort på brädet)
+            int zDigit = solveInfo.candidateSet.First();
+
+            // Lista ut X och Y genom att titta på vad Pivot delar med respektive vinge
+            var pivotCandidates = grid[pivot].Candidates;
+            var wing1Candidates = grid[wing1].Candidates;
+            var wing2Candidates = grid[wing2].Candidates;
+
+            // X är siffran som finns i både Pivot och Wing 1 (men som inte är Z)
+            int xDigit = pivotCandidates.Intersect(wing1Candidates).FirstOrDefault(c => c != zDigit);
+            // Y är siffran som finns i både Pivot och Wing 2 (men som inte är Z)
+            int yDigit = pivotCandidates.Intersect(wing2Candidates).FirstOrDefault(c => c != zDigit);
+
+            // Skydd ifall något saknas (t.ex. om man testar i editor med trasig data)
+            if (xDigit == 0 || yDigit == 0)
+            {
+                xDigit = pivotCandidates.First();
+                yDigit = pivotCandidates.Last();
+            }
+
+            title = $"{method.GetName} found";
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"An {method.GetName} pattern was spotted.");
+            sb.AppendLine();
+            sb.AppendLine($"Pivot Cell: {pivotStr}");
+            sb.AppendLine($"Wing 1: {wing1Str}");
+            sb.AppendLine($"Wing 2: {wing2Str}");
+            sb.AppendLine();
+
+            if (isXyz)
+            {
+                // XYZ-Wing förklaring
+                sb.AppendLine($"The Pivot cell {pivotStr} contains three candidates: {xDigit}, {yDigit} & {zDigit}.");
+                sb.AppendLine();
+                sb.AppendLine($"If {pivotStr} is {zDigit}, then the target is solved directly.");
+                sb.AppendLine($"If {pivotStr} is {xDigit}, then Wing 1 ({wing1Str}) is forced to be {zDigit}.");
+                sb.AppendLine($"If {pivotStr} is {yDigit}, then Wing 2 ({wing2Str}) is forced to be {zDigit}.");
+                sb.AppendLine();
+                sb.AppendLine($"In all three possible scenarios, the digit {zDigit} MUST be placed in either the Pivot, Wing 1, or Wing 2.");
+                sb.AppendLine($"Therefore, any cell that \"sees\" all three of these cells simultaneously cannot contain a {zDigit}.");
+            }
+            else
+            {
+                // XY-Wing förklaring
+                sb.AppendLine($"The Pivot cell {pivotStr} is locked to two candidates: {xDigit} & {yDigit}.");
+                sb.AppendLine();
+                sb.AppendLine($"If {pivotStr} turns out to be {xDigit}, then Wing 1 ({wing1Str}) is forced to be {zDigit}.");
+                sb.AppendLine($"If {pivotStr} turns out to be {yDigit}, then Wing 2 ({wing2Str}) is forced to be {zDigit}.");
+                sb.AppendLine();
+                sb.AppendLine($"In either case, the digit {zDigit} MUST be placed in either Wing 1 or Wing 2.");
+                sb.AppendLine($"Therefore, any cell that \"sees\" both of these wings at the same time cannot contain a {zDigit}.");
+            }
+
+            sb.AppendLine();
+            sb.AppendLine($"Consequently, we can safely eliminate {zDigit} from {removalCellsStr}.");
+
+            description = sb.ToString();
+        }
+
+        
         return new HintText(title, description);
     }
 

@@ -2,8 +2,15 @@
 using System.Linq;
 using UnityEngine;
 
+public enum ExtendedWingType
+{
+    XY,
+    XYZ
+}
+
 public abstract class ExtendedWing : CandidateMethod
 {
+    public abstract ExtendedWingType WingType { get; }
     public override PuzzleDifficulty Difficulty => PuzzleDifficulty.Extreme;
 
     // Gemensam, optimerad motor för både XY-Wing och XYZ-Wing
