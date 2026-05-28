@@ -148,7 +148,8 @@ private void HandleCandidateSolveHint(SolutionStepData solutionStep)
             }
         }
     }
-    else if (candidateMethod is LockedCandidatesMethod || candidateMethod is NakedMultiple || candidateMethod is UniquenessRectangle)
+    else if (candidateMethod is LockedCandidatesMethod || candidateMethod is NakedMultiple || 
+             candidateMethod is UniquenessRectangle || candidateMethod is FishMethod)
     {
         // I Locked, Naked och Unique Rectangle vill vi ringa in exakt de kandidater som finns i candidateSet
         foreach (var candidate in candidatesInSet)
@@ -158,8 +159,8 @@ private void HandleCandidateSolveHint(SolutionStepData solutionStep)
                 if (!candidateSolves.ContainsKey(solveIndex))
                     candidateSolves[solveIndex] = new List<int>();
                 
-                candidateSolves[solveIndex].Add(candidate);
-            }
+                if (_hintGrid[solveIndex].Candidates.Contains(candidate))
+                    candidateSolves[solveIndex].Add(candidate);            }
         }
     }
     else if (candidateMethod is ExtendedWing)

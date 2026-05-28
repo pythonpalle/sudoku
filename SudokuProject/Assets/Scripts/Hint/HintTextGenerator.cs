@@ -48,6 +48,8 @@ public static class HintTextGenerator
         // Skapa snygga strängar för rutorna (t.ex. "A1, A2")
         string pointerCellsStr = solveInfo.triggerIndexes.ToAlphaNumeric();
         string removalCellsStr = solveInfo.removalIndexes.ToAlphaNumeric();
+
+        string candidateSetString = solveInfo.candidateSet.OrderBy(x => x).ToNaturalLanguage();
         
         
     // --- POINTING METHODS ---
@@ -124,20 +126,19 @@ public static class HintTextGenerator
     else if (method is NakedMultiple)
     {
         // En lista på siffrorna det gäller, snyggt formaterad via din ToNaturalLanguageList-motor
-        string digitsStr = solveInfo.candidateSet.ToNaturalLanguage(); 
         string houseName = solveInfo.houseType.Value.ToHouseString(solveInfo.triggerIndexes[0]);
         string patternName = solveInfo.triggerIndexes.Count switch { 2 => "Pair", 3 => "Triple", _ => "Quad" };
 
-        title = $"Naked {patternName} ({digitsStr}) in {houseName}";
+        title = $"Naked {patternName} ({candidateSetString}) in {houseName}";
 
         StringBuilder sb = new StringBuilder();
         sb.AppendLine($"A Naked {patternName} was spotted in {houseName}.");
         sb.AppendLine();
-        sb.AppendLine($"The cells {pointerCellsStr} are locked together because they contain a combined total of exactly {solveInfo.triggerIndexes.Count} candidates: {digitsStr}.");
+        sb.AppendLine($"The cells {pointerCellsStr} are locked together because they contain a combined total of exactly {solveInfo.triggerIndexes.Count} candidates: {candidateSetString}.");
         sb.AppendLine();
         sb.AppendLine($"This means those {solveInfo.triggerIndexes.Count} digits are strictly reserved for those specific cells. No other values can go there, and those digits cannot go anywhere else in this {houseName}.");
         sb.AppendLine();
-        sb.AppendLine($"Therefore, we can safely eliminate {digitsStr} from the other cells in {houseName}: {removalCellsStr}.");
+        sb.AppendLine($"Therefore, we can safely eliminate {candidateSetString} from the other cells in {houseName}: {removalCellsStr}.");
 
         description = sb.ToString();
     }
@@ -146,8 +147,12 @@ public static class HintTextGenerator
     else if (method is HiddenMultiple)
     {
         // För att hitta de dolda siffrorna tittar vi på vilka kandidater i trigger-cellerna som INTE tas bort
-        var firstTrigger = solveInfo.triggerIndexes[0];
-        var hiddenDigits = grid[firstTrigger].Candidates.Where(c => !solveInfo.candidateSet.Contains(c)).ToList();
+        var hiddenDigits = solveInfo.triggerIndexes.SelectMany(x => grid[x].Candidates)
+            .Where(c => !solveInfo.candidateSet.Contains(c))
+            .Distinct()
+            .OrderBy(n => n)
+            .ToList();
+        
         string hiddenDigitsStr = hiddenDigits.ToNaturalLanguage();
 
         string houseName = solveInfo.houseType.Value.ToHouseString(solveInfo.triggerIndexes[0]);
@@ -162,7 +167,7 @@ public static class HintTextGenerator
         sb.AppendLine();
         sb.AppendLine($"Because these {solveInfo.triggerIndexes.Count} specific digits are completely restricted to these {solveInfo.triggerIndexes.Count} cells, no other numbers can occupy them.");
         sb.AppendLine();
-        sb.AppendLine($"Therefore, all other \"noise\" candidates ({solveInfo.candidateSet.ToNaturalLanguage()}) can be safely eliminated from {removalCellsStr}, leaving the hidden pattern isolated.");
+        sb.AppendLine($"Therefore, all other \"noise\" candidates ({candidateSetString}) can be safely eliminated from {removalCellsStr}, leaving the hidden pattern isolated.");
 
         description = sb.ToString();
     }
