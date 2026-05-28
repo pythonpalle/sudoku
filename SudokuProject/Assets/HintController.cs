@@ -23,12 +23,18 @@ public class HintController : MonoBehaviour
     [SerializeField] private UILaserManager laserManager;
     [FormerlySerializedAs("hintText")] [SerializeField] private HintTextBehaviour hintTextBehaviour;
     
+    [Header("Coordinate Setup")]
+    [SerializeField] private RectTransform columnLabelParent; // Koppla din ColumnLabels-panel här
+    [SerializeField] private RectTransform rowLabelParent;    // Koppla din RowLabels-panel här
+    [SerializeField] private GameObject labelTextPrefab;  
+    
     [Header("Parent")]
     [SerializeField] private RectTransform gridParent;
 
     [Header("Padding")]
     [SerializeField] private float paddingBetweenBoxes = 2f;
     [SerializeField] private float paddingBetweenCells = 5f;
+    [SerializeField] private float labelOffset = 5f;
     
     [Header("Add on Objects")]
     [FormerlySerializedAs("circleTexture")]
@@ -579,6 +585,53 @@ private List<TileIndex> GetAllSeersWithDigit(TileIndex index, int digit)
         {
             CreateBox(i, maxCellSize);
         }
+        
+    if (labelTextPrefab == null) return;
+
+    string rowLetters = "ABCDEFGHI";
+
+    for (int i = 0; i < 9; i++)
+    {
+        // 1. Skapa Kolumn-etikett (1 - 9) OVANFÖR översta raden (row = 0, col = i)
+        TileIndex topRowIndex = new TileIndex(0, i);
+        if (hintTiles.TryGetValue(topRowIndex, out var topTile))
+        {
+            // Instansiera texten direkt som ett barn till denna specifika SelectTile
+            GameObject labelObj = Instantiate(labelTextPrefab, topTile.transform);
+            labelObj.name = $"ColLabel_{i + 1}";
+
+            RectTransform rTransform = labelObj.GetComponent<RectTransform>();
+            // Centrera i överkant av rutan
+            rTransform.anchorMin = new Vector2(0.5f, 1f);
+            rTransform.anchorMax = new Vector2(0.5f, 1f);
+            rTransform.pivot = new Vector2(0.5f, 0.5f);
+            // Skjut upp texten på Y-axeln baserat på din offset
+            rTransform.anchoredPosition = new Vector2(0, labelOffset);
+
+            var textComponent = labelObj.GetComponent<TMPro.TextMeshProUGUI>();
+            if (textComponent != null) textComponent.text = (i + 1).ToString();
+        }
+
+        // 2. Skapa Rad-etikett (A - I) TILL VÄNSTER om vänstraste kolumnen (row = i, col = 0)
+        TileIndex leftColIndex = new TileIndex(i, 0);
+        if (hintTiles.TryGetValue(leftColIndex, out var leftTile))
+        {
+            // Instansiera texten direkt som ett barn till denna specifika SelectTile
+            GameObject labelObj = Instantiate(labelTextPrefab, leftTile.transform);
+            labelObj.name = $"RowLabel_{rowLetters[i]}";
+
+            RectTransform rTransform = labelObj.GetComponent<RectTransform>();
+            // Centrera på vänsterkanten av rutan
+            rTransform.anchorMin = new Vector2(0f, 0.5f);
+            rTransform.anchorMax = new Vector2(0f, 0.5f);
+            rTransform.pivot = new Vector2(0.5f, 0.5f);
+            // Skjut ut texten åt vänster (negativt X) baserat på din offset
+            rTransform.anchoredPosition = new Vector2(-labelOffset, 0);
+
+            var textComponent = labelObj.GetComponent<TMPro.TextMeshProUGUI>();
+            if (textComponent != null) textComponent.text = rowLetters[i].ToString();
+        }
+    }
     }
 
     private void CreateBox(int boxIndex, float maxCellSize)

@@ -534,9 +534,13 @@ MonoBehaviour:
   selectTilePrefab: {fileID: 2903648157190855232, guid: 99e4ddddafdc679428f6e4d35833bf5c, type: 3}
   laserManager: {fileID: 5718192971242474530}
   hintTextBehaviour: {fileID: 994894805145666224}
+  columnLabelParent: {fileID: 0}
+  rowLabelParent: {fileID: 0}
+  labelTextPrefab: {fileID: 4344644612181504725, guid: 23fab984e6c9f9241a5278462b1e52e4, type: 3}
   gridParent: {fileID: 3318846861885116838}
   paddingBetweenBoxes: 10
   paddingBetweenCells: 5
+  labelOffset: 20
   solveCircleTexture: {fileID: 2800000, guid: 199f94d32c512b744916f7b3ac03ec67, type: 3}
   blockCircleTexture: {fileID: 2800000, guid: 07057301b4e1fb24dac5c0d343c9e46e, type: 3}
   circleScaleFactor: 0.8
@@ -2642,11 +2646,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7422047202727902013, guid: b7ef00c86fe3e4945949cb7fc3b0e988, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -40
+      value: -65.00012
       objectReference: {fileID: 0}
     - target: {fileID: 7422047202727902013, guid: b7ef00c86fe3e4945949cb7fc3b0e988, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -60
+      value: -75
       objectReference: {fileID: 0}
     - target: {fileID: 7422047202727902013, guid: b7ef00c86fe3e4945949cb7fc3b0e988, type: 3}
       propertyPath: m_LocalScale.x
@@ -2690,11 +2694,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7422047202727902013, guid: b7ef00c86fe3e4945949cb7fc3b0e988, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 12.499939
       objectReference: {fileID: 0}
     - target: {fileID: 7422047202727902013, guid: b7ef00c86fe3e4945949cb7fc3b0e988, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -7.5
       objectReference: {fileID: 0}
     - target: {fileID: 7422047202727902013, guid: b7ef00c86fe3e4945949cb7fc3b0e988, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
